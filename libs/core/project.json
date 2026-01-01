@@ -1,8 +1,8 @@
 {
-  "name": "ui",
+  "name": "core",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/ui/src",
-  "prefix": "trb",
+  "sourceRoot": "libs/core/src",
+  "prefix": "lib",
   "projectType": "library",
   "release": {
     "version": {
@@ -17,12 +17,12 @@
       "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
-        "project": "libs/ui/ng-package.json",
-        "tsConfig": "libs/ui/tsconfig.lib.json"
+        "project": "libs/core/ng-package.json",
+        "tsConfig": "libs/core/tsconfig.lib.json"
       },
       "configurations": {
         "production": {
-          "tsConfig": "libs/ui/tsconfig.lib.prod.json"
+          "tsConfig": "libs/core/tsconfig.lib.prod.json"
         },
         "development": {}
       },

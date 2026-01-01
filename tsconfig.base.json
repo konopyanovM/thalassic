@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@terrible/ui": ["libs/ui/src/index.ts"]
+      "@terrible/ui": ["libs/ui/src/index.ts"],
+      "@terrible/core": ["libs/core/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
