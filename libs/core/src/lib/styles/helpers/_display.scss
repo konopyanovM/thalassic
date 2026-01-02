@@ -1,0 +1,19 @@
+@use '../utils';
+
+.--display-mobile {
+  display: none;
+
+  @include utils.breakpoint(sm) {
+    display: inherit;
+  }
+}
+
+.--display-desktop {
+  @include utils.breakpoint(sm) {
+    display: none !important;
+  }
+}
+
+.--hidden {
+  display: none;
+}

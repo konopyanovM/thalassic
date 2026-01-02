@@ -1,0 +1,65 @@
+@use '../utils';
+
+.tp-display-1 {
+  @include utils.typography(d1);
+}
+
+.tp-display-2 {
+  @include utils.typography(d2);
+}
+
+.tp-display-3 {
+  @include utils.typography(d3);
+}
+
+h1,
+.tp-heading-1 {
+  @include utils.typography(h1);
+}
+
+h2,
+.tp-heading-2 {
+  @include utils.typography(h2);
+}
+
+h3,
+.tp-heading-3 {
+  @include utils.typography(h3);
+}
+
+h4,
+.tp-heading-4 {
+  @include utils.typography(h4);
+}
+
+h5,
+.tp-heading-5 {
+  @include utils.typography(h5);
+}
+
+h6,
+.tp-heading-6 {
+  @include utils.typography(h6);
+}
+
+.tp-subtitle-1 {
+  @include utils.typography(subtitle-1);
+}
+
+.tp-subtitle-2 {
+  @include utils.typography(subtitle-2);
+}
+
+p,
+.tp-body-1 {
+  @include utils.typography(body-1);
+}
+
+.tp-body-2 {
+  @include utils.typography(body-2);
+}
+
+small,
+.tp-caption {
+  @include utils.typography(caption);
+}

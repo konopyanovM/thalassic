@@ -1,0 +1,57 @@
+body {
+  margin: 0;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
+blockquote {
+  margin: 0;
+}
+
+button {
+  padding: 0;
+
+  text-align: inherit;
+
+  border: none;
+  background-color: transparent;
+
+  cursor: pointer;
+}
+
+input,
+textarea {
+  padding: 0;
+  border: 0;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+table {
+  border-spacing: 0;
+}
+
+hr {
+  margin: 0;
+  border: none;
+}
+
+a {
+  text-decoration: none;
+}

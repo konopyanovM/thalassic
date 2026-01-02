@@ -20,7 +20,11 @@
             "input": "apps/terrible/public"
           }
         ],
-        "styles": ["apps/terrible/src/styles.scss"],
+        "styles": [
+          "apps/terrible/src/styles.scss",
+          "libs/core/src/lib/styles/index.scss",
+          "libs/themes/src/lib/styles/index.scss"
+        ],
         "stylePreprocessorOptions": {
           "includePaths": [
             "apps/terrible/src/core/styles"

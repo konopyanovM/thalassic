@@ -1,0 +1,10 @@
+@use 'mixins';
+
+:root {
+  // Breakpoints
+  --breakpoint-xl: 1600px;
+  --breakpoint-lg: 1280px;
+  --breakpoint-md: 1024px;
+  --breakpoint-sm: 768px;
+  --breakpoint-xs: 640px;
+}

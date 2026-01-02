@@ -1,0 +1,29 @@
+:root {
+  box-sizing: border-box;
+  text-size-adjust: 100%;
+
+  color-scheme: light;
+
+  &.app-dark {
+    color-scheme: dark;
+  }
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+button {
+  font-family: inherit;
+
+  color: inherit;
+}
+
+img,
+svg {
+  width: 100%;
+  height: 100%;
+}
+

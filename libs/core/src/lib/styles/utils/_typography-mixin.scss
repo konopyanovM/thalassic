@@ -1,0 +1,57 @@
+@mixin typography($type) {
+  @if $type == d1 {
+    font-size: 5rem;
+    font-weight: 400;
+    //
+  } @else if $type == d2 {
+    font-size: 4rem;
+    font-weight: 400;
+    //
+  } @else if $type == d3 {
+    font-size: 3rem;
+    font-weight: 400;
+    //
+  } @else if $type == h1 {
+    font-size: 2rem;
+    font-weight: 400;
+    //
+  } @else if $type == h2 {
+    font-size: 1.75rem;
+    font-weight: 400;
+    //
+  } @else if $type == h3 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    //
+  } @else if $type == h4 {
+    font-size: 1.25rem;
+    font-weight: 400;
+    //
+  } @else if $type == h5 {
+    font-size: 1.125rem;
+    font-weight: 400;
+    //
+  } @else if $type == h6 {
+    font-size: 1rem;
+    font-weight: 400;
+    //
+  } @else if $type == subtitle-1 {
+    font-size: 0.9rem;
+    //
+  } @else if $type == subtitle-2 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    //
+  } @else if $type == body-1 {
+    font-size: 0.8rem;
+    //
+  } @else if $type == body-2 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    //
+  } @else if $type == caption {
+    font-size: 0.7rem;
+  } @else {
+    @warn "Typography mixin supports: h1, h2, h3, h4, h5, h6, subtitle-1, subtitle-2, body-1, body-2, caption";
+  }
+}
