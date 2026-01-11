@@ -1,0 +1,7 @@
+:root {
+  --spacing-base: 0.25rem;
+
+  @for $index from 1 through 20 {
+    --spacing-#{$index}: calc(var(--spacing-base) * #{$index});
+  }
+}

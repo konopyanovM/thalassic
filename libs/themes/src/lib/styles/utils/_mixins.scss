@@ -1,0 +1,119 @@
+@function on-color($l) {
+  @if $l > 60 {
+    @return 15%;
+  } @else {
+    @return 98%;
+  }
+}
+
+@mixin generate-theme($config) {
+  // Primary
+  $primary-h: map-get($config, 'primary-h');
+  $primary-s: map-get($config, 'primary-s');
+  $primary-l: map-get($config, 'primary-l');
+  $primary-hsl: $primary-h, $primary-s, $primary-l;
+
+  // Secondary
+  $secondary-h: map-get($config, 'secondary-h');
+  $secondary-s: map-get($config, 'secondary-s');
+  $secondary-l: map-get($config, 'secondary-l');
+  $secondary-hsl: $secondary-h, $secondary-s, $secondary-l;
+
+  // Tertiary
+  $tertiary-h: map-get($config, 'tertiary-h');
+  $tertiary-s: map-get($config, 'tertiary-s');
+  $tertiary-l: map-get($config, 'tertiary-l');
+  $tertiary-hsl: $tertiary-h, $tertiary-s, $tertiary-l;
+
+  // Success
+  $success-h: map-get($config, 'success-h');
+  $success-s: map-get($config, 'success-s');
+  $success-l: map-get($config, 'success-l');
+  $success-hsl: $success-h, $success-s, $success-l;
+
+  // Danger
+  $danger-h: map-get($config, 'danger-h');
+  $danger-s: map-get($config, 'danger-s');
+  $danger-l: map-get($config, 'danger-l');
+  $danger-hsl: $danger-h, $danger-s, $danger-l;
+
+  // Info
+  $info-h: map-get($config, 'info-h');
+  $info-s: map-get($config, 'info-s');
+  $info-l: map-get($config, 'info-l');
+  $info-hsl: $info-h, $info-s, $info-l;
+
+  // Warning
+  $warning-h: map-get($config, 'warning-h');
+  $warning-s: map-get($config, 'warning-s');
+  $warning-l: map-get($config, 'warning-l');
+  $warning-hsl: $warning-h, $warning-s, $warning-l;
+
+  // Colors
+  --color-primary: hsl($primary-hsl);
+  --color-on-primary: #{on-color($primary-l)};
+
+  --color-secondary: hsl($secondary-hsl);
+  --color-on-secondary: #{on-color($secondary-l)};
+
+  --color-tertiary: hsl($tertiary-hsl);
+  --color-on-tertiary: #{on-color($tertiary-l)};
+
+  --color-success: hsl($success-hsl);
+  --color-on-success: #{on-color($success-l)};
+
+  --color-danger: hsl($danger-hsl);
+  --color-on-danger: #{on-color($danger-l)};
+
+  --color-info: hsl($info-hsl);
+  --color-on-info: #{on-color($info-l)};
+
+  --color-warning: hsl($warning-hsl);
+  --color-on-warning: #{on-color($warning-l)};
+
+  // Transparent
+  --color-primary-t90: hsla(var(--color-primary-hsl), 0.9);
+  --color-primary-t75: hsla(var(--color-primary-hsl), 0.4);
+  --color-primary-t50: hsla(var(--color-primary-hsl), 0.1);
+  --color-primary-t25: hsla(var(--color-primary-hsl), 0.05);
+  --color-primary-t10: hsla(var(--color-primary-hsl), 0.05);
+
+  --color-danger-t75: hsla(var(--color-danger-hsl), 0.75);
+  --color-danger-t25: hsla(var(--color-danger-hsl), 0.25);
+  --color-danger-t10: hsla(var(--color-danger-hsl), 0.1);
+  --color-danger-t05: hsla(var(--color-danger-hsl), 0.05);
+
+  --color-warning-t75: hsla(var(--color-warning-hsl), 0.75);
+  --color-warning-t25: hsla(var(--color-warning-hsl), 0.25);
+
+  --color-info-t75: hsla(var(--color-info-hsl), 0.75);
+  --color-info-t25: hsla(var(--color-info-hsl), 0.25);
+
+  // Dark
+  --color-primary-40: hsl(var(--color-primary-h), var(--color-primary-s), 40%);
+  --color-primary-30: hsl(var(--color-primary-h), var(--color-primary-s), 30%);
+  --color-primary-20: hsl(var(--color-primary-h), var(--color-primary-s), 20%);
+
+  --color-tertiary-40: hsl(
+    var(--color-tertiary-h),
+    var(--color-tertiary-s),
+    40%
+  );
+  --color-tertiary-20: hsl(
+    var(--color-tertiary-h),
+    var(--color-tertiary-s),
+    20%
+  );
+
+  --color-success-40: hsl(var(--color-success-h), var(--color-success-s), 40%);
+  --color-success-20: hsl(var(--color-success-h), var(--color-success-s), 20%);
+
+  --color-danger-30: hsl(var(--color-danger-h), var(--color-danger-s), 30%);
+  --color-danger-20: hsl(var(--color-danger-h), var(--color-danger-s), 20%);
+
+  --color-info-40: hsl(var(--color-info-h), var(--color-info-s), 40%);
+  --color-info-20: hsl(var(--color-info-h), var(--color-info-s), 20%);
+
+  --color-warning-40: hsl(var(--color-warning-h), var(--color-warning-s), 40%);
+  --color-warning-20: hsl(var(--color-warning-h), var(--color-warning-s), 20%);
+}
