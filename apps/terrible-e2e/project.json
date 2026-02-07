@@ -1,9 +1,0 @@
-{
-  "name": "terrible-e2e",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "projectType": "application",
-  "sourceRoot": "apps/terrible-e2e/src",
-  "implicitDependencies": ["terrible"],
-  "// targets": "to see all targets run: nx show project terrible-e2e --web",
-  "targets": {}
-}

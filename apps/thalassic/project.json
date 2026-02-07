@@ -1,38 +1,38 @@
 {
-  "name": "terrible",
+  "name": "thalassic",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "prefix": "app",
-  "sourceRoot": "apps/terrible/src",
+  "sourceRoot": "apps/thalassic/src",
   "tags": [],
   "targets": {
     "build": {
       "executor": "@angular/build:application",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/apps/terrible",
-        "browser": "apps/terrible/src/main.ts",
-        "tsConfig": "apps/terrible/tsconfig.app.json",
+        "outputPath": "dist/apps/thalassic",
+        "browser": "apps/thalassic/src/main.ts",
+        "tsConfig": "apps/thalassic/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
           {
             "glob": "**/*",
-            "input": "apps/terrible/public"
+            "input": "apps/thalassic/public"
           }
         ],
         "styles": [
-          "apps/terrible/src/styles.scss",
+          "apps/thalassic/src/styles.scss",
           "libs/core/src/lib/styles/index.scss",
           "libs/themes/src/lib/styles/index.scss"
         ],
         "stylePreprocessorOptions": {
           "includePaths": [
-            "apps/terrible/src/core/styles"
+            "apps/thalassic/src/core/styles"
           ]
         },
-        "server": "apps/terrible/src/main.server.ts",
+        "server": "apps/thalassic/src/main.server.ts",
         "ssr": {
-          "entry": "apps/terrible/src/server.ts"
+          "entry": "apps/thalassic/src/server.ts"
         },
         "outputMode": "server"
       },
@@ -65,10 +65,10 @@
       "executor": "@angular/build:dev-server",
       "configurations": {
         "production": {
-          "buildTarget": "terrible:build:production"
+          "buildTarget": "thalassic:build:production"
         },
         "development": {
-          "buildTarget": "terrible:build:development"
+          "buildTarget": "thalassic:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -84,9 +84,9 @@
       "continuous": true,
       "executor": "@nx/web:file-server",
       "options": {
-        "buildTarget": "terrible:build",
+        "buildTarget": "thalassic:build",
         "port": 4200,
-        "staticFilePath": "dist/apps/terrible/browser",
+        "staticFilePath": "dist/apps/thalassic/browser",
         "spa": true
       }
     }

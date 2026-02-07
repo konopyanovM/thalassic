@@ -15,9 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@terrible/ui": ["libs/ui/src/index.ts"],
-      "@terrible/core": ["libs/core/src/index.ts"],
-      "@terrible/themes": ["libs/themes/src/index.ts"]
+      "@thalassic/ui": ["libs/ui/src/index.ts"],
+      "@thalassic/core": ["libs/core/src/index.ts"],
+      "@thalassic/themes": ["libs/themes/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

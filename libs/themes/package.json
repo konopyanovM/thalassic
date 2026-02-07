@@ -1,5 +1,5 @@
 {
-  "name": "@terrible/themes",
+  "name": "@thalassic/themes",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^21.0.0",
