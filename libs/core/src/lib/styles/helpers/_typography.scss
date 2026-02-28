@@ -1,65 +1,93 @@
 @use '../utils';
 
-.tp-display-1 {
-  @include utils.typography(d1);
+.text-display-lg {
+  font-size: var(--font-display-large-size);
+  font-weight: var(--font-display-large-weight);
+  line-height: var(--font-display-large-line-height);
+  letter-spacing: var(--font-display-large-letter-spacing);
 }
 
-.tp-display-2 {
-  @include utils.typography(d2);
+.text-display-md {
+  font-size: var(--font-display-medium-size);
+  font-weight: var(--font-display-medium-weight);
+  line-height: var(--font-display-medium-line-height);
+  letter-spacing: var(--font-display-medium-letter-spacing);
 }
 
-.tp-display-3 {
-  @include utils.typography(d3);
+.text-display-sm {
+  font-size: var(--font-display-small-size);
+  font-weight: var(--font-display-small-weight);
+  line-height: var(--font-display-small-line-height);
+  letter-spacing: var(--font-display-small-letter-spacing);
 }
 
 h1,
-.tp-heading-1 {
-  @include utils.typography(h1);
+.text-headline-lg {
+  font-size: var(--font-headline-large-size);
+  font-weight: var(--font-headline-large-weight);
+  line-height: var(--font-headline-large-line-height);
+  letter-spacing: var(--font-headline-large-letter-spacing);
 }
 
 h2,
-.tp-heading-2 {
-  @include utils.typography(h2);
+.text-headline-md {
+  font-size: var(--font-headline-medium-size);
+  font-weight: var(--font-headline-medium-weight);
+  line-height: var(--font-headline-medium-line-height);
+  letter-spacing: var(--font-headline-medium-letter-spacing);
 }
 
 h3,
-.tp-heading-3 {
-  @include utils.typography(h3);
+.text-headline-sm {
+  font-size: var(--font-headline-small-size);
+  font-weight: var(--font-headline-small-weight);
+  line-height: var(--font-headline-small-line-height);
+  letter-spacing: var(--font-headline-small-letter-spacing);
 }
 
 h4,
-.tp-heading-4 {
-  @include utils.typography(h4);
+.text-title-large {
+  font-size: var(--font-title-large-size);
+  font-weight: var(--font-title-large-weight);
+  line-height: var(--font-title-large-line-height);
+  letter-spacing: var(--font-title-large-letter-spacing);
 }
 
 h5,
-.tp-heading-5 {
-  @include utils.typography(h5);
+.text-title-medium {
+  font-size: var(--font-title-medium-size);
+  font-weight: var(--font-title-medium-weight);
+  line-height: var(--font-title-medium-line-height);
+  letter-spacing: var(--font-title-medium-letter-spacing);
 }
 
 h6,
-.tp-heading-6 {
-  @include utils.typography(h6);
-}
-
-.tp-subtitle-1 {
-  @include utils.typography(subtitle-1);
-}
-
-.tp-subtitle-2 {
-  @include utils.typography(subtitle-2);
+.text-title-small {
+  font-size: var(--font-title-small-size);
+  font-weight: var(--font-title-small-weight);
+  line-height: var(--font-title-small-line-height);
+  letter-spacing: var(--font-title-small-letter-spacing);
 }
 
 p,
-.tp-body-1 {
-  @include utils.typography(body-1);
+.text-body-lg {
+  font-size: var(--font-body-large-size);
+  font-weight: var(--font-body-large-weight);
+  line-height: var(--font-body-large-line-height);
+  letter-spacing: var(--font-body-large-letter-spacing);
 }
 
-.tp-body-2 {
-  @include utils.typography(body-2);
+.text-body-md {
+  font-size: var(--font-body-medium-size);
+  font-weight: var(--font-body-medium-weight);
+  line-height: var(--font-body-medium-line-height);
+  letter-spacing: var(--font-body-medium-letter-spacing);
 }
 
 small,
-.tp-caption {
-  @include utils.typography(caption);
+.text-body-sm {
+  font-size: var(--font-body-small-size);
+  font-weight: var(--font-body-small-weight);
+  line-height: var(--font-body-small-line-height);
+  letter-spacing: var(--font-body-small-letter-spacing);
 }

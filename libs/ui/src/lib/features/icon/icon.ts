@@ -1,11 +1,4 @@
-import {
-  Component,
-  computed,
-  inject,
-  input,
-  InputSignal,
-  Signal,
-} from '@angular/core';
+import { Component, computed, inject, input, InputSignal, Signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { SafeHtml } from '@angular/platform-browser';
 import { IconService } from './icon.service';
@@ -34,10 +27,7 @@ export class Icon {
       allowedSources: this.allowedSources(),
     }),
     stream: params =>
-      this._iconService.getSvgContent(
-        params.params.iconSrc,
-        params.params.allowedSources,
-      ),
+      this._iconService.getSvgContent(params.params.iconSrc, params.params.allowedSources),
   });
 
   // Accessors

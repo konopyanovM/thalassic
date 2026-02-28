@@ -1,2 +1,3 @@
-export * from './button/button';
-export * from './icon/icon';
+export * from './button';
+export * from './icon';
+export * from './theme';

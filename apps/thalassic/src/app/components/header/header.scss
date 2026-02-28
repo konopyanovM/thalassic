@@ -1,0 +1,10 @@
+:host {
+  height: var(--header-height);
+
+  display: flex;
+  justify-content: space-between;
+
+  .header-logo {
+    width: 24px;
+  }
+}

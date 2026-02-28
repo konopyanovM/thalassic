@@ -1,1 +1,13 @@
-<p>Thalassic</p>
+<tls-icon iconSrc="images/icons/icon_angular.svg" class="header-logo" />
+<nav class="navigation">
+  <ul class="navigation-list">
+    @for (item of navItems; track item.label) {
+      <li class="navigation-list__item">
+        <a [routerLink]="item.link">{{ item.label }}</a>
+      </li>
+    }
+  </ul>
+</nav>
+<div class="actions">
+  <tls-button icon></tls-button>
+</div>
