@@ -1,18 +1,114 @@
 :host {
   .tls-button {
-    // Appearances
-    &--text {
-      background-color: transparent;
+    .tls-button__background {
+      transition: opacity var(--motion-fast) var(--motion-ease-in-out);
     }
 
-    &--elevated {
+    // Appearances
+    &--filled {
+      .tls-button__content {
+        color: var(--tls-button-on-color);
+      }
+
+      .tls-button__background {
+        background-color: var(--tls-button-color);
+      }
+
+      &:hover {
+        .tls-button__background {
+          opacity: 0.85;
+        }
+      }
+
+      &:active {
+        .tls-button__background {
+          opacity: 0.75;
+        }
+      }
     }
 
     &--outlined {
-      background-color: transparent;
+      border: 1px solid var(--tls-button-color);
+
+      .tls-button__content {
+        color: var(--tls-button-color);
+      }
+
+      .tls-button__background {
+        background-color: var(--tls-button-color);
+
+        opacity: 0;
+      }
+
+      &:hover {
+        .tls-button__background {
+          opacity: 0.075;
+        }
+      }
+
+      &:active {
+        .tls-button__background {
+          opacity: 0.15;
+        }
+      }
     }
 
-    &--filled {
+    &--text {
+      .tls-button__content {
+        color: var(--tls-button-color);
+      }
+
+      .tls-button__background {
+        background-color: var(--tls-button-color);
+
+        opacity: 0;
+      }
+
+      &:hover {
+        .tls-button__background {
+          opacity: 0.075;
+        }
+      }
+
+      &:active {
+        .tls-button__background {
+          opacity: 0.15;
+        }
+      }
+    }
+
+    &--elevated {
+      box-shadow: var(--shadow-sm);
+
+      transition: box-shadow var(--motion-fast) var(--motion-ease-in-out);
+
+      .tls-button__content {
+        color: var(--tls-button-color);
+      }
+
+      .tls-button__background {
+        background-color: var(--tls-button-color);
+
+        opacity: 0;
+
+        transition: opacity var(--motion-fast) var(--motion-ease-in-out);
+      }
+
+      &:hover {
+        box-shadow: var(--shadow-md);
+
+        .tls-button__background {
+          opacity: 0.075;
+        }
+      }
+
+      &:active {
+        box-shadow: var(--shadow-sm);
+
+        .tls-button__background {
+          opacity: 0.15;
+        }
+      }
     }
   }
 }

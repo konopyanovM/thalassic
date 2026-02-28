@@ -1,7 +1,7 @@
 @if (isLink()) {
   <a
-    class="tls-button"
     role="link"
+    [class]="componentClass()"
     [class.tls-button--has-icon]="icon()"
     [href]="href()"
     [attr.aria-disabled]="disabled()"
@@ -10,8 +10,8 @@
   </a>
 } @else {
   <button
-    class="tls-button"
     role="button"
+    [class]="componentClass()"
     [class.tls-button--has-icon]="icon()"
     [type]="type()"
     [attr.aria-disabled]="disabled()"
@@ -22,15 +22,17 @@
 
 <!-- Content -->
 <ng-template #contentRef>
-  @if (icon()) {
-    @let iconValue = icon();
-    @if (isIconString(iconValue)) {
-      <tls-icon [iconSrc]="iconValue"></tls-icon>
+  <span class="tls-button__content">
+    @if (icon()) {
+      @let iconValue = icon();
+      @if (isIconString(iconValue)) {
+        <tls-icon [iconSrc]="iconValue"></tls-icon>
+      } @else {
+        <ng-content></ng-content>
+      }
     } @else {
       <ng-content></ng-content>
     }
-  } @else {
-    <ng-content></ng-content>
-  }
-  <div class="tls-button-background"></div>
+  </span>
+  <div class="tls-button__background"></div>
 </ng-template>

@@ -1,0 +1,41 @@
+:host {
+  &:has(.tls-button--sm) {
+    --tls-button-height: var(--control-height-sm);
+    --tls-button-padding-inline: var(--spacing-3);
+
+    --tls-button-font-size: var(--font-label-small-size);
+    --tls-button-font-weight: var(--font-label-small-weight);
+    --tls-button-line-height: var(--font-label-small-line-height);
+    --tls-button-letter-spacing: var(--font-label-small-letter-spacing);
+  }
+
+  &:has(.tls-button--md) {
+    --tls-button-height: var(--control-height-md);
+    --tls-button-padding-inline: var(--spacing-4);
+
+    --tls-button-font-size: var(--font-label-medium-size);
+    --tls-button-font-weight: var(--font-label-medium-weight);
+    --tls-button-line-height: var(--font-label-medium-line-height);
+    --tls-button-letter-spacing: var(--font-label-medium-letter-spacing);
+  }
+
+  &:has(.tls-button--lg) {
+    --tls-button-height: var(--control-height-lg);
+    --tls-button-padding-inline: var(--spacing-5);
+
+    --tls-button-font-size: var(--font-label-large-size);
+    --tls-button-font-weight: var(--font-label-large-weight);
+    --tls-button-line-height: var(--font-label-large-line-height);
+    --tls-button-letter-spacing: var(--font-label-large-letter-spacing);
+  }
+
+  .tls-button {
+    height: var(--tls-button-height);
+    padding-inline: var(--tls-button-padding-inline);
+
+    font-size: var(--tls-button-font-size);
+    font-weight: var(--tls-button-font-weight);
+    line-height: var(--tls-button-line-height);
+    letter-spacing: var(--tls-button-letter-spacing);
+  }
+}

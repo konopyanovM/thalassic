@@ -1,0 +1,20 @@
+:root {
+  // Duration
+  --motion-instant: 100ms; // Tooltips, ripples...
+  --motion-fast: 150ms; // Button hovers, focus states...
+  --motion-default: 250ms; // Dropdowns, modals, accordions...
+  --motion-slow: 400ms; // Page transitions, complex animations...
+  --motion-slower: 600ms; // Loading indicators, skeletons...
+
+  // Easing curves
+  --motion-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --motion-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --motion-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --motion-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --motion-ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  // Delays
+  --motion-delay-short: 50ms;
+  --motion-delay-medium: 100ms;
+  --motion-delay-long: 200ms;
+}

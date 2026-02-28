@@ -17,10 +17,7 @@ import { buttonAppearance, buttonColor, buttonSize, buttonType } from './button.
   selector: 'tls-button',
   imports: [Icon, NgTemplateOutlet],
   templateUrl: './button.html',
-  styleUrls: ['./button.scss', './button-appearance.scss', 'button-colors.scss'],
-  host: {
-    '[class]': 'className()',
-  },
+  styleUrls: ['./button.scss', './button-appearance.scss', 'button-color.scss', 'button-size.scss'],
 })
 export class Button implements OnInit {
   // Injections
@@ -38,7 +35,7 @@ export class Button implements OnInit {
     },
   });
   public color = input<buttonColor>('secondary');
-  public appearance = input<buttonAppearance>('text');
+  public appearance = input<buttonAppearance>('filled');
   public size: InputSignal<buttonSize> = input<buttonSize>('md');
   public href = input<string | null>(null);
 
@@ -47,13 +44,14 @@ export class Button implements OnInit {
   // Computed
   protected isLink = computed<boolean>(() => Boolean(this._routerLink || this.href()));
 
-  protected className = computed(() => {
-    const array: string[] = [];
+  protected componentClass = computed(() => {
+    const className = 'tls-button';
 
-    const classPrefix = 'tls-button';
+    const array: string[] = [className];
 
-    array.push(`${classPrefix}--${this.color()}`);
-    array.push(`${classPrefix}--${this.appearance()}`);
+    array.push(`${className}--${this.color()}`);
+    array.push(`${className}--${this.appearance()}`);
+    array.push(`${className}--${this.size()}`);
 
     return array;
   });
