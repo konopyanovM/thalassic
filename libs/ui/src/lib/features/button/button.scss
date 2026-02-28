@@ -1,0 +1,24 @@
+:host {
+  display: inline-block;
+
+  cursor: pointer;
+  user-select: none;
+
+  .tls-button {
+    height: var(--control-height-md);
+    padding-inline: var(--spacing-4);
+
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 0.25rem;
+
+    border-radius: var(--radius-md);
+
+    line-height: 1;
+
+    &.--has-icon {
+    }
+  }
+}

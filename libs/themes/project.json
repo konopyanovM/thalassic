@@ -2,7 +2,7 @@
   "name": "themes",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/themes/src",
-  "prefix": "lib",
+  "prefix": "tls",
   "projectType": "library",
   "release": {
     "version": {

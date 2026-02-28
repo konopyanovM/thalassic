@@ -20,15 +20,9 @@
             "input": "apps/thalassic/public"
           }
         ],
-        "styles": [
-          "apps/thalassic/src/styles.scss",
-          "libs/core/src/lib/styles/index.scss",
-          "libs/themes/src/lib/styles/index.scss"
-        ],
+        "styles": ["apps/thalassic/src/styles.scss"],
         "stylePreprocessorOptions": {
-          "includePaths": [
-            "apps/thalassic/src/core/styles"
-          ]
+          "includePaths": ["apps/thalassic/src/core/styles", "libs"]
         },
         "server": "apps/thalassic/src/main.server.ts",
         "ssr": {

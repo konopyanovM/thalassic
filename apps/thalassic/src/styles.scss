@@ -1,2 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
+
+// @core
+@use 'core/src/lib/styles' as core;
+
+// @themes
+@use 'themes/src/lib/styles' as themes;
+@use 'themes/src/lib/themes/thalassic';
+
+// other
 @import 'normalize.css';

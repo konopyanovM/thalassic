@@ -1,0 +1,18 @@
+:host {
+  .tls-button {
+    // Appearances
+    &--text {
+      background-color: transparent;
+    }
+
+    &--elevated {
+    }
+
+    &--outlined {
+      background-color: transparent;
+    }
+
+    &--filled {
+    }
+  }
+}

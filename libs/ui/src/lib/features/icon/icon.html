@@ -1,0 +1,7 @@
+@if (isSvg() && iconSrc()) {
+  <span [innerHTML]="svgContent()" class="tls-svg-icon"></span>
+} @else if (iconSrc()) {
+  <img [src]="iconSrc()" [alt]="alt()" class="tls-img-icon" />
+} @else {
+  {{ iconSrc() }}
+}

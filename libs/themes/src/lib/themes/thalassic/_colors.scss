@@ -1,0 +1,127 @@
+@use 'sass:map';
+
+@use './palettes' as palettes;
+@use '../../palettes' as common-palettes;
+
+:root {
+  // Primary
+  --color-primary: #{map.get(palettes.$primary, 40)};
+  --color-on-primary: #{map.get(palettes.$primary, 100)};
+  --color-primary-container: #{map.get(palettes.$primary, 90)};
+  --color-on-primary-container: #{map.get(palettes.$primary, 30)};
+
+  // Secondary
+  --color-secondary: #{map.get(palettes.$secondary, 40)};
+  --color-on-secondary: #{map.get(palettes.$secondary, 100)};
+  --color-secondary-container: #{map.get(palettes.$secondary, 90)};
+  --color-on-secondary-container: #{map.get(palettes.$secondary, 30)};
+
+  // Tertiary
+  --color-tertiary: #{map.get(palettes.$tertiary, 40)};
+  --color-on-tertiary: #{map.get(palettes.$tertiary, 100)};
+  --color-tertiary-container: #{map.get(palettes.$tertiary, 90)};
+  --color-on-tertiary-container: #{map.get(palettes.$tertiary, 30)};
+
+  // Success
+  --color-success: #{map.get(common-palettes.$green, 40)};
+  --color-on-success: #{map.get(common-palettes.$green, 100)};
+  --color-success-container: #{map.get(common-palettes.$green, 90)};
+  --color-on-success-container: #{map.get(common-palettes.$green, 30)};
+
+  // Danger
+  --color-danger: #ba1a1a;
+  --color-on-danger: #ffffff;
+  --color-danger-container: #ffdad6;
+  --color-on-danger-container: #93000a;
+
+  // Info
+  --color-info: #{map.get(common-palettes.$aqua, 40)};
+  --color-on-info: #{map.get(common-palettes.$aqua, 100)};
+  --color-info-container: #{map.get(common-palettes.$aqua, 90)};
+  --color-on-info-container: #{map.get(common-palettes.$aqua, 30)};
+
+  // Warning
+  --color-warning: #{map.get(common-palettes.$yellow, 40)};
+  --color-on-warning: #{map.get(common-palettes.$yellow, 100)};
+  --color-warning-container: #{map.get(common-palettes.$yellow, 90)};
+  --color-on-warning-container: #{map.get(common-palettes.$yellow, 30)};
+
+  // Surface
+  --color-surface: #f6fafe;
+  --color-on-surface: #181c1f;
+  --color-surface-variant: #dde3ea;
+  --color-on-surface-variant: #41484d;
+
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f0f4f8;
+  --color-surface-container: #ebeef3;
+  --color-surface-container-high: #e5e8ed;
+  --color-surface-container-highest: #dfe3e7;
+
+  // Outline
+  --color-outline: #71787e;
+  --color-outline-variant: #c1c7ce;
+
+  // Shadow
+  --color-shadow: #000000;
+
+  .dark {
+    // Primary
+    --color-primary: #{map.get(palettes.$primary, 80)};
+    --color-on-primary: #{map.get(palettes.$primary, 20)};
+    --color-primary-container: #{map.get(palettes.$primary, 30)};
+    --color-on-primary-container: #{map.get(palettes.$primary, 90)};
+
+    // Secondary
+    --color-secondary: #{map.get(palettes.$primary, 80)};
+    --color-on-secondary: #{map.get(palettes.$primary, 20)};
+    --color-secondary-container: #{map.get(palettes.$primary, 30)};
+    --color-on-secondary-container: #{map.get(palettes.$primary, 90)};
+
+    // Tertiary
+    --color-tertiary: #{map.get(palettes.$primary, 80)};
+    --color-on-tertiary: #{map.get(palettes.$primary, 20)};
+    --color-tertiary-container: #{map.get(palettes.$primary, 30)};
+    --color-on-tertiary-container: #{map.get(palettes.$primary, 90)};
+
+    // Success
+    --color-success: #{map.get(common-palettes.$green, 80)};
+    --color-on-success: #{map.get(common-palettes.$green, 20)};
+    --color-success-container: #{map.get(common-palettes.$green, 30)};
+    --color-on-success-container: #{map.get(common-palettes.$green, 90)};
+
+    // Danger
+    --color-danger: #ffb4ab;
+    --color-on-danger: #690005;
+    --color-danger-container: #93000a;
+    --color-on-danger-container: #ffdad6;
+
+    // Info
+    --color-info: #{map.get(common-palettes.$aqua, 80)};
+    --color-on-info: #{map.get(common-palettes.$aqua, 20)};
+    --color-info-container: #{map.get(common-palettes.$aqua, 30)};
+    --color-on-info-container: #{map.get(common-palettes.$aqua, 90)};
+
+    // Warning
+    --color-warning: #{map.get(common-palettes.$yellow, 80)};
+    --color-on-warning: #{map.get(common-palettes.$yellow, 20)};
+    --color-warning-container: #{map.get(common-palettes.$yellow, 30)};
+    --color-on-warning-container: #{map.get(common-palettes.$yellow, 90)};
+
+    // Surface
+    --color-surface: #101417;
+    --color-on-surface: #dfe3e7;
+    --color-surface-variant: #41484d;
+    --color-on-surface-variant: #c1c7ce;
+
+    --color-surface-container-lowest: #0a0f12;
+    --color-surface-container-low: #181c1f;
+    --color-surface-container: #1c2024;
+    --color-surface-container-high: #262a2e;
+    --color-surface-container-highest: #313539;
+
+    // Outline
+    --color-outline: #8b9198;
+    --color-outline-variant: #41484d;
+  }
+}

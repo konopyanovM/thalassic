@@ -1,0 +1,40 @@
+:host {
+  .tls-button {
+    color: var(--tls-button-color);
+
+    .tls-button-background {
+      background-color: var(--tls-button-background-color);
+    }
+
+    // Colors
+    &--primary {
+      --tls-button-color: var(--color-on-primary);
+      --tls-button-background-color: var(--color-primary);
+    }
+
+    &--success {
+      --tls-button-color: var(--color-on-success);
+      --tls-button-background-color: var(--color-success);
+    }
+
+    &--danger {
+      --tls-button-color: var(--color-on-danger);
+      --tls-button-background-color: var(--color-danger);
+    }
+
+    &--warning {
+      --tls-button-color: var(--color-on-warning);
+      --tls-button-background-color: var(--color-warning);
+    }
+
+    &--info {
+      --tls-button-color: var(--color-on-info);
+      --tls-button-background-color: var(--color-info);
+    }
+
+    &--secondary {
+      --tls-button-color: var(--color-on-secondary);
+      --tls-button-background-color: var(--color-secondary);
+    }
+  }
+}
