@@ -1,0 +1,67 @@
+:host {
+  --tls-switch-width: 48px;
+  --tls-switch-height: var(--control-height-sm);
+  --tls-switch-border-radius: 24px;
+  --tls-switch-handle-gap: 8px;
+  --tls-switch-handle-size: calc(var(--tls-switch-height) - var(--tls-switch-handle-gap));
+  --tls-switch-color: var(--color-surface-variant);
+  --tls-switch-on-color: var(--color-surface);
+
+  width: fit-content;
+
+  &:focus-visible {
+    outline: none;
+
+    .tls-switch {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+  }
+
+  .tls-switch {
+    width: var(--tls-switch-width);
+    height: var(--tls-switch-height);
+
+    display: flex;
+
+    border-radius: var(--tls-switch-border-radius);
+
+    background-color: var(--tls-switch-color);
+
+    cursor: pointer;
+
+    transition: background-color var(--motion-fast) var(--motion-ease-in-out);
+
+    &-input {
+      display: none;
+    }
+
+    &__handle {
+      width: var(--tls-switch-handle-size);
+      height: var(--tls-switch-handle-size);
+
+      margin: calc(var(--tls-switch-handle-gap) / 2);
+
+      border-radius: 50%;
+
+      background-color: var(--tls-switch-on-color);
+
+      box-shadow: var(--shadow-xs);
+
+      transition: transform var(--motion-fast) var(--motion-ease-in-out);
+    }
+  }
+
+  // Checked
+  &:has(.tls-switch > .tls-switch-input:checked) {
+    .tls-switch {
+      &__handle {
+        $translate-x: calc(
+          var(--tls-switch-width) - var(--tls-switch-handle-size) - var(--tls-switch-handle-gap)
+        );
+
+        transform: translateX(#{$translate-x});
+      }
+    }
+  }
+}

@@ -1,35 +1,35 @@
 :host {
-  &:has(.tls-button--primary) {
+  &:has(.tls-button.tls-button--primary) {
     --tls-button-on-color: var(--color-on-primary);
     --tls-button-color: var(--color-primary);
   }
 
-  &:has(.tls-button--secondary) {
+  &:has(.tls-button.tls-button--secondary) {
     --tls-button-on-color: var(--color-on-secondary);
     --tls-button-color: var(--color-secondary);
   }
 
-  &:has(.tls-button--tertiary) {
+  &:has(.tls-button.tls-button--tertiary) {
     --tls-button-on-color: var(--color-on-tertiary);
     --tls-button-color: var(--color-tertiary);
   }
 
-  &:has(.tls-button--success) {
+  &:has(.tls-button.tls-button--success) {
     --tls-button-on-color: var(--color-on-success);
     --tls-button-color: var(--color-success);
   }
 
-  &:has(.tls-button--info) {
+  &:has(.tls-button.tls-button--info) {
     --tls-button-on-color: var(--color-on-info);
     --tls-button-color: var(--color-info);
   }
 
-  &:has(.tls-button--warning) {
+  &:has(.tls-button.tls-button--warning) {
     --tls-button-on-color: var(--color-on-warning);
     --tls-button-color: var(--color-warning);
   }
 
-  &:has(.tls-button--danger) {
+  &:has(.tls-button.tls-button--danger) {
     --tls-button-on-color: var(--color-on-danger);
     --tls-button-color: var(--color-danger);
   }

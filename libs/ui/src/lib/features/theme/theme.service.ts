@@ -1,4 +1,4 @@
-import { DOCUMENT, effect, inject, Injectable, Signal, signal } from '@angular/core';
+import { DOCUMENT, effect, inject, Injectable, Renderer2, Signal, signal } from '@angular/core';
 import { TLS_THEME_CONFIG } from './tokens';
 import { ThemeConfig, themeType } from './types';
 
@@ -6,13 +6,13 @@ import { ThemeConfig, themeType } from './types';
 export class ThemeService {
   private readonly _config: ThemeConfig = inject(TLS_THEME_CONFIG);
   private readonly _document: Document = inject(DOCUMENT);
+  private readonly _renderer: Renderer2 = inject(Renderer2);
 
   private LS_THEME = this._config.localStorageKey;
 
   // Private
-  private DEFAULT_THEME: themeType = 'light';
   private _currentTheme = signal<themeType>(
-    (localStorage.getItem(this.LS_THEME) as themeType) ?? this.DEFAULT_THEME,
+    (localStorage.getItem(this.LS_THEME) as themeType) ?? 'light',
   );
 
   constructor() {
@@ -38,12 +38,16 @@ export class ThemeService {
   }
 
   public setTheme(theme: themeType): void {
+    const documentElement = this._document.documentElement;
+    const lightThemeClass = this._config.lightThemeClass;
+    const darkThemeClass = this._config.darkThemeClass;
+
     if (theme === 'dark') {
-      this._document.documentElement.classList.remove(this._config.lightThemeClass);
-      this._document.documentElement.classList.add(this._config.darkThemeClass);
+      this._renderer.removeClass(documentElement, lightThemeClass);
+      this._renderer.addClass(documentElement, darkThemeClass);
     } else if (theme === 'light') {
-      this._document.documentElement.classList.remove(this._config.darkThemeClass);
-      this._document.documentElement.classList.add(this._config.lightThemeClass);
+      this._renderer.removeClass(documentElement, darkThemeClass);
+      this._renderer.addClass(documentElement, lightThemeClass);
     }
     this._currentTheme.set(theme);
   }

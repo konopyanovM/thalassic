@@ -1,8 +1,8 @@
-import { color } from '../../types';
+import { color, controlSize } from '../../types';
 
 export type buttonType = 'submit' | 'reset' | 'button';
 
-export type buttonSize = 'sm' | 'md' | 'lg';
+export type buttonSize = controlSize;
 
 export type buttonAppearance = 'filled' | 'outlined' | 'text' | 'elevated';
 

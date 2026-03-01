@@ -1,0 +1,9 @@
+<label [class]="className()">
+  <input
+    type="checkbox"
+    class="tls-switch-input"
+    [disabled]="isDisabled()"
+    [checked]="value()"
+    (change)="onInput($event)" />
+  <div class="tls-switch__handle"></div>
+</label>

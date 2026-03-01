@@ -10,13 +10,16 @@ import {
   OnInit,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Icon } from '../icon/icon';
+import { Icon } from '../icon';
 import { buttonAppearance, buttonColor, buttonSize, buttonType } from './button.types';
 
 @Component({
   selector: 'tls-button',
   imports: [Icon, NgTemplateOutlet],
   templateUrl: './button.html',
+  host: {
+    '[tabindex]': '-1',
+  },
   styleUrls: ['./button.scss', './button-appearance.scss', 'button-color.scss', 'button-size.scss'],
 })
 export class Button implements OnInit {
@@ -38,13 +41,14 @@ export class Button implements OnInit {
   public appearance = input<buttonAppearance>('filled');
   public size: InputSignal<buttonSize> = input<buttonSize>('md');
   public href = input<string | null>(null);
+  public tabindex = input<string>('0');
 
   protected hasRouterLink = Boolean(this._routerLink);
 
   // Computed
   protected isLink = computed<boolean>(() => Boolean(this._routerLink || this.href()));
 
-  protected componentClass = computed(() => {
+  protected className = computed(() => {
     const className = 'tls-button';
 
     const array: string[] = [className];

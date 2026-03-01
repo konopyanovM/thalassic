@@ -1,9 +1,10 @@
 @if (isLink()) {
   <a
     role="link"
-    [class]="componentClass()"
+    [class]="className()"
     [class.tls-button--has-icon]="icon()"
     [href]="href()"
+    [tabindex]="tabindex()"
     [attr.aria-disabled]="disabled()"
   >
     <ng-container [ngTemplateOutlet]="contentRef"></ng-container>
@@ -11,9 +12,11 @@
 } @else {
   <button
     role="button"
-    [class]="componentClass()"
+    [class]="className()"
     [class.tls-button--has-icon]="icon()"
     [type]="type()"
+    [tabindex]="tabindex()"
+    [disabled]="disabled()"
     [attr.aria-disabled]="disabled()"
   >
     <ng-container [ngTemplateOutlet]="contentRef"></ng-container>

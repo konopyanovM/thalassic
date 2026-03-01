@@ -1,5 +1,11 @@
 :host {
+  width: fit-content;
+
   display: inline-block;
+
+  &:focus-visible {
+    outline: none;
+  }
 
   .tls-button {
     position: relative;
@@ -14,6 +20,11 @@
 
     cursor: pointer;
     user-select: none;
+
+    &:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
 
     &.--has-icon {
     }

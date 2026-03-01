@@ -14,7 +14,8 @@
         background-color: var(--tls-button-color);
       }
 
-      &:hover {
+      &:hover,
+      &:focus-visible {
         .tls-button__background {
           opacity: 0.85;
         }
@@ -40,7 +41,8 @@
         opacity: 0;
       }
 
-      &:hover {
+      &:hover,
+      &:focus-visible {
         .tls-button__background {
           opacity: 0.075;
         }
@@ -64,7 +66,8 @@
         opacity: 0;
       }
 
-      &:hover {
+      &:hover,
+      &:focus-visible {
         .tls-button__background {
           opacity: 0.075;
         }
@@ -94,7 +97,8 @@
         transition: opacity var(--motion-fast) var(--motion-ease-in-out);
       }
 
-      &:hover {
+      &:hover,
+      &:focus-visible {
         box-shadow: var(--shadow-md);
 
         .tls-button__background {

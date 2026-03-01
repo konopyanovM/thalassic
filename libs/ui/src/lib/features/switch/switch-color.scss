@@ -1,0 +1,29 @@
+:host {
+  &:has(.tls-switch.tls-switch--primary > .tls-switch-input:checked) {
+    --tls-switch-color: var(--color-primary);
+  }
+
+  &:has(.tls-switch.tls-switch--secondary > .tls-switch-input:checked) {
+    --tls-switch-color: var(--color-secondary);
+  }
+
+  &:has(.tls-switch.tls-switch--tertiary > .tls-switch-input:checked) {
+    --tls-switch-color: var(--color-tertiary);
+  }
+
+  &:has(.tls-switch.tls-switch--success > .tls-switch-input:checked) {
+    --tls-switch-color: var(--color-success);
+  }
+
+  &:has(.tls-switch.tls-switch--info > .tls-switch-input:checked) {
+    --tls-switch-color: var(--color-info);
+  }
+
+  &:has(.tls-switch.tls-switch--warning > .tls-switch-input:checked) {
+    --tls-switch-color: var(--color-warning);
+  }
+
+  &:has(.tls-switch.tls-switch--danger > .tls-switch-input:checked) {
+    --tls-switch-color: var(--color-danger);
+  }
+}
