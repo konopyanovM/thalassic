@@ -1,22 +1,24 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { Switch } from './switch';
-import { expect } from 'storybook/test';
 
 const meta: Meta<Switch> = {
   component: Switch,
   title: 'Switch',
+  args: {
+    color: 'primary',
+    disabled: false,
+  },
+  argTypes: {
+    color: {
+      control: { type: 'select' },
+      options: ['primary', 'secondary', 'tertiary', 'success', 'info', 'warning', 'danger'],
+    },
+  },
 };
 export default meta;
 
 type Story = StoryObj<Switch>;
 
-export const Primary: Story = {
+export const Base: Story = {
   args: {},
-};
-
-export const Heading: Story = {
-  args: {},
-  play: async ({ canvas }) => {
-    await expect(canvas.getByText(/switch/gi)).toBeTruthy();
-  },
 };

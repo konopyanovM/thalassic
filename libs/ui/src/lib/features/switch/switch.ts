@@ -39,7 +39,7 @@ export class Switch implements ControlValueAccessor {
   protected value = signal<boolean>(false);
   private _controlDisabled = signal<boolean | null>(null);
 
-  protected className = computed(() => {
+  protected classes = computed(() => {
     const className = 'tls-switch';
 
     const array: string[] = [className];

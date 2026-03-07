@@ -7,7 +7,6 @@ import {
   input,
   InputSignal,
   InputSignalWithTransform,
-  OnInit,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Icon } from '../icon';
@@ -22,11 +21,12 @@ import { buttonAppearance, buttonColor, buttonSize, buttonType } from './button.
   },
   styleUrls: ['./button.scss', './button-appearance.scss', 'button-color.scss', 'button-size.scss'],
 })
-export class Button implements OnInit {
+export class Button {
   // Injections
   private _routerLink = inject(RouterLink, { optional: true });
 
   // Inputs
+  public label = input<string>();
   public type: InputSignal<buttonType> = input<buttonType>('button');
   public disabled: InputSignalWithTransform<boolean, unknown> = input(false, {
     transform: booleanAttribute,
@@ -48,7 +48,7 @@ export class Button implements OnInit {
   // Computed
   protected isLink = computed<boolean>(() => Boolean(this._routerLink || this.href()));
 
-  protected className = computed(() => {
+  protected classes = computed(() => {
     const className = 'tls-button';
 
     const array: string[] = [className];
@@ -63,10 +63,5 @@ export class Button implements OnInit {
   // Protected methods
   protected isIconString(icon: string | boolean): icon is string {
     return typeof icon === 'string';
-  }
-
-  // Lifecycle
-  ngOnInit() {
-    console.log(this._routerLink);
   }
 }

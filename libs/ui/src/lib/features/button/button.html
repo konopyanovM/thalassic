@@ -1,7 +1,7 @@
 @if (isLink()) {
   <a
     role="link"
-    [class]="className()"
+    [class]="classes()"
     [class.tls-button--has-icon]="icon()"
     [href]="href()"
     [tabindex]="tabindex()"
@@ -12,7 +12,7 @@
 } @else {
   <button
     role="button"
-    [class]="className()"
+    [class]="classes()"
     [class.tls-button--has-icon]="icon()"
     [type]="type()"
     [tabindex]="tabindex()"
@@ -34,7 +34,11 @@
         <ng-content></ng-content>
       }
     } @else {
-      <ng-content></ng-content>
+      @if (label()) {
+        {{ label() }}
+      } @else {
+        <ng-content></ng-content>
+      }
     }
   </span>
   <div class="tls-button__background"></div>
