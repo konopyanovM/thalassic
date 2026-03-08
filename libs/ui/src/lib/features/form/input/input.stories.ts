@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { SIZE_OPTIONS } from '../../../../.storybook/arg-options';
+import { SIZE_OPTIONS } from '../../../../../.storybook/arg-options';
 import { Input as InputComponent } from './input';
 
 const meta: Meta<InputComponent> = {

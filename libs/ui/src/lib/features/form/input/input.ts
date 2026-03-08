@@ -9,7 +9,7 @@ import {
   WritableSignal,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { FormControl } from '../../abstract';
+import { FormControl } from '../../../abstract';
 import { inputSize } from './input.types';
 
 @Component({
