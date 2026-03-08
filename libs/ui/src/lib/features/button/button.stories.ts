@@ -1,8 +1,13 @@
 import { argsToTemplate, Meta, StoryObj } from '@storybook/angular';
-import { Button } from './button';
+import {
+  APPEARANCE_OPTIONS,
+  COLOR_OPTIONS,
+  SIZE_OPTIONS,
+} from '../../../../.storybook/arg-options';
+import { Button as ButtonComponent } from './button';
 
-const meta: Meta<Button> = {
-  component: Button,
+const meta: Meta<ButtonComponent> = {
+  component: ButtonComponent,
   title: 'Button',
   args: {
     label: 'Button',
@@ -13,15 +18,15 @@ const meta: Meta<Button> = {
   argTypes: {
     color: {
       control: { type: 'select' },
-      options: ['primary', 'secondary', 'tertiary', 'success', 'info', 'warning', 'danger'],
+      options: COLOR_OPTIONS,
     },
     appearance: {
       control: { type: 'select' },
-      options: ['filled', 'outlined', 'text', 'elevated'],
+      options: APPEARANCE_OPTIONS,
     },
     size: {
       control: { type: 'select' },
-      options: ['sm', 'md', 'lg'],
+      options: SIZE_OPTIONS,
     },
   },
   render: args => ({
@@ -31,46 +36,10 @@ const meta: Meta<Button> = {
 };
 export default meta;
 
-type Story = StoryObj<Button>;
+type Story = StoryObj<ButtonComponent>;
 
-export const Primary: Story = {
+export const Button: Story = {
   args: {
     color: 'primary',
-  },
-};
-
-export const Secondary: Story = {
-  args: {
-    color: 'secondary',
-  },
-};
-
-export const Tertiary: Story = {
-  args: {
-    color: 'tertiary',
-  },
-};
-
-export const Success: Story = {
-  args: {
-    color: 'success',
-  },
-};
-
-export const Info: Story = {
-  args: {
-    color: 'info',
-  },
-};
-
-export const Warning: Story = {
-  args: {
-    color: 'warning',
-  },
-};
-
-export const Danger: Story = {
-  args: {
-    color: 'danger',
   },
 };

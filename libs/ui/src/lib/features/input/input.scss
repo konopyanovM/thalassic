@@ -1,0 +1,13 @@
+:host {
+  display: inline-block;
+
+  .tls-input {
+    --tls-input-border-width: 1px;
+    --tls-input-border-style: solid;
+    --tls-input-border-color: var(--color-outline);
+
+    border-radius: var(--radius-md);
+    border: var(--tls-input-border-width) var(--tls-input-border-style)
+      var(--tls-input-border-color);
+  }
+}

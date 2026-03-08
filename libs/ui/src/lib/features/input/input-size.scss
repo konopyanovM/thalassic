@@ -1,0 +1,41 @@
+:host {
+  .tls-input {
+    height: var(--tls-input-height);
+    padding-inline: var(--tls-input-padding-inline);
+
+    font-size: var(--tls-input-font-size);
+    font-weight: var(--tls-input-font-weight);
+    line-height: var(--tls-input-line-height);
+    letter-spacing: var(--tls-input-letter-spacing);
+  }
+
+  &:has(.tls-input.tls-input--sm) {
+    --tls-input-height: var(--control-height-sm);
+    --tls-input-padding-inline: var(--spacing-2);
+
+    --tls-input-font-size: var(--font-label-small-size);
+    --tls-input-font-weight: var(--font-label-small-weight);
+    --tls-input-line-height: var(--font-label-small-line-height);
+    --tls-input-letter-spacing: var(--font-label-small-letter-spacing);
+  }
+
+  &:has(.tls-input.tls-input--md) {
+    --tls-input-height: var(--control-height-md);
+    --tls-input-padding-inline: var(--spacing-2);
+
+    --tls-input-font-size: var(--font-label-medium-size);
+    --tls-input-font-weight: var(--font-label-medium-weight);
+    --tls-input-line-height: var(--font-label-medium-line-height);
+    --tls-input-letter-spacing: var(--font-label-medium-letter-spacing);
+  }
+
+  &:has(.tls-input.tls-input--lg) {
+    --tls-input-height: var(--control-height-lg);
+    --tls-input-padding-inline: var(--spacing-3);
+
+    --tls-input-font-size: var(--font-label-large-size);
+    --tls-input-font-weight: var(--font-label-large-weight);
+    --tls-input-line-height: var(--font-label-large-line-height);
+    --tls-input-letter-spacing: var(--font-label-large-letter-spacing);
+  }
+}

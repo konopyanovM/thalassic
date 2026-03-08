@@ -2,7 +2,9 @@
   "name": "@thalassic/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "ui:g:stories": "nx g @nx/angular:stories ui"
+  },
   "private": true,
   "dependencies": {
     "@angular-devkit/build-angular": "21.1.3",

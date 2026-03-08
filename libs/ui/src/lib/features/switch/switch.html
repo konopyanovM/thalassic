@@ -2,7 +2,9 @@
   <input
     type="checkbox"
     class="tls-switch-input"
+    [id]="inputId()"
     [disabled]="isDisabled()"
+    [readonly]="readonly()"
     [checked]="value()"
     (change)="onInput($event)" />
   <div class="tls-switch__handle"></div>

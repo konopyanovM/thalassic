@@ -1,0 +1,11 @@
+<input
+  class="tls-input"
+  type="text"
+  [class]="classes()"
+  [id]="inputId()"
+  [placeholder]="placeholder()"
+  [disabled]="isDisabled()"
+  [readonly]="readonly()"
+  [value]="value()"
+  (input)="onInput($event)"
+>

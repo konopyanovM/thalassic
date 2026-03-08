@@ -1,12 +1,15 @@
 import {
-  booleanAttribute,
   Component,
   computed,
+  forwardRef,
   input,
-  InputSignalWithTransform,
+  InputSignal,
+  Signal,
   signal,
+  WritableSignal,
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { FormControl } from '../../abstract';
 import { switchColor } from './switch.types';
 
 @Component({
@@ -16,30 +19,28 @@ import { switchColor } from './switch.types';
   styleUrls: ['./switch.scss', 'switch-color.scss'],
   host: {
     role: 'switch',
-    '[tabindex]': 'disabled() ? -1 : 0',
+    '[tabindex]': 'isDisabled() ? -1 : 0',
     '[attr.aria-checked]': 'value()',
-    '[attr.aria-disabled]': 'disabled()',
+    '[attr.aria-disabled]': 'isDisabled()',
+    '[attr.aria-readonly]': 'readonly()',
     '(keydown.space)': 'onKeyboardToggle($event)',
     '(keydown.enter)': 'onKeyboardToggle($event)',
   },
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: Switch,
+      useExisting: forwardRef(() => Switch),
       multi: true,
     },
   ],
 })
-export class Switch implements ControlValueAccessor {
-  public disabled: InputSignalWithTransform<boolean, unknown> = input(false, {
-    transform: booleanAttribute,
-  });
-  public color = input<switchColor>('secondary');
+export class Switch extends FormControl<boolean> {
+  public inputId = input<string>();
+  public color: InputSignal<switchColor> = input<switchColor>('secondary');
 
-  protected value = signal<boolean>(false);
-  private _controlDisabled = signal<boolean | null>(null);
+  protected value: WritableSignal<boolean> = signal<boolean>(false);
 
-  protected classes = computed(() => {
+  protected classes: Signal<string[]> = computed(() => {
     const className = 'tls-switch';
 
     const array: string[] = [className];
@@ -48,53 +49,28 @@ export class Switch implements ControlValueAccessor {
 
     return array;
   });
-  protected isDisabled = computed<boolean>(() => {
-    const controlDisabled = this._controlDisabled();
-    if (controlDisabled !== null) return controlDisabled;
-    return this.disabled();
-  });
-
-  private _onChange: ((value: unknown) => void) | null = null;
-  private _onTouched: (() => void) | null = null;
-
-  // Control Value Accessor methods
-  public writeValue(value: boolean) {
-    this.value.set(value);
-  }
-
-  public setDisabledState(isDisabled: boolean) {
-    this._controlDisabled.set(isDisabled);
-  }
-
-  public registerOnChange(fn: (value: unknown) => void) {
-    this._onChange = fn;
-  }
-
-  public registerOnTouched(fn: () => void) {
-    this._onTouched = fn;
-  }
 
   // Protected methods
   protected onInput(event: Event) {
     const target = event.target as HTMLInputElement;
+
+    if (this.notInteractive()) {
+      //  If the native input somehow fires an input event while disabled,
+      //  reset value, so the input visual could stays in sync
+      target.checked = this.value();
+      return;
+    }
+
     const newValue = target.checked;
-    this._setValue(newValue);
+    this.setValue(newValue);
   }
 
   protected onKeyboardToggle(event: Event) {
     event.preventDefault();
 
-    if (this.disabled()) return;
+    if (this.notInteractive()) return;
 
     const newValue = !this.value();
-    this._setValue(newValue);
-  }
-
-  // Private methods
-  private _setValue(value: boolean) {
-    this.value.set(value);
-
-    if (this._onChange) this._onChange(value);
-    if (this._onTouched) this._onTouched();
+    this.setValue(newValue);
   }
 }

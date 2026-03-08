@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { Icon } from './icon';
+import { Icon as IconComponent } from './icon';
 
-const meta: Meta<Icon> = {
-  component: Icon,
+const meta: Meta<IconComponent> = {
+  component: IconComponent,
   title: 'Icon',
 };
 export default meta;
 
-type Story = StoryObj<Icon>;
+type Story = StoryObj<IconComponent>;
 
-export const Base: Story = {
+export const Icon: Story = {
   args: {},
 };

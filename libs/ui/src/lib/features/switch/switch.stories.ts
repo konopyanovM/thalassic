@@ -1,24 +1,26 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { Switch } from './switch';
+import { COLOR_OPTIONS } from '../../../../.storybook/arg-options';
+import { Switch as SwitchComponent } from './switch';
 
-const meta: Meta<Switch> = {
-  component: Switch,
-  title: 'Switch',
+const meta: Meta<SwitchComponent> = {
+  component: SwitchComponent,
+  title: 'Form/Switch',
   args: {
     color: 'primary',
     disabled: false,
+    readonly: false,
   },
   argTypes: {
     color: {
       control: { type: 'select' },
-      options: ['primary', 'secondary', 'tertiary', 'success', 'info', 'warning', 'danger'],
+      options: COLOR_OPTIONS,
     },
   },
 };
 export default meta;
 
-type Story = StoryObj<Switch>;
+type Story = StoryObj<SwitchComponent>;
 
-export const Base: Story = {
+export const Switch: Story = {
   args: {},
 };
