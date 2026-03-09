@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { COLOR_OPTIONS } from '../../../../../.storybook/arg-options';
+import { STORY_COLOR_OPTIONS } from '../../../../../.storybook/constants';
+import { STORY_FORM_CONTROL_ARGS } from '../../../../../.storybook/constants/form-control-args';
 import { Switch as SwitchComponent } from './switch';
 
 const meta: Meta<SwitchComponent> = {
@@ -7,13 +8,13 @@ const meta: Meta<SwitchComponent> = {
   title: 'Form/Switch',
   args: {
     color: 'primary',
-    disabled: false,
-    readonly: false,
+    checked: false,
+    ...STORY_FORM_CONTROL_ARGS,
   },
   argTypes: {
     color: {
       control: { type: 'select' },
-      options: COLOR_OPTIONS,
+      options: STORY_COLOR_OPTIONS,
     },
   },
 };

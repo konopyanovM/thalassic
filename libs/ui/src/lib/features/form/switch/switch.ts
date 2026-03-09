@@ -1,15 +1,5 @@
-import {
-  Component,
-  computed,
-  forwardRef,
-  input,
-  InputSignal,
-  Signal,
-  signal,
-  WritableSignal,
-} from '@angular/core';
-import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { FormControl } from '../../../abstract';
+import { Component, computed, input, InputSignal, model, ModelSignal, Signal } from '@angular/core';
+import { CheckboxFormControl } from '../../../abstract';
 import { switchColor } from './switch.types';
 
 @Component({
@@ -19,58 +9,41 @@ import { switchColor } from './switch.types';
   styleUrls: ['./switch.scss', 'switch-color.scss'],
   host: {
     role: 'switch',
-    '[tabindex]': 'isDisabled() ? -1 : 0',
-    '[attr.aria-checked]': 'value()',
-    '[attr.aria-disabled]': 'isDisabled()',
+    tabindex: '0',
+    '[class]': 'classes()',
+    '[attr.aria-checked]': 'checked()',
+    '[attr.aria-disabled]': 'disabled()',
     '[attr.aria-readonly]': 'readonly()',
+    '(click)': 'toggle()',
     '(keydown.space)': 'onKeyboardToggle($event)',
     '(keydown.enter)': 'onKeyboardToggle($event)',
   },
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => Switch),
-      multi: true,
-    },
-  ],
 })
-export class Switch extends FormControl<boolean> {
-  public inputId = input<string>();
-  public color: InputSignal<switchColor> = input<switchColor>('secondary');
+export class Switch extends CheckboxFormControl {
+  public readonly checked: ModelSignal<boolean> = model<boolean>(false);
+  public readonly inputId = input<string>();
+  public readonly color: InputSignal<switchColor> = input<switchColor>('primary');
 
-  protected value: WritableSignal<boolean> = signal<boolean>(false);
-
-  protected classes: Signal<string[]> = computed(() => {
+  protected readonly classes: Signal<string[]> = computed(() => {
     const className = 'tls-switch';
 
     const array: string[] = [className];
 
     array.push(`${className}--${this.color()}`);
+    if (this.checked()) array.push(`${className}--checked`);
 
-    return array;
+    return array.concat(this.controlClasses());
   });
 
   // Protected methods
-  protected onInput(event: Event) {
-    const target = event.target as HTMLInputElement;
+  protected toggle() {
+    if (this.notInteractive()) return;
 
-    if (this.notInteractive()) {
-      //  If the native input somehow fires an input event while disabled,
-      //  reset value, so the input visual could stays in sync
-      target.checked = this.value();
-      return;
-    }
-
-    const newValue = target.checked;
-    this.setValue(newValue);
+    this.checked.update(prev => !prev);
   }
 
   protected onKeyboardToggle(event: Event) {
     event.preventDefault();
-
-    if (this.notInteractive()) return;
-
-    const newValue = !this.value();
-    this.setValue(newValue);
+    this.toggle();
   }
 }

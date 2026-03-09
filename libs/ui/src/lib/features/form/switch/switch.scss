@@ -1,67 +1,82 @@
+@use '../../../styles/mixins' as mixins;
+
 :host {
   --tls-switch-width: 48px;
   --tls-switch-height: var(--control-height-sm);
+  --tls-switch-handle-gap: 4px;
+  --tls-switch-handle-size: calc(
+    var(--tls-switch-height) - (var(--tls-switch-handle-gap) * 2) -
+      (var(--tls-switch-border-width) * 2)
+  );
+
+  --tls-switch-border-width: 2px;
   --tls-switch-border-radius: 24px;
-  --tls-switch-handle-gap: 8px;
-  --tls-switch-handle-size: calc(var(--tls-switch-height) - var(--tls-switch-handle-gap));
+
   --tls-switch-color: var(--color-surface-variant);
   --tls-switch-on-color: var(--color-surface);
+  --tls-switch-border-color: var(--tls-switch-color);
 
-  width: fit-content;
+  width: var(--tls-switch-width);
+  height: var(--tls-switch-height);
+
+  display: flex;
+
+  border: var(--tls-switch-border-width) solid var(--tls-switch-border-color);
+  border-radius: var(--tls-switch-border-radius);
+
+  background-color: var(--tls-switch-color);
+
+  cursor: pointer;
+
+  transition:
+    background-color var(--motion-fast) var(--motion-ease-in-out),
+    border-color var(--motion-fast) var(--motion-ease-in-out),
+    filter var(--motion-fast) var(--motion-ease-in-out);
 
   &:focus-visible {
-    outline: none;
-
-    .tls-switch {
-      outline: 2px solid var(--color-primary);
-      outline-offset: 2px;
-    }
+    @include mixins.focus-ring;
   }
 
-  .tls-switch {
-    width: var(--tls-switch-width);
-    height: var(--tls-switch-height);
+  .tls-switch-input {
+    display: none;
+  }
 
-    display: flex;
+  .tls-switch-handle {
+    width: var(--tls-switch-handle-size);
+    height: var(--tls-switch-handle-size);
 
-    border-radius: var(--tls-switch-border-radius);
+    margin: calc(var(--tls-switch-handle-gap));
 
-    background-color: var(--tls-switch-color);
+    border-radius: 50%;
 
-    cursor: pointer;
+    background-color: var(--tls-switch-on-color);
 
-    transition: background-color var(--motion-fast) var(--motion-ease-in-out);
+    box-shadow: var(--shadow-xs);
 
-    &-input {
-      display: none;
-    }
-
-    &__handle {
-      width: var(--tls-switch-handle-size);
-      height: var(--tls-switch-handle-size);
-
-      margin: calc(var(--tls-switch-handle-gap) / 2);
-
-      border-radius: 50%;
-
-      background-color: var(--tls-switch-on-color);
-
-      box-shadow: var(--shadow-xs);
-
-      transition: transform var(--motion-fast) var(--motion-ease-in-out);
-    }
+    transition: transform var(--motion-fast) var(--motion-ease-in-out);
   }
 
   // Checked
-  &:has(.tls-switch > .tls-switch-input:checked) {
-    .tls-switch {
-      &__handle {
-        $translate-x: calc(
-          var(--tls-switch-width) - var(--tls-switch-handle-size) - var(--tls-switch-handle-gap)
-        );
+  &.tls-switch--checked {
+    --tls-switch-handle-gap: 3px;
 
-        transform: translateX(#{$translate-x});
-      }
+    .tls-switch-handle {
+      $translate-x: calc(
+        var(--tls-switch-width) - var(--tls-switch-handle-size) -
+          (var(--tls-switch-handle-gap) * 2) - (var(--tls-switch-border-width) * 2)
+      );
+
+      transform: translateX(#{$translate-x});
     }
+  }
+
+  // Form control
+  &.tls-switch.tls-form-control--disabled {
+    cursor: not-allowed;
+    filter: brightness(0.9);
+  }
+
+  &.tls-form-control--dirty.tls-form-control--invalid {
+    --tls-switch-border-color: var(--color-danger);
   }
 }

@@ -1,15 +1,5 @@
-import {
-  Component,
-  computed,
-  forwardRef,
-  input,
-  InputSignal,
-  Signal,
-  signal,
-  WritableSignal,
-} from '@angular/core';
-import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { FormControl } from '../../../abstract';
+import { Component, computed, input, InputSignal, model, ModelSignal, Signal } from '@angular/core';
+import { ValueFormControl } from '../../../abstract';
 import { inputSize } from './input.types';
 
 @Component({
@@ -17,43 +7,27 @@ import { inputSize } from './input.types';
   imports: [],
   templateUrl: './input.html',
   styleUrls: ['./input.scss', './input-size.scss'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => Input),
-      multi: true,
-    },
-  ],
 })
-export class Input extends FormControl<string> {
-  public inputId = input<string>();
-  public placeholder = input<string>('');
-  public size: InputSignal<inputSize> = input<inputSize>('md');
+export class Input extends ValueFormControl<string> {
+  public readonly value: ModelSignal<string> = model<string>('');
+  public readonly inputId = input<string | null>(null);
+  public readonly placeholder = input<string>('');
+  public readonly size: InputSignal<inputSize> = input<inputSize>('md');
 
-  protected value: WritableSignal<string> = signal<string>('');
-
-  protected classes: Signal<string[]> = computed(() => {
+  protected readonly classes: Signal<string[]> = computed(() => {
     const className = 'tls-input';
 
     const array: string[] = [className];
 
     array.push(`${className}--${this.size()}`);
 
-    return array;
+    return array.concat(this.controlClasses());
   });
 
   // Protected methods
   protected onInput(event: Event) {
     const target = event.target as HTMLInputElement;
 
-    if (this.notInteractive()) {
-      //  If the native input somehow fires an input event while disabled,
-      //  reset value, so the input visual could stays in sync
-      target.value = this.value();
-      return;
-    }
-
-    const newValue = target.value;
-    this.setValue(newValue);
+    this.value.set(target.value);
   }
 }

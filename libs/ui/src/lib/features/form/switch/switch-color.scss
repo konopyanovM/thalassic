@@ -1,29 +1,36 @@
 :host {
-  &:has(.tls-switch.tls-switch--primary > .tls-switch-input:checked) {
+  &.tls-switch--checked.tls-switch--primary {
     --tls-switch-color: var(--color-primary);
+    --tls-switch-on-color: var(--color-on-primary);
   }
 
-  &:has(.tls-switch.tls-switch--secondary > .tls-switch-input:checked) {
+  &.tls-switch--checked.tls-switch--secondary {
     --tls-switch-color: var(--color-secondary);
+    --tls-switch-on-color: var(--color-on-secondary);
   }
 
-  &:has(.tls-switch.tls-switch--tertiary > .tls-switch-input:checked) {
+  &.tls-switch--checked.tls-switch--tertiary {
     --tls-switch-color: var(--color-tertiary);
+    --tls-switch-on-color: var(--color-on-tertiary);
   }
 
-  &:has(.tls-switch.tls-switch--success > .tls-switch-input:checked) {
+  &.tls-switch--checked.tls-switch--success {
     --tls-switch-color: var(--color-success);
+    --tls-switch-on-color: var(--color-on-success);
   }
 
-  &:has(.tls-switch.tls-switch--info > .tls-switch-input:checked) {
+  &.tls-switch--checked.tls-switch--info {
     --tls-switch-color: var(--color-info);
+    --tls-switch-on-color: var(--color-on-info);
   }
 
-  &:has(.tls-switch.tls-switch--warning > .tls-switch-input:checked) {
+  &.tls-switch--checked.tls-switch--warning {
     --tls-switch-color: var(--color-warning);
+    --tls-switch-on-color: var(--color-on-warning);
   }
 
-  &:has(.tls-switch.tls-switch--danger > .tls-switch-input:checked) {
+  &.tls-switch--checked.tls-switch--danger {
     --tls-switch-color: var(--color-danger);
+    --tls-switch-on-color: var(--color-on-danger);
   }
 }

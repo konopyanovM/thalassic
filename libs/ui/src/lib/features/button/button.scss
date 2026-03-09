@@ -1,3 +1,5 @@
+@use '../../styles/mixins' as mixins;
+
 :host {
   width: fit-content;
 
@@ -22,8 +24,7 @@
     user-select: none;
 
     &:focus-visible {
-      outline: 2px solid var(--color-primary);
-      outline-offset: 2px;
+      @include mixins.focus-ring;
     }
 
     &.--has-icon {

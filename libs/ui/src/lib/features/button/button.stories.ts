@@ -1,9 +1,9 @@
 import { argsToTemplate, Meta, StoryObj } from '@storybook/angular';
 import {
-  APPEARANCE_OPTIONS,
-  COLOR_OPTIONS,
-  SIZE_OPTIONS,
-} from '../../../../.storybook/arg-options';
+  STORY_APPEARANCE_OPTIONS,
+  STORY_COLOR_OPTIONS,
+  STORY_SIZE_OPTIONS,
+} from '../../../../.storybook/constants';
 import { Button as ButtonComponent } from './button';
 
 const meta: Meta<ButtonComponent> = {
@@ -18,15 +18,15 @@ const meta: Meta<ButtonComponent> = {
   argTypes: {
     color: {
       control: { type: 'select' },
-      options: COLOR_OPTIONS,
+      options: STORY_COLOR_OPTIONS,
     },
     appearance: {
       control: { type: 'select' },
-      options: APPEARANCE_OPTIONS,
+      options: STORY_APPEARANCE_OPTIONS,
     },
     size: {
       control: { type: 'select' },
-      options: SIZE_OPTIONS,
+      options: STORY_SIZE_OPTIONS,
     },
   },
   render: args => ({

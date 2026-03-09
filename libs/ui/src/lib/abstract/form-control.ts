@@ -5,59 +5,71 @@ import {
   input,
   InputSignal,
   InputSignalWithTransform,
+  model,
+  ModelSignal,
   Signal,
-  signal,
-  WritableSignal,
 } from '@angular/core';
-import { ControlValueAccessor } from '@angular/forms';
+import { FormUiControl, ValidationError, WithOptionalFieldTree } from '@angular/forms/signals';
 
-@Directive({
-  host: { '[tabindex]': '-1' },
-})
-export abstract class FormControl<T = unknown> implements ControlValueAccessor {
-  public disabled: InputSignalWithTransform<boolean, unknown> = input(false, {
-    transform: booleanAttribute,
+@Directive()
+export abstract class FormControl implements FormUiControl {
+  // Models
+  public readonly touched: ModelSignal<boolean> = model<boolean>(false);
+
+  // Inputs
+  public readonly name: InputSignal<string> = input<string>('');
+
+  public readonly disabled: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    false,
+    { transform: booleanAttribute },
+  );
+
+  public readonly readonly: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    false,
+    { transform: booleanAttribute },
+  );
+
+  public readonly hidden: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    false,
+    { transform: booleanAttribute },
+  );
+
+  public readonly invalid: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    false,
+    { transform: booleanAttribute },
+  );
+
+  public readonly pending: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    false,
+    { transform: booleanAttribute },
+  );
+
+  public readonly dirty: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    false,
+    { transform: booleanAttribute },
+  );
+
+  public readonly errors = input<readonly WithOptionalFieldTree<ValidationError>[]>([]);
+
+  public readonly required: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    false,
+    { transform: booleanAttribute },
+  );
+
+  protected notInteractive: Signal<boolean> = computed<boolean>(
+    () => this.disabled() || this.readonly(),
+  );
+  protected controlClasses: Signal<string[]> = computed<string[]>(() => {
+    const className = 'tls-form-control';
+
+    const array: string[] = [className];
+
+    if (this.disabled()) array.push(`${className}--disabled`);
+    if (this.readonly()) array.push(`${className}--readonly`);
+    if (this.invalid()) array.push(`${className}--invalid`);
+    if (this.pending()) array.push(`${className}--pending`);
+    if (this.dirty()) array.push(`${className}--dirty`);
+
+    return array;
   });
-  public readonly: InputSignalWithTransform<boolean, unknown> = input(false, {
-    transform: booleanAttribute,
-  });
-  public tabindex: InputSignal<number> = input<number>(0);
-
-  protected abstract value: WritableSignal<T>;
-  private _controlDisabled = signal<boolean | null>(null);
-
-  protected isDisabled: Signal<boolean> = computed<boolean>(() => {
-    const controlDisabled = this._controlDisabled();
-    if (controlDisabled !== null) return controlDisabled;
-    return this.disabled();
-  });
-  protected notInteractive = computed(() => this.isDisabled() || this.readonly());
-
-  protected onChange: ((value: T) => void) | null = null;
-  protected onTouched: (() => void) | null = null;
-
-  // Control Value Accessor methods
-  public writeValue(value: T) {
-    this.value.set(value);
-  }
-
-  public setDisabledState(isDisabled: boolean) {
-    this._controlDisabled.set(isDisabled);
-  }
-
-  public registerOnChange(fn: (value: T) => void) {
-    this.onChange = fn;
-  }
-
-  public registerOnTouched(fn: () => void) {
-    this.onTouched = fn;
-  }
-
-  // Protected methods
-  protected setValue(value: T) {
-    this.value.set(value);
-
-    if (this.onChange) this.onChange(value);
-    if (this.onTouched) this.onTouched();
-  }
 }
