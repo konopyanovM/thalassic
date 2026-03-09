@@ -7,6 +7,9 @@
 @use 'themes/src/lib/styles' as themes;
 @use 'themes/src/lib/themes/thalassic';
 
+// @ui
+@use 'ui/src/lib/styles' as ui;
+
 // app styles
 @use './core/styles';
 

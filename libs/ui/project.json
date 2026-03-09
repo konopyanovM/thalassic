@@ -50,7 +50,8 @@
         "styles": [
           "libs/core/src/lib/styles/index.scss",
           "libs/themes/src/lib/styles/index.scss",
-          "libs/themes/src/lib/themes/thalassic/index.scss"
+          "libs/themes/src/lib/themes/thalassic/index.scss",
+          "libs/ui/src/lib/styles/index.scss"
         ]
       },
       "configurations": {
@@ -70,7 +71,8 @@
         "styles": [
           "libs/core/src/lib/styles/index.scss",
           "libs/themes/src/lib/styles/index.scss",
-          "libs/themes/src/lib/themes/thalassic/index.scss"
+          "libs/themes/src/lib/themes/thalassic/index.scss",
+          "libs/ui/src/lib/styles/index.scss"
         ]
       },
       "configurations": {

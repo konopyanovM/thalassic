@@ -4,13 +4,12 @@ import { switchColor } from './switch.types';
 
 @Component({
   selector: 'tls-switch',
-  imports: [],
   templateUrl: './switch.html',
   styleUrls: ['./switch.scss', 'switch-color.scss'],
   host: {
     role: 'switch',
-    tabindex: '0',
     '[class]': 'classes()',
+    '[tabindex]': 'disabled() ? -1 : tabindex()',
     '[attr.aria-checked]': 'checked()',
     '[attr.aria-disabled]': 'disabled()',
     '[attr.aria-readonly]': 'readonly()',
@@ -23,6 +22,7 @@ export class Switch extends CheckboxFormControl {
   public readonly checked: ModelSignal<boolean> = model<boolean>(false);
   public readonly inputId = input<string>();
   public readonly color: InputSignal<switchColor> = input<switchColor>('primary');
+  public readonly tabindex: InputSignal<string | number> = input<string | number>(0);
 
   protected readonly classes: Signal<string[]> = computed(() => {
     const className = 'tls-switch';

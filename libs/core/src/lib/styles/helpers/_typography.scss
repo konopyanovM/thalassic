@@ -91,3 +91,24 @@ small,
   line-height: var(--font-body-small-line-height);
   letter-spacing: var(--font-body-small-letter-spacing);
 }
+
+.text-label-lg {
+  font-size: var(--font-label-large-size);
+  font-weight: var(--font-label-large-weight);
+  line-height: var(--font-label-large-line-height);
+  letter-spacing: var(--font-label-large-letter-spacing);
+}
+
+.text-label-md {
+  font-size: var(--font-label-medium-size);
+  font-weight: var(--font-label-medium-weight);
+  line-height: var(--font-label-medium-line-height);
+  letter-spacing: var(--font-label-medium-letter-spacing);
+}
+
+.text-label-sm {
+  font-size: var(--font-label-small-size);
+  font-weight: var(--font-label-small-weight);
+  line-height: var(--font-label-small-line-height);
+  letter-spacing: var(--font-label-small-letter-spacing);
+}

@@ -1,0 +1,29 @@
+import type { Meta, StoryObj } from '@storybook/angular';
+import { STORY_SIZE_OPTIONS } from '../../../../../.storybook/constants';
+import { STORY_FORM_CONTROL_ARGS } from '../../../../../.storybook/constants/form-control-args';
+import { Password as PasswordComponent } from './password';
+
+const meta: Meta<PasswordComponent> = {
+  component: PasswordComponent,
+  title: 'Form/Password',
+  args: {
+    value: '',
+    visible: false,
+    placeholder: 'Some text',
+    size: 'md',
+    ...STORY_FORM_CONTROL_ARGS,
+  },
+  argTypes: {
+    size: {
+      control: { type: 'select' },
+      options: STORY_SIZE_OPTIONS,
+    },
+  },
+};
+export default meta;
+
+type Story = StoryObj<PasswordComponent>;
+
+export const Password: Story = {
+  args: {},
+};
