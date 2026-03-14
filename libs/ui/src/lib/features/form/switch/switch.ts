@@ -1,5 +1,6 @@
-import { Component, computed, input, InputSignal, model, ModelSignal, Signal } from '@angular/core';
+import { Component, computed, inject, input, InputSignal, model, ModelSignal, Signal } from '@angular/core';
 import { CheckboxFormControl } from '../../../abstract';
+import { SWITCH_CONFIG } from './switch.token';
 import { switchColor } from './switch.types';
 
 @Component({
@@ -19,9 +20,11 @@ import { switchColor } from './switch.types';
   },
 })
 export class Switch extends CheckboxFormControl {
+  private _config = inject(SWITCH_CONFIG);
+
   public readonly checked: ModelSignal<boolean> = model<boolean>(false);
   public readonly inputId = input<string>();
-  public readonly color: InputSignal<switchColor> = input<switchColor>('primary');
+  public readonly color: InputSignal<switchColor> = input<switchColor>(this._config.color);
   public readonly tabindex: InputSignal<string | number> = input<string | number>(0);
 
   protected readonly classes: Signal<string[]> = computed(() => {

@@ -1,5 +1,15 @@
-import { Component, computed, input, InputSignal, model, ModelSignal, Signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  InputSignal,
+  model,
+  ModelSignal,
+  Signal,
+} from '@angular/core';
 import { ValueFormControl } from '../../../abstract';
+import { INPUT_CONFIG } from './input.token';
 import { inputSize } from './input.types';
 
 @Component({
@@ -8,11 +18,15 @@ import { inputSize } from './input.types';
   styleUrl: './input.scss',
 })
 export class Input extends ValueFormControl<string> {
-  public readonly type = input<string>('text');
+  // Injections
+  private _config = inject(INPUT_CONFIG);
+
+  // Inputs
+  public readonly type = input<string>(this._config.type);
   public readonly value: ModelSignal<string> = model<string>('');
   public readonly inputId = input<string | null>(null);
-  public readonly placeholder = input<string>('');
-  public readonly size: InputSignal<inputSize> = input<inputSize>('md');
+  public readonly placeholder = input<string>(this._config.placeholder);
+  public readonly size: InputSignal<inputSize> = input<inputSize>(this._config.size);
 
   protected readonly classes: Signal<string[]> = computed(() => {
     const className = 'tls-form-field';

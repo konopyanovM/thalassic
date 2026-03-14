@@ -6,10 +6,11 @@ import {
   inject,
   input,
   InputSignal,
-  InputSignalWithTransform,
+  InputSignalWithTransform
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Icon } from '../icon';
+import { BUTTON_CONFIG } from './button.token';
 import { buttonAppearance, buttonColor, buttonSize, buttonType } from './button.types';
 
 @Component({
@@ -24,10 +25,11 @@ import { buttonAppearance, buttonColor, buttonSize, buttonType } from './button.
 export class Button {
   // Injections
   private _routerLink = inject(RouterLink, { optional: true });
+  private _config = inject(BUTTON_CONFIG);
 
   // Inputs
   public label = input<string>();
-  public type: InputSignal<buttonType> = input<buttonType>('button');
+  public type: InputSignal<buttonType> = input<buttonType>(this._config.type);
   public disabled: InputSignalWithTransform<boolean, unknown> = input(false, {
     transform: booleanAttribute,
   });
@@ -37,13 +39,13 @@ export class Button {
       else return booleanAttribute(value);
     },
   });
-  public color = input<buttonColor>('secondary');
-  public appearance = input<buttonAppearance>('filled');
-  public size: InputSignal<buttonSize> = input<buttonSize>('md');
+  public color: InputSignal<buttonColor> = input<buttonColor>(this._config.color);
+  public appearance: InputSignal<buttonAppearance> = input<buttonAppearance>(
+    this._config.appearance,
+  );
+  public size: InputSignal<buttonSize> = input<buttonSize>(this._config.size);
   public href = input<string | null>(null);
   public tabindex = input<string>('0');
-
-  protected hasRouterLink = Boolean(this._routerLink);
 
   // Computed
   protected isLink = computed<boolean>(() => Boolean(this._routerLink || this.href()));

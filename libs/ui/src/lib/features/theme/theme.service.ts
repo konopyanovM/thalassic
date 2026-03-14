@@ -1,22 +1,22 @@
 import { DOCUMENT, effect, inject, Injectable, Renderer2, Signal, signal } from '@angular/core';
-import { TLS_THEME_CONFIG } from './tokens';
-import { ThemeConfig, themeType } from './types';
+import { ThemeConfig } from './theme.config';
+import { THEME_CONFIG } from './theme.token';
+import { themeType } from './types';
 
 @Injectable()
 export class ThemeService {
-  private readonly _config: ThemeConfig = inject(TLS_THEME_CONFIG);
+  // Injections
+  private readonly _config: ThemeConfig = inject(THEME_CONFIG);
   private readonly _document: Document = inject(DOCUMENT);
   private readonly _renderer: Renderer2 = inject(Renderer2);
 
-  private LS_THEME = this._config.localStorageKey;
+  private readonly LS_THEME = this._config.localStorageKey;
 
   // Private
-  private _currentTheme = signal<themeType>(
-    (localStorage.getItem(this.LS_THEME) as themeType) ?? 'light',
-  );
+  private _currentTheme = signal<themeType>('light');
 
   constructor() {
-    this._initDefaultTheme();
+    this._initTheme();
 
     effect(() => {
       localStorage.setItem(this.LS_THEME, this._currentTheme());
@@ -30,11 +30,7 @@ export class ThemeService {
 
   // Public methods
   public toggle(): void {
-    if (this._currentTheme() === 'dark') {
-      this.setTheme('light');
-    } else if (this._currentTheme() === 'light') {
-      this.setTheme('dark');
-    }
+    this.setTheme(this._currentTheme() === 'dark' ? 'light' : 'dark');
   }
 
   public setTheme(theme: themeType): void {
@@ -45,25 +41,32 @@ export class ThemeService {
     if (theme === 'dark') {
       this._renderer.removeClass(documentElement, lightThemeClass);
       this._renderer.addClass(documentElement, darkThemeClass);
-    } else if (theme === 'light') {
+    } else {
       this._renderer.removeClass(documentElement, darkThemeClass);
       this._renderer.addClass(documentElement, lightThemeClass);
     }
-    this._currentTheme.set(theme);
   }
 
   // Private methods
   private _detectSystemTheme(): themeType {
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
-    return 'light';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  private _initTheme(): void {
+    const localStorageValue = localStorage.getItem(this.LS_THEME) as themeType;
+    if (localStorageValue) {
+      this.setTheme(localStorageValue);
+    } else this._initDefaultTheme();
   }
 
   private _initDefaultTheme(): void {
     if (this._config.defaultTheme === 'system') {
-      const systemTheme = this._detectSystemTheme();
-      this.setTheme(systemTheme);
+      this.setTheme(this._detectSystemTheme());
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+        if (!localStorage.getItem(this.LS_THEME)) {
+          this.setTheme(event.matches ? 'dark' : 'light');
+        }
+      });
     } else {
       this.setTheme(this._config.defaultTheme);
     }
