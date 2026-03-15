@@ -1,0 +1,21 @@
+## 0.0.1 (2026-03-15)
+
+### 🚀 Features
+
+- ui library initialized ([d558a7d](https://github.com/konopyanovM/thalassic/commit/d558a7d))
+- added guide and info pages, core lib generated ([06a67f0](https://github.com/konopyanovM/thalassic/commit/06a67f0))
+- added core and themes libs styles ([7f787d7](https://github.com/konopyanovM/thalassic/commit/7f787d7))
+- added prime theme, color variables refactored, added generate theme mixin ([212be98](https://github.com/konopyanovM/thalassic/commit/212be98))
+- added color, appearance and size configs to button component ([3582459](https://github.com/konopyanovM/thalassic/commit/3582459))
+- added theme service ([1def38b](https://github.com/konopyanovM/thalassic/commit/1def38b))
+- **app:** info page changed, ui components bug fixes, improvements, added disabled state to button ([3bb3438](https://github.com/konopyanovM/thalassic/commit/3bb3438))
+- **ui:** added switch component ([7493dfe](https://github.com/konopyanovM/thalassic/commit/7493dfe))
+- **ui:** added storybook configuration for ui ([20890e4](https://github.com/konopyanovM/thalassic/commit/20890e4))
+- **ui:** added input component ([2f0d1db](https://github.com/konopyanovM/thalassic/commit/2f0d1db))
+- **ui:** added password form control component, added input directive ([1023045](https://github.com/konopyanovM/thalassic/commit/1023045))
+- **ui:** added config provider ([7dc1830](https://github.com/konopyanovM/thalassic/commit/7dc1830))
+- **ui-storybook:** added button, icons and switch stories ([6bdef2c](https://github.com/konopyanovM/thalassic/commit/6bdef2c))
+
+### ❤️ Thank You
+
+- konopyanov
