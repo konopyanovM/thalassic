@@ -1,7 +1,10 @@
 :host {
   height: var(--header-height);
 
+  padding-inline: 1rem;
+
   display: flex;
+  align-items: center;
   justify-content: space-between;
 
   .header-logo {

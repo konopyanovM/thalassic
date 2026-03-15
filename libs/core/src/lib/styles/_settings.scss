@@ -4,9 +4,13 @@
 
   color-scheme: light;
 
+  // TODO: add fallback
   font-family: var(--font-family-base), sans-serif;
 
-  &.app-dark {
+  color: var(--color-on-surface);
+  background-color: var(--color-surface);
+
+  &.tls-dark {
     color-scheme: dark;
   }
 }

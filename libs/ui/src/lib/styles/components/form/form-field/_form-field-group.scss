@@ -13,7 +13,7 @@
     box-shadow var(--motion-fast) var(--motion-ease-in-out);
 
   &:hover {
-    --tls-form-field-group-border-color: var(--color-outline-variant);
+    --tls-form-field-group-border-color: var(--color-primary);
   }
 
   &:has(input.tls-form-field:focus) {

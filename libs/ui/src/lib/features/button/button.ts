@@ -6,7 +6,7 @@ import {
   inject,
   input,
   InputSignal,
-  InputSignalWithTransform
+  InputSignalWithTransform,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Icon } from '../icon';
@@ -35,7 +35,8 @@ export class Button {
   });
   public icon: InputSignalWithTransform<string | boolean, unknown> = input(false, {
     transform: (value: unknown) => {
-      if (typeof value === 'string') return value;
+      if (typeof value === 'string' && value === '') return true;
+      else if (typeof value === 'string') return value;
       else return booleanAttribute(value);
     },
   });
@@ -49,6 +50,7 @@ export class Button {
 
   // Computed
   protected isLink = computed<boolean>(() => Boolean(this._routerLink || this.href()));
+  protected isIconString = computed<boolean>(() => typeof this.icon() === 'string');
 
   protected classes = computed(() => {
     const className = 'tls-button';
@@ -58,12 +60,11 @@ export class Button {
     array.push(`${className}--${this.color()}`);
     array.push(`${className}--${this.appearance()}`);
     array.push(`${className}--${this.size()}`);
+    if (this.disabled()) array.push(`${className}--disabled`);
+    if (this.icon()) array.push(`${className}--icon-only`);
 
     return array;
   });
 
-  // Protected methods
-  protected isIconString(icon: string | boolean): icon is string {
-    return typeof icon === 'string';
-  }
+  protected readonly String = String;
 }

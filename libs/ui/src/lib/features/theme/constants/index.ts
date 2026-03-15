@@ -1,1 +1,1 @@
-export * from './theme-config-default';
+export * from './theme-class-names';

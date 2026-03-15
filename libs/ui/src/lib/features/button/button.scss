@@ -5,6 +5,8 @@
 
   display: inline-block;
 
+  --tls-button-border-width: 1px;
+
   &:focus-visible {
     outline: none;
   }
@@ -18,20 +20,25 @@
 
     gap: 0.25rem;
 
+    border: var(--tls-button-border-width) solid var(--tls-button-color);
     border-radius: var(--radius-md);
 
     cursor: pointer;
     user-select: none;
 
+    transition: border-color var(--motion-fast) var(--motion-ease-in-out);
+
     &:focus-visible {
       @include mixins.focus-ring;
     }
 
-    &.--has-icon {
-    }
-
     &__content {
       z-index: 1;
+
+      display: flex;
+      align-items: center;
+
+      transition: color var(--motion-fast) var(--motion-ease-in-out);
     }
 
     &__background {
@@ -39,6 +46,10 @@
       inset: 0;
 
       border-radius: inherit;
+
+      transition:
+        background-color var(--motion-fast) var(--motion-ease-in-out),
+        opacity var(--motion-fast) var(--motion-ease-in-out);
     }
   }
 }

@@ -10,17 +10,11 @@ import {
   INPUT_CONFIG,
   PASSWORD_CONFIG,
   SWITCH_CONFIG,
-  ThemeService,
 } from '../features';
-import { DEFAULT_THEME_CONFIG } from '../features/theme/theme.config';
-import { THEME_CONFIG } from '../features/theme/theme.token';
 import { tlsUiConfigProvider } from '../types';
 
 export const provideThalassicUIConfig = (config: tlsUiConfigProvider): EnvironmentProviders => {
   return makeEnvironmentProviders([
-    // Theme
-    { provide: THEME_CONFIG, useValue: { ...DEFAULT_THEME_CONFIG, ...config.theme } },
-    ThemeService,
     // Components
     { provide: BUTTON_CONFIG, useValue: { ...DEFAULT_BUTTON_CONFIG, ...config.components.button } },
     { provide: INPUT_CONFIG, useValue: { ...DEFAULT_INPUT_CONFIG, ...config.components.input } },

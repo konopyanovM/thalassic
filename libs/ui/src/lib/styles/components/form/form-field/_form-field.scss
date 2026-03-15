@@ -3,6 +3,9 @@
   --tls-form-field-border-style: solid;
   --tls-form-field-border-color: var(--color-outline);
 
+  color: var(--color-on-surface);
+  background-color: var(--color-surface);
+
   border-radius: var(--radius-md);
   border: var(--tls-form-field-border-width) var(--tls-form-field-border-style)
     var(--tls-form-field-border-color);
@@ -12,8 +15,8 @@
     background-color var(--motion-fast) var(--motion-ease-in-out),
     box-shadow var(--motion-fast) var(--motion-ease-in-out);
 
-  &:hover {
-    --tls-form-field-border-color: var(--color-outline-variant);
+  &:not(.tls-form-control--disabled):hover {
+    --tls-form-field-border-color: var(--color-primary);
   }
 
   &:focus {

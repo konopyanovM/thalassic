@@ -33,4 +33,9 @@
     --tls-button-on-color: var(--color-on-danger);
     --tls-button-color: var(--color-danger);
   }
+
+  &:has(.tls-button.tls-button--disabled) {
+    --tls-button-on-color: var(--color-on-surface-variant);
+    --tls-button-color: var(--color-surface-variant);
+  }
 }

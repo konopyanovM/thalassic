@@ -65,7 +65,7 @@
   // Shadow
   --color-shadow: 0 0 0;
 
-  .dark {
+  &.tls-dark {
     // Primary
     --color-primary: #{map.get(palettes.$primary, 80)};
     --color-on-primary: #{map.get(palettes.$primary, 20)};
@@ -73,16 +73,16 @@
     --color-on-primary-container: #{map.get(palettes.$primary, 90)};
 
     // Secondary
-    --color-secondary: #{map.get(palettes.$primary, 80)};
-    --color-on-secondary: #{map.get(palettes.$primary, 20)};
-    --color-secondary-container: #{map.get(palettes.$primary, 30)};
-    --color-on-secondary-container: #{map.get(palettes.$primary, 90)};
+    --color-secondary: #{map.get(palettes.$secondary, 80)};
+    --color-on-secondary: #{map.get(palettes.$secondary, 20)};
+    --color-secondary-container: #{map.get(palettes.$secondary, 30)};
+    --color-on-secondary-container: #{map.get(palettes.$secondary, 90)};
 
     // Tertiary
-    --color-tertiary: #{map.get(palettes.$primary, 80)};
-    --color-on-tertiary: #{map.get(palettes.$primary, 20)};
-    --color-tertiary-container: #{map.get(palettes.$primary, 30)};
-    --color-on-tertiary-container: #{map.get(palettes.$primary, 90)};
+    --color-tertiary: #{map.get(palettes.$tertiary, 80)};
+    --color-on-tertiary: #{map.get(palettes.$tertiary, 20)};
+    --color-tertiary-container: #{map.get(palettes.$tertiary, 30)};
+    --color-on-tertiary-container: #{map.get(palettes.$tertiary, 90)};
 
     // Success
     --color-success: #{map.get(common-palettes.$green, 80)};

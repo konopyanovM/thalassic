@@ -1,7 +1,16 @@
 :host {
   .tls-button {
-    .tls-button__background {
-      transition: opacity var(--motion-fast) var(--motion-ease-in-out);
+    @mixin hover-focus-state {
+      &:not(.tls-button--disabled):hover,
+      &:not(.tls-button--disabled):focus-visible {
+        @content;
+      }
+    }
+
+    @mixin active-state {
+      &:not(.tls-button--disabled):active {
+        @content;
+      }
     }
 
     // Appearances
@@ -14,14 +23,13 @@
         background-color: var(--tls-button-color);
       }
 
-      &:hover,
-      &:focus-visible {
+      @include hover-focus-state {
         .tls-button__background {
           opacity: 0.85;
         }
       }
 
-      &:active {
+      @include active-state {
         .tls-button__background {
           opacity: 0.75;
         }
@@ -29,8 +37,6 @@
     }
 
     &--outlined {
-      border: 1px solid var(--tls-button-color);
-
       .tls-button__content {
         color: var(--tls-button-color);
       }
@@ -41,14 +47,13 @@
         opacity: 0;
       }
 
-      &:hover,
-      &:focus-visible {
+      @include hover-focus-state {
         .tls-button__background {
           opacity: 0.075;
         }
       }
 
-      &:active {
+      @include active-state {
         .tls-button__background {
           opacity: 0.15;
         }
@@ -56,6 +61,8 @@
     }
 
     &--text {
+      border-color: transparent;
+
       .tls-button__content {
         color: var(--tls-button-color);
       }
@@ -66,14 +73,13 @@
         opacity: 0;
       }
 
-      &:hover,
-      &:focus-visible {
+      @include hover-focus-state {
         .tls-button__background {
           opacity: 0.075;
         }
       }
 
-      &:active {
+      @include active-state {
         .tls-button__background {
           opacity: 0.15;
         }
@@ -81,6 +87,8 @@
     }
 
     &--elevated {
+      border: none;
+
       box-shadow: var(--shadow-sm);
 
       transition: box-shadow var(--motion-fast) var(--motion-ease-in-out);
@@ -93,12 +101,13 @@
         background-color: var(--tls-button-color);
 
         opacity: 0;
-
-        transition: opacity var(--motion-fast) var(--motion-ease-in-out);
       }
 
-      &:hover,
-      &:focus-visible {
+      &:not(.tls-button--disabled) {
+        padding-inline: calc(var(--tls-button-padding-inline) + var(--tls-button-border-width));
+      }
+
+      @include hover-focus-state {
         box-shadow: var(--shadow-md);
 
         .tls-button__background {
@@ -106,12 +115,29 @@
         }
       }
 
-      &:active {
+      @include active-state {
         box-shadow: var(--shadow-sm);
 
         .tls-button__background {
           opacity: 0.15;
         }
+      }
+    }
+
+    &--disabled {
+      cursor: not-allowed;
+
+      border: var(--tls-button-border-width) solid var(--color-outline);
+
+      box-shadow: none;
+
+      .tls-button__content {
+        color: var(--tls-button-on-color);
+      }
+
+      .tls-button__background {
+        opacity: 1;
+        transition: none;
       }
     }
   }

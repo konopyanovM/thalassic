@@ -7,6 +7,12 @@
     font-weight: var(--tls-button-font-weight);
     line-height: var(--tls-button-line-height);
     letter-spacing: var(--tls-button-letter-spacing);
+
+    &.tls-button--icon-only {
+      padding-inline: 0;
+
+      aspect-ratio: 1/1;
+    }
   }
 
   &:has(.tls-button.tls-button--sm) {

@@ -2,44 +2,45 @@
   <a
     role="link"
     [class]="classes()"
-    [class.tls-button--has-icon]="icon()"
     [href]="href()"
     [tabindex]="tabindex()"
     [attr.aria-disabled]="disabled()"
   >
-    <ng-container [ngTemplateOutlet]="contentRef"></ng-container>
+    <ng-container [ngTemplateOutlet]="contentTemplate"></ng-container>
   </a>
 } @else {
   <button
     role="button"
     [class]="classes()"
-    [class.tls-button--has-icon]="icon()"
     [type]="type()"
     [tabindex]="tabindex()"
     [disabled]="disabled()"
     [attr.aria-disabled]="disabled()"
   >
-    <ng-container [ngTemplateOutlet]="contentRef"></ng-container>
+    <ng-container [ngTemplateOutlet]="contentTemplate"></ng-container>
   </button>
 }
 
 <!-- Content -->
-<ng-template #contentRef>
+<ng-template #contentTemplate>
   <span class="tls-button__content">
     @if (icon()) {
-      @let iconValue = icon();
-      @if (isIconString(iconValue)) {
-        <tls-icon [iconSrc]="iconValue"></tls-icon>
+      @if (isIconString()) {
+        <tls-icon [iconSrc]="String(icon())" />
       } @else {
-        <ng-content></ng-content>
+        <ng-container *ngTemplateOutlet="projectedContentTemplate"></ng-container>
       }
     } @else {
       @if (label()) {
         {{ label() }}
       } @else {
-        <ng-content></ng-content>
+        <ng-container *ngTemplateOutlet="projectedContentTemplate"></ng-container>
       }
     }
   </span>
   <div class="tls-button__background"></div>
+</ng-template>
+
+<ng-template #projectedContentTemplate>
+  <ng-content></ng-content>
 </ng-template>
