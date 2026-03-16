@@ -3,5 +3,6 @@ export const STORY_FORM_CONTROL_ARGS = {
   readonly: false,
   pending: false,
   invalid: false,
+  touched: false,
   dirty: false,
 } as const;

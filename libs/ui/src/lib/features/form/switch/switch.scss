@@ -71,12 +71,12 @@
   }
 
   // Form control
-  &.tls-switch.tls-switch--disabled {
+  &.tls-switch--disabled {
     cursor: not-allowed;
     filter: brightness(0.9);
   }
 
-  &.tls-switch--touched.tls-switch--invalid {
+  &:not(.tls-switch--disabled).tls-switch--touched.tls-switch--invalid {
     --tls-switch-border-color: var(--color-danger);
   }
 }
