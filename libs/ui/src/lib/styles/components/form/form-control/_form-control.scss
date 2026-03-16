@@ -33,7 +33,7 @@
 
   &:not(
       .tls-form-control--disabled
-    ).tls-form-control.tls-form-control--dirty.tls-form-control--invalid {
+    ).tls-form-control.tls-form-control--touched.tls-form-control--invalid {
     --tls-form-control-border-color: var(--color-danger);
 
     color: var(--color-danger);

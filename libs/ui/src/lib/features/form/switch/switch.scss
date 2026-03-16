@@ -1,6 +1,6 @@
 @use '../../../styles/mixins' as mixins;
 
-:host {
+:host.tls-switch {
   --tls-switch-width: 48px;
   --tls-switch-height: var(--control-height-sm);
   --tls-switch-handle-gap: 4px;
@@ -9,7 +9,7 @@
       (var(--tls-switch-border-width) * 2)
   );
 
-  --tls-switch-border-width: 2px;
+  --tls-switch-border-width: 1px;
   --tls-switch-border-radius: 24px;
 
   --tls-switch-color: var(--color-surface-variant);
@@ -76,7 +76,7 @@
     filter: brightness(0.9);
   }
 
-  &.tls-switch--dirty.tls-switch--invalid {
+  &.tls-switch--touched.tls-switch--invalid {
     --tls-switch-border-color: var(--color-danger);
   }
 }

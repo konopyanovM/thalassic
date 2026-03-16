@@ -40,11 +40,11 @@
 
   &:not(
       .tls-form-control--disabled
-    ).tls-form-control.tls-form-control--dirty.tls-form-control--invalid,
+    ).tls-form-control.tls-form-control--touched.tls-form-control--invalid,
   &:has(
     .tls-form-control:not(
         .tls-form-control--disabled
-      ).tls-form-control.tls-form-control--dirty.tls-form-control--invalid
+      ).tls-form-control.tls-form-control--touched.tls-form-control--invalid
   ) {
     --tls-form-control-group-border-color: var(--color-danger);
 

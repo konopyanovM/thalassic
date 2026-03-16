@@ -2,14 +2,17 @@ import {
   booleanAttribute,
   computed,
   Directive,
+  InjectionToken,
   input,
   InputSignal,
   InputSignalWithTransform,
   model,
   ModelSignal,
-  Signal,
+  Signal
 } from '@angular/core';
 import { FormUiControl, ValidationError, WithOptionalFieldTree } from '@angular/forms/signals';
+
+export const FORM_CONTROL = new InjectionToken<FormControl>('FORM_CONTROL');
 
 @Directive()
 export abstract class FormControl implements FormUiControl {
@@ -72,6 +75,7 @@ export abstract class FormControl implements FormUiControl {
     if (this.readonly()) array.push(`${className}--readonly`);
     if (this.invalid()) array.push(`${className}--invalid`);
     if (this.pending()) array.push(`${className}--pending`);
+    if (this.touched()) array.push(`${className}--touched`);
     if (this.dirty()) array.push(`${className}--dirty`);
 
     return array;

@@ -1,6 +1,7 @@
 import {
   Component,
   computed,
+  forwardRef,
   inject,
   input,
   InputSignal,
@@ -8,7 +9,7 @@ import {
   ModelSignal,
   Signal,
 } from '@angular/core';
-import { CheckboxFormControl } from '../../../abstract';
+import { CheckboxFormControl, FORM_CONTROL } from '../../../abstract';
 import { SWITCH_CONFIG } from './switch.token';
 import { switchColor } from './switch.types';
 
@@ -24,9 +25,11 @@ import { switchColor } from './switch.types';
     '[attr.aria-disabled]': 'disabled()',
     '[attr.aria-readonly]': 'readonly()',
     '(click)': 'toggle()',
+    '(blur)': 'touched.set(true)',
     '(keydown.space)': 'onKeyboardToggle($event)',
     '(keydown.enter)': 'onKeyboardToggle($event)',
   },
+  providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => Switch) }],
 })
 export class Switch extends CheckboxFormControl {
   private _config = inject(SWITCH_CONFIG);

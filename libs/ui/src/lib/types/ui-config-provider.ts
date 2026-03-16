@@ -1,4 +1,11 @@
-import { ButtonConfig, IconConfig, InputConfig, PasswordConfig, SwitchConfig } from '../features';
+import {
+  ButtonConfig,
+  FormItemConfig,
+  IconConfig,
+  InputConfig,
+  PasswordConfig,
+  SwitchConfig,
+} from '../features';
 
 export interface tlsUiConfigProvider {
   components: {
@@ -6,6 +13,7 @@ export interface tlsUiConfigProvider {
     input?: Partial<InputConfig>;
     password?: Partial<PasswordConfig>;
     switch?: Partial<SwitchConfig>;
+    formItem?: Partial<FormItemConfig>;
     icon?: Partial<IconConfig>;
   };
 }

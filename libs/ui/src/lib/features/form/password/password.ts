@@ -1,6 +1,7 @@
 import {
   Component,
   computed,
+  forwardRef,
   inject,
   input,
   InputSignal,
@@ -8,7 +9,7 @@ import {
   ModelSignal,
   Signal,
 } from '@angular/core';
-import { ValueFormControl } from '../../../abstract';
+import { FORM_CONTROL, ValueFormControl } from '../../../abstract';
 import { inputSize } from '../input/input.types';
 import { PASSWORD_CONFIG } from './password.token';
 
@@ -19,6 +20,7 @@ import { PASSWORD_CONFIG } from './password.token';
   host: {
     '[class]': 'classes()',
   },
+  providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => Password) }],
 })
 export class Password extends ValueFormControl<string> {
   private _config = inject(PASSWORD_CONFIG);

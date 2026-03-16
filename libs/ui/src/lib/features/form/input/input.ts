@@ -1,6 +1,7 @@
 import {
   Component,
   computed,
+  forwardRef,
   inject,
   input,
   InputSignal,
@@ -8,7 +9,7 @@ import {
   ModelSignal,
   Signal,
 } from '@angular/core';
-import { ValueFormControl } from '../../../abstract';
+import { FORM_CONTROL, ValueFormControl } from '../../../abstract';
 import { INPUT_CONFIG } from './input.token';
 import { inputSize } from './input.types';
 
@@ -16,6 +17,7 @@ import { inputSize } from './input.types';
   selector: 'tls-input',
   templateUrl: './input.html',
   styleUrl: './input.scss',
+  providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => Input) }],
 })
 export class Input extends ValueFormControl<string> {
   // Injections

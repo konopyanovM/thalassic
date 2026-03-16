@@ -7,4 +7,5 @@
   [readonly]="readonly()"
   [value]="value()"
   (input)="onInput($event)"
+  (blur)="touched.set(true)"
 >
