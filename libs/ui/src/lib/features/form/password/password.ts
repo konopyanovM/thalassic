@@ -1,7 +1,16 @@
-import { Component, computed, inject, input, InputSignal, model, ModelSignal, Signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  InputSignal,
+  model,
+  ModelSignal,
+  Signal,
+} from '@angular/core';
 import { ValueFormControl } from '../../../abstract';
-import { PASSWORD_CONFIG } from './password.token';
 import { inputSize } from '../input/input.types';
+import { PASSWORD_CONFIG } from './password.token';
 
 @Component({
   selector: 'tls-password',
@@ -21,13 +30,13 @@ export class Password extends ValueFormControl<string> {
   public readonly size: InputSignal<inputSize> = input<inputSize>(this._config.size);
 
   protected readonly classes: Signal<string[]> = computed(() => {
-    const className = 'tls-form-field-group';
+    const className = 'tls-form-control-group';
 
     const array: string[] = [className];
 
     array.push(`${className}--${this.size()}`);
 
-    return array.concat(this.controlClasses());
+    return array;
   });
 
   protected type = computed(() => (this.visible() ? 'text' : 'password'));

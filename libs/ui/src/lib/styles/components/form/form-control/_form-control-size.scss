@@ -1,0 +1,39 @@
+.tls-form-control {
+  height: var(--tls-form-control-height);
+  padding-inline: var(--tls-form-control-padding-inline);
+
+  font-size: var(--tls-form-control-font-size);
+  font-weight: var(--tls-form-control-font-weight);
+  line-height: var(--tls-form-control-line-height);
+  letter-spacing: var(--tls-form-control-letter-spacing);
+
+  &.tls-form-control--sm {
+    --tls-form-control-height: var(--control-height-sm);
+    --tls-form-control-padding-inline: var(--spacing-2);
+
+    --tls-form-control-font-size: var(--font-label-small-size);
+    --tls-form-control-font-weight: var(--font-label-small-weight);
+    --tls-form-control-line-height: var(--font-label-small-line-height);
+    --tls-form-control-letter-spacing: var(--font-label-small-letter-spacing);
+  }
+
+  &.tls-form-control--md {
+    --tls-form-control-height: var(--control-height-md);
+    --tls-form-control-padding-inline: var(--spacing-2);
+
+    --tls-form-control-font-size: var(--font-label-medium-size);
+    --tls-form-control-font-weight: var(--font-label-medium-weight);
+    --tls-form-control-line-height: var(--font-label-medium-line-height);
+    --tls-form-control-letter-spacing: var(--font-label-medium-letter-spacing);
+  }
+
+  &.tls-form-control--lg {
+    --tls-form-control-height: var(--control-height-lg);
+    --tls-form-control-padding-inline: var(--spacing-3);
+
+    --tls-form-control-font-size: var(--font-label-large-size);
+    --tls-form-control-font-weight: var(--font-label-large-weight);
+    --tls-form-control-line-height: var(--font-label-large-line-height);
+    --tls-form-control-letter-spacing: var(--font-label-large-letter-spacing);
+  }
+}

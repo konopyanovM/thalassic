@@ -56,13 +56,17 @@ export abstract class FormControl implements FormUiControl {
     { transform: booleanAttribute },
   );
 
+  protected CLASS_NAME = 'tls-form-control';
+
   protected notInteractive: Signal<boolean> = computed<boolean>(
     () => this.disabled() || this.readonly(),
   );
-  protected controlClasses: Signal<string[]> = computed<string[]>(() => {
-    const className = 'tls-form-control';
+  protected controlClasses: Signal<string[]> = computed<string[]>(() => this.baseControlClasses());
 
-    const array: string[] = [className];
+  // Protected methods
+  protected baseControlClasses() {
+    const className = this.CLASS_NAME;
+    const array = [className];
 
     if (this.disabled()) array.push(`${className}--disabled`);
     if (this.readonly()) array.push(`${className}--readonly`);
@@ -71,5 +75,5 @@ export abstract class FormControl implements FormUiControl {
     if (this.dirty()) array.push(`${className}--dirty`);
 
     return array;
-  });
+  }
 }

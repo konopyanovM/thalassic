@@ -29,7 +29,7 @@ export class Input extends ValueFormControl<string> {
   public readonly size: InputSignal<inputSize> = input<inputSize>(this._config.size);
 
   protected readonly classes: Signal<string[]> = computed(() => {
-    const className = 'tls-form-field';
+    const className = 'tls-form-control';
 
     const array: string[] = [className];
 

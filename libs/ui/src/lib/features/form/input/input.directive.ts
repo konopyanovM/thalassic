@@ -11,7 +11,7 @@ export class InputDirective {
   public readonly size: InputSignal<inputSize> = input<inputSize>('md');
 
   protected readonly classes: Signal<string[]> = computed(() => {
-    const className = 'tls-form-field';
+    const className = 'tls-form-control';
 
     const array: string[] = [className];
 

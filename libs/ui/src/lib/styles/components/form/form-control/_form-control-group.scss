@@ -1,11 +1,11 @@
-.tls-form-field-group {
-  --tls-form-field-group-border-width: 1px;
-  --tls-form-field-group-border-style: solid;
-  --tls-form-field-group-border-color: var(--color-outline);
+.tls-form-control-group {
+  --tls-form-control-group-border-width: 1px;
+  --tls-form-control-group-border-style: solid;
+  --tls-form-control-group-border-color: var(--color-outline);
 
   border-radius: var(--radius-md);
-  border: var(--tls-form-field-group-border-width) var(--tls-form-field-group-border-style)
-    var(--tls-form-field-group-border-color);
+  border: var(--tls-form-control-group-border-width) var(--tls-form-control-group-border-style)
+    var(--tls-form-control-group-border-color);
 
   transition:
     border-color var(--motion-fast) var(--motion-ease-in-out),
@@ -13,15 +13,15 @@
     box-shadow var(--motion-fast) var(--motion-ease-in-out);
 
   &:hover {
-    --tls-form-field-group-border-color: var(--color-primary);
+    --tls-form-control-group-border-color: var(--color-primary);
   }
 
-  &:has(input.tls-form-field:focus) {
+  &:has(input.tls-form-control:focus) {
     border: 1px solid var(--color-primary);
     box-shadow: 0 0 3px -1px var(--color-primary);
   }
 
-  .tls-form-field {
+  .tls-form-control {
     padding: 0;
 
     border: none;
@@ -31,8 +31,8 @@
 
   // Form control
   &.tls-form-control.tls-form-control--disabled,
-  &:has(.tls-form-field.tls-form-control.tls-form-control--disabled) {
-    --tls-form-field-group-border-color: var(--color-outline);
+  &:has(.tls-form-control.tls-form-control.tls-form-control--disabled) {
+    --tls-form-control-group-border-color: var(--color-outline);
     background-color: var(--color-surface-variant);
 
     cursor: not-allowed;
@@ -42,15 +42,15 @@
       .tls-form-control--disabled
     ).tls-form-control.tls-form-control--dirty.tls-form-control--invalid,
   &:has(
-    .tls-form-field:not(
+    .tls-form-control:not(
         .tls-form-control--disabled
       ).tls-form-control.tls-form-control--dirty.tls-form-control--invalid
   ) {
-    --tls-form-field-group-border-color: var(--color-danger);
+    --tls-form-control-group-border-color: var(--color-danger);
 
     color: var(--color-danger);
 
-    .tls-form-field::placeholder {
+    .tls-form-control::placeholder {
       color: var(--color-danger);
     }
   }
