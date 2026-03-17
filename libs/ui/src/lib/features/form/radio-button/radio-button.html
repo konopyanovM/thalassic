@@ -1,0 +1,14 @@
+<input
+  type="radio"
+  class="tls-radio-button-input"
+  [id]="inputId()"
+  [name]="name()"
+  [tabindex]="tabindex()"
+  [disabled]="disabled()"
+  [readonly]="readonly()"
+  [checked]="checked()"
+  [value]="radioValue()"
+  (change)="check()"
+  (blur)="touched.set(true)"
+/>
+<div class="tls-radio-button-circle"></div>

@@ -1,5 +1,6 @@
 <input
   [type]="type()"
+  [name]="name()"
   [class]="classes()"
   [attr.id]="inputId()"
   [placeholder]="placeholder()"
@@ -8,4 +9,4 @@
   [value]="value()"
   (input)="onInput($event)"
   (blur)="touched.set(true)"
->
+/>

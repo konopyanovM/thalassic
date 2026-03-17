@@ -1,4 +1,13 @@
-import { Component, computed, inject, input, InputSignal, model, ModelSignal, Signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  InputSignal,
+  model,
+  ModelSignal,
+  Signal,
+} from '@angular/core';
 import { CheckboxFormControl } from '../../../abstract';
 import { CHECKBOX_CONFIG } from './checkbox.token';
 
@@ -10,14 +19,7 @@ import { CHECKBOX_CONFIG } from './checkbox.token';
   host: {
     role: 'checkbox',
     '[class]': 'classes()',
-    '[tabindex]': 'disabled() ? -1 : tabindex()',
-    '[attr.aria-checked]': 'checked()',
-    '[attr.aria-disabled]': 'disabled()',
-    '[attr.aria-readonly]': 'readonly()',
-    '(click)': 'toggle()',
-    '(blur)': 'touched.set(true)',
-    '(keydown.space)': 'onKeyboardToggle($event)',
-    '(keydown.enter)': 'onKeyboardToggle($event)',
+    '[tabindex]': '-1',
   },
 })
 export class Checkbox extends CheckboxFormControl {
