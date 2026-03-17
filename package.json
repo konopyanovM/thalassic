@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "libs:version": "nx release --skip-publish",
     "ui:g:stories": "nx g @nx/angular:stories ui"
   },
   "private": true,
