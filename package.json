@@ -2,6 +2,7 @@
   "name": "@thalassic/source",
   "version": "0.0.0",
   "license": "MIT",
+  "packageManager": "pnpm@10.32.1",
   "scripts": {
     "libs:version": "nx release --skip-publish",
     "ui:g:stories": "nx g @nx/angular:stories ui"

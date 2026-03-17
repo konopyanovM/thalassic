@@ -1,12 +1,16 @@
 {
   "name": "@thalassic/core",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "peerDependencies": {
     "@angular/common": "^21.0.0",
     "@angular/core": "^21.0.0"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/konopyanovM/thalassic"
   },
   "sideEffects": false
 }

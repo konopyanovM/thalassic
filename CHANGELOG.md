@@ -1,3 +1,15 @@
+## 0.1.0 (2026-03-17)
+
+### 🚀 Features
+
+- **ui:** added form item component ([6e16f30](https://github.com/konopyanovM/thalassic/commit/6e16f30))
+- **ui:** added checkbox form control ([98c34c9](https://github.com/konopyanovM/thalassic/commit/98c34c9))
+- **ui:** added radio button form control ([158604d](https://github.com/konopyanovM/thalassic/commit/158604d))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.0.1 (2026-03-15)
 
 ### 🚀 Features
