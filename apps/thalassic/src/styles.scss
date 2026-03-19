@@ -1,14 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
 
 // @core
-@use 'core/src/lib/styles' as core;
+@use 'core/src/lib' as core;
 
 // @themes
 @use 'themes/src/lib/styles' as themes;
 @use 'themes/src/lib/themes/thalassic';
 
 // @ui
-@use 'ui/src/lib/styles' as ui;
+@use '../../../libs/ui/src/lib/styles/index' as ui;
 
 // app styles
 @use './core/styles';

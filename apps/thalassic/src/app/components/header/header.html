@@ -1,13 +1,17 @@
-<tls-icon iconSrc="images/icons/icon_angular.svg" class="header-logo" />
-<nav class="navigation">
-  <ul class="navigation-list">
-    @for (item of navItems; track item.label) {
-      <li class="navigation-list__item">
-        <a [routerLink]="item.link">{{ item.label }}</a>
-      </li>
-    }
-  </ul>
-</nav>
-<div class="actions">
-  <app-theme-toggle />
+<div class="tls-container">
+  <div class="content">
+    <tls-icon iconSrc="images/icons/icon_angular.svg" class="header-logo" />
+    <nav class="navigation">
+      <ul class="navigation-list">
+        @for (item of navItems; track item.label) {
+          <li class="navigation-list__item">
+            <a [routerLink]="item.link">{{ item.label }}</a>
+          </li>
+        }
+      </ul>
+    </nav>
+    <div class="actions">
+      <app-theme-toggle />
+    </div>
+  </div>
 </div>

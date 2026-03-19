@@ -1,0 +1,80 @@
+@mixin typography($variant) {
+  @if $variant == display-lg {
+    font-size: var(--font-display-large-size);
+    font-weight: var(--font-display-large-weight);
+    line-height: var(--font-display-large-line-height);
+    letter-spacing: var(--font-display-large-letter-spacing);
+  } @else if $variant == display-md {
+    font-size: var(--font-display-medium-size);
+    font-weight: var(--font-display-medium-weight);
+    line-height: var(--font-display-medium-line-height);
+    letter-spacing: var(--font-display-medium-letter-spacing);
+  } @else if $variant == display-sm {
+    font-size: var(--font-display-small-size);
+    font-weight: var(--font-display-small-weight);
+    line-height: var(--font-display-small-line-height);
+    letter-spacing: var(--font-display-small-letter-spacing);
+  } @else if $variant == headline-lg {
+    font-size: var(--font-headline-large-size);
+    font-weight: var(--font-headline-large-weight);
+    line-height: var(--font-headline-large-line-height);
+    letter-spacing: var(--font-headline-large-letter-spacing);
+  } @else if $variant == headline-md {
+    font-size: var(--font-headline-medium-size);
+    font-weight: var(--font-headline-medium-weight);
+    line-height: var(--font-headline-medium-line-height);
+    letter-spacing: var(--font-headline-medium-letter-spacing);
+  } @else if $variant == headline-sm {
+    font-size: var(--font-headline-small-size);
+    font-weight: var(--font-headline-small-weight);
+    line-height: var(--font-headline-small-line-height);
+    letter-spacing: var(--font-headline-small-letter-spacing);
+  } @else if $variant == title-lg {
+    font-size: var(--font-title-large-size);
+    font-weight: var(--font-title-large-weight);
+    line-height: var(--font-title-large-line-height);
+    letter-spacing: var(--font-title-large-letter-spacing);
+  } @else if $variant == title-md {
+    font-size: var(--font-title-medium-size);
+    font-weight: var(--font-title-medium-weight);
+    line-height: var(--font-title-medium-line-height);
+    letter-spacing: var(--font-title-medium-letter-spacing);
+  } @else if $variant == title-sm {
+    font-size: var(--font-title-small-size);
+    font-weight: var(--font-title-small-weight);
+    line-height: var(--font-title-small-line-height);
+    letter-spacing: var(--font-title-small-letter-spacing);
+  } @else if $variant == body-lg {
+    font-size: var(--font-body-large-size);
+    font-weight: var(--font-body-large-weight);
+    line-height: var(--font-body-large-line-height);
+    letter-spacing: var(--font-body-large-letter-spacing);
+  } @else if $variant == body-md {
+    font-size: var(--font-body-medium-size);
+    font-weight: var(--font-body-medium-weight);
+    line-height: var(--font-body-medium-line-height);
+    letter-spacing: var(--font-body-medium-letter-spacing);
+  } @else if $variant == body-sm {
+    font-size: var(--font-body-small-size);
+    font-weight: var(--font-body-small-weight);
+    line-height: var(--font-body-small-line-height);
+    letter-spacing: var(--font-body-small-letter-spacing);
+  } @else if $variant == label-lg {
+    font-size: var(--font-label-large-size);
+    font-weight: var(--font-label-large-weight);
+    line-height: var(--font-label-large-line-height);
+    letter-spacing: var(--font-label-large-letter-spacing);
+  } @else if $variant == label-md {
+    font-size: var(--font-label-medium-size);
+    font-weight: var(--font-label-medium-weight);
+    line-height: var(--font-label-medium-line-height);
+    letter-spacing: var(--font-label-medium-letter-spacing);
+  } @else if $variant == label-sm {
+    font-size: var(--font-label-small-size);
+    font-weight: var(--font-label-small-weight);
+    line-height: var(--font-label-small-line-height);
+    letter-spacing: var(--font-label-small-letter-spacing);
+  } @else {
+    @warn "Typography mixin supports: display-lg, display-md, display-sm, headline-lg, headline-md, headline-sm, title-lg, title-md, title-sm, body-lg, body-md, body-sm, label-lg, label-md, label-sm";
+  }
+}

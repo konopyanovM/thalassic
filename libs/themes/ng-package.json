@@ -3,5 +3,12 @@
   "dest": "../../dist/libs/themes",
   "lib": {
     "entryFile": "src/index.ts"
-  }
+  },
+  "assets": [
+    {
+      "input": "src/lib",
+      "glob": "**/*.scss",
+      "output": "./"
+    }
+  ]
 }

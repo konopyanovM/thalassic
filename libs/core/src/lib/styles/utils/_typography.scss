@@ -1,0 +1,69 @@
+@use '../tools';
+
+.text-display-lg {
+  @include tools.typography(display-lg);
+}
+
+.text-display-md {
+  @include tools.typography(display-md);
+}
+
+.text-display-sm {
+  @include tools.typography(display-sm);
+}
+
+h1,
+.text-headline-lg {
+  @include tools.typography(headline-lg);
+}
+
+h2,
+.text-headline-md {
+  @include tools.typography(headline-md);
+}
+
+h3,
+.text-headline-sm {
+  @include tools.typography(headline-sm);
+}
+
+h4,
+.text-title-large {
+  @include tools.typography(title-lg);
+}
+
+h5,
+.text-title-medium {
+  @include tools.typography(title-md);
+}
+
+h6,
+.text-title-small {
+  @include tools.typography(title-sm);
+}
+
+p,
+.text-body-lg {
+  @include tools.typography(body-lg);
+}
+
+.text-body-md {
+  @include tools.typography(body-md);
+}
+
+small,
+.text-body-sm {
+  @include tools.typography(body-sm);
+}
+
+.text-label-lg {
+  @include tools.typography(label-lg);
+}
+
+.text-label-md {
+  @include tools.typography(label-md);
+}
+
+.text-label-sm {
+  @include tools.typography(label-sm);
+}

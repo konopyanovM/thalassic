@@ -1,13 +1,16 @@
 :host {
   height: var(--header-height);
 
-  padding-inline: 1rem;
+  .content {
+    height: 100%;
+    padding-inline: 1rem;
 
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-  .header-logo {
-    width: 24px;
+    .header-logo {
+      width: 24px;
+    }
   }
 }

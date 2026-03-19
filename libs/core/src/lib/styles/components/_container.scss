@@ -1,37 +1,25 @@
-@use '../utils';
+@use '../tools';
 
-$container-width-xl: 1200px;
-$container-width-lg: 968px;
-$container-width-md: 720px;
-$container-width-sm: 600px;
-$container-width-xs: auto;
-
-.app-container {
+.tls-container {
   height: 100%;
-  width: 1400px;
+  width: 100%;
+  max-width: tools.$breakpoint-2xl;
   margin: 0 auto;
 
-  @include utils.breakpoint(xl) {
-    width: $container-width-xl;
+  @include tools.breakpoint(2xl) {
+    max-width: tools.$breakpoint-xl;
   }
-  @include utils.breakpoint(lg) {
-    width: $container-width-lg;
+  @include tools.breakpoint(xl) {
+    max-width: tools.$breakpoint-lg;
   }
-  @include utils.breakpoint(md) {
-    width: $container-width-md;
+  @include tools.breakpoint(lg) {
+    max-width: tools.$breakpoint-md;
   }
-  @include utils.breakpoint(sm) {
-    width: $container-width-sm;
+  @include tools.breakpoint(md) {
+    max-width: tools.$breakpoint-sm;
   }
-  @include utils.breakpoint(xs) {
+  @include tools.breakpoint(sm) {
     padding: 0 16px;
-    width: $container-width-xs;
-  }
-
-  &.--narrow {
-    height: 100%;
-    max-width: 1200px;
     width: auto;
-    margin: 0 auto;
   }
 }
