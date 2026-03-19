@@ -4,7 +4,8 @@
 @use 'core/src/lib' as core;
 
 // @themes
-@use 'themes/src/lib/styles' as themes;
+@use 'themes/src/lib/tools';
+@use 'themes/src/lib/utils';
 @use 'themes/src/lib/themes/thalassic';
 
 // @ui
