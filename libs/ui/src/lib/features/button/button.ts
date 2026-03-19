@@ -28,11 +28,21 @@ export class Button {
   private _config = inject(BUTTON_CONFIG);
 
   // Inputs
+  /** The text label displayed inside the button. Takes priority over projected content. */
   public readonly label = input<string>();
+
   public readonly type: InputSignal<buttonType> = input<buttonType>(this._config.type);
+
   public readonly disabled: InputSignalWithTransform<boolean, unknown> = input(false, {
     transform: booleanAttribute,
   });
+
+  /**
+   * Icon to display on the button. Accepts:
+   * - A string icon name to render a specific icon.
+   * - An empty string or boolean `true` to render an icon-only button (using a projected icon).
+   * - `false` to render no icon.
+   */
   public readonly icon: InputSignalWithTransform<string | boolean, unknown> = input(false, {
     transform: (value: unknown) => {
       if (typeof value === 'string' && value === '') return true;
@@ -45,10 +55,14 @@ export class Button {
     this._config.appearance,
   );
   public readonly size: InputSignal<buttonSize> = input<buttonSize>(this._config.size);
+
+  /** Whether the button stretches to fill its container's width. */
   public readonly fluid: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
     this._config.fluid,
     { transform: booleanAttribute },
   );
+
+  /** An optional URL that causes the button to render as an anchor link. */
   public readonly href = input<string | null>(null);
   public readonly tabindex = input<string>('0');
 

@@ -8,13 +8,16 @@ import {
   Renderer2,
   RendererFactory2,
   Signal,
-  signal,
+  signal
 } from '@angular/core';
 import { DARK_THEME_CLASS, LIGHT_THEME_CLASS } from './constants';
 import { ThemeConfig } from './theme.config';
 import { THEME_CONFIG } from './theme.token';
 import { themePreference, themeType } from './types';
 
+/**
+ * Service responsible for managing the application's theme (light/dark/system).
+ */
 @Injectable()
 export class ThemeService {
   // Injections
@@ -41,19 +44,36 @@ export class ThemeService {
   }
 
   // Accessors
+  /**
+   * A readonly signal of the currently applied theme (`'light'` or `'dark'`).
+   * Reflects the resolved theme even when the preference is `'system'`.
+   */
   get currentTheme(): Signal<themeType> {
     return this._currentTheme.asReadonly();
   }
 
+  /**
+   * A readonly signal of the user's selected theme preference (`'light'`, `'dark'`, or `'system'`).
+   */
   get currentThemePreference(): Signal<themePreference> {
     return this._currentThemePreference.asReadonly();
   }
 
   // Public methods
+  /**
+   * Toggles between `'light'` and `'dark'` themes based on the currently applied theme.
+   * Does not toggle to `'system'`.
+   */
   public toggle(): void {
     this.setTheme(this._currentTheme() === 'light' ? 'dark' : 'light');
   }
 
+  /**
+   * Sets the theme preference and applies the corresponding theme to the document.
+   * When `'system'` is passed, the theme is resolved from the OS color scheme preference.
+   *
+   * @param preference - The desired theme preference: `'light'`, `'dark'`, or `'system'`.
+   */
   public setTheme(preference: themePreference): void {
     this._currentThemePreference.set(preference);
 
@@ -65,6 +85,11 @@ export class ThemeService {
   }
 
   // Private methods
+  /**
+   * Applies the given theme to the document root element by toggling theme CSS classes.
+   *
+   * @param theme - The theme to apply: `'light'` or `'dark'`.
+   */
   private _applyTheme(theme: themeType): void {
     const documentElement = this._document.documentElement;
 
@@ -79,10 +104,21 @@ export class ThemeService {
     }
   }
 
+  /**
+   * Detects the OS-level color scheme preference using the `prefers-color-scheme` media query.
+   *
+   * @returns `'dark'` if the OS prefers dark mode, otherwise `'light'`.
+   */
   private _detectSystemTheme(): themeType {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   }
 
+  /**
+   * Initializes the theme on app startup (browser only).
+   * Reads the stored preference from localStorage, falling back to the configured default.
+   * Also registers a listener for OS color scheme changes to reactively update the theme
+   * when the preference is `'system'`.
+   */
   private _initTheme(): void {
     if (!this._isBrowser) return;
 
