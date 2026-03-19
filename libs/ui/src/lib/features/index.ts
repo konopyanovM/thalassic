@@ -1,5 +1,6 @@
 // Features
 export * from './button';
+export * from './divider';
 export * from './form-item';
 export * from './form/checkbox';
 export * from './form/input';

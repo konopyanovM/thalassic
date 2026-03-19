@@ -1,4 +1,4 @@
-import { Meta, moduleMetadata, StoryObj } from '@storybook/angular';
+import { argsToTemplate, Meta, moduleMetadata, StoryObj } from '@storybook/angular';
 import { Input as InputComponent } from '../form/input';
 import { FormItem } from './form-item';
 
@@ -21,7 +21,7 @@ export const Input: Story = {
   render: args => ({
     props: args,
     template: `
-    <tls-form-item>
+    <tls-form-item ${argsToTemplate(args)}>
       <tls-input />
     </tls-form-item>
     `,

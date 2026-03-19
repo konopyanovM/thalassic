@@ -1,5 +1,6 @@
 import {
   ButtonConfig,
+  DividerConfig,
   FormItemConfig,
   IconConfig,
   InputConfig,
@@ -10,6 +11,7 @@ import {
 export interface tlsUiConfigProvider {
   components: {
     button?: Partial<ButtonConfig>;
+    divider?: Partial<DividerConfig>;
     input?: Partial<InputConfig>;
     password?: Partial<PasswordConfig>;
     switch?: Partial<SwitchConfig>;

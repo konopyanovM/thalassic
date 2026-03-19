@@ -11,8 +11,9 @@ import {
   ICON_CONFIG,
   INPUT_CONFIG,
   PASSWORD_CONFIG,
-  SWITCH_CONFIG
+  SWITCH_CONFIG,
 } from '../features';
+import { DEFAULT_DIVIDER_CONFIG, DIVIDER_CONFIG } from '../features/divider';
 import { tlsUiConfigProvider } from '../types';
 import { mergeConfig } from '../utils';
 
@@ -22,6 +23,10 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
     {
       provide: BUTTON_CONFIG,
       useValue: mergeConfig(DEFAULT_BUTTON_CONFIG, config.components.button),
+    },
+    {
+      provide: DIVIDER_CONFIG,
+      useValue: mergeConfig(DEFAULT_DIVIDER_CONFIG, config.components.divider),
     },
     { provide: INPUT_CONFIG, useValue: mergeConfig(DEFAULT_INPUT_CONFIG, config.components.input) },
     {
