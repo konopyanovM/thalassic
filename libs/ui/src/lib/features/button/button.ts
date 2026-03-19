@@ -28,25 +28,29 @@ export class Button {
   private _config = inject(BUTTON_CONFIG);
 
   // Inputs
-  public label = input<string>();
-  public type: InputSignal<buttonType> = input<buttonType>(this._config.type);
-  public disabled: InputSignalWithTransform<boolean, unknown> = input(false, {
+  public readonly label = input<string>();
+  public readonly type: InputSignal<buttonType> = input<buttonType>(this._config.type);
+  public readonly disabled: InputSignalWithTransform<boolean, unknown> = input(false, {
     transform: booleanAttribute,
   });
-  public icon: InputSignalWithTransform<string | boolean, unknown> = input(false, {
+  public readonly icon: InputSignalWithTransform<string | boolean, unknown> = input(false, {
     transform: (value: unknown) => {
       if (typeof value === 'string' && value === '') return true;
       else if (typeof value === 'string') return value;
       else return booleanAttribute(value);
     },
   });
-  public color: InputSignal<buttonColor> = input<buttonColor>(this._config.color);
-  public appearance: InputSignal<buttonAppearance> = input<buttonAppearance>(
+  public readonly color: InputSignal<buttonColor> = input<buttonColor>(this._config.color);
+  public readonly appearance: InputSignal<buttonAppearance> = input<buttonAppearance>(
     this._config.appearance,
   );
-  public size: InputSignal<buttonSize> = input<buttonSize>(this._config.size);
-  public href = input<string | null>(null);
-  public tabindex = input<string>('0');
+  public readonly size: InputSignal<buttonSize> = input<buttonSize>(this._config.size);
+  public readonly fluid: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    this._config.fluid,
+    { transform: booleanAttribute },
+  );
+  public readonly href = input<string | null>(null);
+  public readonly tabindex = input<string>('0');
 
   // Computed
   protected isLink = computed<boolean>(() => Boolean(this._routerLink || this.href()));
@@ -62,6 +66,7 @@ export class Button {
     array.push(`${className}--${this.size()}`);
     if (this.disabled()) array.push(`${className}--disabled`);
     if (this.icon()) array.push(`${className}--icon-only`);
+    if (this.fluid()) array.push(`${className}--fluid`);
 
     return array;
   });

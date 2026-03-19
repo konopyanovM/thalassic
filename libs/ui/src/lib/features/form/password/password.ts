@@ -1,10 +1,12 @@
 import {
+  booleanAttribute,
   Component,
   computed,
   forwardRef,
   inject,
   input,
   InputSignal,
+  InputSignalWithTransform,
   model,
   ModelSignal,
   Signal,
@@ -30,6 +32,10 @@ export class Password extends ValueFormControl<string> {
   public readonly inputId = input<string | null>(null);
   public readonly placeholder = input<string>(this._config.placeholder);
   public readonly size: InputSignal<inputSize> = input<inputSize>(this._config.size);
+  public readonly fluid: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    this._config.fluid,
+    { transform: booleanAttribute },
+  );
 
   protected readonly classes: Signal<string[]> = computed(() => {
     const className = 'tls-form-control-group';
@@ -37,6 +43,7 @@ export class Password extends ValueFormControl<string> {
     const array: string[] = [className];
 
     array.push(`${className}--${this.size()}`);
+    if (this.fluid()) array.push(`${className}--fluid`);
 
     return array;
   });

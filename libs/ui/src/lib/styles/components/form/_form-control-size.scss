@@ -1,4 +1,7 @@
 .tls-form-control {
+  --tls-form-control-width: auto;
+
+  width: var(--tls-form-control-width);
   height: var(--tls-form-control-height);
   padding-inline: var(--tls-form-control-padding-inline);
 
@@ -6,6 +9,10 @@
   font-weight: var(--tls-form-control-font-weight);
   line-height: var(--tls-form-control-line-height);
   letter-spacing: var(--tls-form-control-letter-spacing);
+
+  &.tls-form-control--fluid {
+    --tls-form-control-width: 100%;
+  }
 
   &.tls-form-control--sm {
     --tls-form-control-height: var(--control-height-sm);

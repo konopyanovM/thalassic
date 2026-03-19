@@ -1,5 +1,8 @@
 :host {
   .tls-button {
+    --tls-button-width: auto;
+
+    width: var(--tls-button-width);
     height: var(--tls-button-height);
     padding-inline: var(--tls-button-padding-inline);
 
@@ -12,6 +15,10 @@
       padding-inline: 0;
 
       aspect-ratio: 1/1;
+    }
+
+    &.tls-button--fluid {
+      --tls-button-width: 100%;
     }
   }
 

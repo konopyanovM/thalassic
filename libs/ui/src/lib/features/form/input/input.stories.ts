@@ -10,6 +10,7 @@ const meta: Meta<InputComponent> = {
     value: '',
     placeholder: 'Some text',
     size: 'md',
+    fluid: false,
     ...STORY_FORM_CONTROL_ARGS,
   },
   argTypes: {

@@ -8,7 +8,7 @@ import {
   InputSignalWithTransform,
   model,
   ModelSignal,
-  Signal
+  Signal,
 } from '@angular/core';
 import { FormUiControl, ValidationError, WithOptionalFieldTree } from '@angular/forms/signals';
 

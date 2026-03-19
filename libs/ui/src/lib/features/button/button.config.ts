@@ -5,6 +5,7 @@ export interface ButtonConfig {
   appearance: buttonAppearance;
   size: buttonSize;
   type: buttonType;
+  fluid: boolean;
 }
 
 export const DEFAULT_BUTTON_CONFIG: ButtonConfig = {
@@ -12,4 +13,5 @@ export const DEFAULT_BUTTON_CONFIG: ButtonConfig = {
   appearance: 'filled',
   size: 'md',
   type: 'button',
+  fluid: false,
 };

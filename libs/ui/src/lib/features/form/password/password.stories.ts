@@ -11,6 +11,7 @@ const meta: Meta<PasswordComponent> = {
     visible: false,
     placeholder: 'Some text',
     size: 'md',
+    fluid: false,
     ...STORY_FORM_CONTROL_ARGS,
   },
   argTypes: {

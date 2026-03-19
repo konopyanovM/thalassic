@@ -6,6 +6,7 @@ const meta: Meta<RadioButtonComponent> = {
   component: RadioButtonComponent,
   title: 'Form/RadioButton',
   args: {
+    value: '',
     ...STORY_FORM_CONTROL_ARGS,
   },
   argTypes: {},
@@ -15,5 +16,7 @@ export default meta;
 type Story = StoryObj<RadioButtonComponent>;
 
 export const RadioButton: Story = {
-  args: {},
+  args: {
+    radioValue: 'radioValue',
+  },
 };

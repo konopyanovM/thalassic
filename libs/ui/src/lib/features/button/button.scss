@@ -11,6 +11,10 @@
     outline: none;
   }
 
+  &:has(.tls-button.tls-button--fluid) {
+    width: 100%;
+  }
+
   .tls-button {
     position: relative;
 
