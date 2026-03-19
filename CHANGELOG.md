@@ -1,3 +1,20 @@
+## 0.2.0 (2026-03-19)
+
+### 🚀 Features
+
+- **themes:** added colors utils, shade variables moved to core lib ([738fe0a](https://github.com/konopyanovM/thalassic/commit/738fe0a))
+- **ui:** added fluid property to button and form controls ([2458ddf](https://github.com/konopyanovM/thalassic/commit/2458ddf))
+- **ui:** theme can be set as system, theme service initialized at environment level ([9441310](https://github.com/konopyanovM/thalassic/commit/9441310))
+- **ui:** added divider component ([401d604](https://github.com/konopyanovM/thalassic/commit/401d604))
+
+### 🩹 Fixes
+
+- **app:** fixed core styles path ([a1436ac](https://github.com/konopyanovM/thalassic/commit/a1436ac))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.1.1 (2026-03-19)
 
 ### 🩹 Fixes
