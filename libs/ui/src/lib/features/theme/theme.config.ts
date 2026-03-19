@@ -1,11 +1,11 @@
-import { themeType } from './types';
+import { themePreference } from './types';
 
 export interface ThemeConfig {
   localStorageKey: string;
-  defaultTheme: themeType | 'system';
+  defaultTheme: themePreference;
 }
 
 export const DEFAULT_THEME_CONFIG: ThemeConfig = {
   defaultTheme: 'system',
-  localStorageKey: 'tls-theme',
+  localStorageKey: 'tls-theme-preference',
 };
