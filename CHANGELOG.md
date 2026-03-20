@@ -1,3 +1,13 @@
+## 0.3.1 (2026-03-20)
+
+### 🩹 Fixes
+
+- **ui:** fixed button background opacity and z index ([f08f395](https://github.com/konopyanovM/thalassic/commit/f08f395))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.3.0 (2026-03-20)
 
 ### 🚀 Features
