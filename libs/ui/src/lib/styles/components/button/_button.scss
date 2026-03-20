@@ -4,6 +4,7 @@
   --tls-button-border-width: 1px;
 
   position: relative;
+  z-index: 1;
 
   display: inline-flex;
   justify-content: center;
@@ -12,6 +13,9 @@
 
   cursor: pointer;
   user-select: none;
+
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
 
   transition: color var(--motion-fast) var(--motion-ease-in-out);
 
