@@ -1,3 +1,13 @@
+## 0.3.0 (2026-03-20)
+
+### 🚀 Features
+
+- **ui:** added button directive ([632d312](https://github.com/konopyanovM/thalassic/commit/632d312))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.2.0 (2026-03-19)
 
 ### 🚀 Features
