@@ -2,7 +2,7 @@
   <a
     role="link"
     [class]="classes()"
-    [href]="href()"
+    [attr.href]="href()"
     [tabindex]="tabindex()"
     [attr.aria-disabled]="disabled()"
   >
@@ -23,22 +23,19 @@
 
 <!-- Content -->
 <ng-template #contentTemplate>
-  <span class="tls-button__content">
-    @if (icon()) {
-      @if (isIconString()) {
-        <tls-icon [iconSrc]="String(icon())" />
-      } @else {
-        <ng-container *ngTemplateOutlet="projectedContentTemplate"></ng-container>
-      }
+  @if (icon()) {
+    @if (isIconString()) {
+      <tls-icon [iconSrc]="String(icon())" />
     } @else {
-      @if (label()) {
-        {{ label() }}
-      } @else {
-        <ng-container *ngTemplateOutlet="projectedContentTemplate"></ng-container>
-      }
+      <ng-container *ngTemplateOutlet="projectedContentTemplate"></ng-container>
     }
-  </span>
-  <div class="tls-button__background"></div>
+  } @else {
+    @if (label()) {
+      {{ label() }}
+    } @else {
+      <ng-container *ngTemplateOutlet="projectedContentTemplate"></ng-container>
+    }
+  }
 </ng-template>
 
 <ng-template #projectedContentTemplate>

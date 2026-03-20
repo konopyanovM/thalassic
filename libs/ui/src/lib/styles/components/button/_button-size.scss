@@ -1,28 +1,26 @@
-:host {
-  .tls-button {
-    --tls-button-width: auto;
+.tls-button {
+  --tls-button-width: auto;
 
-    width: var(--tls-button-width);
-    height: var(--tls-button-height);
-    padding-inline: var(--tls-button-padding-inline);
+  width: var(--tls-button-width);
+  height: var(--tls-button-height);
+  padding-inline: var(--tls-button-padding-inline);
 
-    font-size: var(--tls-button-font-size);
-    font-weight: var(--tls-button-font-weight);
-    line-height: var(--tls-button-line-height);
-    letter-spacing: var(--tls-button-letter-spacing);
+  font-size: var(--tls-button-font-size);
+  font-weight: var(--tls-button-font-weight);
+  line-height: var(--tls-button-line-height);
+  letter-spacing: var(--tls-button-letter-spacing);
 
-    &.tls-button--icon-only {
-      padding-inline: 0;
+  &.tls-button--icon-only {
+    padding-inline: 0;
 
-      aspect-ratio: 1/1;
-    }
-
-    &.tls-button--fluid {
-      --tls-button-width: 100%;
-    }
+    aspect-ratio: 1/1;
   }
 
-  &:has(.tls-button.tls-button--sm) {
+  &.tls-button--fluid {
+    --tls-button-width: 100%;
+  }
+
+  &.tls-button--sm {
     --tls-button-height: var(--control-height-sm);
     --tls-button-padding-inline: var(--spacing-3);
 
@@ -32,7 +30,7 @@
     --tls-button-letter-spacing: var(--font-label-small-letter-spacing);
   }
 
-  &:has(.tls-button.tls-button--md) {
+  &.tls-button--md {
     --tls-button-height: var(--control-height-md);
     --tls-button-padding-inline: var(--spacing-4);
 
@@ -42,7 +40,7 @@
     --tls-button-letter-spacing: var(--font-label-medium-letter-spacing);
   }
 
-  &:has(.tls-button.tls-button--lg) {
+  &.tls-button--lg {
     --tls-button-height: var(--control-height-lg);
     --tls-button-padding-inline: var(--spacing-5);
 

@@ -1,0 +1,136 @@
+.tls-button {
+  @mixin hover-focus-state {
+    &:not(.tls-button--disabled):hover,
+    &:not(.tls-button--disabled):focus-visible {
+      @content;
+    }
+  }
+  
+  @mixin active-state {
+    &:not(.tls-button--disabled):active {
+      @content;
+    }
+  }
+
+  // Appearances
+  &--filled {
+    color: var(--tls-button-on-color);
+
+    &::before {
+      background-color: var(--tls-button-color);
+    }
+
+    @include hover-focus-state {
+      &::before {
+        opacity: 0.85;
+      }
+    }
+
+    @include active-state {
+      &::before {
+        opacity: 0.75;
+      }
+    }
+  }
+
+  &--outlined {
+    color: var(--tls-button-color);
+
+    &::before {
+      background-color: var(--tls-button-color);
+
+      opacity: 0;
+    }
+
+    &::after {
+      border: var(--tls-button-border-width) solid var(--tls-button-color);
+
+      transition: border-color var(--motion-fast) var(--motion-ease-in-out);
+    }
+
+    @include hover-focus-state {
+      &::before {
+        opacity: 0.075;
+      }
+    }
+
+    @include active-state {
+      &::before {
+        opacity: 0.15;
+      }
+    }
+  }
+
+  &--text {
+    color: var(--tls-button-color);
+
+    &::before {
+      background-color: var(--tls-button-color);
+
+      opacity: 0;
+    }
+
+    @include hover-focus-state {
+      &::before {
+        opacity: 0.075;
+      }
+    }
+
+    @include active-state {
+      &::before {
+        opacity: 0.15;
+      }
+    }
+  }
+
+  &--elevated {
+    color: var(--tls-button-color);
+
+    transition: box-shadow var(--motion-fast) var(--motion-ease-in-out);
+
+    &::before {
+      background-color: var(--tls-button-color);
+
+      opacity: 0;
+    }
+
+    &::after {
+      box-shadow: var(--shadow-sm);
+    }
+
+    @include hover-focus-state {
+      &::before {
+        opacity: 0.075;
+      }
+    }
+
+    @include active-state {
+      &::before {
+        opacity: 0.15;
+      }
+
+      &::after {
+        box-shadow: var(--shadow-xs);
+      }
+    }
+  }
+
+  &--disabled {
+    color: var(--tls-button-on-color);
+
+    cursor: not-allowed;
+
+    &::before {
+      opacity: 1;
+
+      transition: none;
+    }
+
+    &::after {
+      border: var(--tls-button-border-width) solid var(--color-outline);
+      box-shadow: none;
+
+      transition: none;
+    }
+  }
+}

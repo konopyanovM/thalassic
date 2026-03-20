@@ -10,8 +10,8 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Icon } from '../icon';
-import { BUTTON_CONFIG } from './button.token';
-import { buttonAppearance, buttonColor, buttonSize, buttonType } from './button.types';
+import { ButtonBase } from './button.base';
+import { buttonType } from './button.types';
 
 @Component({
   selector: 'tls-button',
@@ -20,12 +20,13 @@ import { buttonAppearance, buttonColor, buttonSize, buttonType } from './button.
   host: {
     '[tabindex]': '-1',
   },
-  styleUrls: ['./button.scss', './button-appearance.scss', 'button-color.scss', 'button-size.scss'],
+  styleUrl: './button.scss',
 })
-export class Button {
+export class Button extends ButtonBase {
   // Injections
   private _routerLink = inject(RouterLink, { optional: true });
-  private _config = inject(BUTTON_CONFIG);
+
+  protected override APPLY_HOST_CLASSES = false;
 
   // Inputs
   /** The text label displayed inside the button. Takes priority over projected content. */
@@ -33,33 +34,21 @@ export class Button {
 
   public readonly type: InputSignal<buttonType> = input<buttonType>(this._config.type);
 
-  public readonly disabled: InputSignalWithTransform<boolean, unknown> = input(false, {
-    transform: booleanAttribute,
-  });
-
   /**
    * Icon to display on the button. Accepts:
    * - A string icon name to render a specific icon.
    * - An empty string or boolean `true` to render an icon-only button (using a projected icon).
    * - `false` to render no icon.
    */
-  public readonly icon: InputSignalWithTransform<string | boolean, unknown> = input(false, {
-    transform: (value: unknown) => {
-      if (typeof value === 'string' && value === '') return true;
-      else if (typeof value === 'string') return value;
-      else return booleanAttribute(value);
+  public override readonly icon: InputSignalWithTransform<string | boolean, unknown> = input(
+    false,
+    {
+      transform: (value: unknown) => {
+        if (typeof value === 'string' && value === '') return true;
+        else if (typeof value === 'string') return value;
+        else return booleanAttribute(value);
+      },
     },
-  });
-  public readonly color: InputSignal<buttonColor> = input<buttonColor>(this._config.color);
-  public readonly appearance: InputSignal<buttonAppearance> = input<buttonAppearance>(
-    this._config.appearance,
-  );
-  public readonly size: InputSignal<buttonSize> = input<buttonSize>(this._config.size);
-
-  /** Whether the button stretches to fill its container's width. */
-  public readonly fluid: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
-    this._config.fluid,
-    { transform: booleanAttribute },
   );
 
   /** An optional URL that causes the button to render as an anchor link. */
@@ -69,21 +58,6 @@ export class Button {
   // Computed
   protected isLink = computed<boolean>(() => Boolean(this._routerLink || this.href()));
   protected isIconString = computed<boolean>(() => typeof this.icon() === 'string');
-
-  protected classes = computed(() => {
-    const className = 'tls-button';
-
-    const array: string[] = [className];
-
-    array.push(`${className}--${this.color()}`);
-    array.push(`${className}--${this.appearance()}`);
-    array.push(`${className}--${this.size()}`);
-    if (this.disabled()) array.push(`${className}--disabled`);
-    if (this.icon()) array.push(`${className}--icon-only`);
-    if (this.fluid()) array.push(`${className}--fluid`);
-
-    return array;
-  });
 
   protected readonly String = String;
 }
