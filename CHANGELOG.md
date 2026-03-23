@@ -1,3 +1,13 @@
+## 0.5.0 (2026-03-23)
+
+### 🚀 Features
+
+- **ui:** added rounded property to button ([d22661c](https://github.com/konopyanovM/thalassic/commit/d22661c))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.4.1 (2026-03-23)
 
 ### 🩹 Fixes
