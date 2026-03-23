@@ -16,7 +16,7 @@ import { RADIO_BUTTON_CONFIG } from './radio-button.token';
   imports: [],
   templateUrl: './radio-button.html',
   host: {
-    '[class]': 'classes()',
+    '[class]': 'hostClasses()',
     '[tabindex]': '-1',
   },
 })
@@ -32,7 +32,7 @@ export class RadioButton extends ValueFormControl<unknown> {
 
   protected readonly checked: Signal<boolean> = computed(() => this.radioValue() === this.value());
 
-  protected readonly classes: Signal<string[]> = computed(() => {
+  protected readonly hostClasses: Signal<string[]> = computed(() => {
     const className = this.CLASS_NAME;
 
     const array: string[] = [className];

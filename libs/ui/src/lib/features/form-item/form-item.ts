@@ -7,7 +7,7 @@ import { FORM_ITEM_CONFIG } from './form-item.token';
   selector: 'tls-form-item',
   imports: [],
   templateUrl: './form-item.html',
-  host: { '[class]': 'classes()' },
+  host: { '[class]': 'hostClasses()' },
 })
 export class FormItem {
   // Injections
@@ -26,7 +26,7 @@ export class FormItem {
     return Boolean(this.control()?.required());
   });
 
-  protected classes = computed(() => {
+  protected hostClasses = computed(() => {
     const className = 'tls-form-item';
 
     const array = [className];

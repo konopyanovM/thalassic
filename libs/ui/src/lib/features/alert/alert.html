@@ -1,0 +1,9 @@
+<div class="tls-alert-icon"></div>
+<div class="tls-alert-body">
+  @if (!hideLabel()) {
+    <span class="tls-alert-body__label">{{ displayLabel() }}</span>
+  }
+  <span class="tls-alert-body__content">
+    <ng-content></ng-content>
+  </span>
+</div>

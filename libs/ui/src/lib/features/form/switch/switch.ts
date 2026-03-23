@@ -18,7 +18,7 @@ import { switchColor } from './switch.types';
   templateUrl: './switch.html',
   host: {
     role: 'switch',
-    '[class]': 'classes()',
+    '[class]': 'hostClasses()',
     '[tabindex]': 'disabled() ? -1 : tabindex()',
     '[attr.aria-checked]': 'checked()',
     '[attr.aria-disabled]': 'disabled()',
@@ -40,7 +40,7 @@ export class Switch extends CheckboxFormControl {
   public readonly color: InputSignal<switchColor> = input<switchColor>(this._config.color);
   public readonly tabindex: InputSignal<string | number> = input<string | number>(0);
 
-  protected readonly classes: Signal<string[]> = computed(() => {
+  protected readonly hostClasses: Signal<string[]> = computed(() => {
     const className = this.CLASS_NAME;
 
     const array: string[] = [className];

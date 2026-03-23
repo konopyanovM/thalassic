@@ -20,7 +20,7 @@ import { PASSWORD_CONFIG } from './password.token';
   templateUrl: './password.html',
   styleUrl: './password.scss',
   host: {
-    '[class]': 'classes()',
+    '[class]': 'hostClasses()',
   },
   providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => Password) }],
 })
@@ -37,7 +37,7 @@ export class Password extends ValueFormControl<string> {
     { transform: booleanAttribute },
   );
 
-  protected readonly classes: Signal<string[]> = computed(() => {
+  protected readonly hostClasses: Signal<string[]> = computed(() => {
     const className = 'tls-form-control-group';
 
     const array: string[] = [className];

@@ -17,7 +17,7 @@ import { CHECKBOX_CONFIG } from './checkbox.token';
   templateUrl: './checkbox.html',
   host: {
     role: 'checkbox',
-    '[class]': 'classes()',
+    '[class]': 'hostClasses()',
     '[tabindex]': '-1',
   },
 })
@@ -32,7 +32,7 @@ export class Checkbox extends CheckboxFormControl {
   public readonly inputId = input<string>();
   public readonly tabindex: InputSignal<string | number> = input<string | number>(0);
 
-  protected readonly classes: Signal<string[]> = computed(() => {
+  protected readonly hostClasses: Signal<string[]> = computed(() => {
     const className = this.CLASS_NAME;
 
     const array: string[] = [className];

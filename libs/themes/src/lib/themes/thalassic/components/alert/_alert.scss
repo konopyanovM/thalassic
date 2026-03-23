@@ -1,0 +1,25 @@
+.tls-alert {
+  --tls-alert-padding: var(--spacing-4);
+  --tls-alert-border-width: 1px;
+  --tls-alert-border-radius: var(--radius-sm);
+  --tls-alert-label-font-weight: var(--font-weight-bold);
+
+  padding: var(--tls-alert-padding);
+
+  display: flex;
+
+  border-radius: var(--tls-alert-border-radius);
+  border: var(--tls-alert-border-width) solid var(--tls-alert-border-color);
+
+  color: var(--tls-alert-color);
+  background-color: var(--tls-alert-background-color);
+
+  &-body {
+    &__label {
+      font-weight: var(--tls-alert-label-font-weight);
+    }
+
+    &__content {
+    }
+  }
+}

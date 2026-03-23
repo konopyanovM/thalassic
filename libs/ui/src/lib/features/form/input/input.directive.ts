@@ -14,7 +14,7 @@ import { inputSize } from './input.types';
 @Directive({
   selector: '[tlsInput]',
   host: {
-    '[class]': 'classes()',
+    '[class]': 'hostClasses()',
   },
 })
 export class InputDirective {
@@ -27,7 +27,7 @@ export class InputDirective {
     { transform: booleanAttribute },
   );
 
-  protected readonly classes: Signal<string[]> = computed(() => {
+  protected readonly hostClasses: Signal<string[]> = computed(() => {
     const className = 'tls-form-control';
 
     const array: string[] = [className];

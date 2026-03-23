@@ -12,9 +12,9 @@
   --tls-switch-border-width: 1px;
   --tls-switch-border-radius: 24px;
 
-  --tls-switch-color: var(--color-surface-variant);
-  --tls-switch-on-color: var(--color-surface);
-  --tls-switch-border-color: var(--tls-switch-color);
+  --tls-switch-track-color: var(--color-surface-variant);
+  --tls-switch-handle-color: var(--color-surface);
+  --tls-switch-border-color: var(--tls-switch-track-color);
 
   width: var(--tls-switch-width);
   height: var(--tls-switch-height);
@@ -24,7 +24,7 @@
   border: var(--tls-switch-border-width) solid var(--tls-switch-border-color);
   border-radius: var(--tls-switch-border-radius);
 
-  background-color: var(--tls-switch-color);
+  background-color: var(--tls-switch-track-color);
 
   cursor: pointer;
 
@@ -50,7 +50,7 @@
 
     border-radius: 50%;
 
-    background-color: var(--tls-switch-on-color);
+    background-color: var(--tls-switch-handle-color);
 
     box-shadow: var(--shadow-xs);
 

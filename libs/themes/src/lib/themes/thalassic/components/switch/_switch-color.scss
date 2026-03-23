@@ -1,36 +1,36 @@
 .tls-switch {
   &.tls-switch--checked.tls-switch--primary {
-    --tls-switch-color: var(--color-primary);
-    --tls-switch-on-color: var(--color-on-primary);
+    --tls-switch-track-color: var(--color-primary);
+    --tls-switch-handle-color: var(--color-on-primary);
   }
 
   &.tls-switch--checked.tls-switch--secondary {
-    --tls-switch-color: var(--color-secondary);
-    --tls-switch-on-color: var(--color-on-secondary);
+    --tls-switch-track-color: var(--color-secondary);
+    --tls-switch-handle-color: var(--color-on-secondary);
   }
 
   &.tls-switch--checked.tls-switch--tertiary {
-    --tls-switch-color: var(--color-tertiary);
-    --tls-switch-on-color: var(--color-on-tertiary);
+    --tls-switch-track-color: var(--color-tertiary);
+    --tls-switch-handle-color: var(--color-on-tertiary);
   }
 
   &.tls-switch--checked.tls-switch--success {
-    --tls-switch-color: var(--color-success);
-    --tls-switch-on-color: var(--color-on-success);
+    --tls-switch-track-color: var(--color-success);
+    --tls-switch-handle-color: var(--color-on-success);
   }
 
   &.tls-switch--checked.tls-switch--info {
-    --tls-switch-color: var(--color-info);
-    --tls-switch-on-color: var(--color-on-info);
+    --tls-switch-track-color: var(--color-info);
+    --tls-switch-handle-color: var(--color-on-info);
   }
 
   &.tls-switch--checked.tls-switch--warning {
-    --tls-switch-color: var(--color-warning);
-    --tls-switch-on-color: var(--color-on-warning);
+    --tls-switch-track-color: var(--color-warning);
+    --tls-switch-handle-color: var(--color-on-warning);
   }
 
   &.tls-switch--checked.tls-switch--danger {
-    --tls-switch-color: var(--color-danger);
-    --tls-switch-on-color: var(--color-on-danger);
+    --tls-switch-track-color: var(--color-danger);
+    --tls-switch-handle-color: var(--color-on-danger);
   }
 }
