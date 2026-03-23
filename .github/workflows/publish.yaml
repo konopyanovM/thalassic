@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-  workflow_dispatch:
 
 # Prevent concurrent publishes
 concurrency:
@@ -18,8 +17,8 @@ jobs:
     if: contains(github.event.head_commit.message, 'chore(release)')
 
     permissions:
+      id-token: write
       contents: read
-      id-token: write # needed for npm provenance
 
     steps:
       - name: Checkout
@@ -46,5 +45,4 @@ jobs:
       - name: Publish packages
         run: pnpm nx release publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
