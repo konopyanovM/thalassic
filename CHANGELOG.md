@@ -1,3 +1,17 @@
+## 0.4.0 (2026-03-23)
+
+### 🚀 Features
+
+- **ui:** added alert component ([a582ace](https://github.com/konopyanovM/thalassic/commit/a582ace))
+
+### 🩹 Fixes
+
+- **ui:** password toggle button type set to button ([17e2e21](https://github.com/konopyanovM/thalassic/commit/17e2e21))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.3.1 (2026-03-20)
 
 ### 🩹 Fixes
