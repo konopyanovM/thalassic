@@ -16,7 +16,6 @@ import { switchColor } from './switch.types';
 @Component({
   selector: 'tls-switch',
   templateUrl: './switch.html',
-  styleUrls: ['./switch.scss', 'switch-color.scss'],
   host: {
     role: 'switch',
     '[class]': 'classes()',

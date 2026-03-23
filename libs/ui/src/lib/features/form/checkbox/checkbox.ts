@@ -15,7 +15,6 @@ import { CHECKBOX_CONFIG } from './checkbox.token';
   selector: 'tls-checkbox',
   imports: [],
   templateUrl: './checkbox.html',
-  styleUrl: './checkbox.scss',
   host: {
     role: 'checkbox',
     '[class]': 'classes()',

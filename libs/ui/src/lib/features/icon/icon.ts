@@ -1,14 +1,14 @@
 import { Component, computed, inject, input, InputSignal, Signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { SafeHtml } from '@angular/platform-browser';
-import { ICON_CONFIG } from './icon.token';
 import { IconService } from './icon.service';
+import { ICON_CONFIG } from './icon.token';
 
 @Component({
   selector: 'tls-icon',
   imports: [],
   templateUrl: './icon.html',
-  styleUrl: './icon.scss',
+  host: { class: 'tls-icon' },
 })
 export class Icon {
   // Injections

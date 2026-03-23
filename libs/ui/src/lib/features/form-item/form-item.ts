@@ -7,7 +7,6 @@ import { FORM_ITEM_CONFIG } from './form-item.token';
   selector: 'tls-form-item',
   imports: [],
   templateUrl: './form-item.html',
-  styleUrl: './form-item.scss',
   host: { '[class]': 'classes()' },
 })
 export class FormItem {

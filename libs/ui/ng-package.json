@@ -3,12 +3,5 @@
   "dest": "../../dist/libs/ui",
   "lib": {
     "entryFile": "src/index.ts"
-  },
-  "assets": [
-    {
-      "input": "src/lib",
-      "glob": "**/*.scss",
-      "output": "./"
-    }
-  ]
+  }
 }

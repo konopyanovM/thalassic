@@ -1,6 +1,6 @@
-@use '../../../styles/mixins' as mixins;
+@use '../mixins/index' as mixins;
 
-:host.tls-radio-button {
+.tls-radio-button {
   --tls-radio-button-size: 20px;
   --tls-radio-button-circle-size: 12px;
   --tls-radio-button-border-size: 1px;

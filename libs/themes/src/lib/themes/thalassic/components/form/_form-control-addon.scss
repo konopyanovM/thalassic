@@ -1,0 +1,8 @@
+@use '../../mixins' as mixins;
+
+.tls-form-control-addon {
+  &:focus-visible {
+    @include mixins.focus-ring;
+    border-radius: var(--radius-md);
+  }
+}

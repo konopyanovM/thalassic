@@ -1,6 +1,6 @@
-@use '../../../styles/mixins' as mixins;
+@use '../../mixins' as mixins;
 
-:host.tls-switch {
+.tls-switch {
   --tls-switch-width: 48px;
   --tls-switch-height: var(--control-height-sm);
   --tls-switch-handle-gap: 4px;
@@ -31,6 +31,7 @@
   transition:
     background-color var(--motion-fast) var(--motion-ease-in-out),
     border-color var(--motion-fast) var(--motion-ease-in-out),
+    box-shadow var(--motion-fast) var(--motion-ease-in-out),
     filter var(--motion-fast) var(--motion-ease-in-out);
 
   &:focus-visible {
@@ -78,5 +79,7 @@
 
   &:not(.tls-switch--disabled).tls-switch--touched.tls-switch--invalid {
     --tls-switch-border-color: var(--color-danger);
+
+    box-shadow: 0 0 4px -1px var(--color-danger);
   }
 }

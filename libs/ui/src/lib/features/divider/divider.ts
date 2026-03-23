@@ -15,7 +15,6 @@ import { dividerContentPosition, dividerOrientation, dividerVariant } from './di
   selector: 'tls-divider',
   imports: [],
   templateUrl: './divider.html',
-  styleUrl: './divider.scss',
   host: {
     role: 'separator',
     '[aria-orientation]': 'orientation()',

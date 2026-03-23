@@ -1,6 +1,6 @@
-@use '../../../styles/mixins' as mixins;
+@use '../mixins/index' as mixins;
 
-:host.tls-checkbox {
+.tls-checkbox {
   --tls-checkbox-size: 20px;
   --tls-checkbox-border-width: 1px;
   --tls-checkbox-border-color: var(--color-primary);

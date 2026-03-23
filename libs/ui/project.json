@@ -49,8 +49,7 @@
         "styles": [
           "libs/core/src/lib/styles/index.scss",
           "libs/themes/src/lib/utils/index.scss",
-          "libs/themes/src/lib/themes/thalassic/index.scss",
-          "libs/ui/src/lib/styles/index.scss"
+          "libs/themes/src/lib/themes/thalassic/index.scss"
         ]
       },
       "configurations": {
