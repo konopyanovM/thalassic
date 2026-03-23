@@ -14,6 +14,10 @@
     padding-inline: 0;
 
     aspect-ratio: 1/1;
+
+    &.tls-button--rounded {
+      --tls-button-border-radius: 50%;
+    }
   }
 
   &.tls-button--fluid {
@@ -28,6 +32,10 @@
     --tls-button-font-weight: var(--font-label-small-weight);
     --tls-button-line-height: var(--font-label-small-line-height);
     --tls-button-letter-spacing: var(--font-label-small-letter-spacing);
+
+    &.tls-button--rounded {
+      --tls-button-border-radius: var(--radius-xl);
+    }
   }
 
   &.tls-button--md {
@@ -38,6 +46,10 @@
     --tls-button-font-weight: var(--font-label-medium-weight);
     --tls-button-line-height: var(--font-label-medium-line-height);
     --tls-button-letter-spacing: var(--font-label-medium-letter-spacing);
+
+    &.tls-button--rounded {
+      --tls-button-border-radius: var(--radius-2xl);
+    }
   }
 
   &.tls-button--lg {
@@ -48,5 +60,9 @@
     --tls-button-font-weight: var(--font-label-large-weight);
     --tls-button-line-height: var(--font-label-large-line-height);
     --tls-button-letter-spacing: var(--font-label-large-letter-spacing);
+
+    &.tls-button--rounded {
+      --tls-button-border-radius: var(--radius-3xl);
+    }
   }
 }

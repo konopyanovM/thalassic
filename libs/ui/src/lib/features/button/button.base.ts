@@ -32,6 +32,10 @@ export abstract class ButtonBase {
   public readonly color: InputSignal<buttonColor> = input<buttonColor>(this._config.color);
   public readonly variant: InputSignal<buttonVariant> = input<buttonVariant>(this._config.variant);
   public readonly size: InputSignal<buttonSize> = input<buttonSize>(this._config.size);
+  public readonly rounded: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    false,
+    { transform: booleanAttribute },
+  );
 
   /** Whether the button stretches to fill its container's width. */
   public readonly fluid: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
@@ -50,6 +54,7 @@ export abstract class ButtonBase {
     if (this.disabled()) array.push(`${className}--disabled`);
     if (this.icon()) array.push(`${className}--icon-only`);
     if (this.fluid()) array.push(`${className}--fluid`);
+    if (this.rounded()) array.push(`${className}--rounded`);
 
     return array;
   });

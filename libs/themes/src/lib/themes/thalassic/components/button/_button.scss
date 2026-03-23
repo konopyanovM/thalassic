@@ -2,6 +2,7 @@
 
 .tls-button {
   --tls-button-border-width: 1px;
+  --tls-button-border-radius: var(--radius-sm);
 
   position: relative;
   z-index: 1;
@@ -14,7 +15,7 @@
   cursor: pointer;
   user-select: none;
 
-  border-radius: var(--radius-md);
+  border-radius: var(--tls-button-border-radius);
   background-color: var(--color-surface);
 
   transition: color var(--motion-fast) var(--motion-ease-in-out);
@@ -33,7 +34,7 @@
     z-index: -1;
 
     border: var(--tls-button-border-width) solid var(--tls-button-color);
-    border-radius: var(--radius-md);
+    border-radius: var(--tls-button-border-radius);
   }
 
   &::before {
@@ -44,7 +45,7 @@
 
   &::after {
     border: none;
-    border-radius: var(--radius-md);
+    border-radius: var(--tls-button-border-radius);
 
     transition:
       border-color var(--motion-fast) var(--motion-ease-in-out),

@@ -15,6 +15,8 @@ const meta: Meta<ButtonComponent> = {
     variant: 'filled',
     size: 'md',
     fluid: false,
+    icon: false,
+    rounded: false,
   },
   argTypes: {
     color: {
