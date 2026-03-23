@@ -1,3 +1,13 @@
+## 0.4.1 (2026-03-23)
+
+### 🩹 Fixes
+
+- **ui:** button icon input changed ([2cf65fe](https://github.com/konopyanovM/thalassic/commit/2cf65fe))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.4.0 (2026-03-23)
 
 ### 🚀 Features
