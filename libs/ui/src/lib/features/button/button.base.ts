@@ -6,7 +6,6 @@ import {
   input,
   InputSignal,
   InputSignalWithTransform,
-  Signal,
 } from '@angular/core';
 import { BUTTON_CONFIG } from './button.token';
 import { buttonColor, buttonSize, buttonVariant } from './button.types';
@@ -26,7 +25,10 @@ export abstract class ButtonBase {
     transform: booleanAttribute,
   });
 
-  public abstract readonly icon: Signal<string | boolean>;
+  public readonly icon: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    false,
+    { transform: booleanAttribute },
+  );
   public readonly color: InputSignal<buttonColor> = input<buttonColor>(this._config.color);
   public readonly variant: InputSignal<buttonVariant> = input<buttonVariant>(this._config.variant);
   public readonly size: InputSignal<buttonSize> = input<buttonSize>(this._config.size);

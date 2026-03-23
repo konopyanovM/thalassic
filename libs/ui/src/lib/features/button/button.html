@@ -23,18 +23,10 @@
 
 <!-- Content -->
 <ng-template #contentTemplate>
-  @if (icon()) {
-    @if (isIconString()) {
-      <tls-icon [iconSrc]="String(icon())" />
-    } @else {
-      <ng-container *ngTemplateOutlet="projectedContentTemplate"></ng-container>
-    }
+  @if (label() && !icon()) {
+    {{ label() }}
   } @else {
-    @if (label()) {
-      {{ label() }}
-    } @else {
-      <ng-container *ngTemplateOutlet="projectedContentTemplate"></ng-container>
-    }
+    <ng-container *ngTemplateOutlet="projectedContentTemplate"></ng-container>
   }
 </ng-template>
 
