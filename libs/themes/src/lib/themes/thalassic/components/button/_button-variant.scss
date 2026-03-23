@@ -5,14 +5,14 @@
       @content;
     }
   }
-  
+
   @mixin active-state {
     &:not(.tls-button--disabled):active {
       @content;
     }
   }
 
-  // Appearances
+  // Variants
   &--filled {
     color: var(--tls-button-on-color);
 

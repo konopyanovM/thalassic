@@ -1,8 +1,8 @@
 import { argsToTemplate, Meta, StoryObj } from '@storybook/angular';
 import {
-  STORY_APPEARANCE_OPTIONS,
   STORY_COLOR_OPTIONS,
   STORY_SIZE_OPTIONS,
+  STORY_VARIANT_OPTIONS,
 } from '../../../../.storybook/constants';
 import { Button as ButtonComponent } from './button';
 
@@ -12,7 +12,7 @@ const meta: Meta<ButtonComponent> = {
   args: {
     label: 'Button',
     disabled: false,
-    appearance: 'filled',
+    variant: 'filled',
     size: 'md',
     fluid: false,
   },
@@ -21,9 +21,9 @@ const meta: Meta<ButtonComponent> = {
       control: { type: 'select' },
       options: STORY_COLOR_OPTIONS,
     },
-    appearance: {
+    variant: {
       control: { type: 'select' },
-      options: STORY_APPEARANCE_OPTIONS,
+      options: STORY_VARIANT_OPTIONS,
     },
     size: {
       control: { type: 'select' },

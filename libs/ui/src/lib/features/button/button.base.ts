@@ -9,7 +9,7 @@ import {
   Signal,
 } from '@angular/core';
 import { BUTTON_CONFIG } from './button.token';
-import { buttonAppearance, buttonColor, buttonSize } from './button.types';
+import { buttonColor, buttonSize, buttonVariant } from './button.types';
 
 @Directive({
   host: {
@@ -28,9 +28,7 @@ export abstract class ButtonBase {
 
   public abstract readonly icon: Signal<string | boolean>;
   public readonly color: InputSignal<buttonColor> = input<buttonColor>(this._config.color);
-  public readonly appearance: InputSignal<buttonAppearance> = input<buttonAppearance>(
-    this._config.appearance,
-  );
+  public readonly variant: InputSignal<buttonVariant> = input<buttonVariant>(this._config.variant);
   public readonly size: InputSignal<buttonSize> = input<buttonSize>(this._config.size);
 
   /** Whether the button stretches to fill its container's width. */
@@ -45,7 +43,7 @@ export abstract class ButtonBase {
     const array: string[] = [className];
 
     array.push(`${className}--${this.color()}`);
-    array.push(`${className}--${this.appearance()}`);
+    array.push(`${className}--${this.variant()}`);
     array.push(`${className}--${this.size()}`);
     if (this.disabled()) array.push(`${className}--disabled`);
     if (this.icon()) array.push(`${className}--icon-only`);

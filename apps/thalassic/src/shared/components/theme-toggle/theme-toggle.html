@@ -1,7 +1,7 @@
-<tls-button icon appearance="outlined" color="secondary" (click)="toggle()">
-  @if(currentTheme() === 'light') {
-  <span class="material-symbols-outlined">light_mode</span>
+<tls-button icon variant="outlined" color="secondary" (click)="toggle()">
+  @if (currentTheme() === 'light') {
+    <span class="material-symbols-outlined">light_mode</span>
   } @else {
-  <span class="material-symbols-outlined">dark_mode</span>
+    <span class="material-symbols-outlined">dark_mode</span>
   }
 </tls-button>

@@ -1,8 +1,8 @@
-import { buttonAppearance, buttonColor, buttonSize, buttonType } from './button.types';
+import { buttonColor, buttonSize, buttonType, buttonVariant } from './button.types';
 
 export interface ButtonConfig {
   color: buttonColor;
-  appearance: buttonAppearance;
+  variant: buttonVariant;
   size: buttonSize;
   type: buttonType;
   fluid: boolean;
@@ -10,7 +10,7 @@ export interface ButtonConfig {
 
 export const DEFAULT_BUTTON_CONFIG: ButtonConfig = {
   color: 'primary',
-  appearance: 'filled',
+  variant: 'filled',
   size: 'md',
   type: 'button',
   fluid: false,
