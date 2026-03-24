@@ -1,5 +1,5 @@
 :root {
   transition:
-    color var(--motion-default) var(--motion-ease-out),
-    background-color var(--motion-default) var(--motion-ease-out);
+    color var(--motion-theme),
+    background-color var(--motion-theme);
 }

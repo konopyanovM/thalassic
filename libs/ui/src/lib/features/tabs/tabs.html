@@ -1,0 +1,20 @@
+<ul class="tls-tabs-header">
+  @for (tab of tabs(); track tab) {
+    <li
+      class="tls-tabs-header__item"
+      [class.tls-tabs-header__item--active]="tab.value() === selected()"
+    >
+      <button
+        class="tls-tabs-header__item-button"
+        role="tab"
+        (click)="selected.set(tab.value())"
+        [attr.aria-selected]="tab.value() === selected()"
+      >
+        {{ tab.label() }}
+      </button>
+    </li>
+  }
+</ul>
+<div class="tls-tabs-content">
+  <ng-content></ng-content>
+</div>

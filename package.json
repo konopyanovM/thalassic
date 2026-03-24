@@ -10,6 +10,7 @@
   "private": true,
   "dependencies": {
     "@angular-devkit/build-angular": "21.2.1",
+    "@angular/cdk": "^21.2.3",
     "@angular/common": "21.2.1",
     "@angular/compiler": "21.2.1",
     "@angular/core": "21.2.1",

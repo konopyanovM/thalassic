@@ -14,6 +14,8 @@ import {
   SWITCH_CONFIG,
 } from '../features';
 import { DEFAULT_DIVIDER_CONFIG, DIVIDER_CONFIG } from '../features/divider';
+import { DEFAULT_TABS_CONFIG } from '../features/tabs/tabs.config';
+import { TABS_CONFIG } from '../features/tabs/tabs.token';
 import { tlsUiConfigProvider } from '../types';
 import { mergeConfig } from '../utils';
 
@@ -42,5 +44,6 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
       useValue: mergeConfig(DEFAULT_FORM_ITEM_CONFIG, config.components.formItem),
     },
     { provide: ICON_CONFIG, useValue: mergeConfig(DEFAULT_ICON_CONFIG, config.components.icon) },
+    { provide: TABS_CONFIG, useValue: mergeConfig(DEFAULT_TABS_CONFIG, config.components.tabs) },
   ]);
 };

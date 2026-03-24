@@ -17,4 +17,9 @@
   --motion-delay-short: 50ms;
   --motion-delay-medium: 100ms;
   --motion-delay-long: 200ms;
+
+  // Theme transition
+  --motion-theme-duration: var(--motion-default);
+  --motion-theme-easing: var(--motion-ease-in-out);
+  --motion-theme: var(--motion-theme-duration) var(--motion-theme-easing);
 }

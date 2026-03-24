@@ -1,0 +1,73 @@
+.tls-tabs {
+  --tls-tabs-background-color: var(--color-surface);
+  --tls-tabs-label-color: var(--color-outline);
+  --tls-tabs-active-label-color: var(--color-primary);
+  --tls-tabs-border-color: var(--color-outline-variant);
+  --tls-tabs-border-width: 1px;
+  --tls-tabs-active-border-color: var(--color-primary);
+  --tls-tabs-active-border-width: 2px;
+  --tls-tabs-content-padding: var(--spacing-4);
+
+  background: var(--tls-tabs-background-color);
+
+  display: block;
+
+  transition:
+    border-color var(--motion-theme),
+    background-color var(--motion-theme);
+
+  overflow: clip;
+
+  .tls-tabs-header {
+    display: flex;
+
+    border-color: var(--tls-tabs-border-color);
+
+    &__item {
+      color: var(--tls-tabs-label-color);
+
+      border-color: transparent;
+
+      transition:
+        color var(--motion-fast),
+        border-color var(--motion-fast),
+        background-color var(--motion-theme);
+
+      &:has(&-link:hover, &-link:focus) {
+        background-color: var(--color-grey-95);
+      }
+
+      &.tls-tabs-header__item--active {
+        color: var(--tls-tabs-active-label-color);
+        border-color: var(--tls-tabs-active-border-color);
+      }
+
+      &-button {
+        padding: var(--spacing-3) var(--spacing-6);
+
+        // TODO: use mixin
+        font-size: var(--font-label-large-size);
+        font-weight: var(--font-label-large-weight);
+        line-height: var(--font-label-large-border-height);
+        letter-spacing: var(--font-label-large-letter-spacing);
+
+        cursor: pointer;
+
+        transition: background-color var(--motion-fast);
+      }
+    }
+  }
+
+  .tls-tabs-content {
+    padding: var(--tls-tabs-content-padding);
+
+    // Tab
+    .tls-tab {
+      display: none;
+
+      &--active {
+        display: block;
+      }
+    }
+  }
+}
