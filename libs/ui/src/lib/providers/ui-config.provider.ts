@@ -1,27 +1,34 @@
 import { EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
 import {
+  ALERT_CONFIG,
   BUTTON_CONFIG,
+  DEFAULT_ALERT_CONFIG,
   DEFAULT_BUTTON_CONFIG,
+  DEFAULT_DIVIDER_CONFIG,
   DEFAULT_FORM_ITEM_CONFIG,
   DEFAULT_ICON_CONFIG,
   DEFAULT_INPUT_CONFIG,
   DEFAULT_PASSWORD_CONFIG,
   DEFAULT_SWITCH_CONFIG,
+  DEFAULT_TABS_CONFIG,
+  DIVIDER_CONFIG,
   FORM_ITEM_CONFIG,
   ICON_CONFIG,
   INPUT_CONFIG,
   PASSWORD_CONFIG,
   SWITCH_CONFIG,
+  TABS_CONFIG,
 } from '../features';
-import { DEFAULT_DIVIDER_CONFIG, DIVIDER_CONFIG } from '../features/divider';
-import { DEFAULT_TABS_CONFIG } from '../features/tabs/tabs.config';
-import { TABS_CONFIG } from '../features/tabs/tabs.token';
 import { tlsUiConfigProvider } from '../types';
 import { mergeConfig } from '../utils';
 
 export const provideThalassicUIConfig = (config: tlsUiConfigProvider): EnvironmentProviders => {
   return makeEnvironmentProviders([
     // Components
+    {
+      provide: ALERT_CONFIG,
+      useValue: mergeConfig(DEFAULT_ALERT_CONFIG, config.components.alert),
+    },
     {
       provide: BUTTON_CONFIG,
       useValue: mergeConfig(DEFAULT_BUTTON_CONFIG, config.components.button),
