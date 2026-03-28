@@ -17,6 +17,8 @@ import { ALERT_CONFIG } from './alert.token';
   templateUrl: './alert.html',
   host: {
     '[class]': 'hostClasses()',
+    '[attr.role]': 'hostRole()',
+    '[attr.aria-label]': 'hideLabel() ? displayLabel() : null',
   },
 })
 export class Alert {
@@ -38,7 +40,7 @@ export class Alert {
     if (typeof this._config.label === 'object') {
       return this._config.label[this.color()];
     }
-    
+
     return '';
   });
 
@@ -50,5 +52,10 @@ export class Alert {
     array.push(`${className}--${this.color()}`);
 
     return array;
+  });
+
+  protected hostRole = computed(() => {
+    const urgent = ['danger', 'warning'];
+    return urgent.includes(this.color()) ? 'alert' : 'note';
   });
 }
