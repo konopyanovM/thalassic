@@ -3,7 +3,7 @@ import {
   STORY_COLOR_OPTIONS,
   STORY_SIZE_OPTIONS,
   STORY_VARIANT_OPTIONS,
-} from '../../../../.storybook/constants';
+} from '../../../.storybook/constants';
 import { Button as ButtonComponent } from './button';
 
 const meta: Meta<ButtonComponent> = {

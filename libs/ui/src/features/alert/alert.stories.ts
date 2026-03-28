@@ -1,5 +1,5 @@
 import { argsToTemplate, Meta, StoryObj } from '@storybook/angular';
-import { STORY_COLOR_OPTIONS } from '../../../../.storybook/constants';
+import { STORY_COLOR_OPTIONS } from '../../../.storybook/constants';
 import { Alert as AlertComponent } from './alert';
 
 const meta: Meta<AlertComponent> = {

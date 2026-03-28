@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { STORY_SIZE_OPTIONS } from '../../../../../.storybook/constants';
-import { STORY_FORM_CONTROL_ARGS } from '../../../../../.storybook/constants/form-control-args';
+import { STORY_SIZE_OPTIONS } from '../../../../.storybook/constants';
+import { STORY_FORM_CONTROL_ARGS } from '../../../../.storybook/constants/form-control-args';
 import { Password as PasswordComponent } from './password';
 
 const meta: Meta<PasswordComponent> = {

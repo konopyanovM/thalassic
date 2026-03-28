@@ -1,5 +1,5 @@
 import { argsToTemplate, Meta, moduleMetadata, StoryObj } from '@storybook/angular';
-import { STORY_TABS_VARIANT_OPTIONS } from '../../../../.storybook/constants';
+import { STORY_TABS_VARIANT_OPTIONS } from '../../../.storybook/constants';
 import { Tab as TabComponent } from './tab/tab';
 import { Tabs as TabsComponent } from './tabs';
 

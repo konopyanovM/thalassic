@@ -1,3 +1,3 @@
-export * from './lib/features';
-export * from './lib/providers';
-export * from './lib/types';
+export * from './features';
+export * from './providers';
+export * from './types';

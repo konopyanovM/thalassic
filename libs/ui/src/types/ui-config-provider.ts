@@ -1,4 +1,5 @@
 import {
+  AlertConfig,
   ButtonConfig,
   DividerConfig,
   FormItemConfig,
@@ -6,9 +7,8 @@ import {
   InputConfig,
   PasswordConfig,
   SwitchConfig,
+  TabsConfig,
 } from '../features';
-import { AlertConfig } from '../features/alert';
-import { TabsConfig } from '../features/tabs/tabs.config';
 
 export interface tlsUiConfigProvider {
   components: {
