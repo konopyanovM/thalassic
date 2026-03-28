@@ -47,7 +47,7 @@
         "browserTarget": "ui:build-storybook",
         "compodoc": false,
         "styles": [
-          "libs/core/src/lib/styles/index.scss",
+          "libs/core/src/styles/index.scss",
           "libs/themes/src/utils/index.scss",
           "libs/themes/src/themes/thalassic/index.scss"
         ]
@@ -67,7 +67,7 @@
         "browserTarget": "ui:build-storybook",
         "compodoc": false,
         "styles": [
-          "libs/core/src/lib/styles/index.scss",
+          "libs/core/src/styles/index.scss",
           "libs/themes/src/styles/index.scss",
           "libs/themes/src/themes/thalassic/index.scss"
         ]
