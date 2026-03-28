@@ -10,6 +10,8 @@ import {
   Signal,
   signal
 } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { Observable } from 'rxjs';
 import { DARK_THEME_CLASS, LIGHT_THEME_CLASS } from './constants';
 import { ThemeConfig } from './theme.config';
 import { THEME_CONFIG } from './theme.token';
@@ -34,6 +36,11 @@ export class ThemeService {
   // Private
   private _currentTheme = signal<themeType>('light');
   private _currentThemePreference = signal<themePreference>('light');
+
+  public onThemeChange: Observable<themeType> = toObservable<themeType>(this._currentTheme);
+  public onPreferenceChange: Observable<themePreference> = toObservable<themePreference>(
+    this._currentThemePreference,
+  );
 
   constructor() {
     this._initTheme();
