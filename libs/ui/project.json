@@ -48,8 +48,8 @@
         "compodoc": false,
         "styles": [
           "libs/core/src/lib/styles/index.scss",
-          "libs/themes/src/lib/utils/index.scss",
-          "libs/themes/src/lib/themes/thalassic/index.scss"
+          "libs/themes/src/utils/index.scss",
+          "libs/themes/src/themes/thalassic/index.scss"
         ]
       },
       "configurations": {
@@ -68,9 +68,8 @@
         "compodoc": false,
         "styles": [
           "libs/core/src/lib/styles/index.scss",
-          "libs/themes/src/lib/styles/index.scss",
-          "libs/themes/src/lib/themes/thalassic/index.scss",
-          "libs/ui/src/lib/styles/index.scss"
+          "libs/themes/src/styles/index.scss",
+          "libs/themes/src/themes/thalassic/index.scss"
         ]
       },
       "configurations": {

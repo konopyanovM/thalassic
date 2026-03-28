@@ -4,9 +4,9 @@
 @use 'core/src/lib/styles' as core;
 
 // @themes
-@use 'themes/src/lib/tools';
-@use 'themes/src/lib/utils';
-@use 'themes/src/lib/themes/thalassic';
+@use 'themes/src/tools';
+@use 'themes/src/utils';
+@use 'themes/src/themes/thalassic';
 
 // app styles
 @use './core/styles';
