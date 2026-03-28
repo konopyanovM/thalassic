@@ -1,3 +1,18 @@
+## 0.6.0 (2026-03-28)
+
+### 🚀 Features
+
+- **ui:** added tabs component ([8395302](https://github.com/konopyanovM/thalassic/commit/8395302))
+
+### 🩹 Fixes
+
+- **ui:** added alert component config ([4f888b8](https://github.com/konopyanovM/thalassic/commit/4f888b8))
+- **ui:** added role and aria label attributes to alert ([7ceea40](https://github.com/konopyanovM/thalassic/commit/7ceea40))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.5.0 (2026-03-23)
 
 ### 🚀 Features
