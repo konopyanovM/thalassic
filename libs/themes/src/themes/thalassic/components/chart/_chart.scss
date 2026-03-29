@@ -1,0 +1,19 @@
+.tls-chart {
+  --tls-chart-x-axis-color: var(--color-outline);
+  --tls-chart-x-grid-color: var(--color-outline-variant);
+  --tls-chart-x-ticks-color: var(--color-on-surface);
+
+  --tls-chart-y-axis-color: var(--color-outline);
+  --tls-chart-y-grid-color: var(--color-outline-variant);
+  --tls-chart-y-ticks-color: var(--color-on-surface);
+
+  --tls-chart-r-angle-lines-color: var(--color-outline);
+  --tls-chart-r-grid-color: var(--color-outline-variant);
+  --tls-chart-r-ticks-color: var(--color-on-surface);
+  --tls-chart-r-ticks-backdrop-color: var(--color-surface);
+  --tls-chart-r-labels-color: var(--color-on-surface);
+
+  --tls-chart-background-color: transparent;
+  --tls-chart-border-color: transparent;
+  --tls-chart-color: transparent;
+}

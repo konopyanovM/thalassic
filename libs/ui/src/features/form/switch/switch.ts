@@ -9,7 +9,7 @@ import {
   ModelSignal,
   Signal,
 } from '@angular/core';
-import { CheckboxFormControl, FORM_CONTROL } from '../../../abstract';
+import { CheckboxFormControl, FORM_CONTROL } from '../../../abstract/form';
 import { SWITCH_CONFIG } from './switch.token';
 import { switchColor } from './switch.types';
 

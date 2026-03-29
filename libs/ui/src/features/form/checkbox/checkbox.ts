@@ -8,7 +8,7 @@ import {
   ModelSignal,
   Signal,
 } from '@angular/core';
-import { CheckboxFormControl } from '../../../abstract';
+import { CheckboxFormControl } from '../../../abstract/form';
 import { CHECKBOX_CONFIG } from './checkbox.token';
 
 @Component({

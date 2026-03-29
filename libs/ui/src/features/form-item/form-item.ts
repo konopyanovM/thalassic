@@ -1,6 +1,6 @@
 import { Component, computed, contentChild, inject, input, Signal } from '@angular/core';
 import { ValidationError, WithOptionalFieldTree } from '@angular/forms/signals';
-import { FORM_CONTROL, FormControl } from '../../abstract';
+import { FORM_CONTROL, FormControl } from '../../abstract/form';
 import { FORM_ITEM_CONFIG } from './form-item.token';
 
 @Component({

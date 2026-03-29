@@ -8,7 +8,7 @@ import {
   ModelSignal,
   Signal,
 } from '@angular/core';
-import { ValueFormControl } from '../../../abstract';
+import { ValueFormControl } from '../../../abstract/form';
 import { RADIO_BUTTON_CONFIG } from './radio-button.token';
 
 @Component({

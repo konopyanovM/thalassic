@@ -11,7 +11,7 @@ import {
   ModelSignal,
   Signal,
 } from '@angular/core';
-import { FORM_CONTROL, ValueFormControl } from '../../../abstract';
+import { FORM_CONTROL, ValueFormControl } from '../../../abstract/form';
 import { inputSize } from '../input/input.types';
 import { PASSWORD_CONFIG } from './password.token';
 
