@@ -13,6 +13,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ThemeService } from '@thalassic/core';
 import {
   Chart as ChartJS,
   ChartConfigurationCustomTypesPerDataset,
@@ -20,7 +21,6 @@ import {
   ChartOptions,
 } from 'chart.js';
 import { CHART_ELEMENT } from '../../abstract/chart';
-import { ThemeService } from '../theme';
 import { ChartConfig } from './chart.config';
 import { ChartService } from './chart.service';
 import { CHART_CONFIG } from './chart.token';

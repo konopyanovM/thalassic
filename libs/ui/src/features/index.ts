@@ -11,6 +11,3 @@ export * from './form/radio-button';
 export * from './form/switch';
 export * from './icon';
 export * from './tabs';
-
-// Theme
-export * from './theme';

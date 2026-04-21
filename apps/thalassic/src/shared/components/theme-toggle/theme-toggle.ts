@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { Button, ThemeService } from '@thalassic/ui';
+import { ThemeService } from '@thalassic/core';
+import { Button } from '@thalassic/ui';
 
 @Component({
   selector: 'app-theme-toggle',
