@@ -1,0 +1,21 @@
+@for (cell of cells(); track cell; let index = $index) {
+  <input
+    #cell
+    class="tls-pin-input__cell"
+    type="text"
+    maxlength="2"
+    autocomplete="one-time-code"
+    [placeholder]="placeholder()"
+    [tabindex]="this.value().length === index ? '0' : '-1'"
+    [value]="getCellValue(cell)"
+    [disabled]="disabled()"
+    [readonly]="readonly()"
+    [attr.inputmode]="type() === 'numeric' ? 'numeric' : 'text'"
+    (input)="onInput($event, cell)"
+    (keydown)="onKeydown($event, cell)"
+    (paste)="onPaste($event, cell)"
+    (focus)="onFocus($event)"
+    (blur)="touched.set(true)"
+  />
+}
+

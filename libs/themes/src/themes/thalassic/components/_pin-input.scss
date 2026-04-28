@@ -1,0 +1,60 @@
+.tls-pin-input {
+  --tls-pin-input-size: 40px;
+  --tls-pin-input-border-color: var(--color-outline-variant);
+  --tls-pin-border-radius: var(--radius-sm);
+
+  display: inline-flex;
+  gap: var(--spacing-1);
+
+  &__cell {
+    width: var(--tls-pin-input-size);
+    height: var(--tls-pin-input-size);
+
+    text-align: center;
+
+    font-family: inherit;
+    font-size: var(--font-label-large-size);
+    font-weight: var(--font-label-large-weight);
+    line-height: var(--font-label-large-line-height);
+    letter-spacing: var(--font-label-large-letter-spacing);
+
+    border: 1px solid var(--tls-pin-input-border-color);
+    border-radius: var(--tls-pin-border-radius);
+
+    outline: none;
+
+    transition:
+      border-color var(--motion-fast) var(--motion-ease-in-out),
+      background-color var(--motion-fast) var(--motion-ease-in-out),
+      box-shadow var(--motion-fast) var(--motion-ease-in-out);
+
+    &:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 3px -1px var(--color-primary);
+
+      &::placeholder {
+        opacity: 0;
+      }
+    }
+  }
+
+  &.tls-pin-input--disabled {
+    .tls-pin-input__cell {
+      background-color: var(--color-surface-variant);
+
+      cursor: not-allowed;
+    }
+  }
+
+  &:not(.tls-pin-input--disabled).tls-pin-input--touched.tls-pin-input--invalid {
+    --tls-pin-input-border-color: var(--color-danger);
+
+    .tls-pin-input__cell {
+      color: var(--color-danger);
+
+      &::placeholder {
+        color: var(--color-danger);
+      }
+    }
+  }
+}
