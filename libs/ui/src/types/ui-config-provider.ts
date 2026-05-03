@@ -8,6 +8,7 @@ import {
   PasswordConfig,
   SwitchConfig,
   TabsConfig,
+  TooltipConfig,
 } from '../features';
 
 export interface tlsUiConfigProvider {
@@ -21,5 +22,6 @@ export interface tlsUiConfigProvider {
     formItem?: Partial<FormItemConfig>;
     icon?: Partial<IconConfig>;
     tabs?: Partial<TabsConfig>;
+    tooltip?: Partial<TooltipConfig>;
   };
 }

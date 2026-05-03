@@ -1,0 +1,14 @@
+.tls-tooltip {
+  --tls-tooltip-box-shadow: 0 2px 8px -1px var(--color-shade-30);
+  --tls-tooltip-padding: var(--spacing-3);
+  --tls-tooltip-border-radius: 8px;
+
+  padding: var(--tls-tooltip-padding);
+
+  border-radius: var(--tls-tooltip-border-radius);
+
+  color: var(--tls-tooltip-on-color);
+  background-color: var(--tls-tooltip-color);
+
+  box-shadow: var(--tls-tooltip-box-shadow);
+}

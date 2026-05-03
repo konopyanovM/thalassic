@@ -9,7 +9,7 @@ import {
   ModelSignal,
   Signal,
 } from '@angular/core';
-import { Tab } from './tab/tab';
+import { Tab } from './tab';
 import { TabsConfig } from './tabs.config';
 import { TabsService } from './tabs.service';
 import { TABS_CONFIG } from './tabs.token';

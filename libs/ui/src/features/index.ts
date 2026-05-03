@@ -12,3 +12,4 @@ export * from './form/radio-button';
 export * from './form/switch';
 export * from './icon';
 export * from './tabs';
+export * from './tooltip';

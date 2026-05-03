@@ -11,6 +11,7 @@ import {
   DEFAULT_PASSWORD_CONFIG,
   DEFAULT_SWITCH_CONFIG,
   DEFAULT_TABS_CONFIG,
+  DEFAULT_TOOLTIP_CONFIG,
   DIVIDER_CONFIG,
   FORM_ITEM_CONFIG,
   ICON_CONFIG,
@@ -18,6 +19,7 @@ import {
   PASSWORD_CONFIG,
   SWITCH_CONFIG,
   TABS_CONFIG,
+  TOOLTIP_CONFIG,
 } from '../features';
 import { tlsUiConfigProvider } from '../types';
 import { mergeConfig } from '../utils';
@@ -52,5 +54,9 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
     },
     { provide: ICON_CONFIG, useValue: mergeConfig(DEFAULT_ICON_CONFIG, config.components.icon) },
     { provide: TABS_CONFIG, useValue: mergeConfig(DEFAULT_TABS_CONFIG, config.components.tabs) },
+    {
+      provide: TOOLTIP_CONFIG,
+      useValue: mergeConfig(DEFAULT_TOOLTIP_CONFIG, config.components.tooltip),
+    },
   ]);
 };
