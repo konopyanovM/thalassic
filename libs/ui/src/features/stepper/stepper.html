@@ -9,6 +9,7 @@
         [class.tls-stepper-header__item--completed]="activeIndex() > index || completed()">
       @let id = 'tls-stepper-tab-' + step.value();
       <button
+        #stepButton
         class="tls-stepper-header-button"
         role="tab"
         type="button"
@@ -18,6 +19,7 @@
         [disabled]="step.disabled()"
         [attr.aria-selected]="step.value() === active()"
         (click)="onSelect(step, index)"
+        (keydown)="onKeydown($event, index)"
       >
         <span class="tls-stepper-header-button__index">
           @let isCompleted = activeIndex() > index || completed();
