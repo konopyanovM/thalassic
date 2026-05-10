@@ -17,9 +17,15 @@ import { tooltipColor } from './tooltip.types';
   imports: [NgTemplateOutlet],
   host: {
     '[class]': 'hostClasses()',
+    'role': 'tooltip',
+    '[id]': 'id',
   },
 })
 export class Tooltip {
+  private static _counter = 0;
+
+  public readonly id = `tls-tooltip-${++Tooltip._counter}`;
+
   public content: ModelSignal<string | TemplateRef<unknown>> = model.required();
   public templateData: ModelSignal<unknown> = model<unknown>(null);
   public color: ModelSignal<tooltipColor> = model.required<tooltipColor>();

@@ -8,6 +8,7 @@ import {
   input,
   InputSignal,
   OnDestroy,
+  Renderer2,
   signal,
   TemplateRef,
   WritableSignal,
@@ -32,6 +33,7 @@ import { buildTooltipPositions } from './tooltip.utils';
 export class TooltipDirective implements OnDestroy {
   private _tooltipService = inject(TooltipService);
   private _elementRef = inject(ElementRef);
+  private _renderer = inject(Renderer2);
   private _config = inject(TOOLTIP_CONFIG);
 
   public content = input<string | TemplateRef<unknown>>('Hello', { alias: 'tlsTooltip' });
@@ -95,15 +97,23 @@ export class TooltipDirective implements OnDestroy {
     tooltipRef.instance.content.set(this.content());
     tooltipRef.instance.templateData.set(this.data());
     tooltipRef.instance.color.set(this.tooltipColor());
+
+    this._renderer.setAttribute(
+      this._elementRef.nativeElement,
+      'aria-describedby',
+      tooltipRef.instance.id,
+    );
   }
 
   private _hide() {
     this._tooltipService.dispose();
     this._visible.set(false);
+    this._renderer.removeAttribute(this._elementRef.nativeElement, 'aria-describedby');
   }
 
   // Lifecycle
   ngOnDestroy() {
     this._tooltipService.dispose();
+    this._renderer.removeAttribute(this._elementRef.nativeElement, 'aria-describedby');
   }
 }
