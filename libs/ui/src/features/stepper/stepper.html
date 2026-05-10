@@ -19,7 +19,21 @@
         [attr.aria-selected]="step.value() === active()"
         (click)="onSelect(step, index)"
       >
-        <span class="tls-stepper-header-button__index">{{ index + 1 }}</span>
+        <span class="tls-stepper-header-button__index">
+          @let isCompleted = activeIndex() > index || completed();
+          @if (isCompleted && step.completedIconTemplateRef()) {
+            <ng-container [ngTemplateOutlet]="step.completedIconTemplateRef() ?? null"
+                          [ngTemplateOutletContext]="{ $implicit: index }"></ng-container>
+          } @else if (isCompleted && completedIconTemplateRef()) {
+            <ng-container [ngTemplateOutlet]="completedIconTemplateRef() ?? null"
+                          [ngTemplateOutletContext]="{ $implicit: index }"></ng-container>
+          } @else if (step.iconTemplateRef()) {
+            <ng-container [ngTemplateOutlet]="step.iconTemplateRef() ?? null"
+                          [ngTemplateOutletContext]="{ $implicit: index }"></ng-container>
+          } @else {
+            {{ index + 1 }}
+          }
+        </span>
 
         <span class="tls-stepper-header-button__text">
           @if (step.label()) {

@@ -1,4 +1,12 @@
-import { Component, computed, inject, input, InputSignal } from '@angular/core';
+import {
+  Component,
+  computed,
+  contentChild,
+  inject,
+  input,
+  InputSignal,
+  TemplateRef,
+} from '@angular/core';
 import { StepperConfig } from '../stepper.config';
 import { StepperService } from '../stepper.service';
 import { STEPPER_CONFIG } from '../stepper.token';
@@ -15,6 +23,9 @@ import { stepperColor, stepperValue } from '../stepper.types';
 export class Step {
   private _config: StepperConfig = inject(STEPPER_CONFIG);
   private _stepperService: StepperService = inject(StepperService);
+
+  public readonly iconTemplateRef = contentChild<TemplateRef<unknown>>('stepIcon');
+  public readonly completedIconTemplateRef = contentChild<TemplateRef<unknown>>('stepCompletedIcon');
 
   // Inputs
   public readonly value: InputSignal<stepperValue> = input.required<stepperValue>();

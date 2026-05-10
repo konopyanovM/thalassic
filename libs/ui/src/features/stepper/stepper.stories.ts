@@ -42,3 +42,58 @@ export default meta;
 type Story = StoryObj<StepperComponent>;
 
 export const Stepper: Story = {};
+
+export const WithCompletedIcon: Story = {
+  render: args => ({
+    props: args,
+    template: `
+      <tls-stepper ${argsToTemplate(args)}>
+        <ng-template #stepCompletedIcon let-i>✓</ng-template>
+        <tls-step value="step1" label="Account" description="Create your account">Step 1 content</tls-step>
+        <tls-step value="step2" label="Profile" description="Personal details">Step 2 content</tls-step>
+        <tls-step value="step3" label="Payment" description="Billing information">Step 3 content</tls-step>
+        <tls-step value="step4" label="Review" description="Confirm & submit">Step 4 content</tls-step>
+        <ng-template #completedTemplate>All steps completed!</ng-template>
+      </tls-stepper>
+    `,
+  }),
+};
+
+export const WithStepIcon: Story = {
+  render: args => ({
+    props: args,
+    template: `
+      <tls-stepper ${argsToTemplate(args)}>
+        <ng-template #stepCompletedIcon>✓</ng-template>
+        <tls-step value="step1" label="Account" description="Create your account">Step 1 content</tls-step>
+        <tls-step value="step2" label="Profile" description="Personal details">Step 2 content</tls-step>
+        <tls-step value="step3" label="Payment" description="Billing information">
+          Step 3 content
+          <ng-template #stepIcon>★</ng-template>
+        </tls-step>
+        <tls-step value="step4" label="Review" description="Confirm & submit">Step 4 content</tls-step>
+        <ng-template #completedTemplate>All steps completed!</ng-template>
+      </tls-stepper>
+    `,
+  }),
+};
+
+export const WithPerStepCompletedIcon: Story = {
+  render: args => ({
+    props: args,
+    template: `
+      <tls-stepper ${argsToTemplate(args)}>
+        <ng-template #stepCompletedIcon>✓</ng-template>
+        <tls-step value="step1" label="Account" description="Create your account">Step 1 content</tls-step>
+        <tls-step value="step2" label="Profile" description="Personal details">
+          Step 2 content
+          <ng-template #stepIcon>★</ng-template>
+          <ng-template #stepCompletedIcon>♦</ng-template>
+        </tls-step>
+        <tls-step value="step3" label="Payment" description="Billing information">Step 3 content</tls-step>
+        <tls-step value="step4" label="Review" description="Confirm & submit">Step 4 content</tls-step>
+        <ng-template #completedTemplate>All steps completed!</ng-template>
+      </tls-stepper>
+    `,
+  }),
+};

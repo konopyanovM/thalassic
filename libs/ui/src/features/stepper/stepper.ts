@@ -37,8 +37,8 @@ export class Stepper {
   private _stepperService: StepperService = inject(StepperService);
 
   protected steps: Signal<readonly Step[]> = contentChildren(Step);
-  protected completedTemplateRef: Signal<TemplateRef<unknown> | undefined> =
-    contentChild<TemplateRef<unknown>>('completedTemplate');
+  protected completedTemplateRef = contentChild<TemplateRef<unknown>>('completedTemplate');
+  protected completedIconTemplateRef = contentChild<TemplateRef<unknown>>('stepCompletedIcon');
 
   public readonly active: ModelSignal<stepperValue> = model.required<stepperValue>();
   public readonly orientation: InputSignal<stepperOrientation> = input<stepperOrientation>(
