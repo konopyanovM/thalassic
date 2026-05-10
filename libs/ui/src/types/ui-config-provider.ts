@@ -6,6 +6,7 @@ import {
   IconConfig,
   InputConfig,
   PasswordConfig,
+  StepperConfig,
   SwitchConfig,
   TabsConfig,
   TooltipConfig,
@@ -21,6 +22,7 @@ export interface tlsUiConfigProvider {
     switch?: Partial<SwitchConfig>;
     formItem?: Partial<FormItemConfig>;
     icon?: Partial<IconConfig>;
+    stepper?: Partial<StepperConfig>;
     tabs?: Partial<TabsConfig>;
     tooltip?: Partial<TooltipConfig>;
   };

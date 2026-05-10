@@ -1,4 +1,5 @@
 import { argsToTemplate, Meta, StoryObj } from '@storybook/angular';
+import { STORY_ORIENTATION_OPTIONS } from '../../../.storybook/constants';
 import { Divider as DividerComponent } from './divider';
 
 const meta: Meta<DividerComponent> = {
@@ -13,7 +14,7 @@ const meta: Meta<DividerComponent> = {
   argTypes: {
     orientation: {
       control: { type: 'select' },
-      options: ['horizontal', 'vertical'],
+      options: STORY_ORIENTATION_OPTIONS,
     },
     position: {
       control: { type: 'select' },

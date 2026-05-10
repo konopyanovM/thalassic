@@ -73,7 +73,6 @@ export class Chart implements OnInit, OnDestroy {
     return array;
   });
 
-  // Constructor
   constructor() {
     afterNextRender(() => {
       if (this.canvasElement) {

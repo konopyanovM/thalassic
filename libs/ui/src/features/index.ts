@@ -11,5 +11,6 @@ export * from './form/pin-input';
 export * from './form/radio-button';
 export * from './form/switch';
 export * from './icon';
+export * from './stepper';
 export * from './tabs';
 export * from './tooltip';

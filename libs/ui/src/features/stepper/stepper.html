@@ -1,0 +1,49 @@
+<ul class="tls-stepper-header" role="tablist" [attr.aria-orientation]="orientation()">
+  @for (step of steps(); track step.value(); let index = $index; let last = $last) {
+    <li role="presentation"
+        class="tls-stepper-header__item"
+        [class]="`tls-stepper-header--${step.color()}`"
+        [class.tls-stepper-header__item--active]="step.value() === active()"
+        [class.tls-stepper-header__item--disabled]="step.disabled()"
+        [class.tls-stepper-header__item--unreachable]="linear() && index > activeIndex() + 1"
+        [class.tls-stepper-header__item--completed]="activeIndex() > index || completed()">
+      @let id = 'tls-stepper-tab-' + step.value();
+      <button
+        class="tls-stepper-header-button"
+        role="tab"
+        type="button"
+        [attr.aria-controls]="panelId"
+        [id]="id"
+        [tabindex]="step.value() === active() ? 0 : -1"
+        [disabled]="step.disabled()"
+        [attr.aria-selected]="step.value() === active()"
+        (click)="onSelect(step, index)"
+      >
+        <span class="tls-stepper-header-button__index">{{ index + 1 }}</span>
+
+        <span class="tls-stepper-header-button__text">
+          @if (step.label()) {
+            <span class="tls-stepper-header-button__label">{{ step.label() }}</span>
+          }
+          @if (step.description()) {
+            <span class="tls-stepper-header-button__description">{{ step.description() }}</span>
+          }
+        </span>
+      </button>
+      @if (!last) {
+        <div class="tls-stepper-header__divider"></div>
+      }
+    </li>
+  }
+</ul>
+<div class="tls-stepper-content"
+     [id]="panelId"
+     role="tabpanel"
+     [attr.aria-labelledby]="'tls-stepper-tab-' + active()">
+  <ng-content></ng-content>
+  @if (completed() && completedTemplateRef()) {
+    <div class="tls-stepper-content__template">
+      <ng-container [ngTemplateOutlet]="completedTemplateRef()"></ng-container>
+    </div>
+  }
+</div>

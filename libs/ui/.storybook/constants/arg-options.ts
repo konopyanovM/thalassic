@@ -1,7 +1,7 @@
 import { buttonVariant } from '../../src/features/button/button.types';
 import { pinInputType } from '../../src/features/form/pin-input';
 import { tabsVariant } from '../../src/features/tabs/tabs.types';
-import { color, controlSize } from '../../src/types';
+import { color, controlSize, orientation } from '../../src/types';
 
 export const STORY_COLOR_OPTIONS: color[] = [
   'primary',
@@ -19,6 +19,8 @@ export const STORY_VARIANT_OPTIONS: buttonVariant[] = [
   'text',
   'elevated',
 ] as const;
+
+export const STORY_ORIENTATION_OPTIONS: orientation[] = ['horizontal', 'vertical'] as const;
 
 export const STORY_SIZE_OPTIONS: controlSize[] = ['sm', 'md', 'lg'] as const;
 

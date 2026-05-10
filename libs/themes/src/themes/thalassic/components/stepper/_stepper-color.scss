@@ -1,0 +1,168 @@
+.tls-stepper {
+  @mixin _disabled-reset {
+    --tls-stepper-label-color: var(--color-outline);
+    --tls-stepper-index-on-color: var(--color-on-surface-variant);
+    --tls-stepper-index-background-color: var(--color-surface-variant);
+    --tls-stepper-index-border-color: var(--color-outline-variant);
+    --tls-stepper-divider-color: var(--color-outline-variant);
+  }
+
+  .tls-stepper-header {
+    // Item
+    &__item {
+      // Primary
+      &.tls-stepper-header--primary {
+        // Active
+        &.tls-stepper-header__item--active {
+          --tls-stepper-label-color: var(--color-primary);
+          --tls-stepper-index-border-color: var(--color-primary);
+        }
+
+        // Completed
+        &.tls-stepper-header__item--completed {
+          --tls-stepper-index-on-color: var(--color-on-primary);
+          --tls-stepper-index-background-color: var(--color-primary);
+          --tls-stepper-index-border-color: var(--color-primary);
+          --tls-stepper-divider-color: var(--color-primary);
+        }
+
+        // Disabled overrides color states
+        &.tls-stepper-header__item--disabled {
+          @include _disabled-reset;
+        }
+      }
+
+      // Secondary
+      &.tls-stepper-header--secondary {
+        // Active
+        &.tls-stepper-header__item--active {
+          --tls-stepper-label-color: var(--color-secondary);
+          --tls-stepper-index-border-color: var(--color-secondary);
+        }
+
+        // Completed
+        &.tls-stepper-header__item--completed {
+          --tls-stepper-index-on-color: var(--color-on-secondary);
+          --tls-stepper-index-background-color: var(--color-secondary);
+          --tls-stepper-index-border-color: var(--color-secondary);
+          --tls-stepper-divider-color: var(--color-secondary);
+        }
+
+        // Disabled overrides color states
+        &.tls-stepper-header__item--disabled {
+          @include _disabled-reset;
+        }
+      }
+
+      // Tertiary
+      &.tls-stepper-header--tertiary {
+        // Active
+        &.tls-stepper-header__item--active {
+          --tls-stepper-label-color: var(--color-tertiary);
+          --tls-stepper-index-border-color: var(--color-tertiary);
+        }
+
+        // Completed
+        &.tls-stepper-header__item--completed {
+          --tls-stepper-index-on-color: var(--color-on-tertiary);
+          --tls-stepper-index-background-color: var(--color-tertiary);
+          --tls-stepper-index-border-color: var(--color-tertiary);
+          --tls-stepper-divider-color: var(--color-tertiary);
+        }
+
+        // Disabled overrides color states
+        &.tls-stepper-header__item--disabled {
+          @include _disabled-reset;
+        }
+      }
+
+      // Success
+      &.tls-stepper-header--success {
+        // Active
+        &.tls-stepper-header__item--active {
+          --tls-stepper-label-color: var(--color-success);
+          --tls-stepper-index-border-color: var(--color-success);
+        }
+
+        // Completed
+        &.tls-stepper-header__item--completed {
+          --tls-stepper-index-on-color: var(--color-on-success);
+          --tls-stepper-index-background-color: var(--color-success);
+          --tls-stepper-index-border-color: var(--color-success);
+          --tls-stepper-divider-color: var(--color-success);
+        }
+
+        // Disabled overrides color states
+        &.tls-stepper-header__item--disabled {
+          @include _disabled-reset;
+        }
+      }
+
+      // Info
+      &.tls-stepper-header--info {
+        // Active
+        &.tls-stepper-header__item--active {
+          --tls-stepper-label-color: var(--color-info);
+          --tls-stepper-index-border-color: var(--color-info);
+        }
+
+        // Completed
+        &.tls-stepper-header__item--completed {
+          --tls-stepper-index-on-color: var(--color-on-info);
+          --tls-stepper-index-background-color: var(--color-info);
+          --tls-stepper-index-border-color: var(--color-info);
+          --tls-stepper-divider-color: var(--color-info);
+        }
+
+        // Disabled overrides color states
+        &.tls-stepper-header__item--disabled {
+          @include _disabled-reset;
+        }
+      }
+
+      // Warning
+      &.tls-stepper-header--warning {
+        // Active
+        &.tls-stepper-header__item--active {
+          --tls-stepper-label-color: var(--color-warning);
+          --tls-stepper-index-border-color: var(--color-warning);
+        }
+
+        // Completed
+        &.tls-stepper-header__item--completed {
+          --tls-stepper-index-on-color: var(--color-on-warning);
+          --tls-stepper-index-background-color: var(--color-warning);
+          --tls-stepper-index-border-color: var(--color-warning);
+          --tls-stepper-divider-color: var(--color-warning);
+        }
+
+        // Disabled overrides color states
+        &.tls-stepper-header__item--disabled {
+          @include _disabled-reset;
+        }
+      }
+
+      // Danger
+      &.tls-stepper-header--danger {
+        // Active
+        &.tls-stepper-header__item--active {
+          --tls-stepper-label-color: var(--color-danger);
+          --tls-stepper-index-border-color: var(--color-danger);
+        }
+
+        // Completed
+        &.tls-stepper-header__item--completed {
+          --tls-stepper-index-on-color: var(--color-on-danger);
+          --tls-stepper-index-background-color: var(--color-danger);
+          --tls-stepper-index-border-color: var(--color-danger);
+          --tls-stepper-divider-color: var(--color-danger);
+        }
+
+        // Disabled overrides color states
+        &.tls-stepper-header__item--disabled {
+          @include _disabled-reset;
+        }
+      }
+    }
+  }
+}

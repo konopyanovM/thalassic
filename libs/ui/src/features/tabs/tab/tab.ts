@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, InputSignal } from '@angular/core';
 import { TabsService } from '../tabs.service';
 import { tabValue } from '../tabs.types';
 
@@ -14,8 +14,8 @@ export class Tab {
   private _tabsService: TabsService = inject(TabsService);
 
   // Inputs
-  public value = input.required<tabValue>();
-  public label = input.required<string>();
+  public value: InputSignal<tabValue> = input.required<tabValue>();
+  public label: InputSignal<string> = input.required<string>();
 
   private _active = computed(() => {
     if (!this._tabsService.selected) return false;

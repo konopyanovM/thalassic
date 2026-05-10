@@ -28,7 +28,7 @@ export class Tabs {
   private _config: TabsConfig = inject(TABS_CONFIG);
   private _tabsService: TabsService = inject(TabsService);
 
-  private _allTabs = contentChildren(Tab);
+  protected tabs: Signal<readonly Tab[]> = contentChildren(Tab);
 
   public readonly variant: InputSignal<tabsVariant> = input<tabsVariant>(this._config.variant);
   public readonly selected: ModelSignal<tabValue | null> = model<tabValue | null>(null);
@@ -45,10 +45,5 @@ export class Tabs {
 
   constructor() {
     this._tabsService.selected = this.selected.asReadonly();
-  }
-
-  // Accessors
-  protected get tabs(): Signal<readonly Tab[]> {
-    return this._allTabs;
   }
 }

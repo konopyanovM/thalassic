@@ -9,6 +9,7 @@ import {
   DEFAULT_ICON_CONFIG,
   DEFAULT_INPUT_CONFIG,
   DEFAULT_PASSWORD_CONFIG,
+  DEFAULT_STEPPER_CONFIG,
   DEFAULT_SWITCH_CONFIG,
   DEFAULT_TABS_CONFIG,
   DEFAULT_TOOLTIP_CONFIG,
@@ -17,6 +18,7 @@ import {
   ICON_CONFIG,
   INPUT_CONFIG,
   PASSWORD_CONFIG,
+  STEPPER_CONFIG,
   SWITCH_CONFIG,
   TABS_CONFIG,
   TOOLTIP_CONFIG,
@@ -53,6 +55,10 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
       useValue: mergeConfig(DEFAULT_FORM_ITEM_CONFIG, config.components.formItem),
     },
     { provide: ICON_CONFIG, useValue: mergeConfig(DEFAULT_ICON_CONFIG, config.components.icon) },
+    {
+      provide: STEPPER_CONFIG,
+      useValue: mergeConfig(DEFAULT_STEPPER_CONFIG, config.components.stepper),
+    },
     { provide: TABS_CONFIG, useValue: mergeConfig(DEFAULT_TABS_CONFIG, config.components.tabs) },
     {
       provide: TOOLTIP_CONFIG,
