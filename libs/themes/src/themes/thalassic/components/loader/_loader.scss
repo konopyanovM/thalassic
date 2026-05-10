@@ -1,0 +1,23 @@
+.tls-loader {
+  --tls-loader-color: var(--color-primary);
+  --tls-loader-rotate-delay: 1000ms;
+
+  width: var(--tls-loader-size);
+  height: var(--tls-loader-size);
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(farthest-side, var(--tls-loader-color) 95%, #0000) top/var(--tls-loader-width)
+      var(--tls-loader-width) no-repeat,
+    conic-gradient(#0000 30%, var(--tls-loader-color));
+  mask: radial-gradient(farthest-side, #0000 calc(100% - var(--tls-loader-width)), black 0);
+
+  animation: loader-rotate var(--tls-loader-rotate-delay) infinite linear;
+}
+
+@keyframes loader-rotate {
+  100% {
+    transform: rotate(1turn);
+  }
+}
