@@ -2,6 +2,8 @@
   --tls-loader-color: var(--color-primary);
   --tls-loader-rotate-delay: 1000ms;
 
+  display: inline-block;
+
   width: var(--tls-loader-size);
   height: var(--tls-loader-size);
 
