@@ -1,0 +1,41 @@
+.tls-skeleton {
+  --tls-skeleton-color: var(--color-surface-variant);
+  --tls-skeleton-shimmer-color: var(--color-surface);
+
+  display: block;
+
+  width: var(--tls-skeleton-width);
+  height: var(--tls-skeleton-height);
+
+  border-radius: var(--tls-skeleton-radius);
+
+  background: linear-gradient(
+    110deg,
+    var(--tls-skeleton-color) 25%,
+    var(--tls-skeleton-shimmer-color) 50%,
+    var(--tls-skeleton-color) 75%
+  );
+  background-size: 200% 100%;
+
+  animation: skeleton-shimmer var(--tls-skeleton-duration) linear infinite;
+
+  &.tls-skeleton--no-animate {
+    animation: none;
+    background: var(--tls-skeleton-color);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    background: var(--tls-skeleton-color);
+  }
+}
+
+@keyframes skeleton-shimmer {
+  from {
+    background-position: 200% center;
+  }
+
+  to {
+    background-position: -200% center;
+  }
+}
