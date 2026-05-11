@@ -1,3 +1,24 @@
+## 0.7.0 (2026-05-11)
+
+### 🚀 Features
+
+- **core:** added resize observer directive ([e24182b](https://github.com/konopyanovM/thalassic/commit/e24182b))
+- **ui:** added theme change observable listeners ([c3718dc](https://github.com/konopyanovM/thalassic/commit/c3718dc))
+- **ui:** added chart component ([977ebcd](https://github.com/konopyanovM/thalassic/commit/977ebcd))
+- **ui:** added pin input component ([f9c412e](https://github.com/konopyanovM/thalassic/commit/f9c412e))
+- **ui:** added tooltip directive ([60883fa](https://github.com/konopyanovM/thalassic/commit/60883fa))
+- **ui:** added stepper component ([1affe7a](https://github.com/konopyanovM/thalassic/commit/1affe7a))
+- **ui:** added icon templates to stepper ([ee6fe7c](https://github.com/konopyanovM/thalassic/commit/ee6fe7c))
+- **ui:** added keyboard navigation to stepper ([0f3465a](https://github.com/konopyanovM/thalassic/commit/0f3465a))
+- **ui:** added accessibility attributes to tooltip ([cf929e6](https://github.com/konopyanovM/thalassic/commit/cf929e6))
+- **ui:** added loader component ([7c2aa4b](https://github.com/konopyanovM/thalassic/commit/7c2aa4b))
+- **ui:** added loader story ([2e4bc2d](https://github.com/konopyanovM/thalassic/commit/2e4bc2d))
+- **ui:** added skeleton component ([e1dcfa5](https://github.com/konopyanovM/thalassic/commit/e1dcfa5))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.6.0 (2026-03-28)
 
 ### 🚀 Features
