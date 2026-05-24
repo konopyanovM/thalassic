@@ -1,47 +1,89 @@
 .tls-select {
   --tls-select-width: 200px;
-  --tls-select-chevron-size: 0.75rem;
   --tls-select-gap: var(--spacing-2);
 
-  width: var(--tls-select-width);
+  position: relative;
 
-  &.tls-select--open {
-    .tls-select__icon {
+  &.tls-form-control {
+    --tls-form-control-width: var(--tls-select-width);
+
+    display: inline-flex;
+    align-items: stretch;
+
+    cursor: pointer;
+
+    &.tls-form-control--fluid {
+      --tls-form-control-width: 100%;
+    }
+
+    &.tls-form-control--disabled {
+      cursor: not-allowed;
+    }
+
+    &:focus-within {
+      border: var(--tls-form-control-border-width) solid var(--color-primary);
+      box-shadow: 0 0 3px -1px var(--color-primary);
+    }
+
+    &.tls-select--open {
       .tls-select__chevron {
         transform: rotate(180deg);
       }
     }
-  }
 
-  .tls-select__trigger {
-    --tls-form-control-width: 100%;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--tls-select-gap);
-
-    appearance: none;
-    cursor: pointer;
-
-    .tls-select__value {
+    .tls-select__trigger {
       flex: 1;
+      min-width: 0;
 
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
+      display: flex;
+      align-items: center;
+      gap: var(--tls-select-gap);
+
+      appearance: none;
+      outline: none;
+
+      .tls-select__value {
+        flex: 1;
+
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      .tls-select__icon {
+        width: var(--tls-select-icon-size);
+        height: var(--tls-select-icon-size);
+
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+
+        .tls-select__chevron {
+          transition: transform var(--motion-fast) var(--motion-ease-in-out);
+        }
+      }
     }
 
-    .tls-select__icon {
-      flex-shrink: 0;
+    // Clear button
+    .tls-select__clear {
+      position: absolute;
+      top: 50%;
+      right: calc(var(--tls-form-control-padding-inline) * 2 + var(--tls-select-icon-size));
+
       display: flex;
       align-items: center;
 
-      .tls-select__chevron {
-        width: var(--tls-select-chevron-size);
-        height: var(--tls-select-chevron-size);
+      color: var(--color-outline);
 
-        transition: transform var(--motion-fast) var(--motion-ease-in-out);
+      transform: translateY(-50%);
+
+      &:hover {
+        color: var(--color-on-surface);
+      }
+
+      .tls-select__clear-icon {
+        width: var(--tls-select-clear-size);
+        height: var(--tls-select-clear-size);
       }
     }
   }

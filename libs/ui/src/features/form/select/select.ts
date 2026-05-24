@@ -44,6 +44,7 @@ interface NormalizedOption {
 export class Select<T> extends ValueFormControl<unknown> implements OnDestroy {
   private readonly _config = inject(SELECT_CONFIG);
   private readonly _overlay = inject(Overlay);
+  private readonly _elementRef = inject(ElementRef);
   private readonly _viewContainerRef = inject(ViewContainerRef);
   private readonly _destroyRef = inject(DestroyRef);
 
@@ -66,6 +67,10 @@ export class Select<T> extends ValueFormControl<unknown> implements OnDestroy {
     { transform: booleanAttribute },
   );
   public readonly tabindex = input<string | number>(0);
+  public readonly clearable: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    this._config.clearable,
+    { transform: booleanAttribute },
+  );
 
   protected readonly isOpen: WritableSignal<boolean> = signal(false);
   protected readonly activeIndex: WritableSignal<number> = signal(-1);
@@ -91,30 +96,26 @@ export class Select<T> extends ValueFormControl<unknown> implements OnDestroy {
     });
   });
 
-  protected readonly selectedLabel: Signal<string> = computed(() => {
+  protected readonly hasValue: Signal<boolean> = computed(() => {
     const value = this.value();
-    if (value === null || value === undefined || value === '') return '';
-    return this.normalizedOptions().find(option => option.value === value)?.label ?? '';
+    return value !== null && value !== undefined && value !== '';
+  });
+
+  protected readonly selectedLabel: Signal<string> = computed(() => {
+    if (!this.hasValue()) return '';
+    return this.normalizedOptions().find(option => option.value === this.value())?.label ?? '';
   });
 
   // Classes
   protected readonly hostClasses: Signal<string[]> = computed(() => {
-    const className = 'tls-select';
+    const selectClass = 'tls-select';
+    const formControlClass = 'tls-form-control';
 
-    const array: string[] = [className];
+    const array: string[] = [selectClass];
 
-    if (this.isOpen()) array.push(`${className}--open`);
-
-    return array;
-  });
-
-  protected readonly classes: Signal<string[]> = computed(() => {
-    const className = 'tls-form-control';
-
-    const array: string[] = [className];
-
-    array.push(`${className}--${this.size()}`);
-    if (this.fluid()) array.push(`${className}--fluid`);
+    if (this.isOpen()) array.push(`${selectClass}--open`);
+    array.push(`${formControlClass}--${this.size()}`);
+    if (this.fluid()) array.push(`${formControlClass}--fluid`);
 
     return array.concat(this.controlClasses());
   });
@@ -129,7 +130,7 @@ export class Select<T> extends ValueFormControl<unknown> implements OnDestroy {
       this._overlayRef = this._overlay.create({
         positionStrategy: this._overlay
           .position()
-          .flexibleConnectedTo(triggerElement)
+          .flexibleConnectedTo(this._elementRef)
           .withPositions([
             { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 4 },
             {
@@ -155,7 +156,7 @@ export class Select<T> extends ValueFormControl<unknown> implements OnDestroy {
     }
 
     this._portal ??= new TemplatePortal(panelTemplate, this._viewContainerRef);
-    this._overlayRef.updateSize({ minWidth: triggerElement.nativeElement.offsetWidth });
+    this._overlayRef.updateSize({ minWidth: this._elementRef.nativeElement.offsetWidth });
     this._overlayRef.attach(this._portal);
 
     this.isOpen.set(true);
@@ -183,6 +184,10 @@ export class Select<T> extends ValueFormControl<unknown> implements OnDestroy {
     if (option.disabled) return;
     this.value.set(option.value);
     this.close();
+  }
+
+  protected clear(): void {
+    this.value.set(undefined);
   }
 
   protected onOptionHover(index: number, disabled?: boolean): void {
@@ -217,6 +222,13 @@ export class Select<T> extends ValueFormControl<unknown> implements OnDestroy {
       if (this.isOpen()) this.close();
     } else if (event.key === 'Tab') {
       if (this.isOpen()) this.close();
+    } else if (
+      (event.key === 'Delete' || event.key === 'Backspace') &&
+      this.clearable() &&
+      this.hasValue()
+    ) {
+      event.preventDefault();
+      this.clear();
     }
   }
 

@@ -11,6 +11,7 @@ const meta: Meta<SelectComponent<{ label: string; value: string; disabled?: bool
     placeholder: 'Select an option',
     size: 'md',
     fluid: false,
+    clearable: false,
     tabindex: 0,
     options: [
       { label: 'Option 1', value: 'option1' },

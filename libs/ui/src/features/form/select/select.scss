@@ -1,7 +1,3 @@
 :host {
   display: inline-block;
-
-  &:has(.tls-form-control.tls-form-control--fluid) {
-    width: 100%;
-  }
 }
