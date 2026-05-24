@@ -18,6 +18,8 @@
     line-height: var(--font-label-large-line-height);
     letter-spacing: var(--font-label-large-letter-spacing);
 
+    background-color: var(--color-surface-container-lowest);
+
     border: 1px solid var(--tls-pin-input-border-color);
     border-radius: var(--tls-pin-border-radius);
 
@@ -35,6 +37,10 @@
       &::placeholder {
         opacity: 0;
       }
+    }
+
+    &::placeholder {
+      color: var(--color-outline);
     }
   }
 

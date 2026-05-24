@@ -51,7 +51,8 @@
 
     color: var(--color-danger);
 
-    .tls-form-control::placeholder {
+    .tls-form-control::placeholder,
+    .tls-form-control__placeholder {
       color: var(--color-danger);
     }
   }

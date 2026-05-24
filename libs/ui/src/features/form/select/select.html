@@ -1,0 +1,48 @@
+<button
+  #trigger
+  type="button"
+  class="tls-select__trigger"
+  [class]="classes()"
+  [attr.id]="inputId()"
+  [attr.name]="name()"
+  aria-haspopup="listbox"
+  [tabindex]="disabled() ? -1 : tabindex()"
+  [disabled]="disabled() || null"
+  [attr.aria-expanded]="isOpen()"
+  (click)="toggle()"
+  (blur)="touched.set(true)"
+  (keydown)="onKeydown($event)"
+>
+  <span class="tls-select__value" [class.tls-form-control__placeholder]="!selectedLabel()">
+    {{ selectedLabel() || placeholder() }}
+  </span>
+  <div class="tls-select__icon" aria-hidden="true">
+    <svg class="tls-select__chevron" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+</button>
+
+<ng-template #panel>
+  <ul class="tls-select__panel" role="listbox">
+    @for (option of normalizedOptions(); track option.value; let i = $index) {
+      <li
+        class="tls-select__option"
+        [class.tls-select__option--selected]="option.value === value()"
+        [class.tls-select__option--active]="i === activeIndex()"
+        [class.tls-select__option--disabled]="option.disabled"
+      >
+        <button
+          class="tls-select__option-button"
+          role="option"
+          [disabled]="option.disabled"
+          [attr.aria-selected]="option.value === value()"
+          [attr.aria-disabled]="option.disabled"
+          (click)="select(option)"
+          (mouseenter)="onOptionHover(i, option.disabled)"
+        >{{ option.label }}
+        </button>
+      </li>
+    }
+  </ul>
+</ng-template>

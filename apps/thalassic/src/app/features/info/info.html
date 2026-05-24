@@ -3,34 +3,6 @@
   <div class="content">
     <h1 class="text-display-lg">Thalassic</h1>
     <p>Just a simple Angular UI library</p>
-
-    <div class="stepper">
-      <tls-stepper [active]="activeStep()" orientation="horizontal" [linear]="true">
-        <tls-step value="account" label="Account" description="Create your account">step 1</tls-step>
-        <tls-step [value]="123" label="Profile" description="Personal details">step 2
-          <ng-template #stepIcon>★</ng-template>
-        </tls-step>
-        <tls-step value="payment" label="Payment" description="Billing information" color="danger">step 3</tls-step>
-        <tls-step [value]="789" label="Review" description="Confirm & submit">step 4</tls-step>
-        <tls-step [value]="12323" label="Result" description="Well shit">step 5</tls-step>
-
-        <ng-template #completed>Completed</ng-template>
-        <ng-template #stepCompletedIcon>✓</ng-template>
-      </tls-stepper>
-
-      <tls-stepper active="step1" orientation="vertical">
-        <tls-step value="step1" label="Account" description="Create your account">Step 1 content</tls-step>
-        <tls-step value="step2" label="Profile" description="Personal details" [disabled]="true">Step 2 content
-        </tls-step>
-        <tls-step value="step3" label="Payment" description="Billing information" [disabled]="false">Step 3 content
-        </tls-step>
-        <tls-step value="step4" label="Review" description="Confirm & submit">
-          Step 4 content
-          <ng-template #stepIcon>★</ng-template>
-        </tls-step>
-        <ng-template #completedTemplate>All steps completed!</ng-template>
-      </tls-stepper>
-    </div>
   </div>
 
 </app-layout>

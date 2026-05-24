@@ -1,13 +1,11 @@
-import { Component, signal } from '@angular/core';
-import { Step, Stepper } from '@thalassic/ui';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Layout } from '../../components/layout/layout';
 
 @Component({
   selector: 'app-info',
-  imports: [Layout, Stepper, Step],
+  imports: [Layout, FormsModule],
   templateUrl: './info.html',
   styleUrl: './info.scss',
 })
-export class Info {
-  protected activeStep = signal<any>(null);
-}
+export class Info {}

@@ -43,7 +43,7 @@ export class Chart implements OnInit, OnDestroy {
   private _themeService = inject(ThemeService, { optional: true });
 
   protected canvasRef: Signal<ElementRef<HTMLCanvasElement> | undefined> =
-    viewChild<ElementRef<HTMLCanvasElement>>('canvasRef');
+    viewChild<ElementRef<HTMLCanvasElement>>('canvas');
 
   protected chartElements = contentChildren(CHART_ELEMENT);
 

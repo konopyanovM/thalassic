@@ -4,7 +4,7 @@
   --tls-form-control-border-color: var(--color-outline-variant);
 
   color: var(--color-on-surface);
-  background-color: var(--color-surface);
+  background-color: var(--color-surface-container-lowest);
 
   border-radius: var(--radius-md);
   border: var(--tls-form-control-border-width) var(--tls-form-control-border-style)
@@ -20,8 +20,14 @@
   }
 
   &:focus {
-    border: 1px solid var(--color-primary);
+    outline: none;
+    border: var(--tls-form-control-border-width) solid var(--color-primary);
     box-shadow: 0 0 3px -1px var(--color-primary);
+  }
+
+  &::placeholder,
+  .tls-form-control__placeholder {
+    color: var(--color-outline);
   }
 
   // Form control
@@ -38,7 +44,8 @@
 
     color: var(--color-danger);
 
-    &::placeholder {
+    &::placeholder,
+    .tls-form-control__placeholder {
       color: var(--color-danger);
     }
   }

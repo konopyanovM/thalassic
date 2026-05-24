@@ -9,6 +9,7 @@ export * from './form/input';
 export * from './form/password';
 export * from './form/pin-input';
 export * from './form/radio-button';
+export * from './form/select';
 export * from './form/switch';
 export * from './icon';
 export * from './loader';
