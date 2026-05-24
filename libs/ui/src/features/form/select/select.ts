@@ -26,8 +26,8 @@ import { FORM_CONTROL, ValueFormControl } from '../../../abstract/form';
 import { SELECT_CONFIG } from './select.token';
 import { selectOptionType, selectSize } from './select.types';
 
-interface NormalizedOption {
-  value: unknown;
+interface NormalizedOption<V = unknown> {
+  value: V;
   label: string;
   disabled: boolean;
 }
@@ -41,7 +41,7 @@ interface NormalizedOption {
   },
   providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => Select) }],
 })
-export class Select<T> extends ValueFormControl<unknown> implements OnDestroy {
+export class Select<T, V = unknown> extends ValueFormControl<V | undefined> implements OnDestroy {
   private readonly _config = inject(SELECT_CONFIG);
   private readonly _overlay = inject(Overlay);
   private readonly _elementRef = inject(ElementRef);
@@ -54,7 +54,7 @@ export class Select<T> extends ValueFormControl<unknown> implements OnDestroy {
   private _overlayRef: OverlayRef | null = null;
   private _portal: TemplatePortal | null = null;
 
-  public readonly value: ModelSignal<unknown> = model<unknown>(undefined);
+  public readonly value: ModelSignal<V | undefined> = model<V | undefined>(undefined);
   public readonly inputId = input<string | null>(null);
   public readonly options: InputSignal<selectOptionType<T>[]> = input<selectOptionType<T>[]>([]);
   public readonly optionLabel = input<keyof T | undefined>(undefined);
@@ -75,7 +75,7 @@ export class Select<T> extends ValueFormControl<unknown> implements OnDestroy {
   protected readonly isOpen: WritableSignal<boolean> = signal(false);
   protected readonly activeIndex: WritableSignal<number> = signal(-1);
 
-  protected readonly normalizedOptions: Signal<NormalizedOption[]> = computed(() => {
+  protected readonly normalizedOptions: Signal<NormalizedOption<V>[]> = computed(() => {
     const options = this.options();
     const optionLabel = this.optionLabel();
     const optionValue = this.optionValue();
@@ -83,13 +83,13 @@ export class Select<T> extends ValueFormControl<unknown> implements OnDestroy {
 
     return options.map(option => {
       if (typeof option === 'string' || typeof option === 'number') {
-        return { value: option, label: String(option), disabled: false };
+        return { value: option as V, label: String(option), disabled: false };
       }
 
       const typedOption = option as T;
 
       return {
-        value: optionValue ? typedOption[optionValue] : typedOption,
+        value: (optionValue ? typedOption[optionValue] : typedOption) as V,
         label: String(optionLabel ? typedOption[optionLabel] : typedOption),
         disabled: Boolean(optionDisabled ? typedOption[optionDisabled] : false),
       };
@@ -180,7 +180,7 @@ export class Select<T> extends ValueFormControl<unknown> implements OnDestroy {
     }
   }
 
-  protected select(option: NormalizedOption): void {
+  protected select(option: NormalizedOption<V>): void {
     if (option.disabled) return;
     this.value.set(option.value);
     this.close();
