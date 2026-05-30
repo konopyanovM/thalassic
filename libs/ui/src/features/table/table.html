@@ -1,0 +1,40 @@
+<table cdk-table [class]="classes()" [dataSource]="dataSource" [trackBy]="resolvedTrackBy()">
+  @for (column of effectiveColumnDefinitions(); track column.key) {
+    <ng-container [cdkColumnDef]="column.key">
+      <!-- Header cell -->
+      <th cdk-header-cell *cdkHeaderCellDef class="tls-table__header-cell" [style.width]="column.width + 'px'">
+        {{ column.header }}
+      </th>
+
+      <!-- Row cell -->
+      <td
+        cdk-cell
+        *cdkCellDef="let data; let index = index; let count = count; let first = first; let last = last; let even = even; let odd = odd"
+        class="tls-table__cell"
+        [style.text-align]="column.alignment"
+      >
+        @if (column.template) {
+          <ng-container
+            [ngTemplateOutlet]="column.template"
+            [ngTemplateOutletContext]="{
+               $implicit: data[column.key],
+               data: data,
+               index: index,
+               count: count,
+               first: first,
+               last: last,
+               even: even,
+               odd: odd
+             }"
+          />
+        } @else {
+          {{ data[column.key] }}
+        }
+      </td>
+    </ng-container>
+  }
+
+  <tr cdk-header-row *cdkHeaderRowDef="columns()" class="tls-table__header-row"></tr>
+
+  <tr *cdkRowDef="let row; columns: columns()" cdk-row class="tls-table__row"></tr>
+</table>

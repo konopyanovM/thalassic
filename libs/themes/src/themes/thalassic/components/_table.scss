@@ -1,0 +1,78 @@
+.tls-table {
+  --tls-table-background: var(--color-surface-container-lowest);
+  --tls-table-color: var(--color-on-surface);
+
+  --tls-table-header-background: var(--color-surface-container-lowest);
+  --tls-table-header-color: var(--color-on-surface-variant);
+  --tls-table-header-weight: var(--font-weight-medium);
+
+  --tls-table-border-color: var(--color-outline-variant);
+
+  --tls-table-row-hover-bg: var(--color-surface-container);
+  --tls-table-stripe-background: var(--color-surface-container-low);
+
+  --tls-table-cell-padding-x: var(--spacing-4);
+  --tls-table-cell-padding-y: var(--spacing-3);
+
+  --tls-table-font-size: var(--font-body-medium-size);
+  --tls-table-font-weight: var(--font-body-medium-weight);
+  --tls-table-line-height: var(--font-body-medium-line-height);
+  --tls-table-letter-spacing: var(--font-body-medium-letter-spacing);
+
+  --tls-table-radius: var(--radius-md);
+
+  width: 100%;
+
+  border-collapse: collapse;
+  border-radius: var(--tls-table-radius);
+  overflow: hidden;
+
+  font-size: var(--tls-table-font-size);
+  font-weight: var(--tls-table-font-weight);
+  line-height: var(--tls-table-line-height);
+  letter-spacing: var(--tls-table-letter-spacing);
+  color: var(--tls-table-color);
+
+  &__header-row {
+    background: var(--tls-table-header-background);
+  }
+
+  &--hide-header &__header-row {
+    display: none;
+  }
+
+  &--striped &__row:nth-child(even) &__cell {
+    background-color: var(--tls-table-stripe-background);
+  }
+
+  &__header-cell {
+    padding: var(--tls-table-cell-padding-y) var(--tls-table-cell-padding-x);
+
+    color: var(--tls-table-header-color);
+
+    border-bottom: 1px solid var(--tls-table-border-color);
+
+    text-align: start;
+    font-size: var(--font-label-small-size);
+    font-weight: var(--tls-table-header-weight);
+    letter-spacing: var(--font-label-small-letter-spacing);
+    white-space: nowrap;
+  }
+
+  &__row {
+    transition: background var(--motion-fast) var(--motion-ease-in-out);
+
+    &:not(:last-child) {
+      border-bottom: 1px solid var(--tls-table-border-color);
+    }
+
+    &:hover {
+      background: var(--tls-table-row-hover-bg);
+    }
+  }
+
+  &__cell {
+    padding: var(--tls-table-cell-padding-y) var(--tls-table-cell-padding-x);
+    background-color: var(--tls-table-background);
+  }
+}

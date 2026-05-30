@@ -9,9 +9,11 @@ import {
   DEFAULT_ICON_CONFIG,
   DEFAULT_INPUT_CONFIG,
   DEFAULT_PASSWORD_CONFIG,
+  DEFAULT_SELECT_CONFIG,
   DEFAULT_SKELETON_CONFIG,
   DEFAULT_STEPPER_CONFIG,
   DEFAULT_SWITCH_CONFIG,
+  DEFAULT_TABLE_CONFIG,
   DEFAULT_TABS_CONFIG,
   DEFAULT_TOOLTIP_CONFIG,
   DIVIDER_CONFIG,
@@ -19,9 +21,11 @@ import {
   ICON_CONFIG,
   INPUT_CONFIG,
   PASSWORD_CONFIG,
+  SELECT_CONFIG,
   SKELETON_CONFIG,
   STEPPER_CONFIG,
   SWITCH_CONFIG,
+  TABLE_CONFIG,
   TABS_CONFIG,
   TOOLTIP_CONFIG,
 } from '../features';
@@ -49,6 +53,10 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
       useValue: mergeConfig(DEFAULT_PASSWORD_CONFIG, config.components.password),
     },
     {
+      provide: SELECT_CONFIG,
+      useValue: mergeConfig(DEFAULT_SELECT_CONFIG, config.components.select),
+    },
+    {
       provide: SWITCH_CONFIG,
       useValue: mergeConfig(DEFAULT_SWITCH_CONFIG, config.components.switch),
     },
@@ -65,6 +73,7 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
       provide: STEPPER_CONFIG,
       useValue: mergeConfig(DEFAULT_STEPPER_CONFIG, config.components.stepper),
     },
+    { provide: TABLE_CONFIG, useValue: mergeConfig(DEFAULT_TABLE_CONFIG, config.components.table) },
     { provide: TABS_CONFIG, useValue: mergeConfig(DEFAULT_TABS_CONFIG, config.components.tabs) },
     {
       provide: TOOLTIP_CONFIG,

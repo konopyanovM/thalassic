@@ -15,5 +15,6 @@ export * from './icon';
 export * from './loader';
 export * from './skeleton';
 export * from './stepper';
+export * from './table';
 export * from './tabs';
 export * from './tooltip';
