@@ -1,0 +1,22 @@
+.tls-pagination {
+  &--sm {
+    --tls-pagination-item-size: var(--control-height-sm);
+    --tls-pagination-button-height: var(--control-height-sm);
+    --tls-pagination-button-padding-inline: var(--spacing-3);
+    --tls-pagination-button-icon-size: 14px;
+  }
+
+  &--md {
+    --tls-pagination-item-size: var(--control-height-md);
+    --tls-pagination-button-height: var(--control-height-md);
+    --tls-pagination-button-padding-inline: var(--spacing-4);
+    --tls-pagination-button-icon-size: 16px;
+  }
+
+  &--lg {
+    --tls-pagination-item-size: var(--control-height-lg);
+    --tls-pagination-button-height: var(--control-height-lg);
+    --tls-pagination-button-padding-inline: var(--spacing-5);
+    --tls-pagination-button-icon-size: 18px;
+  }
+}

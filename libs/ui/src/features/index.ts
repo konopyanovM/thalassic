@@ -13,6 +13,7 @@ export * from './form/select';
 export * from './form/switch';
 export * from './icon';
 export * from './loader';
+export * from './pagination';
 export * from './skeleton';
 export * from './stepper';
 export * from './table';
