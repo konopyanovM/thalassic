@@ -37,11 +37,11 @@ export class Pagination {
   }
 
   protected prevPage(): void {
-    this.value.update(page => page - 1);
+    this.value.update(page => Math.max(1, page - 1));
   }
 
   protected nextPage(): void {
-    this.value.update(page => page + 1);
+    this.value.update(page => Math.min(this.pageCount(), page + 1));
   }
 
   protected lastPage(): void {
