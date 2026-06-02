@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { STORY_COLOR_OPTIONS } from '../../../../.storybook/constants';
-import { STORY_FORM_CONTROL_ARGS } from '../../../../.storybook/constants/form-control-args';
+import { STORY_COLOR_OPTIONS, STORY_FORM_CONTROL_ARGS } from '../../../../.storybook/constants';
 import { Switch as SwitchComponent } from './switch';
 
 const meta: Meta<SwitchComponent> = {

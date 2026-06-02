@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { STORY_PIN_INPUT_TYPE_OPTIONS } from '../../../../.storybook/constants';
-import { STORY_FORM_CONTROL_ARGS } from '../../../../.storybook/constants/form-control-args';
+import {
+  STORY_FORM_CONTROL_ARGS,
+  STORY_PIN_INPUT_TYPE_OPTIONS,
+} from '../../../../.storybook/constants';
 import { PinInput as PinInputComponent } from './pin-input';
 import { DEFAULT_PIN_INPUT_CONFIG } from './pin-input.config';
 

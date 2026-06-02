@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { STORY_FORM_CONTROL_ARGS } from '../../../../.storybook/constants/form-control-args';
+import { STORY_FORM_CONTROL_ARGS } from '../../../../.storybook/constants';
 import { RadioButton as RadioButtonComponent } from './radio-button';
 
 const meta: Meta<RadioButtonComponent> = {

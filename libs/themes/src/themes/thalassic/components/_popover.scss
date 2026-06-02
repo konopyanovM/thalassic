@@ -1,0 +1,21 @@
+.tls-popover {
+  --tls-popover-padding: var(--spacing-4);
+
+  --tls-popover-border-radius: var(--radius-lg);
+  --tls-popover-border-width: 1px;
+
+  --tls-popover-box-shadow: var(--shadow-sm);
+  --tls-popover-background-color: var(--color-surface-container-lowest);
+  --tls-popover-color: var(--color-on-surface);
+  --tls-popover-border-color: var(--color-outline-variant);
+
+  padding: var(--tls-popover-padding);
+
+  border-radius: var(--tls-popover-border-radius);
+  border: var(--tls-popover-border-width) solid var(--tls-popover-border-color);
+
+  color: var(--tls-popover-color);
+  background-color: var(--tls-popover-background-color);
+
+  box-shadow: var(--tls-popover-box-shadow);
+}

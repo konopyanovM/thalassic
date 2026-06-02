@@ -1,27 +1,7 @@
-import { moduleMetadata, Meta, StoryObj } from '@storybook/angular';
-import { STORY_COLOR_OPTIONS } from '../../../.storybook/constants';
-import { Button } from '../button/button';
+import { Meta, moduleMetadata, StoryObj } from '@storybook/angular';
+import { STORY_COLOR_OPTIONS, STORY_OVERLAY_POSITION_OPTIONS } from '../../../.storybook/constants';
+import { Button } from '../button';
 import { TooltipDirective } from './tooltip.directive';
-import { tooltipPosition } from './tooltip.types';
-
-const TOOLTIP_POSITION_OPTIONS: tooltipPosition[] = [
-  'top',
-  'top-start',
-  'top-end',
-  'right',
-  'right-start',
-  'right-end',
-  'bottom',
-  'bottom-start',
-  'bottom-end',
-  'left',
-  'left-start',
-  'left-end',
-  'top-left',
-  'top-right',
-  'bottom-left',
-  'bottom-right',
-];
 
 const meta: Meta<TooltipDirective> = {
   title: 'Tooltip',
@@ -45,7 +25,7 @@ const meta: Meta<TooltipDirective> = {
     },
     tooltipPosition: {
       control: { type: 'select' },
-      options: TOOLTIP_POSITION_OPTIONS,
+      options: STORY_OVERLAY_POSITION_OPTIONS,
     },
     tooltipOrigin: {
       control: { type: 'select' },

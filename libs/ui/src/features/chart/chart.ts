@@ -108,11 +108,11 @@ export class Chart implements OnInit, OnDestroy {
   }
 
   // Lifecycle
-  ngOnInit() {
+  ngOnInit(): void {
     this._tryInitThemeListener();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     if (this._chart) this._chart.destroy();
   }
 }

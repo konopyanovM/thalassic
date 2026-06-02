@@ -14,11 +14,11 @@ import {
   WritableSignal,
 } from '@angular/core';
 import { Point } from '@thalassic/core';
+import { buildOverlayPositions } from '../../utils';
 import { Tooltip } from './tooltip';
 import { TooltipService } from './tooltip.service';
 import { TOOLTIP_CONFIG } from './tooltip.token';
 import { tooltipColor, tooltipOrigin, tooltipPosition } from './tooltip.types';
-import { buildTooltipPositions } from './tooltip.utils';
 
 @Directive({
   selector: '[tlsTooltip]',
@@ -55,7 +55,7 @@ export class TooltipDirective implements OnDestroy {
     const positions = this.tooltipPositions();
     if (positions) return positions;
 
-    return buildTooltipPositions(this.tooltipPosition(), this.tooltipOffset());
+    return buildOverlayPositions(this.tooltipPosition(), this.tooltipOffset());
   });
 
   // Protected methods
@@ -112,7 +112,7 @@ export class TooltipDirective implements OnDestroy {
   }
 
   // Lifecycle
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this._tooltipService.dispose();
     this._renderer.removeAttribute(this._elementRef.nativeElement, 'aria-describedby');
   }

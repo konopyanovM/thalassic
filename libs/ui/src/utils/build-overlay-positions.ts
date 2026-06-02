@@ -1,14 +1,14 @@
 import { ConnectedPosition } from '@angular/cdk/overlay';
 import { Point } from '@thalassic/core';
-import { TOOLTIP_POSITION_MAP } from './tooltip.constants';
-import { tooltipPosition } from './tooltip.types';
+import { OVERLAY_POSITION_MAP } from '../constants';
+import { overlayPosition } from '../types';
 
-export const buildTooltipPositions = (
-  position: tooltipPosition,
+export const buildOverlayPositions = (
+  position: overlayPosition,
   offset: Point,
 ): ConnectedPosition[] => {
-  const preferred = TOOLTIP_POSITION_MAP[position];
-  const rest = Object.values(TOOLTIP_POSITION_MAP).filter(p => p !== preferred);
+  const preferred = OVERLAY_POSITION_MAP[position];
+  const rest = Object.values(OVERLAY_POSITION_MAP).filter(p => p !== preferred);
   const positions = [preferred, ...rest];
 
   return positions.map(position => ({

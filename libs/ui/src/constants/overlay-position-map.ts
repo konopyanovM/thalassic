@@ -1,9 +1,7 @@
 import { ConnectedPosition } from '@angular/cdk/overlay';
-import { tooltipPosition } from './tooltip.types';
+import { overlayPosition } from '../types';
 
-export const DEFAULT_TOOLTIP_OFFSET: { x: number; y: number } = { x: 4, y: 4 };
-
-export const TOOLTIP_POSITION_MAP: Record<tooltipPosition, ConnectedPosition> = {
+export const OVERLAY_POSITION_MAP: Record<overlayPosition, ConnectedPosition> = {
   top: {
     originX: 'center',
     originY: 'top',

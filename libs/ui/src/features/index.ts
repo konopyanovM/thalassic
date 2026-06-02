@@ -14,6 +14,7 @@ export * from './form/switch';
 export * from './icon';
 export * from './loader';
 export * from './pagination';
+export * from './popover';
 export * from './skeleton';
 export * from './stepper';
 export * from './table';
