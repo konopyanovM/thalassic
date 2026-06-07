@@ -1,7 +1,7 @@
-import { paginationSize } from './pagination.types';
+import { controlSize } from '../../types';
 
 export interface PaginationConfig {
-  size: paginationSize;
+  size: controlSize;
   pageSize: number;
   boundaries: number;
   siblings: number;

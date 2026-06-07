@@ -9,7 +9,7 @@ import {
   Signal,
 } from '@angular/core';
 import { INPUT_CONFIG } from './input.token';
-import { inputSize } from './input.types';
+import { controlSize } from '../../../types';
 
 @Directive({
   selector: '[tlsInput]',
@@ -21,7 +21,7 @@ export class InputDirective {
   // Injections
   private _config = inject(INPUT_CONFIG);
 
-  public readonly size: InputSignal<inputSize> = input<inputSize>(this._config.size);
+  public readonly size: InputSignal<controlSize> = input<controlSize>(this._config.size);
   public readonly fluid: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
     this._config.fluid,
     { transform: booleanAttribute },

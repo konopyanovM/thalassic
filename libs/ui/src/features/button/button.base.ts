@@ -8,7 +8,8 @@ import {
   InputSignalWithTransform,
 } from '@angular/core';
 import { BUTTON_CONFIG } from './button.token';
-import { buttonColor, buttonSize, buttonVariant } from './button.types';
+import { controlSize } from '../../types';
+import { buttonColor, buttonVariant } from './button.types';
 
 @Directive({
   host: {
@@ -31,7 +32,7 @@ export abstract class ButtonBase {
   );
   public readonly color: InputSignal<buttonColor> = input<buttonColor>(this._config.color);
   public readonly variant: InputSignal<buttonVariant> = input<buttonVariant>(this._config.variant);
-  public readonly size: InputSignal<buttonSize> = input<buttonSize>(this._config.size);
+  public readonly size: InputSignal<controlSize> = input<controlSize>(this._config.size);
   public readonly rounded: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
     false,
     { transform: booleanAttribute },

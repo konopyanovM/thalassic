@@ -1,7 +1,7 @@
-import { inputSize } from '../input/input.types';
+import { controlSize } from '../../../types';
 
 export interface PasswordConfig {
-  size: inputSize;
+  size: controlSize;
   placeholder: string;
   fluid: boolean;
 }

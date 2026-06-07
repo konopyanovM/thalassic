@@ -6,7 +6,7 @@
   [attr.name]="name()"
   aria-haspopup="listbox"
   [tabindex]="disabled() ? -1 : tabindex()"
-  [disabled]="disabled() || null"
+  [disabled]="disabled()"
   [attr.aria-expanded]="isOpen()"
   (click)="toggle()"
   (blur)="touched.set(true)"

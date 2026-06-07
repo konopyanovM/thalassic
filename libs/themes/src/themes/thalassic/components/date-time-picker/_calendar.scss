@@ -1,0 +1,85 @@
+@use 'mixins' as picker-mixins;
+@use '../../mixins' as mixins;
+
+.tls-calendar {
+  display: block;
+  width: fit-content;
+
+  &__header {
+    @include picker-mixins.header;
+  }
+
+  &__header-button {
+    @include picker-mixins.header-button;
+  }
+
+  &__nav {
+    @include picker-mixins.nav;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(7, var(--spacing-9));
+    gap: 2px;
+  }
+
+  &__weekday {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: var(--spacing-9);
+
+    font-size: var(--font-label-medium-size);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-on-surface-variant);
+  }
+
+  &__day {
+    width: var(--spacing-9);
+    height: var(--spacing-9);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: var(--font-label-large-size);
+
+    border: none;
+    border-radius: 50%;
+
+    background: transparent;
+    color: var(--color-on-surface);
+
+    cursor: pointer;
+    transition: background-color var(--motion-fast) var(--motion-ease-in-out);
+
+    &:hover {
+      background-color: var(--color-surface-container-high);
+    }
+
+    &:focus-visible {
+      @include mixins.focus-ring;
+    }
+
+    &--outside {
+      color: var(--color-on-surface-variant);
+      opacity: 0.4;
+    }
+
+    &--today {
+      color: var(--color-primary);
+      font-weight: var(--font-weight-semibold);
+    }
+
+    &--selected {
+      background-color: var(--color-primary);
+      color: var(--color-on-primary);
+
+      &:hover {
+        background-color: var(--color-primary);
+        filter: brightness(0.9);
+      }
+    }
+  }
+}

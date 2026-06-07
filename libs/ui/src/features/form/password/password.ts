@@ -12,13 +12,12 @@ import {
   Signal,
 } from '@angular/core';
 import { FORM_CONTROL, ValueFormControl } from '../../../abstract/form';
-import { inputSize } from '../input/input.types';
+import { controlSize } from '../../../types';
 import { PASSWORD_CONFIG } from './password.token';
 
 @Component({
   selector: 'tls-password',
   templateUrl: './password.html',
-  styleUrl: './password.scss',
   host: {
     '[class]': 'hostClasses()',
   },
@@ -31,19 +30,18 @@ export class Password extends ValueFormControl<string> {
   public readonly visible: ModelSignal<boolean> = model<boolean>(false);
   public readonly inputId = input<string | null>(null);
   public readonly placeholder = input<string>(this._config.placeholder);
-  public readonly size: InputSignal<inputSize> = input<inputSize>(this._config.size);
+  public readonly size: InputSignal<controlSize> = input<controlSize>(this._config.size);
   public readonly fluid: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
     this._config.fluid,
     { transform: booleanAttribute },
   );
 
   protected readonly hostClasses: Signal<string[]> = computed(() => {
-    const className = 'tls-form-control-group';
+    const groupClass = 'tls-form-control-group';
+    const array: string[] = ['tls-password', groupClass];
 
-    const array: string[] = [className];
-
-    array.push(`${className}--${this.size()}`);
-    if (this.fluid()) array.push(`${className}--fluid`);
+    array.push(`${groupClass}--${this.size()}`);
+    if (this.fluid()) array.push(`${groupClass}--fluid`);
 
     return array;
   });

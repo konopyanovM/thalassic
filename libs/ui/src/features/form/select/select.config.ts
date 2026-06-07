@@ -1,7 +1,7 @@
-import { selectSize } from './select.types';
+import { controlSize } from '../../../types';
 
 export interface SelectConfig {
-  size: selectSize;
+  size: controlSize;
   placeholder: string;
   fluid: boolean;
   clearable: boolean;

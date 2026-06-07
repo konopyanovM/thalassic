@@ -3,12 +3,14 @@
   --tls-select-gap: var(--spacing-2);
 
   position: relative;
+  display: inline-block;
 
   &.tls-form-control {
     --tls-form-control-width: var(--tls-select-width);
 
     display: inline-flex;
     align-items: stretch;
+    padding-inline: 0;
 
     cursor: pointer;
 
@@ -38,6 +40,8 @@
       display: flex;
       align-items: center;
       gap: var(--tls-select-gap);
+
+      padding-inline: var(--tls-form-control-padding-inline);
 
       appearance: none;
       outline: none;

@@ -1,9 +1,10 @@
-import { buttonColor, buttonSize, buttonType, buttonVariant } from './button.types';
+import { controlSize } from '../../types';
+import { buttonColor, buttonType, buttonVariant } from './button.types';
 
 export interface ButtonConfig {
   color: buttonColor;
   variant: buttonVariant;
-  size: buttonSize;
+  size: controlSize;
   type: buttonType;
   fluid: boolean;
 }

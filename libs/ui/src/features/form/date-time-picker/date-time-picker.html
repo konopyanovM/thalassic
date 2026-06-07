@@ -1,0 +1,75 @@
+<ng-template #pickerTemplate>
+  @switch (activeView()) {
+    @case ('calendar') {
+      <tls-calendar
+        [viewDate]="viewDate()"
+        [selectedDate]="value()"
+        [weekStartsOn]="weekStartsOn()"
+        [weekDays]="weekDays()"
+        (daySelect)="onDaySelect($event)"
+        (viewDateChange)="onViewDateChange($event)"
+        (navigateUp)="activeView.set('month-picker')"
+      />
+    }
+    @case ('month-picker') {
+      <tls-month-picker
+        [viewDate]="viewDate()"
+        [selectedDate]="value()"
+        (monthSelect)="onMonthSelect($event)"
+        (viewDateChange)="onViewDateChange($event)"
+        (navigateUp)="activeView.set('year-picker')"
+      />
+    }
+    @case ('year-picker') {
+      <tls-year-picker
+        [viewDate]="viewDate()"
+        [selectedDate]="value()"
+        [yearsPerPage]="yearsPerPage()"
+        (yearSelect)="onYearSelect($event)"
+        (viewDateChange)="onViewDateChange($event)"
+      />
+    }
+    @case ('time-picker') {
+      <tls-time-picker
+        [value]="value()"
+        (timeChange)="onTimeChange($event)"
+      />
+    }
+    @case ('date-time') {
+      <tls-calendar
+        [viewDate]="viewDate()"
+        [selectedDate]="value()"
+        [weekStartsOn]="weekStartsOn()"
+        [weekDays]="weekDays()"
+        (daySelect)="onDaySelect($event)"
+        (viewDateChange)="onViewDateChange($event)"
+        (navigateUp)="activeView.set('month-picker')"
+      />
+      <tls-time-picker
+        [value]="value()"
+        (timeChange)="onTimeChange($event)"
+      />
+    }
+  }
+</ng-template>
+
+@if (inline()) {
+  <div class="tls-date-time-picker__panel">
+    <ng-container [ngTemplateOutlet]="pickerTemplate" />
+  </div>
+} @else {
+  <button
+    type="button"
+    class="tls-date-time-picker__trigger"
+    aria-haspopup="dialog"
+    [attr.aria-expanded]="popoverRef.isOpen()"
+    [disabled]="disabled()"
+    (click)="popoverRef.toggle($event)"
+    (blur)="touched.set(true)"
+  >
+    <span [class.tls-form-control__placeholder]="!value()">{{ triggerLabel() }}</span>
+  </button>
+  <tls-popover #popoverRef position="bottom-start">
+    <ng-container [ngTemplateOutlet]="pickerTemplate" />
+  </tls-popover>
+}

@@ -1,0 +1,108 @@
+@use '../../mixins' as mixins;
+
+@mixin header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-2);
+}
+
+@mixin cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: var(--font-label-large-size);
+
+  border-radius: var(--radius-md);
+
+  color: var(--color-on-surface);
+
+  cursor: pointer;
+  transition: background-color var(--motion-fast) var(--motion-ease-in-out);
+
+  &:hover {
+    background-color: var(--color-surface-container-high);
+  }
+
+  &:focus-visible {
+    @include mixins.focus-ring;
+  }
+
+  &--current {
+    color: var(--color-primary);
+    font-weight: var(--font-weight-medium);
+  }
+
+  &--selected {
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+
+    &:hover {
+      background-color: var(--color-primary);
+      filter: brightness(0.9);
+    }
+  }
+}
+
+@mixin header-button {
+  align-self: stretch;
+
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: var(--font-label-large-size);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-on-surface);
+
+  border: none;
+  border-radius: var(--radius-sm);
+
+  background: transparent;
+
+  cursor: pointer;
+
+  transition: background-color var(--motion-fast) var(--motion-ease-in-out);
+
+  &:hover {
+    background-color: var(--color-surface-container-high);
+  }
+
+  &:focus-visible {
+    @include mixins.focus-ring;
+  }
+}
+
+@mixin nav {
+  width: var(--spacing-7);
+  height: var(--spacing-7);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  border-radius: var(--radius-sm);
+
+  background: transparent;
+  color: var(--color-on-surface-variant);
+
+  cursor: pointer;
+
+  transition: background-color var(--motion-fast) var(--motion-ease-in-out);
+
+  svg {
+    width: 8px;
+    height: 14px;
+  }
+
+  &:hover {
+    background-color: var(--color-surface-container-high);
+  }
+
+  &:focus-visible {
+    @include mixins.focus-ring;
+  }
+}

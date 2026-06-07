@@ -1,7 +1,7 @@
-import { inputSize } from './input.types';
+import { controlSize } from '../../../types';
 
 export interface InputConfig {
-  size: inputSize;
+  size: controlSize;
   type: string;
   placeholder: string;
   fluid: boolean;

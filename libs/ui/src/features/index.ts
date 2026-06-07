@@ -5,6 +5,7 @@ export * from './chart';
 export * from './divider';
 export * from './form-item';
 export * from './form/checkbox';
+export * from './form/date-time-picker';
 export * from './form/input';
 export * from './form/password';
 export * from './form/pin-input';

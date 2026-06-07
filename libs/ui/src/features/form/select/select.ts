@@ -23,8 +23,9 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FORM_CONTROL, ValueFormControl } from '../../../abstract/form';
+import { controlSize } from '../../../types';
 import { SELECT_CONFIG } from './select.token';
-import { selectOptionType, selectSize } from './select.types';
+import { selectOptionType } from './select.types';
 
 interface NormalizedOption<V = unknown> {
   value: V;
@@ -35,7 +36,6 @@ interface NormalizedOption<V = unknown> {
 @Component({
   selector: 'tls-select',
   templateUrl: './select.html',
-  styleUrl: './select.scss',
   host: {
     '[class]': 'hostClasses()',
   },
@@ -44,7 +44,6 @@ interface NormalizedOption<V = unknown> {
 export class Select<T, V = unknown> extends ValueFormControl<V | undefined> implements OnDestroy {
   private readonly _config = inject(SELECT_CONFIG);
   private readonly _overlay = inject(Overlay);
-  private readonly _elementRef = inject(ElementRef);
   private readonly _viewContainerRef = inject(ViewContainerRef);
   private readonly _destroyRef = inject(DestroyRef);
 
@@ -61,7 +60,7 @@ export class Select<T, V = unknown> extends ValueFormControl<V | undefined> impl
   public readonly optionValue = input<keyof T | undefined>(undefined);
   public readonly optionDisabled = input<keyof T | undefined>(undefined);
   public readonly placeholder = input<string>(this._config.placeholder);
-  public readonly size: InputSignal<selectSize> = input<selectSize>(this._config.size);
+  public readonly size: InputSignal<controlSize> = input<controlSize>(this._config.size);
   public readonly fluid: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
     this._config.fluid,
     { transform: booleanAttribute },
@@ -108,14 +107,11 @@ export class Select<T, V = unknown> extends ValueFormControl<V | undefined> impl
 
   // Classes
   protected readonly hostClasses: Signal<string[]> = computed(() => {
-    const selectClass = 'tls-select';
-    const formControlClass = 'tls-form-control';
+    const array: string[] = ['tls-select'];
 
-    const array: string[] = [selectClass];
-
-    if (this.isOpen()) array.push(`${selectClass}--open`);
-    array.push(`${formControlClass}--${this.size()}`);
-    if (this.fluid()) array.push(`${formControlClass}--fluid`);
+    if (this.isOpen()) array.push('tls-select--open');
+    array.push(`${this.CLASS_NAME}--${this.size()}`);
+    if (this.fluid()) array.push(`${this.CLASS_NAME}--fluid`);
 
     return array.concat(this.controlClasses());
   });
@@ -130,7 +126,7 @@ export class Select<T, V = unknown> extends ValueFormControl<V | undefined> impl
       this._overlayRef = this._overlay.create({
         positionStrategy: this._overlay
           .position()
-          .flexibleConnectedTo(this._elementRef)
+          .flexibleConnectedTo(triggerElement)
           .withPositions([
             { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 4 },
             {
@@ -156,7 +152,7 @@ export class Select<T, V = unknown> extends ValueFormControl<V | undefined> impl
     }
 
     this._portal ??= new TemplatePortal(panelTemplate, this._viewContainerRef);
-    this._overlayRef.updateSize({ minWidth: this._elementRef.nativeElement.offsetWidth });
+    this._overlayRef.updateSize({ minWidth: triggerElement.nativeElement.offsetWidth });
     this._overlayRef.attach(this._portal);
 
     this.isOpen.set(true);

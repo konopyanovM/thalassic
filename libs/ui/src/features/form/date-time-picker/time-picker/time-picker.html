@@ -1,0 +1,29 @@
+<div class="tls-time-picker__column">
+  <button type="button" class="tls-time-picker__arrow" (click)="incrementHours()">
+    <svg viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M1 7L7 1L13 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+  <span class="tls-time-picker__value">{{ hoursLabel() }}</span>
+  <button type="button" class="tls-time-picker__arrow" (click)="decrementHours()">
+    <svg viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M1 1L7 7L13 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+</div>
+
+<span class="tls-time-picker__separator">:</span>
+
+<div class="tls-time-picker__column">
+  <button type="button" class="tls-time-picker__arrow" (click)="incrementMinutes()">
+    <svg viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M1 7L7 1L13 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+  <span class="tls-time-picker__value">{{ minutesLabel() }}</span>
+  <button type="button" class="tls-time-picker__arrow" (click)="decrementMinutes()">
+    <svg viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M1 1L7 7L13 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+</div>

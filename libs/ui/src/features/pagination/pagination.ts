@@ -1,6 +1,7 @@
 import { booleanAttribute, Component, computed, inject, input, model } from '@angular/core';
+import { controlSize } from '../../types';
 import { PAGINATION_CONFIG } from './pagination.token';
-import { paginationItem, paginationSize } from './pagination.types';
+import { paginationItem } from './pagination.types';
 
 @Component({
   selector: 'tls-pagination',
@@ -13,11 +14,15 @@ export class Pagination {
   public readonly value = model<number>(1);
   public readonly pageSize = input<number>(this._config.pageSize);
   public readonly total = input<number>(0);
-  public readonly size = input<paginationSize>(this._config.size);
+  public readonly size = input<controlSize>(this._config.size);
   public readonly boundaries = input<number>(this._config.boundaries);
   public readonly siblings = input<number>(this._config.siblings);
-  public readonly showFirstButton = input<boolean, unknown>(this._config.showFirstButton, { transform: booleanAttribute });
-  public readonly showLastButton = input<boolean, unknown>(this._config.showLastButton, { transform: booleanAttribute });
+  public readonly showFirstButton = input<boolean, unknown>(this._config.showFirstButton, {
+    transform: booleanAttribute,
+  });
+  public readonly showLastButton = input<boolean, unknown>(this._config.showLastButton, {
+    transform: booleanAttribute,
+  });
 
   protected readonly pageCount = computed(() => Math.ceil(this.total() / this.pageSize()));
 
