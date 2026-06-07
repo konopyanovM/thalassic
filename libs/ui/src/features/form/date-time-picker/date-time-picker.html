@@ -54,7 +54,12 @@
 </ng-template>
 
 @if (inline()) {
-  <div class="tls-date-time-picker__panel">
+  <div
+    class="tls-date-time-picker__panel"
+    [class.tls-date-time-picker__panel--disabled]="disabled()"
+    [class.tls-date-time-picker__panel--readonly]="readonly()"
+    [class.tls-date-time-picker__panel--invalid]="invalid()"
+  >
     <ng-container [ngTemplateOutlet]="pickerTemplate" />
   </div>
 } @else {

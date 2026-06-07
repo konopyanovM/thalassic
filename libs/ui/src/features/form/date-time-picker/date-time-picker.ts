@@ -104,6 +104,7 @@ export class DateTimePicker extends ValueFormControl<Date | null> {
   }
 
   protected onDaySelect(date: Date): void {
+    if (this.notInteractive()) return;
     this.value.set(date);
     if (this.mode() === 'calendar') {
       this.popoverComponent()?.close();
@@ -112,6 +113,7 @@ export class DateTimePicker extends ValueFormControl<Date | null> {
 
   protected onMonthSelect(date: Date): void {
     this.viewDate.set(date);
+    if (this.notInteractive()) return;
     if (this.mode() === 'month-picker') {
       this.value.set(date);
       this.popoverComponent()?.close();
@@ -124,6 +126,7 @@ export class DateTimePicker extends ValueFormControl<Date | null> {
 
   protected onYearSelect(date: Date): void {
     this.viewDate.set(date);
+    if (this.notInteractive()) return;
     if (this.mode() === 'year-picker') {
       this.value.set(date);
       this.popoverComponent()?.close();
@@ -133,6 +136,7 @@ export class DateTimePicker extends ValueFormControl<Date | null> {
   }
 
   protected onTimeChange(date: Date): void {
+    if (this.notInteractive()) return;
     this.value.set(date);
   }
 }
