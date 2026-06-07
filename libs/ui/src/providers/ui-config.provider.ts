@@ -2,8 +2,10 @@ import { EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
 import {
   ALERT_CONFIG,
   BUTTON_CONFIG,
+  DATE_TIME_PICKER_CONFIG,
   DEFAULT_ALERT_CONFIG,
   DEFAULT_BUTTON_CONFIG,
+  DEFAULT_DATE_TIME_PICKER_CONFIG,
   DEFAULT_DIVIDER_CONFIG,
   DEFAULT_FORM_ITEM_CONFIG,
   DEFAULT_ICON_CONFIG,
@@ -46,6 +48,10 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
     {
       provide: BUTTON_CONFIG,
       useValue: mergeConfig(DEFAULT_BUTTON_CONFIG, config.components.button),
+    },
+    {
+      provide: DATE_TIME_PICKER_CONFIG,
+      useValue: mergeConfig(DEFAULT_DATE_TIME_PICKER_CONFIG, config.components.dateTimePicker),
     },
     {
       provide: DIVIDER_CONFIG,

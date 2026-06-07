@@ -1,6 +1,7 @@
 import {
   AlertConfig,
   ButtonConfig,
+  DateTimePickerConfig,
   DividerConfig,
   FormItemConfig,
   IconConfig,
@@ -21,6 +22,7 @@ export interface tlsUiConfigProvider {
   components: {
     alert?: Partial<AlertConfig>;
     button?: Partial<ButtonConfig>;
+    dateTimePicker?: Partial<DateTimePickerConfig>;
     divider?: Partial<DividerConfig>;
     input?: Partial<InputConfig>;
     password?: Partial<PasswordConfig>;
