@@ -41,7 +41,7 @@ interface NormalizedOption<V = unknown> {
   },
   providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => Select) }],
 })
-export class Select<T, V = unknown> extends ValueFormControl<V | undefined> implements OnDestroy {
+export class Select<T, V = unknown> extends ValueFormControl<V | null> implements OnDestroy {
   private readonly _config = inject(SELECT_CONFIG);
   private readonly _overlay = inject(Overlay);
   private readonly _viewContainerRef = inject(ViewContainerRef);
@@ -53,7 +53,7 @@ export class Select<T, V = unknown> extends ValueFormControl<V | undefined> impl
   private _overlayRef: OverlayRef | null = null;
   private _portal: TemplatePortal | null = null;
 
-  public readonly value: ModelSignal<V | undefined> = model<V | undefined>(undefined);
+  public readonly value: ModelSignal<V | null> = model<V | null>(null);
   public readonly inputId = input<string | null>(null);
   public readonly options: InputSignal<selectOptionType<T>[]> = input<selectOptionType<T>[]>([]);
   public readonly optionLabel = input<keyof T | undefined>(undefined);
@@ -183,7 +183,7 @@ export class Select<T, V = unknown> extends ValueFormControl<V | undefined> impl
   }
 
   protected clear(): void {
-    this.value.set(undefined);
+    this.value.set(null);
   }
 
   protected onOptionHover(index: number, disabled?: boolean): void {
