@@ -1,3 +1,25 @@
+## 0.8.0 (2026-06-13)
+
+### 🚀 Features
+
+- **ui:** added select form control component ([e372a58](https://github.com/konopyanovM/thalassic/commit/e372a58))
+- **ui:** added clearable option to select component ([64401ae](https://github.com/konopyanovM/thalassic/commit/64401ae))
+- **ui:** added table component ([5bc12f0](https://github.com/konopyanovM/thalassic/commit/5bc12f0))
+- **ui:** added pagination component ([99d4dd8](https://github.com/konopyanovM/thalassic/commit/99d4dd8))
+- **ui:** added popover component ([1dd05a1](https://github.com/konopyanovM/thalassic/commit/1dd05a1))
+- **ui:** added date time picker component, small fixes and improvements ([e4442f4](https://github.com/konopyanovM/thalassic/commit/e4442f4))
+- **ui:** added dialog component ([c9ba090](https://github.com/konopyanovM/thalassic/commit/c9ba090))
+
+### 🩹 Fixes
+
+- **ui:** select clearable button fix and pagination prev and next page guard ([2c541a7](https://github.com/konopyanovM/thalassic/commit/2c541a7))
+- **ui:** date time picker added to config ([f6d1dde](https://github.com/konopyanovM/thalassic/commit/f6d1dde))
+- **ui:** fixed readonly, disabled, invalid states for inline date time picker ([50bf483](https://github.com/konopyanovM/thalassic/commit/50bf483))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.7.0 (2026-05-11)
 
 ### 🚀 Features
