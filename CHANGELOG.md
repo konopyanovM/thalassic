@@ -1,3 +1,13 @@
+## 0.8.2 (2026-06-13)
+
+### 🩹 Fixes
+
+- **ui:** declare @angular/cdk as peer dependency ([117adb4](https://github.com/konopyanovM/thalassic/commit/117adb4))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.8.1 (2026-06-13)
 
 ### 🩹 Fixes
