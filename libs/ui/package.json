@@ -3,6 +3,7 @@
   "version": "0.8.1",
   "license": "MIT",
   "peerDependencies": {
+    "@angular/cdk": "^21.0.0",
     "@angular/common": "^21.0.0",
     "@angular/core": "^21.0.0",
     "chart.js": "^4.0.0"
