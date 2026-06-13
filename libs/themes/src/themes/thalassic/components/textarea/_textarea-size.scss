@@ -1,0 +1,15 @@
+.tls-textarea {
+  .tls-form-control {
+    &.tls-form-control--sm {
+      --tls-textarea-padding-block: var(--spacing-1);
+    }
+
+    &.tls-form-control--md {
+      --tls-textarea-padding-block: var(--spacing-2);
+    }
+
+    &.tls-form-control--lg {
+      --tls-textarea-padding-block: var(--spacing-3);
+    }
+  }
+}

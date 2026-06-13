@@ -12,6 +12,7 @@ export * from './form/pin-input';
 export * from './form/radio-button';
 export * from './form/select';
 export * from './form/switch';
+export * from './form/textarea';
 export * from './icon';
 export * from './loader';
 export * from './pagination';

@@ -1,4 +1,5 @@
 import { EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
+import { deepMerge } from '@thalassic/core';
 import {
   ALERT_CONFIG,
   BUTTON_CONFIG,
@@ -20,6 +21,7 @@ import {
   DEFAULT_SWITCH_CONFIG,
   DEFAULT_TABLE_CONFIG,
   DEFAULT_TABS_CONFIG,
+  DEFAULT_TEXTAREA_CONFIG,
   DEFAULT_TOOLTIP_CONFIG,
   DIALOG_CONFIG,
   DIVIDER_CONFIG,
@@ -35,9 +37,9 @@ import {
   SWITCH_CONFIG,
   TABLE_CONFIG,
   TABS_CONFIG,
+  TEXTAREA_CONFIG,
   TOOLTIP_CONFIG,
 } from '../features';
-import { deepMerge } from '@thalassic/core';
 import { tlsUiConfigProvider } from '../types';
 
 export const provideThalassicUIConfig = (config: tlsUiConfigProvider): EnvironmentProviders => {
@@ -99,6 +101,10 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
     },
     { provide: TABLE_CONFIG, useValue: deepMerge(DEFAULT_TABLE_CONFIG, config.components.table) },
     { provide: TABS_CONFIG, useValue: deepMerge(DEFAULT_TABS_CONFIG, config.components.tabs) },
+    {
+      provide: TEXTAREA_CONFIG,
+      useValue: deepMerge(DEFAULT_TEXTAREA_CONFIG, config.components.textarea),
+    },
     {
       provide: TOOLTIP_CONFIG,
       useValue: deepMerge(DEFAULT_TOOLTIP_CONFIG, config.components.tooltip),

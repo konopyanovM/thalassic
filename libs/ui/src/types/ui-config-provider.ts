@@ -16,6 +16,7 @@ import {
   SwitchConfig,
   TableConfig,
   TabsConfig,
+  TextareaConfig,
   TooltipConfig,
 } from '../features';
 
@@ -38,6 +39,7 @@ export interface tlsUiConfigProvider {
     stepper?: Partial<StepperConfig>;
     table?: Partial<TableConfig>;
     tabs?: Partial<TabsConfig>;
+    textarea?: Partial<TextareaConfig>;
     tooltip?: Partial<TooltipConfig>;
   };
 }

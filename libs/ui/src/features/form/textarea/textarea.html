@@ -1,0 +1,13 @@
+<textarea
+  [name]="name()"
+  [class]="classes()"
+  [attr.id]="inputId()"
+  [placeholder]="placeholder()"
+  [disabled]="disabled()"
+  [readonly]="readonly()"
+  [rows]="rows()"
+  [style.resize]="resize()"
+  [value]="value()"
+  (input)="onInput($event)"
+  (blur)="touched.set(true)"
+></textarea>
