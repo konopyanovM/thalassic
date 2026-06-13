@@ -1,3 +1,13 @@
+## 0.8.1 (2026-06-13)
+
+### 🩹 Fixes
+
+- **ui:** fixed select component undefined value ([61cbe45](https://github.com/konopyanovM/thalassic/commit/61cbe45))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.8.0 (2026-06-13)
 
 ### 🚀 Features
