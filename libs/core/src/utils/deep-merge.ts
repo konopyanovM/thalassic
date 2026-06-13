@@ -1,6 +1,6 @@
 import { isPlainObject } from './is-plain-object';
 
-export const mergeConfig = <T extends object>(
+export const deepMerge = <T extends object>(
   defaults: T,
   overrides: Partial<T> | undefined,
 ): T => {
@@ -14,7 +14,7 @@ export const mergeConfig = <T extends object>(
 
     result[key] = (
       isPlainObject(defaultValue) && isPlainObject(overrideValue)
-        ? mergeConfig(defaultValue, overrideValue as Partial<typeof defaultValue>)
+        ? deepMerge(defaultValue, overrideValue as Partial<typeof defaultValue>)
         : overrideValue
     ) as T[typeof key];
   }

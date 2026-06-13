@@ -37,71 +37,71 @@ import {
   TABS_CONFIG,
   TOOLTIP_CONFIG,
 } from '../features';
+import { deepMerge } from '@thalassic/core';
 import { tlsUiConfigProvider } from '../types';
-import { mergeConfig } from '../utils';
 
 export const provideThalassicUIConfig = (config: tlsUiConfigProvider): EnvironmentProviders => {
   return makeEnvironmentProviders([
     // Components
     {
       provide: ALERT_CONFIG,
-      useValue: mergeConfig(DEFAULT_ALERT_CONFIG, config.components.alert),
+      useValue: deepMerge(DEFAULT_ALERT_CONFIG, config.components.alert),
     },
     {
       provide: BUTTON_CONFIG,
-      useValue: mergeConfig(DEFAULT_BUTTON_CONFIG, config.components.button),
+      useValue: deepMerge(DEFAULT_BUTTON_CONFIG, config.components.button),
     },
     {
       provide: DATE_TIME_PICKER_CONFIG,
-      useValue: mergeConfig(DEFAULT_DATE_TIME_PICKER_CONFIG, config.components.dateTimePicker),
+      useValue: deepMerge(DEFAULT_DATE_TIME_PICKER_CONFIG, config.components.dateTimePicker),
     },
     {
       provide: DIALOG_CONFIG,
-      useValue: mergeConfig(DEFAULT_DIALOG_CONFIG, config.components.dialog),
+      useValue: deepMerge(DEFAULT_DIALOG_CONFIG, config.components.dialog),
     },
     {
       provide: DIVIDER_CONFIG,
-      useValue: mergeConfig(DEFAULT_DIVIDER_CONFIG, config.components.divider),
+      useValue: deepMerge(DEFAULT_DIVIDER_CONFIG, config.components.divider),
     },
-    { provide: INPUT_CONFIG, useValue: mergeConfig(DEFAULT_INPUT_CONFIG, config.components.input) },
+    { provide: INPUT_CONFIG, useValue: deepMerge(DEFAULT_INPUT_CONFIG, config.components.input) },
     {
       provide: PASSWORD_CONFIG,
-      useValue: mergeConfig(DEFAULT_PASSWORD_CONFIG, config.components.password),
+      useValue: deepMerge(DEFAULT_PASSWORD_CONFIG, config.components.password),
     },
     {
       provide: SELECT_CONFIG,
-      useValue: mergeConfig(DEFAULT_SELECT_CONFIG, config.components.select),
+      useValue: deepMerge(DEFAULT_SELECT_CONFIG, config.components.select),
     },
     {
       provide: SWITCH_CONFIG,
-      useValue: mergeConfig(DEFAULT_SWITCH_CONFIG, config.components.switch),
+      useValue: deepMerge(DEFAULT_SWITCH_CONFIG, config.components.switch),
     },
     {
       provide: FORM_ITEM_CONFIG,
-      useValue: mergeConfig(DEFAULT_FORM_ITEM_CONFIG, config.components.formItem),
+      useValue: deepMerge(DEFAULT_FORM_ITEM_CONFIG, config.components.formItem),
     },
-    { provide: ICON_CONFIG, useValue: mergeConfig(DEFAULT_ICON_CONFIG, config.components.icon) },
+    { provide: ICON_CONFIG, useValue: deepMerge(DEFAULT_ICON_CONFIG, config.components.icon) },
     {
       provide: PAGINATION_CONFIG,
-      useValue: mergeConfig(DEFAULT_PAGINATION_CONFIG, config.components.pagination),
+      useValue: deepMerge(DEFAULT_PAGINATION_CONFIG, config.components.pagination),
     },
     {
       provide: POPOVER_CONFIG,
-      useValue: mergeConfig(DEFAULT_POPOVER_CONFIG, config.components.popover),
+      useValue: deepMerge(DEFAULT_POPOVER_CONFIG, config.components.popover),
     },
     {
       provide: SKELETON_CONFIG,
-      useValue: mergeConfig(DEFAULT_SKELETON_CONFIG, config.components.skeleton),
+      useValue: deepMerge(DEFAULT_SKELETON_CONFIG, config.components.skeleton),
     },
     {
       provide: STEPPER_CONFIG,
-      useValue: mergeConfig(DEFAULT_STEPPER_CONFIG, config.components.stepper),
+      useValue: deepMerge(DEFAULT_STEPPER_CONFIG, config.components.stepper),
     },
-    { provide: TABLE_CONFIG, useValue: mergeConfig(DEFAULT_TABLE_CONFIG, config.components.table) },
-    { provide: TABS_CONFIG, useValue: mergeConfig(DEFAULT_TABS_CONFIG, config.components.tabs) },
+    { provide: TABLE_CONFIG, useValue: deepMerge(DEFAULT_TABLE_CONFIG, config.components.table) },
+    { provide: TABS_CONFIG, useValue: deepMerge(DEFAULT_TABS_CONFIG, config.components.tabs) },
     {
       provide: TOOLTIP_CONFIG,
-      useValue: mergeConfig(DEFAULT_TOOLTIP_CONFIG, config.components.tooltip),
+      useValue: deepMerge(DEFAULT_TOOLTIP_CONFIG, config.components.tooltip),
     },
   ]);
 };
