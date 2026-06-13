@@ -6,6 +6,7 @@ import {
   DEFAULT_ALERT_CONFIG,
   DEFAULT_BUTTON_CONFIG,
   DEFAULT_DATE_TIME_PICKER_CONFIG,
+  DEFAULT_DIALOG_CONFIG,
   DEFAULT_DIVIDER_CONFIG,
   DEFAULT_FORM_ITEM_CONFIG,
   DEFAULT_ICON_CONFIG,
@@ -20,6 +21,7 @@ import {
   DEFAULT_TABLE_CONFIG,
   DEFAULT_TABS_CONFIG,
   DEFAULT_TOOLTIP_CONFIG,
+  DIALOG_CONFIG,
   DIVIDER_CONFIG,
   FORM_ITEM_CONFIG,
   ICON_CONFIG,
@@ -52,6 +54,10 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
     {
       provide: DATE_TIME_PICKER_CONFIG,
       useValue: mergeConfig(DEFAULT_DATE_TIME_PICKER_CONFIG, config.components.dateTimePicker),
+    },
+    {
+      provide: DIALOG_CONFIG,
+      useValue: mergeConfig(DEFAULT_DIALOG_CONFIG, config.components.dialog),
     },
     {
       provide: DIVIDER_CONFIG,

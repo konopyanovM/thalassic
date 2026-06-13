@@ -1,0 +1,29 @@
+.tls-dialog {
+  &.tls-dialog--sm {
+    --tls-dialog-width: 400px;
+  }
+
+  &.tls-dialog--md {
+    --tls-dialog-width: 560px;
+  }
+
+  &.tls-dialog--lg {
+    --tls-dialog-width: 720px;
+  }
+
+  &.tls-dialog--xl {
+    --tls-dialog-width: 920px;
+  }
+
+  &.tls-dialog--wide {
+    --tls-dialog-width: calc(100svw - var(--spacing-12));
+    max-height: calc(100dvh - var(--spacing-12));
+  }
+
+  &.tls-dialog--full {
+    --tls-dialog-width: 100svw;
+    --tls-dialog-border-radius: 0;
+    height: 100dvh;
+    max-height: 100dvh;
+  }
+}

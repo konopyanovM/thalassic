@@ -1,0 +1,1 @@
+export type dialogSize = 'sm' | 'md' | 'lg' | 'xl' | 'wide' | 'full';

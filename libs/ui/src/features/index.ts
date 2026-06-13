@@ -2,6 +2,7 @@
 export * from './alert';
 export * from './button';
 export * from './chart';
+export * from './dialog';
 export * from './divider';
 export * from './form-item';
 export * from './form/checkbox';

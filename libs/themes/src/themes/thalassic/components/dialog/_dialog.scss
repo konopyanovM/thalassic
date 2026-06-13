@@ -1,0 +1,85 @@
+.tls-dialog-backdrop {
+  --tls-dialog-backdrop: rgb(0 0 0 / 0.4);
+
+  background-color: var(--tls-dialog-backdrop);
+}
+
+.tls-dialog {
+  --tls-dialog-background: var(--color-surface-container-lowest);
+  --tls-dialog-color: var(--color-on-surface);
+  --tls-dialog-border-radius: var(--radius-xl);
+  --tls-dialog-shadow: var(--shadow-lg);
+  --tls-dialog-padding: var(--spacing-6);
+  --tls-dialog-close-size: 16px;
+  --tls-dialog-close-padding: var(--spacing-4);
+
+  position: relative;
+
+  width: var(--tls-dialog-width);
+
+  display: flex;
+  flex-direction: column;
+
+  pointer-events: auto;
+
+  border-radius: var(--tls-dialog-border-radius);
+  background-color: var(--tls-dialog-background);
+  color: var(--tls-dialog-color);
+  box-shadow: var(--tls-dialog-shadow);
+
+  &__close {
+    position: absolute;
+    top: var(--tls-dialog-close-padding);
+    right: var(--tls-dialog-close-padding);
+    z-index: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: var(--tls-dialog-close-size);
+    height: var(--tls-dialog-close-size);
+
+    color: var(--color-outline);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+
+    transition: color var(--motion-fast) var(--motion-ease-in-out);
+
+    &:hover {
+      color: var(--color-on-surface);
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &__header {
+    padding: var(--tls-dialog-padding) var(--tls-dialog-padding) 0;
+  }
+
+  &__title {
+    font-size: var(--font-title-large-size);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--font-title-large-line-height);
+    color: var(--color-on-surface);
+  }
+
+  &__body {
+    flex: 1;
+    padding: var(--spacing-4) var(--tls-dialog-padding);
+    overflow-y: auto;
+  }
+
+  &__footer {
+    padding: 0 var(--tls-dialog-padding) var(--tls-dialog-padding);
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--spacing-3);
+  }
+}
