@@ -1,3 +1,14 @@
+## 0.9.0 (2026-06-14)
+
+### 🚀 Features
+
+- **ui:** added textarea component ([d68fa76](https://github.com/konopyanovM/thalassic/commit/d68fa76))
+- **ui:** added menu component ([16e368c](https://github.com/konopyanovM/thalassic/commit/16e368c))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.8.2 (2026-06-13)
 
 ### 🩹 Fixes
