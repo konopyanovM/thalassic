@@ -1,12 +1,7 @@
 import {
   ConnectedPosition,
-  FlexibleConnectedPositionStrategy,
   FlexibleConnectedPositionStrategyOrigin,
-  Overlay,
-  OverlayRef,
-  ScrollStrategy,
 } from '@angular/cdk/overlay';
-import { TemplatePortal } from '@angular/cdk/portal';
 import { NgTemplateOutlet } from '@angular/common';
 import {
   booleanAttribute,
@@ -14,23 +9,17 @@ import {
   computed,
   contentChild,
   contentChildren,
-  DestroyRef,
   effect,
   inject,
   input,
   InputSignal,
   InputSignalWithTransform,
   isDevMode,
-  OnDestroy,
-  OnInit,
-  signal,
   TemplateRef,
   viewChild,
-  ViewContainerRef,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Point } from '@thalassic/core';
-import { filter } from 'rxjs';
+import { createOverlayManager } from '../../abstract/overlay';
 import { overlayPosition } from '../../types';
 import { buildOverlayPositions } from '../../utils';
 import { Icon } from '../icon';
@@ -43,18 +32,13 @@ import { MenuActionItem, MenuItemDefinition } from './menu.types';
   imports: [NgTemplateOutlet, Icon],
   templateUrl: './menu.html',
 })
-export class Menu implements OnInit, OnDestroy {
+export class Menu {
   private static _counter = 0;
 
-  private readonly _overlay = inject(Overlay);
-  private readonly _viewContainerRef = inject(ViewContainerRef);
-  private readonly _destroyRef = inject(DestroyRef);
   private readonly _config = inject(MENU_CONFIG);
-
-  private _overlayRef: OverlayRef | null = null;
+  private readonly _overlay = createOverlayManager();
 
   private readonly _panelRef = viewChild.required<TemplateRef<unknown>>('panel');
-  private readonly _isOpen = signal(false);
 
   protected readonly _customItems = contentChildren(MenuItemComponent);
   protected readonly customTemplates = computed(() => {
@@ -71,7 +55,6 @@ export class Menu implements OnInit, OnDestroy {
   protected readonly iconTemplate = contentChild<TemplateRef<unknown>>('iconTemplate');
 
   public readonly id = `tls-menu-${++Menu._counter}`;
-  public readonly isOpen = this._isOpen.asReadonly();
 
   // Inputs
   public readonly items: InputSignal<MenuItemDefinition[]> = input<MenuItemDefinition[]>([]);
@@ -89,6 +72,9 @@ export class Menu implements OnInit, OnDestroy {
     buildOverlayPositions(this.position(), this.offset()),
   );
 
+  // An inline menu is always "open" (rendered in place); otherwise reflect the overlay.
+  public readonly isOpen = computed(() => this.inline() || this._overlay.isOpen());
+
   constructor() {
     if (isDevMode()) {
       effect(() => {
@@ -104,45 +90,38 @@ export class Menu implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit(): void {
-    if (this.inline()) {
-      this._isOpen.set(true);
-    }
-  }
-
   // Public methods
   public open(trigger: MouseEvent | HTMLElement): void {
-    if (this._overlayRef || this.inline()) return;
+    if (this.inline()) return;
 
     const origin: FlexibleConnectedPositionStrategyOrigin =
       trigger instanceof MouseEvent ? (trigger.currentTarget as HTMLElement) : trigger;
 
-    this._attach(
-      this._overlay.position().flexibleConnectedTo(origin).withPositions(this._positions()),
-      this._overlay.scrollStrategies.reposition(),
-      true,
-    );
+    this._overlay.open({
+      content: this._panelRef(),
+      origin,
+      positions: this._positions(),
+    });
   }
 
   public openAtPoint(x: number, y: number): void {
-    if (this._overlayRef || this.inline()) return;
+    if (this.inline()) return;
 
-    this._attach(
-      this._overlay.position().flexibleConnectedTo({ x, y }).withPositions(this._positions()),
-      this._overlay.scrollStrategies.close(),
-      false,
-    );
+    this._overlay.open({
+      content: this._panelRef(),
+      origin: { x, y },
+      positions: this._positions(),
+      scrollStrategy: 'close',
+      hasBackdrop: false,
+    });
   }
 
   public close(): void {
-    if (!this._overlayRef) return;
-    this._overlayRef.dispose();
-    this._overlayRef = null;
-    this._isOpen.set(false);
+    this._overlay.close();
   }
 
   public toggle(trigger: MouseEvent | HTMLElement): void {
-    if (this._overlayRef) {
+    if (this._overlay.isOpen()) {
       this.close();
     } else {
       this.open(trigger);
@@ -153,50 +132,5 @@ export class Menu implements OnInit, OnDestroy {
   protected onItemClick(item: MenuActionItem): void {
     item.action?.();
     this.close();
-  }
-
-  // Private
-  private _attach(
-    positionStrategy: FlexibleConnectedPositionStrategy,
-    scrollStrategy: ScrollStrategy,
-    hasBackdrop = true,
-  ): void {
-    this._overlayRef = this._overlay.create({
-      positionStrategy,
-      scrollStrategy,
-      hasBackdrop,
-      backdropClass: 'cdk-overlay-transparent-backdrop',
-    });
-
-    if (hasBackdrop) {
-      this._overlayRef
-        .backdropClick()
-        .pipe(takeUntilDestroyed(this._destroyRef))
-        .subscribe(() => this.close());
-    } else {
-      this._overlayRef
-        .outsidePointerEvents()
-        .pipe(
-          takeUntilDestroyed(this._destroyRef),
-          filter(event => event.type === 'click' || event.type === 'auxclick'),
-        )
-        .subscribe(() => this.close());
-    }
-
-    this._overlayRef
-      .keydownEvents()
-      .pipe(
-        takeUntilDestroyed(this._destroyRef),
-        filter(event => event.key === 'Escape'),
-      )
-      .subscribe(() => this.close());
-
-    this._overlayRef.attach(new TemplatePortal(this._panelRef(), this._viewContainerRef));
-    this._isOpen.set(true);
-  }
-
-  // Lifecycle
-  ngOnDestroy(): void {
-    if (this._overlayRef) this._overlayRef.dispose();
   }
 }

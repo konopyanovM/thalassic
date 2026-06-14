@@ -1,10 +1,7 @@
-import { Overlay, OverlayRef } from '@angular/cdk/overlay';
-import { TemplatePortal } from '@angular/cdk/portal';
 import {
   booleanAttribute,
   Component,
   computed,
-  DestroyRef,
   ElementRef,
   forwardRef,
   inject,
@@ -13,15 +10,13 @@ import {
   InputSignalWithTransform,
   model,
   ModelSignal,
-  OnDestroy,
   Signal,
   signal,
   TemplateRef,
   viewChild,
-  ViewContainerRef,
   WritableSignal,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { createOverlayManager } from '../../../abstract/overlay';
 import { FORM_CONTROL, ValueFormControl } from '../../../abstract/form';
 import { controlSize } from '../../../types';
 import { SELECT_CONFIG } from './select.token';
@@ -41,17 +36,12 @@ interface NormalizedOption<V = unknown> {
   },
   providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => Select) }],
 })
-export class Select<T, V = unknown> extends ValueFormControl<V | null> implements OnDestroy {
+export class Select<T, V = unknown> extends ValueFormControl<V | null> {
   private readonly _config = inject(SELECT_CONFIG);
-  private readonly _overlay = inject(Overlay);
-  private readonly _viewContainerRef = inject(ViewContainerRef);
-  private readonly _destroyRef = inject(DestroyRef);
+  private readonly _overlay = createOverlayManager();
 
   private readonly _triggerElement = viewChild<ElementRef<HTMLButtonElement>>('trigger');
   private readonly _panelTemplate = viewChild<TemplateRef<void>>('panel');
-
-  private _overlayRef: OverlayRef | null = null;
-  private _portal: TemplatePortal | null = null;
 
   public readonly value: ModelSignal<V | null> = model<V | null>(null);
   public readonly inputId = input<string | null>(null);
@@ -71,7 +61,7 @@ export class Select<T, V = unknown> extends ValueFormControl<V | null> implement
     { transform: booleanAttribute },
   );
 
-  protected readonly isOpen: WritableSignal<boolean> = signal(false);
+  protected readonly isOpen: Signal<boolean> = this._overlay.isOpen;
   protected readonly activeIndex: WritableSignal<number> = signal(-1);
 
   protected readonly normalizedOptions: Signal<NormalizedOption<V>[]> = computed(() => {
@@ -122,50 +112,33 @@ export class Select<T, V = unknown> extends ValueFormControl<V | null> implement
     const panelTemplate = this._panelTemplate();
     if (this.notInteractive() || this.isOpen() || !triggerElement || !panelTemplate) return;
 
-    if (!this._overlayRef) {
-      this._overlayRef = this._overlay.create({
-        positionStrategy: this._overlay
-          .position()
-          .flexibleConnectedTo(triggerElement)
-          .withPositions([
-            { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 4 },
-            {
-              originX: 'start',
-              originY: 'top',
-              overlayX: 'start',
-              overlayY: 'bottom',
-              offsetY: -4,
-            },
-          ])
-          .withFlexibleDimensions(false)
-          .withPush(false),
-        scrollStrategy: this._overlay.scrollStrategies.reposition(),
-        hasBackdrop: true,
-        panelClass: 'tls-select-panel',
-        backdropClass: 'cdk-overlay-transparent-backdrop',
-      });
+    this._overlay.open({
+      content: panelTemplate,
+      origin: triggerElement,
+      positions: [
+        { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 4 },
+        { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom', offsetY: -4 },
+      ],
+      flexibleDimensions: false,
+      push: false,
+      panelClass: 'tls-select-panel',
+      // Select handles Escape itself via the trigger's keydown handler.
+      closeOnEscape: false,
+      minWidth: triggerElement.nativeElement.offsetWidth,
+      reuse: true,
+      onClose: () => {
+        this.activeIndex.set(-1);
+        this._triggerElement()?.nativeElement.focus();
+      },
+    });
 
-      this._overlayRef
-        .backdropClick()
-        .pipe(takeUntilDestroyed(this._destroyRef))
-        .subscribe(() => this.close());
-    }
-
-    this._portal ??= new TemplatePortal(panelTemplate, this._viewContainerRef);
-    this._overlayRef.updateSize({ minWidth: triggerElement.nativeElement.offsetWidth });
-    this._overlayRef.attach(this._portal);
-
-    this.isOpen.set(true);
     this.activeIndex.set(
       this.normalizedOptions().findIndex(option => option.value === this.value()),
     );
   }
 
   protected close(): void {
-    this._overlayRef?.detach();
-    this.isOpen.set(false);
-    this.activeIndex.set(-1);
-    this._triggerElement()?.nativeElement.focus();
+    this._overlay.close();
   }
 
   protected toggle(): void {
@@ -240,10 +213,5 @@ export class Select<T, V = unknown> extends ValueFormControl<V | null> implement
       }
       next += direction;
     }
-  }
-
-  // Lifecycle
-  ngOnDestroy(): void {
-    if (this._overlayRef) this._overlayRef.dispose();
   }
 }
