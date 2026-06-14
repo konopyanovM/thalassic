@@ -19,6 +19,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Point } from '@thalassic/core';
+import { filter } from 'rxjs';
 import { overlayPosition } from '../../types';
 import { buildOverlayPositions } from '../../utils';
 import { POPOVER_CONFIG } from './popover.token';
@@ -85,6 +86,15 @@ export class Popover implements OnDestroy {
       .backdropClick()
       .pipe(takeUntilDestroyed(this._destroyRef))
       .subscribe(() => this.close());
+
+    this._overlayRef
+      .keydownEvents()
+      .pipe(
+        takeUntilDestroyed(this._destroyRef),
+        filter(event => event.key === 'Escape'),
+      )
+      .subscribe(() => this.close());
+
     this._overlayRef.attach(new TemplatePortal(this._templateRef(), this._viewContainerRef));
     this._isOpen.set(true);
   }

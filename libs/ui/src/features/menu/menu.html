@@ -1,0 +1,62 @@
+<ng-template #panel>
+  <div
+    class="tls-menu"
+    [id]="id"
+    role="menu"
+    [attr.aria-label]="ariaLabel() ?? null"
+  >
+    @for (item of items(); track $index) {
+      @switch (item.type) {
+        @case ('item') {
+          @let actionItem = item;
+          @if (itemTemplate(); as template) {
+            <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{ $implicit: actionItem }" />
+          } @else {
+            <button
+              role="menuitem"
+              class="tls-menu__item"
+              [disabled]="actionItem.disabled ?? false"
+              (click)="onItemClick(actionItem)"
+            >
+              @if (actionItem.icon) {
+                @if (iconTemplate(); as template) {
+                  <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{ $implicit: actionItem.icon, data: actionItem }" />
+                } @else {
+                  <tls-icon class="tls-menu__item-icon" [iconSrc]="actionItem.icon" />
+                }
+              }
+              <span class="tls-menu__item-label">{{ actionItem.label }}</span>
+              @if (actionItem.shortcut) {
+                <kbd class="tls-menu__item-shortcut">{{ actionItem.shortcut }}</kbd>
+              }
+            </button>
+          }
+        }
+        @case ('label') {
+          @let labelItem = item;
+          @if (labelTemplate(); as template) {
+            <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{ $implicit: labelItem }" />
+          } @else {
+            <span class="tls-menu__label" aria-hidden="true">{{ labelItem.label }}</span>
+          }
+        }
+        @case ('divider') {
+          @if (dividerTemplate(); as template) {
+            <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{ $implicit: item }" />
+          } @else {
+            <hr class="tls-menu__divider" role="separator" aria-hidden="true" />
+          }
+        }
+        @case ('custom') {
+          @if (customTemplates().get(item.key); as template) {
+            <ng-container [ngTemplateOutlet]="template" />
+          }
+        }
+      }
+    }
+  </div>
+</ng-template>
+
+@if (inline()) {
+  <ng-container [ngTemplateOutlet]="panel" />
+}

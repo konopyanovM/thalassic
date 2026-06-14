@@ -15,6 +15,7 @@ export * from './form/switch';
 export * from './form/textarea';
 export * from './icon';
 export * from './loader';
+export * from './menu';
 export * from './pagination';
 export * from './popover';
 export * from './skeleton';
