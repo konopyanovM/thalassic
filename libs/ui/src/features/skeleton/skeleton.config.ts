@@ -1,5 +1,5 @@
 export interface SkeletonConfig {
-  size: number;
+  size: number | null;
   width: number | null;
   height: number | null;
   radius: number;
@@ -9,7 +9,7 @@ export interface SkeletonConfig {
 }
 
 export const DEFAULT_SKELETON_CONFIG: SkeletonConfig = {
-  size: 40,
+  size: null,
   width: null,
   height: null,
   radius: 8,
