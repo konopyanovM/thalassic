@@ -9,17 +9,18 @@ import {
   InputSignalWithTransform,
   model,
   ModelSignal,
-  Signal,
 } from '@angular/core';
 import { FORM_CONTROL, ValueFormControl } from '../../../abstract/form';
 import { controlSize } from '../../../types';
+import { FormControlGroup } from '../../form-control-group';
 import { PASSWORD_CONFIG } from './password.token';
 
 @Component({
   selector: 'tls-password',
   templateUrl: './password.html',
+  imports: [FormControlGroup],
   host: {
-    '[class]': 'hostClasses()',
+    class: 'tls-password',
   },
   providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => Password) }],
 })
@@ -35,16 +36,6 @@ export class Password extends ValueFormControl<string> {
     this._config.fluid,
     { transform: booleanAttribute },
   );
-
-  protected readonly hostClasses: Signal<string[]> = computed(() => {
-    const groupClass = 'tls-form-control-group';
-    const array: string[] = ['tls-password', groupClass];
-
-    array.push(`${groupClass}--${this.size()}`);
-    if (this.fluid()) array.push(`${groupClass}--fluid`);
-
-    return array;
-  });
 
   protected type = computed(() => (this.visible() ? 'text' : 'password'));
 
