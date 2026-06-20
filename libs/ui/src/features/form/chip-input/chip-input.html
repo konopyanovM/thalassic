@@ -1,0 +1,23 @@
+@for (chip of value(); track $index; let index = $index) {
+  <tls-chip size="sm" variant="filled" color="primary" [label]="chip">
+    <ng-template #endIcon>
+      <button
+        type="button"
+        class="tls-chip-input__remove"
+        [attr.aria-label]="'Remove ' + chip"
+        [disabled]="notInteractive()"
+        (click)="removeChip(index)"
+      >×</button>
+    </ng-template>
+  </tls-chip>
+}
+<input
+  class="tls-chip-input__field"
+  [placeholder]="placeholder()"
+  [disabled]="disabled()"
+  [readonly]="readonly()"
+  [value]="inputValue()"
+  (input)="inputValue.set($any($event.target).value)"
+  (keydown)="onKeydown($event)"
+  (blur)="touched.set(true)"
+/>

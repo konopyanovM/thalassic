@@ -8,6 +8,7 @@ export * from './form-control-group';
 export * from './form-item';
 export * from './form/checkbox';
 export * from './form/date-time-picker';
+export * from './form/chip-input';
 export * from './form/input';
 export * from './form/password';
 export * from './form/pin-input';
