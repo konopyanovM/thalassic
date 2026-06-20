@@ -1,7 +1,9 @@
+import { NgTemplateOutlet } from '@angular/common';
 import {
   booleanAttribute,
   Component,
   computed,
+  contentChild,
   forwardRef,
   inject,
   input,
@@ -9,6 +11,7 @@ import {
   InputSignalWithTransform,
   model,
   ModelSignal,
+  TemplateRef,
 } from '@angular/core';
 import { FORM_CONTROL, ValueFormControl } from '../../../abstract/form';
 import { controlSize } from '../../../types';
@@ -18,7 +21,7 @@ import { PASSWORD_CONFIG } from './password.token';
 @Component({
   selector: 'tls-password',
   templateUrl: './password.html',
-  imports: [FormControlGroup],
+  imports: [FormControlGroup, NgTemplateOutlet],
   host: {
     class: 'tls-password',
   },
@@ -36,6 +39,9 @@ export class Password extends ValueFormControl<string> {
     this._config.fluid,
     { transform: booleanAttribute },
   );
+
+  protected readonly showIconTemplate = contentChild<TemplateRef<unknown>>('showIcon');
+  protected readonly hideIconTemplate = contentChild<TemplateRef<unknown>>('hideIcon');
 
   protected type = computed(() => (this.visible() ? 'text' : 'password'));
 
