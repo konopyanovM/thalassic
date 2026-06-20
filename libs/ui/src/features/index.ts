@@ -3,6 +3,7 @@ export * from './alert';
 export * from './button';
 export * from './dialog';
 export * from './divider';
+export * from './form-control-group';
 export * from './form-item';
 export * from './form/checkbox';
 export * from './form/date-time-picker';

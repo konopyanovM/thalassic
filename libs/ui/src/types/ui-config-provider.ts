@@ -4,6 +4,7 @@ import {
   DateTimePickerConfig,
   DialogConfig,
   DividerConfig,
+  FormControlGroupConfig,
   FormItemConfig,
   IconConfig,
   InputConfig,
@@ -27,6 +28,7 @@ export interface tlsUiConfigProvider {
     dateTimePicker?: Partial<DateTimePickerConfig>;
     dialog?: Partial<DialogConfig>;
     divider?: Partial<DividerConfig>;
+    formControlGroup?: Partial<FormControlGroupConfig>;
     input?: Partial<InputConfig>;
     password?: Partial<PasswordConfig>;
     select?: Partial<SelectConfig>;

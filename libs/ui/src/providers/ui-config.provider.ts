@@ -9,6 +9,7 @@ import {
   DEFAULT_DATE_TIME_PICKER_CONFIG,
   DEFAULT_DIALOG_CONFIG,
   DEFAULT_DIVIDER_CONFIG,
+  DEFAULT_FORM_CONTROL_GROUP_CONFIG,
   DEFAULT_FORM_ITEM_CONFIG,
   DEFAULT_ICON_CONFIG,
   DEFAULT_INPUT_CONFIG,
@@ -25,6 +26,7 @@ import {
   DEFAULT_TOOLTIP_CONFIG,
   DIALOG_CONFIG,
   DIVIDER_CONFIG,
+  FORM_CONTROL_GROUP_CONFIG,
   FORM_ITEM_CONFIG,
   ICON_CONFIG,
   INPUT_CONFIG,
@@ -64,6 +66,10 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
     {
       provide: DIVIDER_CONFIG,
       useValue: deepMerge(DEFAULT_DIVIDER_CONFIG, config.components.divider),
+    },
+    {
+      provide: FORM_CONTROL_GROUP_CONFIG,
+      useValue: deepMerge(DEFAULT_FORM_CONTROL_GROUP_CONFIG, config.components.formControlGroup),
     },
     { provide: INPUT_CONFIG, useValue: deepMerge(DEFAULT_INPUT_CONFIG, config.components.input) },
     {

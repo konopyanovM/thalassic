@@ -1,0 +1,103 @@
+.tls-form-control-group {
+  --tls-form-control-group-border-width: 1px;
+  --tls-form-control-group-border-style: solid;
+  --tls-form-control-group-border-color: var(--color-outline-variant);
+
+  display: inline-flex;
+  align-items: center;
+
+  border-radius: var(--radius-md);
+  border: var(--tls-form-control-group-border-width) var(--tls-form-control-group-border-style)
+    var(--tls-form-control-group-border-color);
+
+  transition:
+    border-color var(--motion-fast) var(--motion-ease-in-out),
+    background-color var(--motion-fast) var(--motion-ease-in-out),
+    box-shadow var(--motion-fast) var(--motion-ease-in-out);
+
+  &:hover {
+    --tls-form-control-group-border-color: var(--color-primary);
+  }
+
+  &:has(input.tls-form-control:focus),
+  &:has(.tls-select__trigger:focus) {
+    border: 1px solid var(--color-primary);
+    box-shadow: 0 0 3px -1px var(--color-primary);
+  }
+
+  // The wrapper component (e.g. tls-input) is the flex item, so it must stretch.
+  // It stays unpadded — the inline padding belongs on the value element inside.
+  > :not(.tls-form-control-addon) {
+    flex: 1 1 auto;
+    min-width: 0; // allow shrinking below intrinsic input width
+  }
+
+  // Visual reset for any control, leaf (<input>) or composite host (tls-select):
+  // the group owns the border/background, the control just fills the row.
+  .tls-form-control {
+    width: 100%;
+    flex-grow: 1;
+
+    border: none;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  // The group border is the single focus indicator — suppress each control's own
+  // focus border/shadow (base input :focus, select :focus-within) so it never doubles up.
+  input.tls-form-control:focus,
+  textarea.tls-form-control:focus,
+  .tls-select.tls-form-control:focus-within {
+    border: none;
+    box-shadow: none;
+  }
+
+  // Inline padding lives on the element that actually renders the value, so the padded
+  // area is interactive (no dead zone) and never stacks with a neighbour:
+  //  - leaf controls: the <input>/<textarea> itself
+  //  - tls-select: its inner trigger button (the host only wraps it)
+  // Pad the inline-start only; the trailing outer edge is added on the last child below.
+  input.tls-form-control,
+  textarea.tls-form-control,
+  .tls-select__trigger,
+  .tls-form-control-addon {
+    padding-block: 0;
+    padding-inline-start: var(--tls-form-control-group-padding-inline);
+    padding-inline-end: 0;
+  }
+
+  // Outer end edge: give exactly one end padding to the last child's value element.
+  > :last-child input.tls-form-control,
+  > :last-child textarea.tls-form-control,
+  > :last-child .tls-select__trigger,
+  > .tls-form-control-addon:last-child {
+    padding-inline-end: var(--tls-form-control-group-padding-inline);
+  }
+
+  // Form control
+  &.tls-form-control.tls-form-control--disabled,
+  &:has(.tls-form-control.tls-form-control.tls-form-control--disabled) {
+    --tls-form-control-group-border-color: var(--color-outline);
+    background-color: var(--color-surface-variant);
+
+    cursor: not-allowed;
+  }
+
+  &:not(
+      .tls-form-control--disabled
+    ).tls-form-control.tls-form-control--touched.tls-form-control--invalid,
+  &:has(
+    .tls-form-control:not(
+        .tls-form-control--disabled
+      ).tls-form-control.tls-form-control--touched.tls-form-control--invalid
+  ) {
+    --tls-form-control-group-border-color: var(--color-danger);
+
+    color: var(--color-danger);
+
+    .tls-form-control::placeholder,
+    .tls-form-control__placeholder {
+      color: var(--color-danger);
+    }
+  }
+}
