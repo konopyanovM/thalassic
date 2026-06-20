@@ -2,9 +2,10 @@
   <a
     role="link"
     [class]="classes()"
-    [attr.href]="href()"
+    [attr.href]="linkHref()"
     [tabindex]="tabindex()"
     [attr.aria-disabled]="disabled()"
+    (click)="onLinkClick($event)"
   >
     <ng-container [ngTemplateOutlet]="contentTemplate"></ng-container>
   </a>
