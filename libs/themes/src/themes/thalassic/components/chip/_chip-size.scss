@@ -1,0 +1,60 @@
+.tls-chip {
+  height: var(--tls-chip-height);
+  padding-inline: var(--tls-chip-padding-inline);
+
+  font-size: var(--tls-chip-font-size);
+  font-weight: var(--tls-chip-font-weight);
+  line-height: var(--tls-chip-line-height);
+  letter-spacing: var(--tls-chip-letter-spacing);
+
+  &.tls-chip--icon {
+    padding-inline: 0;
+    aspect-ratio: 1 / 1;
+
+    &.tls-chip--rounded {
+      --tls-chip-border-radius: 50%;
+    }
+  }
+
+  &.tls-chip--sm {
+    --tls-chip-height: 1.25rem;
+    --tls-chip-padding-inline: var(--spacing-2);
+
+    --tls-chip-font-size: var(--font-label-small-size);
+    --tls-chip-font-weight: var(--font-label-small-weight);
+    --tls-chip-line-height: var(--font-label-small-line-height);
+    --tls-chip-letter-spacing: var(--font-label-small-letter-spacing);
+
+    &.tls-chip--rounded {
+      --tls-chip-border-radius: var(--radius-xl);
+    }
+  }
+
+  &.tls-chip--md {
+    --tls-chip-height: 1.5rem;
+    --tls-chip-padding-inline: var(--spacing-3);
+
+    --tls-chip-font-size: var(--font-label-medium-size);
+    --tls-chip-font-weight: var(--font-label-medium-weight);
+    --tls-chip-line-height: var(--font-label-medium-line-height);
+    --tls-chip-letter-spacing: var(--font-label-medium-letter-spacing);
+
+    &.tls-chip--rounded {
+      --tls-chip-border-radius: var(--radius-2xl);
+    }
+  }
+
+  &.tls-chip--lg {
+    --tls-chip-height: 2rem;
+    --tls-chip-padding-inline: var(--spacing-4);
+
+    --tls-chip-font-size: var(--font-label-large-size);
+    --tls-chip-font-weight: var(--font-label-large-weight);
+    --tls-chip-line-height: var(--font-label-large-line-height);
+    --tls-chip-letter-spacing: var(--font-label-large-letter-spacing);
+
+    &.tls-chip--rounded {
+      --tls-chip-border-radius: var(--radius-3xl);
+    }
+  }
+}

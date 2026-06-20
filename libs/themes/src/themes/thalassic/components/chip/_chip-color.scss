@@ -1,0 +1,36 @@
+.tls-chip {
+  &.tls-chip--primary {
+    --tls-chip-color: var(--color-primary);
+    --tls-chip-on-color: var(--color-on-primary);
+  }
+
+  &.tls-chip--secondary {
+    --tls-chip-color: var(--color-secondary);
+    --tls-chip-on-color: var(--color-on-secondary);
+  }
+
+  &.tls-chip--tertiary {
+    --tls-chip-color: var(--color-tertiary);
+    --tls-chip-on-color: var(--color-on-tertiary);
+  }
+
+  &.tls-chip--success {
+    --tls-chip-color: var(--color-success);
+    --tls-chip-on-color: var(--color-on-success);
+  }
+
+  &.tls-chip--info {
+    --tls-chip-color: var(--color-info);
+    --tls-chip-on-color: var(--color-on-info);
+  }
+
+  &.tls-chip--warning {
+    --tls-chip-color: var(--color-warning);
+    --tls-chip-on-color: var(--color-on-warning);
+  }
+
+  &.tls-chip--danger {
+    --tls-chip-color: var(--color-danger);
+    --tls-chip-on-color: var(--color-on-danger);
+  }
+}

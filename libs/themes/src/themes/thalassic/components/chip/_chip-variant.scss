@@ -1,0 +1,17 @@
+.tls-chip {
+  &.tls-chip--filled {
+    background-color: var(--tls-chip-color);
+    color: var(--tls-chip-on-color);
+  }
+
+  &.tls-chip--outlined {
+    background-color: transparent;
+    color: var(--tls-chip-color);
+    border: 1px solid var(--tls-chip-color);
+  }
+
+  &.tls-chip--text {
+    background-color: transparent;
+    color: var(--tls-chip-color);
+  }
+}

@@ -1,6 +1,7 @@
 // Features
 export * from './alert';
 export * from './button';
+export * from './chip';
 export * from './dialog';
 export * from './divider';
 export * from './form-control-group';

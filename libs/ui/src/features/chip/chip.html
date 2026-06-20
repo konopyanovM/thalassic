@@ -1,0 +1,13 @@
+@if (startIconTemplate(); as template) {
+  <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{ $implicit: context() }" />
+}
+
+@if (label()) {
+  {{ label() }}
+} @else {
+  <ng-content></ng-content>
+}
+
+@if (endIconTemplate(); as template) {
+  <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{ $implicit: context() }" />
+}

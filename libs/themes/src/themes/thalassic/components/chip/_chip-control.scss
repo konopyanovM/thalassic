@@ -1,0 +1,51 @@
+.tls-chip {
+  &.tls-chip--control {
+    cursor: pointer;
+  }
+
+  &.tls-chip--checked {
+    background-color: var(--tls-chip-color);
+    color: var(--tls-chip-on-color);
+    border-color: var(--tls-chip-color);
+  }
+
+  &.tls-chip--checked-primary {
+    --tls-chip-color: var(--color-primary);
+    --tls-chip-on-color: var(--color-on-primary);
+  }
+
+  &.tls-chip--checked-secondary {
+    --tls-chip-color: var(--color-secondary);
+    --tls-chip-on-color: var(--color-on-secondary);
+  }
+
+  &.tls-chip--checked-tertiary {
+    --tls-chip-color: var(--color-tertiary);
+    --tls-chip-on-color: var(--color-on-tertiary);
+  }
+
+  &.tls-chip--checked-success {
+    --tls-chip-color: var(--color-success);
+    --tls-chip-on-color: var(--color-on-success);
+  }
+
+  &.tls-chip--checked-info {
+    --tls-chip-color: var(--color-info);
+    --tls-chip-on-color: var(--color-on-info);
+  }
+
+  &.tls-chip--checked-warning {
+    --tls-chip-color: var(--color-warning);
+    --tls-chip-on-color: var(--color-on-warning);
+  }
+
+  &.tls-chip--checked-danger {
+    --tls-chip-color: var(--color-danger);
+    --tls-chip-on-color: var(--color-on-danger);
+  }
+
+  &.tls-chip--disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
