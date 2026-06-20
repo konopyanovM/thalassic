@@ -1,6 +1,10 @@
 import {
   AlertConfig,
   ButtonConfig,
+  CheckboxConfig,
+  ChipConfig,
+  ChipControlConfig,
+  ChipInputConfig,
   DateTimePickerConfig,
   DialogConfig,
   DividerConfig,
@@ -8,9 +12,13 @@ import {
   FormItemConfig,
   IconConfig,
   InputConfig,
+  LoaderConfig,
+  MenuConfig,
   PaginationConfig,
   PasswordConfig,
+  PinInputConfig,
   PopoverConfig,
+  RadioButtonConfig,
   SelectConfig,
   SkeletonConfig,
   StepperConfig,
@@ -25,20 +33,28 @@ export interface tlsUiConfigProvider {
   components: {
     alert?: Partial<AlertConfig>;
     button?: Partial<ButtonConfig>;
+    checkbox?: Partial<CheckboxConfig>;
+    chip?: Partial<ChipConfig>;
+    chipControl?: Partial<ChipControlConfig>;
+    chipInput?: Partial<ChipInputConfig>;
     dateTimePicker?: Partial<DateTimePickerConfig>;
     dialog?: Partial<DialogConfig>;
     divider?: Partial<DividerConfig>;
     formControlGroup?: Partial<FormControlGroupConfig>;
-    input?: Partial<InputConfig>;
-    password?: Partial<PasswordConfig>;
-    select?: Partial<SelectConfig>;
-    switch?: Partial<SwitchConfig>;
     formItem?: Partial<FormItemConfig>;
     icon?: Partial<IconConfig>;
+    input?: Partial<InputConfig>;
+    loader?: Partial<LoaderConfig>;
+    menu?: Partial<MenuConfig>;
     pagination?: Partial<PaginationConfig>;
+    password?: Partial<PasswordConfig>;
+    pinInput?: Partial<PinInputConfig>;
     popover?: Partial<PopoverConfig>;
+    radioButton?: Partial<RadioButtonConfig>;
+    select?: Partial<SelectConfig>;
     skeleton?: Partial<SkeletonConfig>;
     stepper?: Partial<StepperConfig>;
+    switch?: Partial<SwitchConfig>;
     table?: Partial<TableConfig>;
     tabs?: Partial<TabsConfig>;
     textarea?: Partial<TextareaConfig>;
