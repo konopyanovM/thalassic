@@ -24,6 +24,7 @@ import {
   DEFAULT_INPUT_CONFIG,
   DEFAULT_LOADER_CONFIG,
   DEFAULT_MENU_CONFIG,
+  DEFAULT_MULTI_SELECT_CONFIG,
   DEFAULT_PAGINATION_CONFIG,
   DEFAULT_PASSWORD_CONFIG,
   DEFAULT_PIN_INPUT_CONFIG,
@@ -47,6 +48,7 @@ import {
   INPUT_CONFIG,
   LOADER_CONFIG,
   MENU_CONFIG,
+  MULTI_SELECT_CONFIG,
   PAGINATION_CONFIG,
   PASSWORD_CONFIG,
   PIN_INPUT_CONFIG,
@@ -119,6 +121,10 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
       useValue: deepMerge(DEFAULT_LOADER_CONFIG, config.components.loader),
     },
     { provide: MENU_CONFIG, useValue: deepMerge(DEFAULT_MENU_CONFIG, config.components.menu) },
+    {
+      provide: MULTI_SELECT_CONFIG,
+      useValue: deepMerge(DEFAULT_MULTI_SELECT_CONFIG, config.components.multiSelect),
+    },
     {
       provide: PAGINATION_CONFIG,
       useValue: deepMerge(DEFAULT_PAGINATION_CONFIG, config.components.pagination),

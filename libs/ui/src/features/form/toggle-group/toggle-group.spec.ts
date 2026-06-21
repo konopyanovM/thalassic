@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ToggleGroup } from './toggle-group';
 
 describe('ToggleGroup', () => {
-  let component: ToggleGroup;
-  let fixture: ComponentFixture<ToggleGroup>;
+  let component: ToggleGroup<unknown>;
+  let fixture: ComponentFixture<ToggleGroup<unknown>>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

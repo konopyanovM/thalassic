@@ -15,6 +15,7 @@ import {
   InputConfig,
   LoaderConfig,
   MenuConfig,
+  MultiSelectConfig,
   PaginationConfig,
   PasswordConfig,
   PinInputConfig,
@@ -49,6 +50,7 @@ export interface tlsUiConfigProvider {
     input?: Partial<InputConfig>;
     loader?: Partial<LoaderConfig>;
     menu?: Partial<MenuConfig>;
+    multiSelect?: Partial<MultiSelectConfig>;
     pagination?: Partial<PaginationConfig>;
     password?: Partial<PasswordConfig>;
     pinInput?: Partial<PinInputConfig>;

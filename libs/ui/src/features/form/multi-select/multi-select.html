@@ -1,0 +1,70 @@
+<button
+  #trigger
+  type="button"
+  class="tls-multi-select__trigger"
+  role="combobox"
+  [attr.id]="inputId()"
+  [attr.name]="name()"
+  aria-haspopup="listbox"
+  [attr.aria-controls]="isOpen() ? listboxId : null"
+  [attr.aria-activedescendant]="activeDescendantId()"
+  [tabindex]="disabled() ? -1 : tabindex()"
+  [disabled]="disabled()"
+  [attr.aria-expanded]="isOpen()"
+  (click)="toggle()"
+  (blur)="touched.set(true)"
+  (keydown)="onKeydown($event)"
+>
+  <span class="tls-multi-select__value" [class.tls-form-control__placeholder]="!triggerLabel()">
+    {{ triggerLabel() || placeholder() }}
+  </span>
+  <div class="tls-multi-select__icon" aria-hidden="true">
+    <svg class="tls-multi-select__chevron" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </div>
+</button>
+@if (clearable() && hasValue()) {
+  <button
+    type="button"
+    class="tls-multi-select__clear"
+    tabindex="-1"
+    aria-label="Clear"
+    (click)="clear()"
+  >
+    <svg class="tls-multi-select__clear-icon" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M1 1L9 9M9 1L1 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+    </svg>
+  </button>
+}
+
+<ng-template #panel>
+  <ul class="tls-multi-select__panel" role="listbox" aria-multiselectable="true" [id]="listboxId">
+    @for (option of normalizedOptions(); track option.value; let index = $index) {
+      <li
+        class="tls-multi-select__option"
+        [class.tls-multi-select__option--selected]="isSelected(option)"
+        [class.tls-multi-select__option--active]="index === activeIndex()"
+        [class.tls-multi-select__option--disabled]="option.disabled"
+      >
+        <button
+          class="tls-multi-select__option-button"
+          role="option"
+          [id]="optionId(index)"
+          [disabled]="option.disabled"
+          [attr.aria-selected]="isSelected(option)"
+          [attr.aria-disabled]="option.disabled"
+          (click)="toggleOption(option)"
+          (mouseenter)="onOptionHover(index, option.disabled)"
+        >
+          <span class="tls-multi-select__option-label">{{ option.label }}</span>
+          @if (isSelected(option)) {
+            <svg class="tls-multi-select__option-check" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          }
+        </button>
+      </li>
+    }
+  </ul>
+</ng-template>

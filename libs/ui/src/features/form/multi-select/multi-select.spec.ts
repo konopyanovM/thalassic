@@ -1,7 +1,7 @@
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { Component, signal, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Select } from './select';
+import { MultiSelect } from './multi-select';
 
 interface Option {
   label: string;
@@ -10,13 +10,14 @@ interface Option {
 }
 
 @Component({
-  imports: [Select],
+  imports: [MultiSelect],
   template: `
-    <tls-select
+    <tls-multi-select
       [options]="options()"
       [value]="value()"
       [clearable]="clearable()"
       [disabled]="disabled()"
+      [maxLabels]="maxLabels()"
       optionLabel="label"
       optionValue="value"
       optionDisabled="disabled"
@@ -29,39 +30,41 @@ class HostComponent {
     { label: 'Two', value: 2, disabled: true },
     { label: 'Three', value: 3, disabled: false },
   ]);
-  public readonly value = signal<number | null>(null);
+  public readonly value = signal<number[]>([]);
   public readonly clearable = signal(false);
   public readonly disabled = signal(false);
-  public readonly select = viewChild.required(Select);
+  public readonly maxLabels = signal(2);
+  public readonly multiSelect = viewChild.required(MultiSelect);
 }
 
-/**
- * Characterization tests for the overlay lifecycle and keyboard interaction that
- * Select currently re-implements on top of the CDK Overlay. These pin the
- * observable behavior so it survives the planned extraction of a shared overlay
- * primitive.
- */
-describe('Select', () => {
+describe('MultiSelect', () => {
   let fixture: ComponentFixture<HostComponent>;
   let host: HostComponent;
   let trigger: HTMLButtonElement;
   let overlayContainer: OverlayContainer;
   let overlayContainerElement: HTMLElement;
 
-  // The Select's own model reflects the committed selection (the host binds
-  // `value` one-way, so reads go through the component instance).
-  const selectedValue = () => host.select().value();
-  const queryPanel = () => overlayContainerElement.querySelector<HTMLElement>('.tls-select__panel');
+  const selectedValue = () => host.multiSelect().value();
+  const queryPanel = () =>
+    overlayContainerElement.querySelector<HTMLElement>('.tls-multi-select__panel');
   const queryOptions = () =>
     Array.from(
-      overlayContainerElement.querySelectorAll<HTMLButtonElement>('.tls-select__option-button'),
+      overlayContainerElement.querySelectorAll<HTMLButtonElement>(
+        '.tls-multi-select__option-button',
+      ),
     );
   const queryActiveOption = () =>
-    overlayContainerElement.querySelector<HTMLElement>('.tls-select__option--active');
+    overlayContainerElement.querySelector<HTMLElement>('.tls-multi-select__option--active');
   const queryBackdrop = () =>
     overlayContainerElement.querySelector<HTMLElement>('.cdk-overlay-backdrop');
   const queryClear = () =>
-    (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('.tls-select__clear');
+    (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>(
+      '.tls-multi-select__clear',
+    );
+  const queryTriggerValue = () =>
+    (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(
+      '.tls-multi-select__value',
+    );
   const keydown = (key: string) => {
     trigger.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
     fixture.detectChanges();
@@ -80,7 +83,7 @@ describe('Select', () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
-    trigger = fixture.nativeElement.querySelector('.tls-select__trigger');
+    trigger = fixture.nativeElement.querySelector('.tls-multi-select__trigger');
   });
 
   afterEach(() => {
@@ -88,12 +91,12 @@ describe('Select', () => {
   });
 
   it('should create', () => {
-    expect(host.select()).toBeTruthy();
+    expect(host.multiSelect()).toBeTruthy();
   });
 
   it('should start closed', () => {
     expect(queryPanel()).toBeNull();
-    expect(fixture.nativeElement.querySelector('.tls-select--open')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.tls-multi-select--open')).toBeNull();
   });
 
   describe('open / close via trigger', () => {
@@ -102,7 +105,7 @@ describe('Select', () => {
       fixture.detectChanges();
 
       expect(queryPanel()).not.toBeNull();
-      expect(fixture.nativeElement.querySelector('.tls-select--open')).not.toBeNull();
+      expect(fixture.nativeElement.querySelector('.tls-multi-select--open')).not.toBeNull();
       expect(trigger.getAttribute('aria-expanded')).toBe('true');
     });
 
@@ -143,63 +146,106 @@ describe('Select', () => {
 
       expect(queryPanel()).toBeNull();
     });
-
-    it('should mark the currently selected option active on open', () => {
-      host.value.set(3);
-      fixture.detectChanges();
-
-      trigger.click();
-      fixture.detectChanges();
-
-      expect(queryActiveOption()?.textContent?.trim()).toBe('Three');
-    });
   });
 
   describe('selection', () => {
-    it('should set the value and close when an option is clicked', () => {
+    it('should add a value when an option is clicked and keep the panel open', () => {
       trigger.click();
       fixture.detectChanges();
 
       queryOptions()[0].click();
       fixture.detectChanges();
 
-      expect(selectedValue()).toBe(1);
-      expect(queryPanel()).toBeNull();
+      expect(selectedValue()).toEqual([1]);
+      expect(queryPanel()).not.toBeNull();
+    });
+
+    it('should toggle off a value when a selected option is clicked again', () => {
+      host.value.set([1]);
+      fixture.detectChanges();
+
+      trigger.click();
+      fixture.detectChanges();
+
+      queryOptions()[0].click();
+      fixture.detectChanges();
+
+      expect(selectedValue()).toEqual([]);
+    });
+
+    it('should accumulate multiple selected values', () => {
+      trigger.click();
+      fixture.detectChanges();
+
+      queryOptions()[0].click();
+      fixture.detectChanges();
+      queryOptions()[2].click();
+      fixture.detectChanges();
+
+      expect(selectedValue()).toEqual([1, 3]);
     });
 
     it('should ignore clicks on disabled options', () => {
       trigger.click();
       fixture.detectChanges();
 
-      // index 1 ("Two") is disabled
       queryOptions()[1].click();
       fixture.detectChanges();
 
-      expect(selectedValue()).toBeNull();
+      expect(selectedValue()).toEqual([]);
       expect(queryPanel()).not.toBeNull();
+    });
+
+    it('should mark selected options with aria-selected', () => {
+      host.value.set([1]);
+      fixture.detectChanges();
+
+      trigger.click();
+      fixture.detectChanges();
+
+      const options = queryOptions();
+      expect(options[0].getAttribute('aria-selected')).toBe('true');
+      expect(options[2].getAttribute('aria-selected')).toBe('false');
+    });
+  });
+
+  describe('trigger label', () => {
+    it('should show comma-joined labels when selection is within maxLabels', () => {
+      host.value.set([1, 3]);
+      fixture.detectChanges();
+
+      expect(queryTriggerValue()?.textContent?.trim()).toBe('One, Three');
+    });
+
+    it('should show "N selected" when selection exceeds maxLabels', () => {
+      host.maxLabels.set(1);
+      host.value.set([1, 3]);
+      fixture.detectChanges();
+
+      expect(queryTriggerValue()?.textContent?.trim()).toBe('2 selected');
     });
   });
 
   describe('clear', () => {
-    it('should show a clear button only when clearable and a value is set', () => {
+    it('should show a clear button only when clearable and values are set', () => {
       host.clearable.set(true);
       fixture.detectChanges();
       expect(queryClear()).toBeNull();
 
-      host.value.set(1);
+      host.value.set([1]);
       fixture.detectChanges();
       expect(queryClear()).not.toBeNull();
     });
 
-    it('should reset the value when the clear button is clicked', () => {
+    it('should reset the value to an empty array when the clear button is clicked', () => {
       host.clearable.set(true);
-      host.value.set(1);
+      host.value.set([1, 3]);
       fixture.detectChanges();
 
       queryClear()?.click();
       fixture.detectChanges();
 
-      expect(selectedValue()).toBeNull();
+      expect(selectedValue()).toEqual([]);
     });
   });
 
@@ -215,8 +261,7 @@ describe('Select', () => {
     });
 
     it('should move active down skipping disabled options', () => {
-      keydown('ArrowDown'); // opens
-      keydown('ArrowDown'); // -> index 0 (One)
+      keydown('ArrowDown'); // opens, active = 0
       expect(queryActiveOption()?.textContent?.trim()).toBe('One');
 
       keydown('ArrowDown'); // skips disabled "Two" -> index 2 (Three)
@@ -224,25 +269,24 @@ describe('Select', () => {
     });
 
     it('should move active to the last enabled option on End', () => {
-      keydown('ArrowDown'); // opens
+      keydown('ArrowDown'); // opens, active = 0 (One)
       keydown('End');
       expect(queryActiveOption()?.textContent?.trim()).toBe('Three');
     });
 
     it('should move active to the first enabled option on Home', () => {
-      keydown('ArrowDown'); // opens
+      keydown('ArrowDown'); // opens, active = 0
       keydown('End'); // -> Three
       keydown('Home');
       expect(queryActiveOption()?.textContent?.trim()).toBe('One');
     });
 
-    it('should select the active option on Enter', () => {
-      keydown('ArrowDown'); // opens
-      keydown('ArrowDown'); // active "One"
+    it('should toggle the active option on Enter without closing', () => {
+      keydown('ArrowDown'); // opens, active = 0
       keydown('Enter');
 
-      expect(selectedValue()).toBe(1);
-      expect(queryPanel()).toBeNull();
+      expect(selectedValue()).toEqual([1]);
+      expect(queryPanel()).not.toBeNull();
     });
 
     it('should close on Escape', () => {
@@ -257,13 +301,13 @@ describe('Select', () => {
       expect(queryPanel()).toBeNull();
     });
 
-    it('should clear on Backspace when clearable with a value', () => {
+    it('should clear on Backspace when clearable with values', () => {
       host.clearable.set(true);
-      host.value.set(1);
+      host.value.set([1, 3]);
       fixture.detectChanges();
 
       keydown('Backspace');
-      expect(selectedValue()).toBeNull();
+      expect(selectedValue()).toEqual([]);
     });
   });
 
@@ -277,19 +321,16 @@ describe('Select', () => {
       trigger.click();
       fixture.detectChanges();
 
-      const listboxId = queryPanel()?.getAttribute('id');
+      const listbox = queryPanel();
+      const listboxId = listbox?.getAttribute('id');
       expect(listboxId).toBeTruthy();
       expect(trigger.getAttribute('aria-controls')).toBe(listboxId);
     });
 
     it('should track the active option via aria-activedescendant', () => {
-      host.value.set(3);
-      fixture.detectChanges();
+      keydown('ArrowDown'); // opens, active = 0 (One)
 
-      trigger.click(); // opens with "Three" active
-      fixture.detectChanges();
-
-      const activeOption = queryActiveOption()?.querySelector('.tls-select__option-button');
+      const activeOption = queryActiveOption()?.querySelector('.tls-multi-select__option-button');
       expect(activeOption?.getAttribute('id')).toBeTruthy();
       expect(trigger.getAttribute('aria-activedescendant')).toBe(
         activeOption?.getAttribute('id') ?? null,

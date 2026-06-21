@@ -1,0 +1,93 @@
+.tls-multi-select {
+  --tls-multi-select-width: 200px;
+  --tls-multi-select-gap: var(--spacing-2);
+
+  position: relative;
+  display: inline-block;
+
+  &.tls-form-control {
+    --tls-form-control-width: var(--tls-multi-select-width);
+
+    display: inline-flex;
+    align-items: stretch;
+    padding-inline: 0;
+
+    cursor: pointer;
+
+    &.tls-form-control--fluid {
+      --tls-form-control-width: 100%;
+    }
+
+    &.tls-form-control--disabled {
+      cursor: not-allowed;
+    }
+
+    &:focus-within {
+      border: var(--tls-form-control-border-width) solid var(--color-primary);
+      box-shadow: 0 0 3px -1px var(--color-primary);
+    }
+
+    &.tls-multi-select--open {
+      .tls-multi-select__chevron {
+        transform: rotate(180deg);
+      }
+    }
+
+    .tls-multi-select__trigger {
+      flex: 1;
+      min-width: 0;
+
+      display: flex;
+      align-items: center;
+      gap: var(--tls-multi-select-gap);
+
+      padding-inline: var(--tls-form-control-padding-inline);
+
+      appearance: none;
+      outline: none;
+
+      .tls-multi-select__value {
+        flex: 1;
+
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      .tls-multi-select__icon {
+        width: var(--tls-multi-select-icon-size);
+        height: var(--tls-multi-select-icon-size);
+
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+
+        .tls-multi-select__chevron {
+          transition: transform var(--motion-fast) var(--motion-ease-in-out);
+        }
+      }
+    }
+
+    .tls-multi-select__clear {
+      position: absolute;
+      top: 50%;
+      right: calc(var(--tls-form-control-padding-inline) * 2 + var(--tls-multi-select-icon-size));
+
+      display: flex;
+      align-items: center;
+
+      color: var(--color-outline);
+
+      transform: translateY(-50%);
+
+      &:hover {
+        color: var(--color-on-surface);
+      }
+
+      .tls-multi-select__clear-icon {
+        width: var(--tls-multi-select-clear-size);
+        height: var(--tls-multi-select-clear-size);
+      }
+    }
+  }
+}

@@ -2,9 +2,12 @@
   #trigger
   type="button"
   class="tls-select__trigger"
+  role="combobox"
   [attr.id]="inputId()"
   [attr.name]="name()"
   aria-haspopup="listbox"
+  [attr.aria-controls]="isOpen() ? listboxId : null"
+  [attr.aria-activedescendant]="activeDescendantId()"
   [tabindex]="disabled() ? -1 : tabindex()"
   [disabled]="disabled()"
   [attr.aria-expanded]="isOpen()"
@@ -36,22 +39,23 @@
 }
 
 <ng-template #panel>
-  <ul class="tls-select__panel" role="listbox">
-    @for (option of normalizedOptions(); track option.value; let i = $index) {
+  <ul class="tls-select__panel" role="listbox" [id]="listboxId">
+    @for (option of normalizedOptions(); track option.value; let index = $index) {
       <li
         class="tls-select__option"
         [class.tls-select__option--selected]="option.value === value()"
-        [class.tls-select__option--active]="i === activeIndex()"
+        [class.tls-select__option--active]="index === activeIndex()"
         [class.tls-select__option--disabled]="option.disabled"
       >
         <button
           class="tls-select__option-button"
           role="option"
+          [id]="optionId(index)"
           [disabled]="option.disabled"
           [attr.aria-selected]="option.value === value()"
           [attr.aria-disabled]="option.disabled"
           (click)="select(option)"
-          (mouseenter)="onOptionHover(i, option.disabled)"
+          (mouseenter)="onOptionHover(index, option.disabled)"
         >{{ option.label }}
         </button>
       </li>

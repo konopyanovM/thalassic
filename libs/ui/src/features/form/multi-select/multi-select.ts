@@ -14,40 +14,34 @@ import {
   signal,
   TemplateRef,
   viewChild,
-  WritableSignal,
+  WritableSignal
 } from '@angular/core';
 import { createOverlayManager } from '../../../abstract/overlay';
-import {
-  FORM_CONTROL,
-  normalizeOptions,
-  Option,
-  optionInput,
-  ValueFormControl,
-} from '../../../abstract/form';
+import { FORM_CONTROL, normalizeOptions, Option, optionInput, ValueFormControl } from '../../../abstract/form';
 import { controlSize } from '../../../types';
-import { SELECT_CONFIG } from './select.token';
+import { MULTI_SELECT_CONFIG } from './multi-select.token';
 
 @Component({
-  selector: 'tls-select',
-  templateUrl: './select.html',
+  selector: 'tls-multi-select',
+  templateUrl: './multi-select.html',
   host: {
     '[class]': 'hostClasses()',
   },
-  providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => Select) }],
+  providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => MultiSelect) }],
 })
-export class Select<T, V = unknown> extends ValueFormControl<V | null> {
+export class MultiSelect<T, V = unknown> extends ValueFormControl<V[]> {
   private static _nextUniqueId = 0;
 
-  private readonly _config = inject(SELECT_CONFIG);
+  private readonly _config = inject(MULTI_SELECT_CONFIG);
   private readonly _overlay = createOverlayManager();
 
-  private readonly _uniqueId = `tls-select-${Select._nextUniqueId++}`;
+  private readonly _uniqueId = `tls-multi-select-${MultiSelect._nextUniqueId++}`;
   protected readonly listboxId = `${this._uniqueId}-listbox`;
 
   private readonly _triggerElement = viewChild<ElementRef<HTMLButtonElement>>('trigger');
   private readonly _panelTemplate = viewChild<TemplateRef<void>>('panel');
 
-  public readonly value: ModelSignal<V | null> = model<V | null>(null);
+  public readonly value: ModelSignal<V[]> = model<V[]>([]);
   public readonly inputId = input<string | null>(null);
   public readonly options: InputSignal<optionInput<T>[]> = input<optionInput<T>[]>([]);
   public readonly optionLabel = input<keyof T | undefined>(undefined);
@@ -64,6 +58,7 @@ export class Select<T, V = unknown> extends ValueFormControl<V | null> {
     this._config.clearable,
     { transform: booleanAttribute },
   );
+  public readonly maxLabels = input<number>(this._config.maxLabels);
 
   protected readonly isOpen: Signal<boolean> = this._overlay.isOpen;
   protected readonly activeIndex: WritableSignal<number> = signal(-1);
@@ -76,14 +71,31 @@ export class Select<T, V = unknown> extends ValueFormControl<V | null> {
     }),
   );
 
-  protected readonly hasValue: Signal<boolean> = computed(() => {
-    const value = this.value();
-    return value !== null && value !== undefined && value !== '';
+  protected readonly hasValue: Signal<boolean> = computed(() => this.value().length > 0);
+
+  protected readonly selectedValues: Signal<Set<V>> = computed(() => new Set(this.value()));
+
+  protected readonly triggerLabel: Signal<string> = computed(() => {
+    const selected = this.value();
+    if (selected.length === 0) return '';
+
+    const max = this.maxLabels();
+    if (selected.length > max) return `${selected.length} selected`;
+
+    const optionMap = new Map(this.normalizedOptions().map(option => [option.value, option.label]));
+    return selected.map(value => optionMap.get(value) ?? String(value)).join(', ');
   });
 
-  protected readonly selectedLabel: Signal<string> = computed(() => {
-    if (!this.hasValue()) return '';
-    return this.normalizedOptions().find(option => option.value === this.value())?.label ?? '';
+  protected readonly initialActiveIndex: Signal<number> = computed(() => {
+    const options = this.normalizedOptions();
+    const selected = this.selectedValues();
+
+    const firstSelected = options.findIndex(
+      option => !option.disabled && selected.has(option.value),
+    );
+    if (firstSelected !== -1) return firstSelected;
+
+    return options.findIndex(option => !option.disabled);
   });
 
   protected readonly activeDescendantId: Signal<string | null> = computed(() => {
@@ -92,18 +104,16 @@ export class Select<T, V = unknown> extends ValueFormControl<V | null> {
     return this.optionId(index);
   });
 
-  // Classes
   protected readonly hostClasses: Signal<string[]> = computed(() => {
-    const array: string[] = ['tls-select'];
+    const array: string[] = ['tls-multi-select'];
 
-    if (this.isOpen()) array.push('tls-select--open');
+    if (this.isOpen()) array.push('tls-multi-select--open');
     array.push(`${this.CLASS_NAME}--${this.size()}`);
     if (this.fluid()) array.push(`${this.CLASS_NAME}--fluid`);
 
     return array.concat(this.controlClasses());
   });
 
-  // Protected methods
   protected open(): void {
     const triggerElement = this._triggerElement();
     const panelTemplate = this._panelTemplate();
@@ -118,8 +128,7 @@ export class Select<T, V = unknown> extends ValueFormControl<V | null> {
       ],
       flexibleDimensions: false,
       push: false,
-      panelClass: 'tls-select-panel',
-      // Select handles Escape itself via the trigger's keydown handler.
+      panelClass: 'tls-multi-select-panel',
       closeOnEscape: false,
       minWidth: triggerElement.nativeElement.offsetWidth,
       reuse: true,
@@ -130,9 +139,7 @@ export class Select<T, V = unknown> extends ValueFormControl<V | null> {
       },
     });
 
-    this.activeIndex.set(
-      this.normalizedOptions().findIndex(option => option.value === this.value()),
-    );
+    this.activeIndex.set(this.initialActiveIndex());
   }
 
   protected close(): void {
@@ -147,14 +154,21 @@ export class Select<T, V = unknown> extends ValueFormControl<V | null> {
     }
   }
 
-  protected select(option: Option<V>): void {
+  protected isSelected(option: Option<V>): boolean {
+    return this.selectedValues().has(option.value);
+  }
+
+  protected toggleOption(option: Option<V>): void {
     if (option.disabled) return;
-    this.value.set(option.value);
-    this.close();
+    if (this.isSelected(option)) {
+      this.value.update(current => current.filter(item => item !== option.value));
+    } else {
+      this.value.update(current => [...current, option.value]);
+    }
   }
 
   protected clear(): void {
-    this.value.set(null);
+    this.value.set([]);
   }
 
   protected onOptionHover(index: number, disabled?: boolean): void {
@@ -183,7 +197,7 @@ export class Select<T, V = unknown> extends ValueFormControl<V | null> {
         return;
       }
       const active = this.normalizedOptions()[this.activeIndex()];
-      if (active && !active.disabled) this.select(active);
+      if (active && !active.disabled) this.toggleOption(active);
     } else if (event.key === 'Home') {
       if (!this.isOpen()) return;
       event.preventDefault();

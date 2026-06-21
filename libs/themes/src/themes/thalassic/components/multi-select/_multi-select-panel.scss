@@ -1,0 +1,83 @@
+.tls-multi-select__panel {
+  --tls-multi-select-panel-max-height: 240px;
+  --tls-multi-select-panel-padding-block: var(--spacing-1);
+  --tls-multi-select-panel-background: var(--color-surface-container-lowest);
+  --tls-multi-select-panel-border-radius: var(--radius-md);
+  --tls-multi-select-panel-shadow: var(--shadow-sm);
+
+  width: 100%;
+  max-height: var(--tls-multi-select-panel-max-height);
+
+  margin: 0;
+  padding: var(--tls-multi-select-panel-padding-block) 0;
+
+  background-color: var(--tls-multi-select-panel-background);
+  border-radius: var(--tls-multi-select-panel-border-radius);
+  box-shadow: var(--tls-multi-select-panel-shadow);
+
+  overflow-y: auto;
+  list-style: none;
+}
+
+.tls-multi-select__option {
+  --tls-multi-select-option-color: var(--color-on-surface);
+  --tls-multi-select-option-background: transparent;
+  --tls-multi-select-option-padding-block: var(--spacing-2);
+  --tls-multi-select-option-padding-inline: var(--spacing-3);
+
+  &.tls-multi-select__option--active {
+    --tls-multi-select-option-background: var(--color-surface-variant);
+  }
+
+  &.tls-multi-select__option--selected {
+    --tls-multi-select-option-color: var(--color-primary);
+  }
+
+  &.tls-multi-select__option--disabled .tls-multi-select__option-button {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .tls-multi-select__option-button {
+    width: 100%;
+    padding-block: var(--tls-multi-select-option-padding-block);
+    padding-inline: var(--tls-multi-select-option-padding-inline);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-2);
+
+    appearance: none;
+    cursor: pointer;
+    text-align: left;
+
+    color: var(--tls-multi-select-option-color);
+    background: var(--tls-multi-select-option-background);
+    border: none;
+
+    font-size: var(--font-body-medium-size);
+    font-weight: var(--font-body-medium-weight);
+    line-height: var(--font-body-medium-line-height);
+    letter-spacing: var(--font-body-medium-letter-spacing);
+
+    transition: background-color var(--motion-fast) var(--motion-ease-in-out);
+
+    &:focus-visible {
+      outline: none;
+    }
+
+    .tls-multi-select__option-label {
+      flex: 1;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .tls-multi-select__option-check {
+      width: 0.75rem;
+      height: 0.75rem;
+      flex-shrink: 0;
+    }
+  }
+}
