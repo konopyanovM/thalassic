@@ -12,3 +12,5 @@ export interface ChipContext {
   invalid: boolean;
   pending: boolean;
 }
+
+export type chipTemplateContext = { $implicit: ChipContext };

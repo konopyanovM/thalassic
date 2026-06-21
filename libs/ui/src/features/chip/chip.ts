@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { controlSize } from '../../types';
 import { CHIP_CONFIG } from './chip.token';
-import { ChipContext, chipColor, chipVariant } from './chip.types';
+import { ChipContext, chipColor, chipTemplateContext, chipVariant } from './chip.types';
 
 @Component({
   selector: 'tls-chip',
@@ -42,8 +42,8 @@ export class Chip {
     pending: false,
   });
 
-  protected readonly startIconTemplate = contentChild<TemplateRef<ChipContext>>('startIcon');
-  protected readonly endIconTemplate = contentChild<TemplateRef<ChipContext>>('endIcon');
+  protected readonly startIconTemplate = contentChild<TemplateRef<chipTemplateContext>>('startIcon');
+  protected readonly endIconTemplate = contentChild<TemplateRef<chipTemplateContext>>('endIcon');
 
   protected classes = computed(() => {
     const className = 'tls-chip';
