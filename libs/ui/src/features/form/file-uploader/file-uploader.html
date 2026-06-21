@@ -1,0 +1,64 @@
+<input
+  #fileInput
+  class="tls-file-uploader__input"
+  type="file"
+  [accept]="accept()"
+  [multiple]="multiple()"
+  [disabled]="disabled()"
+  (change)="onFilesSelected($event)"
+/>
+<div
+  class="tls-file-uploader__drop-zone"
+  role="button"
+  [attr.tabindex]="notInteractive() ? -1 : 0"
+  [attr.aria-label]="multiple() ? 'Upload files' : 'Upload file'"
+  [class.tls-file-uploader__drop-zone--dragging]="dragState() === 'valid'"
+  [class.tls-file-uploader__drop-zone--rejected]="dragState() === 'invalid'"
+  [class.tls-file-uploader__drop-zone--disabled]="notInteractive()"
+  (click)="openFilePicker()"
+  (keydown)="onDropZoneKeydown($event)"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave()"
+  (drop)="onDrop($event)"
+>
+  @if (dropZoneTemplate(); as template) {
+    <ng-container
+      [ngTemplateOutlet]="template"
+      [ngTemplateOutletContext]="{ $implicit: dragState(), accept: acceptHint() }"
+    />
+  } @else {
+    <span class="tls-file-uploader__label">
+      @if (dragState() === 'invalid') {
+        File type not allowed
+      } @else {
+        Drop files here or <strong>browse</strong>
+      }
+    </span>
+    @if (acceptHint()) {
+      <span class="tls-file-uploader__hint">Allowed: {{ acceptHint() }}</span>
+    }
+  }
+</div>
+@if (value().length) {
+  <ul class="tls-file-uploader__file-list">
+    @for (file of value(); track file; let fileIndex = $index) {
+      <li class="tls-file-uploader__file">
+        @if (fileTemplate(); as template) {
+          <ng-container
+            [ngTemplateOutlet]="template"
+            [ngTemplateOutletContext]="{ $implicit: file, index: fileIndex, remove: removeFile }"
+          />
+        } @else {
+          <span class="tls-file-uploader__file-name">{{ file.name }}</span>
+          <button
+            type="button"
+            class="tls-file-uploader__file-remove"
+            [attr.aria-label]="'Remove ' + file.name"
+            [disabled]="notInteractive()"
+            (click)="removeFile(fileIndex)"
+          >×</button>
+        }
+      </li>
+    }
+  </ul>
+}
