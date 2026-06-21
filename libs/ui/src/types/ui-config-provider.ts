@@ -8,6 +8,7 @@ import {
   DateTimePickerConfig,
   DialogConfig,
   DividerConfig,
+  FileUploaderConfig,
   FormControlGroupConfig,
   FormItemConfig,
   IconConfig,
@@ -26,6 +27,7 @@ import {
   TableConfig,
   TabsConfig,
   TextareaConfig,
+  ToggleGroupConfig,
   TooltipConfig,
 } from '../features';
 
@@ -40,6 +42,7 @@ export interface tlsUiConfigProvider {
     dateTimePicker?: Partial<DateTimePickerConfig>;
     dialog?: Partial<DialogConfig>;
     divider?: Partial<DividerConfig>;
+    fileUploader?: Partial<FileUploaderConfig>;
     formControlGroup?: Partial<FormControlGroupConfig>;
     formItem?: Partial<FormItemConfig>;
     icon?: Partial<IconConfig>;
@@ -58,6 +61,7 @@ export interface tlsUiConfigProvider {
     table?: Partial<TableConfig>;
     tabs?: Partial<TabsConfig>;
     textarea?: Partial<TextareaConfig>;
+    toggleGroup?: Partial<ToggleGroupConfig>;
     tooltip?: Partial<TooltipConfig>;
   };
 }

@@ -17,6 +17,7 @@ import {
   DEFAULT_DATE_TIME_PICKER_CONFIG,
   DEFAULT_DIALOG_CONFIG,
   DEFAULT_DIVIDER_CONFIG,
+  DEFAULT_FILE_UPLOADER_CONFIG,
   DEFAULT_FORM_CONTROL_GROUP_CONFIG,
   DEFAULT_FORM_ITEM_CONFIG,
   DEFAULT_ICON_CONFIG,
@@ -35,9 +36,11 @@ import {
   DEFAULT_TABLE_CONFIG,
   DEFAULT_TABS_CONFIG,
   DEFAULT_TEXTAREA_CONFIG,
+  DEFAULT_TOGGLE_GROUP_CONFIG,
   DEFAULT_TOOLTIP_CONFIG,
   DIALOG_CONFIG,
   DIVIDER_CONFIG,
+  FILE_UPLOADER_CONFIG,
   FORM_CONTROL_GROUP_CONFIG,
   FORM_ITEM_CONFIG,
   ICON_CONFIG,
@@ -56,6 +59,7 @@ import {
   TABLE_CONFIG,
   TABS_CONFIG,
   TEXTAREA_CONFIG,
+  TOGGLE_GROUP_CONFIG,
   TOOLTIP_CONFIG,
 } from '../features';
 import { tlsUiConfigProvider } from '../types';
@@ -95,6 +99,10 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
     {
       provide: DIVIDER_CONFIG,
       useValue: deepMerge(DEFAULT_DIVIDER_CONFIG, config.components.divider),
+    },
+    {
+      provide: FILE_UPLOADER_CONFIG,
+      useValue: deepMerge(DEFAULT_FILE_UPLOADER_CONFIG, config.components.fileUploader),
     },
     {
       provide: FORM_CONTROL_GROUP_CONFIG,
@@ -152,6 +160,10 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
     {
       provide: TEXTAREA_CONFIG,
       useValue: deepMerge(DEFAULT_TEXTAREA_CONFIG, config.components.textarea),
+    },
+    {
+      provide: TOGGLE_GROUP_CONFIG,
+      useValue: deepMerge(DEFAULT_TOGGLE_GROUP_CONFIG, config.components.toggleGroup),
     },
     {
       provide: TOOLTIP_CONFIG,
