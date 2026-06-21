@@ -1,3 +1,13 @@
+## 0.11.0 (2026-06-21)
+
+### 🚀 Features
+
+- **ui:** added multi select component ([445e529](https://github.com/konopyanovm/thalassic/commit/445e529))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.10.0 (2026-06-21)
 
 ### 🚀 Features
