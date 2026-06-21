@@ -1,3 +1,26 @@
+## 0.10.0 (2026-06-21)
+
+### 🚀 Features
+
+- **ui:** added form control group component ([0731c8d](https://github.com/konopyanovm/thalassic/commit/0731c8d))
+- **ui:** added custom icons input to password component ([bde7364](https://github.com/konopyanovm/thalassic/commit/bde7364))
+- **ui:** added chip component ([4aa99e2](https://github.com/konopyanovm/thalassic/commit/4aa99e2))
+- **ui:** skeleton defaults to full size when no dimensions provided ([0d53523](https://github.com/konopyanovm/thalassic/commit/0d53523))
+- **ui:** added chip input component ([a15ba79](https://github.com/konopyanovm/thalassic/commit/a15ba79))
+- **ui:** added toggle group component ([f748e83](https://github.com/konopyanovm/thalassic/commit/f748e83))
+- **ui:** added file uploader component ([0ab2cb6](https://github.com/konopyanovm/thalassic/commit/0ab2cb6))
+
+### 🩹 Fixes
+
+- **ui:** fixed button link mode ([1f37410](https://github.com/konopyanovm/thalassic/commit/1f37410))
+- **ui:** fixed ui configs ([d9b427a](https://github.com/konopyanovm/thalassic/commit/d9b427a))
+- **ui:** fixed chip template context ([a64fdd3](https://github.com/konopyanovm/thalassic/commit/a64fdd3))
+- **ui:** ui config provider added missing configs ([838b1fb](https://github.com/konopyanovm/thalassic/commit/838b1fb))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.9.0 (2026-06-14)
 
 ### 🚀 Features
