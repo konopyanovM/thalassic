@@ -1,0 +1,106 @@
+@use '../../mixins' as mixins;
+
+.tls-toggle-group {
+  --tls-toggle-group-border-width: 1px;
+  --tls-toggle-group-border-color: var(--color-outline-variant);
+  --tls-toggle-group-border-radius: var(--radius-sm);
+
+  display: inline-flex;
+  flex-direction: row;
+
+  border: var(--tls-toggle-group-border-width) solid var(--tls-toggle-group-border-color);
+  border-radius: var(--tls-toggle-group-border-radius);
+  overflow: hidden;
+
+  &--vertical {
+    flex-direction: column;
+
+    .tls-toggle-group__option:not(:first-child) {
+      border-top: var(--tls-toggle-group-border-width) solid var(--tls-toggle-group-border-color);
+      border-left: none;
+    }
+  }
+
+  &__option {
+    position: relative;
+    z-index: 1;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    height: var(--tls-toggle-group-option-height);
+    padding-inline: var(--tls-toggle-group-option-padding-inline);
+
+    border: none;
+    background: transparent;
+    color: var(--color-on-surface);
+
+    cursor: pointer;
+    user-select: none;
+
+    transition: color var(--motion-fast) var(--motion-ease-in-out);
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+
+      background-color: var(--tls-toggle-group-color);
+      opacity: 0;
+
+      transition: opacity var(--motion-fast) var(--motion-ease-in-out);
+    }
+
+    &:not(:first-child) {
+      border-left: var(--tls-toggle-group-border-width) solid var(--tls-toggle-group-border-color);
+    }
+
+    &:focus-visible {
+      @include mixins.focus-ring;
+    }
+
+    &:not(.tls-toggle-group__option--disabled):not(:disabled):hover::before {
+      opacity: 0.075;
+    }
+
+    &:not(.tls-toggle-group__option--disabled):not(:disabled):active::before {
+      opacity: 0.15;
+    }
+
+    &--selected {
+      color: var(--tls-toggle-group-on-color);
+
+      &::before {
+        opacity: 1;
+      }
+
+      &:not(.tls-toggle-group__option--disabled):not(:disabled):hover::before {
+        opacity: 0.85;
+      }
+
+      &:not(.tls-toggle-group__option--disabled):not(:disabled):active::before {
+        opacity: 0.75;
+      }
+    }
+
+    &--disabled,
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  }
+
+  &.tls-toggle-group--disabled {
+    cursor: not-allowed;
+
+    .tls-toggle-group__option {
+      pointer-events: none;
+    }
+  }
+
+  &:not(.tls-toggle-group--disabled).tls-toggle-group--touched.tls-toggle-group--invalid {
+    --tls-toggle-group-border-color: var(--color-danger);
+  }
+}

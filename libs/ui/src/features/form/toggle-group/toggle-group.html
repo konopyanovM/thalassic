@@ -1,0 +1,18 @@
+@for (option of normalizedOptions(); track option.value) {
+  <button
+    type="button"
+    class="tls-toggle-group__option"
+    [class.tls-toggle-group__option--selected]="isSelected(option.value)"
+    [class.tls-toggle-group__option--disabled]="option.disabled"
+    [attr.aria-pressed]="isSelected(option.value)"
+    [disabled]="disabled() || option.disabled"
+    (click)="select(option)"
+    (blur)="touched.set(true)"
+  >
+    @if (optionTemplate(); as template) {
+      <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{ $implicit: option }" />
+    } @else {
+      {{ option.label }}
+    }
+  </button>
+}

@@ -1,0 +1,31 @@
+.tls-toggle-group {
+  &--sm {
+    --tls-toggle-group-option-height: var(--control-height-sm);
+    --tls-toggle-group-option-padding-inline: var(--spacing-3);
+
+    font-size: var(--font-label-small-size);
+    font-weight: var(--font-label-small-weight);
+    line-height: var(--font-label-small-line-height);
+    letter-spacing: var(--font-label-small-letter-spacing);
+  }
+
+  &--md {
+    --tls-toggle-group-option-height: var(--control-height-md);
+    --tls-toggle-group-option-padding-inline: var(--spacing-4);
+
+    font-size: var(--font-label-medium-size);
+    font-weight: var(--font-label-medium-weight);
+    line-height: var(--font-label-medium-line-height);
+    letter-spacing: var(--font-label-medium-letter-spacing);
+  }
+
+  &--lg {
+    --tls-toggle-group-option-height: var(--control-height-lg);
+    --tls-toggle-group-option-padding-inline: var(--spacing-5);
+
+    font-size: var(--font-label-large-size);
+    font-weight: var(--font-label-large-weight);
+    line-height: var(--font-label-large-line-height);
+    letter-spacing: var(--font-label-large-letter-spacing);
+  }
+}

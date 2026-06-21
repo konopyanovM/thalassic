@@ -17,16 +17,15 @@ import {
   WritableSignal,
 } from '@angular/core';
 import { createOverlayManager } from '../../../abstract/overlay';
-import { FORM_CONTROL, ValueFormControl } from '../../../abstract/form';
+import {
+  FORM_CONTROL,
+  normalizeOptions,
+  Option,
+  optionInput,
+  ValueFormControl,
+} from '../../../abstract/form';
 import { controlSize } from '../../../types';
 import { SELECT_CONFIG } from './select.token';
-import { selectOptionType } from './select.types';
-
-interface NormalizedOption<V = unknown> {
-  value: V;
-  label: string;
-  disabled: boolean;
-}
 
 @Component({
   selector: 'tls-select',
@@ -45,7 +44,7 @@ export class Select<T, V = unknown> extends ValueFormControl<V | null> {
 
   public readonly value: ModelSignal<V | null> = model<V | null>(null);
   public readonly inputId = input<string | null>(null);
-  public readonly options: InputSignal<selectOptionType<T>[]> = input<selectOptionType<T>[]>([]);
+  public readonly options: InputSignal<optionInput<T>[]> = input<optionInput<T>[]>([]);
   public readonly optionLabel = input<keyof T | undefined>(undefined);
   public readonly optionValue = input<keyof T | undefined>(undefined);
   public readonly optionDisabled = input<keyof T | undefined>(undefined);
@@ -64,26 +63,13 @@ export class Select<T, V = unknown> extends ValueFormControl<V | null> {
   protected readonly isOpen: Signal<boolean> = this._overlay.isOpen;
   protected readonly activeIndex: WritableSignal<number> = signal(-1);
 
-  protected readonly normalizedOptions: Signal<NormalizedOption<V>[]> = computed(() => {
-    const options = this.options();
-    const optionLabel = this.optionLabel();
-    const optionValue = this.optionValue();
-    const optionDisabled = this.optionDisabled();
-
-    return options.map(option => {
-      if (typeof option === 'string' || typeof option === 'number') {
-        return { value: option as V, label: String(option), disabled: false };
-      }
-
-      const typedOption = option as T;
-
-      return {
-        value: (optionValue ? typedOption[optionValue] : typedOption) as V,
-        label: String(optionLabel ? typedOption[optionLabel] : typedOption),
-        disabled: Boolean(optionDisabled ? typedOption[optionDisabled] : false),
-      };
-    });
-  });
+  protected readonly normalizedOptions: Signal<Option<V>[]> = computed(() =>
+    normalizeOptions<T, V>(this.options(), {
+      label: this.optionLabel(),
+      value: this.optionValue(),
+      disabled: this.optionDisabled(),
+    }),
+  );
 
   protected readonly hasValue: Signal<boolean> = computed(() => {
     const value = this.value();
@@ -149,7 +135,7 @@ export class Select<T, V = unknown> extends ValueFormControl<V | null> {
     }
   }
 
-  protected select(option: NormalizedOption<V>): void {
+  protected select(option: Option<V>): void {
     if (option.disabled) return;
     this.value.set(option.value);
     this.close();
