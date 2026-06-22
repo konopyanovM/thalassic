@@ -1,3 +1,13 @@
+## 0.13.1 (2026-06-22)
+
+### 🩹 Fixes
+
+- **ui:** fixed chip height ([3ae7217](https://github.com/konopyanovm/thalassic/commit/3ae7217))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.13.0 (2026-06-22)
 
 ### 🚀 Features
