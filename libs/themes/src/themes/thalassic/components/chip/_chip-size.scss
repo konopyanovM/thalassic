@@ -17,7 +17,7 @@
   }
 
   &.tls-chip--sm {
-    --tls-chip-height: 1.25rem;
+    --tls-chip-height: var(--control-height-sm);
     --tls-chip-padding-inline: var(--spacing-2);
 
     --tls-chip-font-size: var(--font-label-small-size);
@@ -31,7 +31,7 @@
   }
 
   &.tls-chip--md {
-    --tls-chip-height: 1.5rem;
+    --tls-chip-height: var(--control-height-md);
     --tls-chip-padding-inline: var(--spacing-3);
 
     --tls-chip-font-size: var(--font-label-medium-size);
@@ -45,7 +45,7 @@
   }
 
   &.tls-chip--lg {
-    --tls-chip-height: 2rem;
+    --tls-chip-height: var(--control-height-lg);
     --tls-chip-padding-inline: var(--spacing-4);
 
     --tls-chip-font-size: var(--font-label-large-size);
