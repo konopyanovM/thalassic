@@ -1,0 +1,33 @@
+@use '../mixins' as mixins;
+
+.tls-chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+
+  &--vertical {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .tls-chip {
+    user-select: none;
+
+    transition: background-color var(--motion-fast) var(--motion-ease-in-out),
+    color var(--motion-fast) var(--motion-ease-in-out),
+    border-color var(--motion-fast) var(--motion-ease-in-out);
+
+    &:focus-visible {
+      @include mixins.focus-ring;
+    }
+  }
+
+  &.tls-chip-group--disabled {
+    cursor: not-allowed;
+
+    .tls-chip {
+      pointer-events: none;
+    }
+  }
+}
+

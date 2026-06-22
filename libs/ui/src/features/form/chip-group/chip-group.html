@@ -1,0 +1,41 @@
+@for (option of normalizedOptions(); track option.value; let index = $index) {
+  <tls-chip
+    [color]="color()"
+    [variant]="variant()"
+    [size]="size()"
+    [rounded]="rounded()"
+    [class]="optionClasses(option)"
+    role="checkbox"
+    [attr.aria-checked]="isSelected(option.value)"
+    [attr.aria-disabled]="isDisabled(option)"
+    [tabindex]="isDisabled(option) ? -1 : 0"
+    (click)="select(option)"
+    (blur)="touched.set(true)"
+    (keydown.space)="onKeyboardSelect($event, option)"
+    (keydown.enter)="onKeyboardSelect($event, option)"
+  >
+    @if (startIconTemplate(); as template) {
+      <ng-container
+        [ngTemplateOutlet]="template"
+        [ngTemplateOutletContext]="optionContext(option, index)"
+      />
+    }
+
+    @if (labelTemplate(); as template) {
+      <ng-container
+        [ngTemplateOutlet]="template"
+        [ngTemplateOutletContext]="optionContext(option, index)"
+      />
+    } @else {
+      {{ option.label }}
+    }
+
+    @if (endIconTemplate(); as template) {
+      <ng-container
+        [ngTemplateOutlet]="template"
+        [ngTemplateOutletContext]="optionContext(option, index)"
+      />
+    }
+  </tls-chip>
+}
+

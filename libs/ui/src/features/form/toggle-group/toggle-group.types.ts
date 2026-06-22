@@ -1,1 +1,3 @@
-export type toggleGroupType = 'single' | 'multiple';
+import { selectionMode } from '../../../abstract/form';
+
+export type toggleGroupType = selectionMode;
