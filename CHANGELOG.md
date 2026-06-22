@@ -1,3 +1,14 @@
+## 0.12.0 (2026-06-22)
+
+### 🚀 Features
+
+- **ui:** chip group component added ([d02e3fc](https://github.com/konopyanovm/thalassic/commit/d02e3fc))
+- **ui:** added checked variant input to chip and chip group components ([e009e28](https://github.com/konopyanovm/thalassic/commit/e009e28))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.11.0 (2026-06-21)
 
 ### 🚀 Features
