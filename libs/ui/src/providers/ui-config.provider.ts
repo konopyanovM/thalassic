@@ -6,6 +6,7 @@ import {
   CHECKBOX_CONFIG,
   CHIP_CONFIG,
   CHIP_CONTROL_CONFIG,
+  CHIP_GROUP_CONFIG,
   CHIP_INPUT_CONFIG,
   DATE_TIME_PICKER_CONFIG,
   DEFAULT_ALERT_CONFIG,
@@ -13,6 +14,7 @@ import {
   DEFAULT_CHECKBOX_CONFIG,
   DEFAULT_CHIP_CONFIG,
   DEFAULT_CHIP_CONTROL_CONFIG,
+  DEFAULT_CHIP_GROUP_CONFIG,
   DEFAULT_CHIP_INPUT_CONFIG,
   DEFAULT_DATE_TIME_PICKER_CONFIG,
   DEFAULT_DIALOG_CONFIG,
@@ -85,6 +87,10 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
     {
       provide: CHIP_CONTROL_CONFIG,
       useValue: deepMerge(DEFAULT_CHIP_CONTROL_CONFIG, config.components.chipControl),
+    },
+    {
+      provide: CHIP_GROUP_CONFIG,
+      useValue: deepMerge(DEFAULT_CHIP_GROUP_CONFIG, config.components.chipGroup),
     },
     {
       provide: CHIP_INPUT_CONFIG,

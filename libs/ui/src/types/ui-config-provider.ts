@@ -4,6 +4,7 @@ import {
   CheckboxConfig,
   ChipConfig,
   ChipControlConfig,
+  ChipGroupConfig,
   ChipInputConfig,
   DateTimePickerConfig,
   DialogConfig,
@@ -39,6 +40,7 @@ export interface tlsUiConfigProvider {
     checkbox?: Partial<CheckboxConfig>;
     chip?: Partial<ChipConfig>;
     chipControl?: Partial<ChipControlConfig>;
+    chipGroup?: Partial<ChipGroupConfig>;
     chipInput?: Partial<ChipInputConfig>;
     dateTimePicker?: Partial<DateTimePickerConfig>;
     dialog?: Partial<DialogConfig>;
