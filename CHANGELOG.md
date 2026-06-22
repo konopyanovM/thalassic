@@ -1,3 +1,13 @@
+## 0.13.0 (2026-06-22)
+
+### 🚀 Features
+
+- **core:** added layout utility classes ([d9a1265](https://github.com/konopyanovm/thalassic/commit/d9a1265))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.12.1 (2026-06-22)
 
 ### 🩹 Fixes
