@@ -1,3 +1,13 @@
+## 0.12.1 (2026-06-22)
+
+### 🩹 Fixes
+
+- **ui:** added chip group config to ui provider ([062c7f7](https://github.com/konopyanovm/thalassic/commit/062c7f7))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.12.0 (2026-06-22)
 
 ### 🚀 Features
