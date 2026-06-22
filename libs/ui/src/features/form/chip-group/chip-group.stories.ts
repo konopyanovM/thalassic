@@ -52,6 +52,10 @@ const meta: Meta<ChipGroup<StoryOption, string>> = {
       control: { type: 'select' },
       options: CHIP_VARIANT_OPTIONS,
     },
+    checkedVariant: {
+      control: { type: 'select' },
+      options: [undefined, ...CHIP_VARIANT_OPTIONS],
+    },
     orientation: {
       control: { type: 'select' },
       options: STORY_ORIENTATION_OPTIONS,

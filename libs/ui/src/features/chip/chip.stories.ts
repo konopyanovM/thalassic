@@ -85,6 +85,10 @@ export const Control: StoryObj<ChipControl> = {
       control: { type: 'select' },
       options: [undefined, ...STORY_COLOR_OPTIONS],
     },
+    checkedVariant: {
+      control: { type: 'select' },
+      options: [undefined, ...CHIP_VARIANT_OPTIONS],
+    },
   },
   render: args => ({
     props: args,
@@ -93,6 +97,7 @@ export const Control: StoryObj<ChipControl> = {
         [checked]="checked"
         [disabled]="disabled"
         [checkedColor]="checkedColor"
+        [checkedVariant]="checkedVariant"
       />
     `,
   }),

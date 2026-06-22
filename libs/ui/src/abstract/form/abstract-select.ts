@@ -11,8 +11,9 @@ import {
   viewChild,
   WritableSignal,
 } from '@angular/core';
-import { createOverlayManager } from '../../abstract/overlay';
-import { normalizeOptions, Option, optionInput, ValueFormControl } from '../../abstract/form';
+import { createOverlayManager } from '../overlay';
+import { normalizeOptions, Option, optionInput } from './options';
+import { ValueFormControl } from './value-form-control';
 import { controlSize } from '../../types';
 
 /**

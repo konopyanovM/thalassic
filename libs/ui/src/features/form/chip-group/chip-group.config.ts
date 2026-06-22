@@ -7,6 +7,7 @@ export interface ChipGroupConfig {
   color: chipColor;
   checkedColor: chipColor | undefined;
   variant: chipVariant;
+  checkedVariant: chipVariant | undefined;
   orientation: orientation;
   type: chipGroupType;
   unselectable: boolean;
@@ -18,6 +19,7 @@ export const DEFAULT_CHIP_GROUP_CONFIG: ChipGroupConfig = {
   color: 'primary',
   checkedColor: undefined,
   variant: 'outlined',
+  checkedVariant: undefined,
   orientation: 'horizontal',
   type: 'multiple',
   unselectable: false,

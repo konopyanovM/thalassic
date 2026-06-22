@@ -1,7 +1,5 @@
 import { computed, Directive, input, InputSignal, model, ModelSignal, Signal } from '@angular/core';
-import { normalizeOptions } from './normalize-options';
-import { Option } from './option';
-import { optionInput } from './option-input';
+import { normalizeOptions, Option, optionInput } from './options';
 import { selectionMode } from './selection-mode';
 import { ValueFormControl } from './value-form-control';
 

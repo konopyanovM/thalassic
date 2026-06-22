@@ -44,6 +44,7 @@ export class ChipGroup<T, V = unknown> extends SelectionGroup<T, V> {
   public readonly color: InputSignal<chipColor> = input<chipColor>(this._config.color);
   public readonly checkedColor = input<chipColor | undefined>(this._config.checkedColor);
   public readonly variant: InputSignal<chipVariant> = input<chipVariant>(this._config.variant);
+  public readonly checkedVariant = input<chipVariant | undefined>(this._config.checkedVariant);
   public readonly orientation: InputSignal<orientation> = input<orientation>(
     this._config.orientation,
   );
@@ -74,8 +75,12 @@ export class ChipGroup<T, V = unknown> extends SelectionGroup<T, V> {
 
     if (this.isSelected(option.value)) {
       classes.push('tls-chip--checked');
+
       const checkedColor = this.checkedColor();
       if (checkedColor) classes.push(`tls-chip--checked-${checkedColor}`);
+
+      const checkedVariant = this.checkedVariant();
+      if (checkedVariant) classes.push(`tls-chip--checked-${checkedVariant}`);
     }
 
     if (this.isDisabled(option)) classes.push('tls-chip--disabled');

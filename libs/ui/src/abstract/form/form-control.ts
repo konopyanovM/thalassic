@@ -2,7 +2,6 @@ import {
   booleanAttribute,
   computed,
   Directive,
-  InjectionToken,
   input,
   InputSignal,
   InputSignalWithTransform,
@@ -12,7 +11,6 @@ import {
 } from '@angular/core';
 import { FormUiControl, ValidationError, WithOptionalFieldTree } from '@angular/forms/signals';
 
-export const FORM_CONTROL = new InjectionToken<FormControl>('FORM_CONTROL');
 
 @Directive()
 export abstract class FormControl implements FormUiControl {

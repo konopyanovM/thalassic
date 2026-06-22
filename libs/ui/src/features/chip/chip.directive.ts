@@ -2,7 +2,7 @@ import { computed, Directive, effect, forwardRef, inject, input, model } from '@
 import { CheckboxFormControl, FORM_CONTROL } from '../../abstract/form';
 import { Chip } from './chip';
 import { CHIP_CONTROL_CONFIG } from './chip-control.token';
-import { chipColor } from './chip.types';
+import { chipColor, chipVariant } from './chip.types';
 
 @Directive({
   selector: 'tls-chip[tlsChipControl]',
@@ -29,13 +29,19 @@ export class ChipControl extends CheckboxFormControl {
 
   public readonly checkedColor = input<chipColor | undefined>(this._config.checkedColor);
 
+  public readonly checkedVariant = input<chipVariant | undefined>(this._config.checkedVariant);
+
   protected hostClasses = computed(() => {
     const classes: string[] = ['tls-chip--control'];
 
     if (this.checked()) {
       classes.push('tls-chip--checked');
+
       const color = this.checkedColor();
       if (color) classes.push(`tls-chip--checked-${color}`);
+
+      const variant = this.checkedVariant();
+      if (variant) classes.push(`tls-chip--checked-${variant}`);
     }
 
     if (this.disabled()) classes.push('tls-chip--disabled');

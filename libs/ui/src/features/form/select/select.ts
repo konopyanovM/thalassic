@@ -11,9 +11,8 @@ import {
   ModelSignal,
   Signal,
 } from '@angular/core';
-import { FORM_CONTROL, Option } from '../../../abstract/form';
+import { AbstractSelect, FORM_CONTROL, Option } from '../../../abstract/form';
 import { controlSize } from '../../../types';
-import { AbstractSelect } from '../abstract-select';
 import { SELECT_CONFIG } from './select.token';
 
 @Component({

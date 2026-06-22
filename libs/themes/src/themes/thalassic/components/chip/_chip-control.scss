@@ -44,6 +44,26 @@
     --tls-chip-on-color: var(--color-on-danger);
   }
 
+  // Checked variant overrides (higher specificity than the base variant so the
+  // checked appearance wins regardless of stylesheet order).
+  &.tls-chip--checked.tls-chip--checked-filled {
+    background-color: var(--tls-chip-color);
+    color: var(--tls-chip-on-color);
+    border-color: var(--tls-chip-color);
+  }
+
+  &.tls-chip--checked.tls-chip--checked-outlined {
+    background-color: transparent;
+    color: var(--tls-chip-color);
+    border: 1px solid var(--tls-chip-color);
+  }
+
+  &.tls-chip--checked.tls-chip--checked-text {
+    background-color: transparent;
+    color: var(--tls-chip-color);
+    border-color: transparent;
+  }
+
   &.tls-chip--disabled {
     cursor: not-allowed;
     opacity: 0.5;
