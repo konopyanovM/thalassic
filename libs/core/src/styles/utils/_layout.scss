@@ -1,0 +1,84 @@
+.--row {
+  display: flex;
+  flex-direction: row;
+}
+
+.--row-reverse {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.--column {
+  display: flex;
+  flex-direction: column;
+}
+
+.--column-reverse {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+// Flex wrap
+
+.--flex-wrap {
+  flex-wrap: wrap;
+}
+
+.--flex-nowrap {
+  flex-wrap: nowrap;
+}
+
+// Justify content
+
+.--justify-start {
+  justify-content: flex-start;
+}
+
+.--justify-end {
+  justify-content: flex-end;
+}
+
+.--justify-center {
+  justify-content: center;
+}
+
+.--justify-between {
+  justify-content: space-between;
+}
+
+.--justify-around {
+  justify-content: space-around;
+}
+
+.--justify-evenly {
+  justify-content: space-evenly;
+}
+
+// Align items
+
+.--items-start {
+  align-items: flex-start;
+}
+
+.--items-end {
+  align-items: flex-end;
+}
+
+.--items-center {
+  align-items: center;
+}
+
+.--items-baseline {
+  align-items: baseline;
+}
+
+.--items-stretch {
+  align-items: stretch;
+}
+
+@for $index from 1 through 20 {
+  .--gap-#{$index} {
+    gap: var(--spacing-#{$index});
+  }
+}
+
