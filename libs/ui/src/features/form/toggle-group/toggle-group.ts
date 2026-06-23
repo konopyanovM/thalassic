@@ -15,7 +15,6 @@ import {
 import { FORM_CONTROL, Option, SelectionGroup } from '../../../abstract/form';
 import { color, controlSize, orientation } from '../../../types';
 import { TOGGLE_GROUP_CONFIG } from './toggle-group.token';
-import { toggleGroupType } from './toggle-group.types';
 
 @Component({
   selector: 'tls-toggle-group',
@@ -32,8 +31,9 @@ export class ToggleGroup<T, V = unknown> extends SelectionGroup<T, V> {
 
   protected override CLASS_NAME = 'tls-toggle-group';
 
-  public override readonly type: InputSignal<toggleGroupType> = input<toggleGroupType>(
-    this._config.type,
+  public override readonly multiple: InputSignalWithTransform<boolean, unknown> = input(
+    this._config.multiple,
+    { transform: booleanAttribute },
   );
   public override readonly unselectable: InputSignalWithTransform<boolean, unknown> = input<
     boolean,

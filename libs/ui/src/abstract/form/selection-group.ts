@@ -1,14 +1,21 @@
-import { computed, Directive, input, InputSignal, model, ModelSignal, Signal } from '@angular/core';
+import {
+  computed,
+  Directive,
+  input,
+  InputSignal,
+  model,
+  ModelSignal,
+  Signal,
+} from '@angular/core';
 import { normalizeOptions, Option, optionInput } from './options';
-import { selectionMode } from './selection-mode';
 import { ValueFormControl } from './value-form-control';
 
 /**
  * Shared base for controls that present a list of options and store the
  * selected option values as an array (e.g. toggle group, chip group).
  *
- * Subclasses provide the visual shell plus the `type`/`unselectable` inputs
- * (their defaults differ per component), while this base owns the selection
+ * Subclasses provide the visual shell and own the `multiple` and `unselectable`
+ * inputs (defaults differ per component), while this base owns the selection
  * state machine: value model, option normalization, and the toggle logic.
  */
 @Directive()
@@ -20,7 +27,7 @@ export abstract class SelectionGroup<T, V = unknown> extends ValueFormControl<V[
   public readonly optionValue = input<keyof T | undefined>(undefined);
   public readonly optionDisabled = input<keyof T | undefined>(undefined);
 
-  public abstract readonly type: Signal<selectionMode>;
+  public abstract readonly multiple: Signal<boolean>;
   public abstract readonly unselectable: Signal<boolean>;
 
   protected readonly normalizedOptions: Signal<Option<V>[]> = computed(() =>
@@ -38,7 +45,7 @@ export abstract class SelectionGroup<T, V = unknown> extends ValueFormControl<V[
   protected select(option: Option<V>): void {
     if (this.notInteractive() || option.disabled) return;
 
-    if (this.type() === 'single') {
+    if (!this.multiple()) {
       if (this.isSelected(option.value) && !this.unselectable()) return;
       this.value.set(this.isSelected(option.value) ? [] : [option.value]);
       return;
@@ -56,4 +63,3 @@ export abstract class SelectionGroup<T, V = unknown> extends ValueFormControl<V[
     this.select(option);
   }
 }
-

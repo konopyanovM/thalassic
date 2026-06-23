@@ -3,11 +3,10 @@ import {
   STORY_COLOR_OPTIONS,
   STORY_FORM_CONTROL_ARGS,
   STORY_ORIENTATION_OPTIONS,
-  STORY_SIZE_OPTIONS,
+  STORY_SIZE_OPTIONS
 } from '../../../../.storybook/constants';
 import { chipVariant } from '../../chip';
 import { ChipGroup } from './chip-group';
-import { chipGroupType } from './chip-group.types';
 
 interface StoryOption {
   name: string;
@@ -15,7 +14,6 @@ interface StoryOption {
   inactive: boolean;
 }
 
-const STORY_TYPE_OPTIONS: chipGroupType[] = ['single', 'multiple'];
 const CHIP_VARIANT_OPTIONS: chipVariant[] = ['filled', 'outlined', 'text'];
 
 const meta: Meta<ChipGroup<StoryOption, string>> = {
@@ -23,7 +21,7 @@ const meta: Meta<ChipGroup<StoryOption, string>> = {
   title: 'Form/ChipGroup',
   args: {
     value: ['Week'],
-    type: 'multiple',
+    multiple: true,
     size: 'md',
     color: 'primary',
     variant: 'outlined',
@@ -33,10 +31,6 @@ const meta: Meta<ChipGroup<StoryOption, string>> = {
     ...STORY_FORM_CONTROL_ARGS,
   },
   argTypes: {
-    type: {
-      control: { type: 'select' },
-      options: STORY_TYPE_OPTIONS,
-    },
     size: {
       control: { type: 'select' },
       options: STORY_SIZE_OPTIONS,
@@ -72,7 +66,7 @@ export const Multiple: Story = {
   args: {
     options: ['Day', 'Week', 'Month', 'Year'],
     value: ['Day', 'Week'],
-    type: 'multiple',
+    multiple: true,
   },
 };
 
@@ -81,7 +75,7 @@ export const Single: Story = {
   args: {
     options: ['Day', 'Week', 'Month', 'Year'],
     value: ['Week'],
-    type: 'single',
+    multiple: false,
   },
 };
 
@@ -98,7 +92,7 @@ export const WithObjectOptions: Story = {
     optionValue: 'id',
     optionDisabled: 'inactive',
     value: ['week'],
-    type: 'multiple',
+    multiple: true,
   },
 };
 
@@ -167,4 +161,3 @@ export const DifferentTemplatePerOption: Story = {
     `,
   }),
 };
-

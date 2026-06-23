@@ -8,6 +8,5 @@ export * from './checkbox-form-control';
 export * from './options';
 
 // Option-list controls
-export * from './selection-mode';
 export * from './selection-group';
 export * from './abstract-select';

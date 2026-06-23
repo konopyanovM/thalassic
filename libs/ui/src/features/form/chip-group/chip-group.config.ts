@@ -1,6 +1,5 @@
 import { controlSize, orientation } from '../../../types';
 import { chipColor, chipVariant } from '../../chip';
-import { chipGroupType } from './chip-group.types';
 
 export interface ChipGroupConfig {
   size: controlSize;
@@ -9,7 +8,7 @@ export interface ChipGroupConfig {
   variant: chipVariant;
   checkedVariant: chipVariant | undefined;
   orientation: orientation;
-  type: chipGroupType;
+  multiple: boolean;
   unselectable: boolean;
   rounded: boolean;
   fluid: boolean;
@@ -22,7 +21,7 @@ export const DEFAULT_CHIP_GROUP_CONFIG: ChipGroupConfig = {
   variant: 'outlined',
   checkedVariant: undefined,
   orientation: 'horizontal',
-  type: 'multiple',
+  multiple: true,
   unselectable: false,
   rounded: false,
   fluid: false,

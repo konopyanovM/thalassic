@@ -5,7 +5,6 @@ import {
   STORY_ORIENTATION_OPTIONS,
   STORY_SIZE_OPTIONS,
 } from '../../../../.storybook/constants';
-import { toggleGroupType } from './toggle-group.types';
 import { ToggleGroup } from './toggle-group';
 
 interface StoryOption {
@@ -14,24 +13,18 @@ interface StoryOption {
   inactive: boolean;
 }
 
-const STORY_TYPE_OPTIONS: toggleGroupType[] = ['single', 'multiple'];
-
 const meta: Meta<ToggleGroup<StoryOption, string>> = {
   component: ToggleGroup,
   title: 'Form/ToggleGroup',
   args: {
     value: ['week'],
-    type: 'single',
+    multiple: false,
     size: 'md',
     color: 'primary',
     orientation: 'horizontal',
     ...STORY_FORM_CONTROL_ARGS,
   },
   argTypes: {
-    type: {
-      control: { type: 'select' },
-      options: STORY_TYPE_OPTIONS,
-    },
     size: {
       control: { type: 'select' },
       options: STORY_SIZE_OPTIONS,
@@ -55,7 +48,7 @@ export const Single: Story = {
   args: {
     options: ['Day', 'Week', 'Month', 'Year'],
     value: ['Week'],
-    type: 'single',
+    multiple: false,
   },
 };
 
@@ -64,7 +57,7 @@ export const Multiple: Story = {
   args: {
     options: ['Day', 'Week', 'Month', 'Year'],
     value: ['Day', 'Week'],
-    type: 'multiple',
+    multiple: true,
   },
 };
 
@@ -81,7 +74,7 @@ export const WithObjectOptions: Story = {
     optionValue: 'id',
     optionDisabled: 'inactive',
     value: ['week'],
-    type: 'single',
+    multiple: false,
   },
 };
 

@@ -1,6 +1,4 @@
-import { Option, selectionMode } from '../../../abstract/form';
-
-export type chipGroupType = selectionMode;
+import { Option } from '../../../abstract/form';
 
 export interface ChipGroupOptionContext<V = unknown> {
   option: Option<V>;

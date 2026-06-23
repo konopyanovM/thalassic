@@ -16,7 +16,7 @@ import { FORM_CONTROL, Option, SelectionGroup } from '../../../abstract/form';
 import { controlSize, orientation } from '../../../types';
 import { Chip, chipColor, chipVariant } from '../../chip';
 import { CHIP_GROUP_CONFIG } from './chip-group.token';
-import { chipGroupTemplateContext, chipGroupType } from './chip-group.types';
+import { chipGroupTemplateContext } from './chip-group.types';
 
 @Component({
   selector: 'tls-chip-group',
@@ -33,8 +33,9 @@ export class ChipGroup<T, V = unknown> extends SelectionGroup<T, V> {
 
   protected override CLASS_NAME = 'tls-chip-group';
 
-  public override readonly type: InputSignal<chipGroupType> = input<chipGroupType>(
-    this._config.type,
+  public override readonly multiple: InputSignalWithTransform<boolean, unknown> = input(
+    this._config.multiple,
+    { transform: booleanAttribute },
   );
   public override readonly unselectable: InputSignalWithTransform<boolean, unknown> = input<
     boolean,
@@ -104,4 +105,3 @@ export class ChipGroup<T, V = unknown> extends SelectionGroup<T, V> {
     };
   }
 }
-
