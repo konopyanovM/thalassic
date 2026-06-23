@@ -68,6 +68,13 @@
       }
     }
 
+    &:has(.tls-select__clear) .tls-select__trigger {
+      gap: calc(
+        var(--tls-select-clear-size) +
+        var(--tls-select-gap)
+      );
+    }
+
     // Clear button
     .tls-select__clear {
       position: absolute;
