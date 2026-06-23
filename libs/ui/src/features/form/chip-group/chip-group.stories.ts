@@ -29,6 +29,7 @@ const meta: Meta<ChipGroup<StoryOption, string>> = {
     variant: 'outlined',
     orientation: 'horizontal',
     rounded: false,
+    fluid: false,
     ...STORY_FORM_CONTROL_ARGS,
   },
   argTypes: {

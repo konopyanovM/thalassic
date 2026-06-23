@@ -10,6 +10,14 @@
     align-items: flex-start;
   }
 
+  &--fluid {
+    width: 100%;
+
+    .tls-chip {
+      flex: 1;
+    }
+  }
+
   .tls-chip {
     user-select: none;
 

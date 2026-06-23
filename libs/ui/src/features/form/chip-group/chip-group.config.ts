@@ -12,6 +12,7 @@ export interface ChipGroupConfig {
   type: chipGroupType;
   unselectable: boolean;
   rounded: boolean;
+  fluid: boolean;
 }
 
 export const DEFAULT_CHIP_GROUP_CONFIG: ChipGroupConfig = {
@@ -24,5 +25,6 @@ export const DEFAULT_CHIP_GROUP_CONFIG: ChipGroupConfig = {
   type: 'multiple',
   unselectable: false,
   rounded: false,
+  fluid: false,
 };
 

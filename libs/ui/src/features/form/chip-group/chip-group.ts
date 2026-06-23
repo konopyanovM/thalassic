@@ -52,6 +52,10 @@ export class ChipGroup<T, V = unknown> extends SelectionGroup<T, V> {
     this._config.rounded,
     { transform: booleanAttribute },
   );
+  public readonly fluid: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    this._config.fluid,
+    { transform: booleanAttribute },
+  );
 
   protected readonly startIconTemplate =
     contentChild<TemplateRef<chipGroupTemplateContext<V>>>('startIcon');
@@ -63,6 +67,7 @@ export class ChipGroup<T, V = unknown> extends SelectionGroup<T, V> {
   protected readonly classes: Signal<string[]> = computed(() => {
     const className = this.CLASS_NAME;
     const array = [className, `${className}--${this.orientation()}`];
+    if (this.fluid()) array.push(`${className}--fluid`);
     return array.concat(this.controlClasses());
   });
 
