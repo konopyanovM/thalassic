@@ -16,6 +16,7 @@ const meta: Meta<ChipComponent> = {
     size: 'md',
     rounded: false,
     icon: false,
+    fluid: false,
   },
   argTypes: {
     color: {

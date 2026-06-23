@@ -7,4 +7,8 @@
   gap: var(--spacing-1);
 
   border-radius: var(--tls-chip-border-radius);
+
+  &--fluid {
+    width: 100%;
+  }
 }

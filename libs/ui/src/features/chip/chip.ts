@@ -31,6 +31,7 @@ export class Chip {
   public readonly size: InputSignal<controlSize> = input<controlSize>(this._config.size);
   public readonly rounded = input(false, { transform: booleanAttribute });
   public readonly icon = input(false, { transform: booleanAttribute });
+  public readonly fluid = input(false, { transform: booleanAttribute });
 
   public readonly context = signal<ChipContext>({
     checked: false,
@@ -55,6 +56,7 @@ export class Chip {
 
     if (this.rounded()) array.push(`${className}--rounded`);
     if (this.icon()) array.push(`${className}--icon`);
+    if (this.fluid()) array.push(`${className}--fluid`);
 
     return array;
   });
