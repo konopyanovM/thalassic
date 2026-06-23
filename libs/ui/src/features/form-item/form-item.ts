@@ -18,12 +18,21 @@ export class FormItem {
   // Inputs
   public label = input<string>();
   public reserveErrorSpace = input<boolean>(this._config.reserveErrorSpace);
+  public reserveLabelSpace = input<boolean>(this._config.reserveLabelSpace);
   public displayErrors = input<boolean>(this._config.displayErrors);
 
-  protected isInvalid = computed(() => this.control()?.invalid() && this.control()?.touched());
+  protected isInvalid = computed(() => {
+    const control = this.control();
+    if (!control) return false;
+
+    return control.invalid() && control.touched();
+  });
 
   protected isRequired = computed(() => {
-    return Boolean(this.control()?.required());
+    const control = this.control();
+    if (!control) return false;
+
+    return control.required();
   });
 
   protected hostClasses = computed(() => {
@@ -34,15 +43,16 @@ export class FormItem {
     if (this.isInvalid()) array.push(`${className}--invalid`);
     if (this.isRequired()) array.push(`${className}--required`);
     if (this.reserveErrorSpace()) array.push(`${className}--error-space-reserved`);
+    if (this.reserveLabelSpace()) array.push(`${className}--label-space-reserved`);
 
     return array;
   });
 
   protected errorMessages = computed(() => {
-    const errors = this.control()?.errors();
+    const control = this.control();
+    if (!control) return [];
 
-    if (errors) return this._getErrorMessages(errors);
-    else return [];
+    return this._getErrorMessages(control.errors());
   });
   protected firstErrorMessage = computed(() => {
     if (this.errorMessages().length > 0) return this.errorMessages()[0];
@@ -50,7 +60,7 @@ export class FormItem {
   });
 
   // Private methods
-  private _getErrorMessages(errors: readonly WithOptionalFieldTree<ValidationError>[]) {
+  private _getErrorMessages(errors: readonly WithOptionalFieldTree<ValidationError>[]): string[] {
     const array: string[] = [];
 
     for (const error of errors) {

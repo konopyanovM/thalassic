@@ -1,7 +1,9 @@
-<label for="" class="form-item-label">
-  <span class="form-item-label__text">{{ label() }}</span>
-  <span class="form-item-label__required">*</span>
-</label>
+@if (label() || reserveLabelSpace()) {
+  <label class="form-item-label">
+    <span class="form-item-label__text">{{ label() }}</span>
+    <span class="form-item-label__required">*</span>
+  </label>
+}
 <div class="form-item-control">
   <ng-content></ng-content>
 </div>
