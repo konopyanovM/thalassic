@@ -10,13 +10,12 @@ import {
   InputSignal,
   InputSignalWithTransform,
   Signal,
-  TemplateRef,
+  TemplateRef
 } from '@angular/core';
-import { FORM_CONTROL, Option, SelectionGroup } from '../../../abstract/form';
+import { FORM_CONTROL, Option, SelectionGroup, selectionGroupTemplateContext } from '../../../abstract/form';
 import { controlSize, orientation } from '../../../types';
 import { Chip, chipColor, chipVariant } from '../../chip';
 import { CHIP_GROUP_CONFIG } from './chip-group.token';
-import { chipGroupTemplateContext } from './chip-group.types';
 
 @Component({
   selector: 'tls-chip-group',
@@ -59,11 +58,11 @@ export class ChipGroup<T, V = unknown> extends SelectionGroup<T, V> {
   );
 
   protected readonly startIconTemplate =
-    contentChild<TemplateRef<chipGroupTemplateContext<V>>>('startIcon');
+    contentChild<TemplateRef<selectionGroupTemplateContext<T, V>>>('startIcon');
   protected readonly endIconTemplate =
-    contentChild<TemplateRef<chipGroupTemplateContext<V>>>('endIcon');
+    contentChild<TemplateRef<selectionGroupTemplateContext<T, V>>>('endIcon');
   protected readonly labelTemplate =
-    contentChild<TemplateRef<chipGroupTemplateContext<V>>>('label');
+    contentChild<TemplateRef<selectionGroupTemplateContext<T, V>>>('label');
 
   protected readonly classes: Signal<string[]> = computed(() => {
     const className = this.CLASS_NAME;
@@ -92,16 +91,5 @@ export class ChipGroup<T, V = unknown> extends SelectionGroup<T, V> {
     if (this.isDisabled(option)) classes.push('tls-chip--disabled');
 
     return classes;
-  }
-
-  protected optionContext(option: Option<V>, index: number): chipGroupTemplateContext<V> {
-    return {
-      $implicit: {
-        option,
-        index,
-        selected: this.isSelected(option.value),
-        disabled: this.isDisabled(option),
-      },
-    };
   }
 }

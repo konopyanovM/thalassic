@@ -13,7 +13,7 @@ export function normalizeOptions<T, V = unknown>(
 ): Option<V>[] {
   return options.map(option => {
     if (typeof option === 'string' || typeof option === 'number') {
-      return { value: option as V, label: String(option), disabled: false };
+      return { value: option as V, label: String(option), disabled: false, source: option };
     }
 
     const typed = option as T;
@@ -22,6 +22,7 @@ export function normalizeOptions<T, V = unknown>(
       value: (keys.value ? typed[keys.value] : typed) as V,
       label: String(keys.label ? typed[keys.label] : typed),
       disabled: Boolean(keys.disabled ? typed[keys.disabled] : false),
+      source: typed,
     };
   });
 }

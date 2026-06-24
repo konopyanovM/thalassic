@@ -9,4 +9,5 @@ export * from './options';
 
 // Option-list controls
 export * from './selection-group';
+export * from './selection-group.types';
 export * from './abstract-select';

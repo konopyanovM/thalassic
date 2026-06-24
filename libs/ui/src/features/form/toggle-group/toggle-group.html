@@ -1,4 +1,4 @@
-@for (option of normalizedOptions(); track option.value) {
+@for (option of normalizedOptions(); track option.value; let index = $index) {
   <button
     type="button"
     class="tls-toggle-group__option"
@@ -10,7 +10,7 @@
     (blur)="touched.set(true)"
   >
     @if (optionTemplate(); as template) {
-      <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{ $implicit: option }" />
+      <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="optionContext(option, index)" />
     } @else {
       {{ option.label }}
     }

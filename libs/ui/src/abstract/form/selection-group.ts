@@ -8,6 +8,7 @@ import {
   Signal,
 } from '@angular/core';
 import { normalizeOptions, Option, optionInput } from './options';
+import { selectionGroupTemplateContext } from './selection-group.types';
 import { ValueFormControl } from './value-form-control';
 
 /**
@@ -61,5 +62,18 @@ export abstract class SelectionGroup<T, V = unknown> extends ValueFormControl<V[
   protected onKeyboardSelect(event: Event, option: Option<V>): void {
     event.preventDefault();
     this.select(option);
+  }
+
+  protected optionContext(option: Option<V>, index: number): selectionGroupTemplateContext<T, V> {
+    return {
+      $implicit: {
+        option: option.source as T,
+        value: option.value,
+        label: option.label,
+        index,
+        selected: this.isSelected(option.value),
+        disabled: this.disabled() || option.disabled,
+      },
+    };
   }
 }

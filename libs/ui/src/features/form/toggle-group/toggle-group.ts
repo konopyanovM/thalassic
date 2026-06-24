@@ -12,7 +12,11 @@ import {
   Signal,
   TemplateRef,
 } from '@angular/core';
-import { FORM_CONTROL, Option, SelectionGroup } from '../../../abstract/form';
+import {
+  FORM_CONTROL,
+  SelectionGroup,
+  selectionGroupTemplateContext,
+} from '../../../abstract/form';
 import { color, controlSize, orientation } from '../../../types';
 import { TOGGLE_GROUP_CONFIG } from './toggle-group.token';
 
@@ -46,7 +50,7 @@ export class ToggleGroup<T, V = unknown> extends SelectionGroup<T, V> {
   );
 
   protected readonly optionTemplate =
-    contentChild<TemplateRef<{ $implicit: Option<V> }>>('option');
+    contentChild<TemplateRef<selectionGroupTemplateContext<T, V>>>('option');
 
   protected readonly classes: Signal<string[]> = computed(() => {
     const className = this.CLASS_NAME;
