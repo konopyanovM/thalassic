@@ -1,3 +1,21 @@
+## 0.14.0 (2026-06-24)
+
+### 🚀 Features
+
+- **ui:** add fluid input to chip component ([13d02d1](https://github.com/konopyanovm/thalassic/commit/13d02d1))
+- **ui:** added fluid input to chip group ([23f8e62](https://github.com/konopyanovm/thalassic/commit/23f8e62))
+
+### 🩹 Fixes
+
+- **ui:** form item fixed children fluid mode, added reserved label space input ([396eee1](https://github.com/konopyanovm/thalassic/commit/396eee1))
+- **ui:** when clearable is on add padding in select component ([702eb72](https://github.com/konopyanovm/thalassic/commit/702eb72))
+- **ui:** refactored from selection mode to boolean multiple true/false ([3eee9e0](https://github.com/konopyanovm/thalassic/commit/3eee9e0))
+- **ui:** added source option to selection group context ([530592e](https://github.com/konopyanovm/thalassic/commit/530592e))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.13.1 (2026-06-22)
 
 ### 🩹 Fixes
