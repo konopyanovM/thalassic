@@ -1,3 +1,13 @@
+## 0.14.1 (2026-06-24)
+
+### 🩹 Fixes
+
+- **themes:** size tiers set min-height, icon variants kept square via aspect-ratio ([b617ee4](https://github.com/konopyanovm/thalassic/commit/b617ee4))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.14.0 (2026-06-24)
 
 ### 🚀 Features
