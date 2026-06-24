@@ -1,3 +1,14 @@
+## 0.14.2 (2026-06-24)
+
+### 🩹 Fixes
+
+- **ui:** chip group multiple default to false ([924d70d](https://github.com/konopyanovm/thalassic/commit/924d70d))
+- **ui:** chip default border radius set to md ([ce9b215](https://github.com/konopyanovm/thalassic/commit/ce9b215))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.14.1 (2026-06-24)
 
 ### 🩹 Fixes
