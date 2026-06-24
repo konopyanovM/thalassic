@@ -2,7 +2,7 @@
   --tls-form-control-group-width: auto;
 
   width: var(--tls-form-control-group-width);
-  height: var(--tls-form-control-group-height);
+  min-height: var(--tls-form-control-group-height);
 
   font-size: var(--tls-form-control-group-font-size);
   font-weight: var(--tls-form-control-group-font-weight);

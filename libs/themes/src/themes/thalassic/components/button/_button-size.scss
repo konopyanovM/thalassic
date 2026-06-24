@@ -2,7 +2,7 @@
   --tls-button-width: auto;
 
   width: var(--tls-button-width);
-  height: var(--tls-button-height);
+  min-height: var(--tls-button-height);
   padding-inline: var(--tls-button-padding-inline);
 
   font-size: var(--tls-button-font-size);
@@ -11,9 +11,11 @@
   letter-spacing: var(--tls-button-letter-spacing);
 
   &.tls-button--icon-only {
+    --tls-button-width: var(--tls-button-height);
+
     padding-inline: 0;
 
-    aspect-ratio: 1/1;
+    aspect-ratio: 1 / 1;
 
     &.tls-button--rounded {
       --tls-button-border-radius: 50%;

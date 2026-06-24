@@ -1,5 +1,5 @@
 .tls-chip {
-  height: var(--tls-chip-height);
+  min-height: var(--tls-chip-height);
   padding-inline: var(--tls-chip-padding-inline);
 
   font-size: var(--tls-chip-font-size);
@@ -8,6 +8,7 @@
   letter-spacing: var(--tls-chip-letter-spacing);
 
   &.tls-chip--icon {
+    width: var(--tls-chip-height);
     padding-inline: 0;
     aspect-ratio: 1 / 1;
 
