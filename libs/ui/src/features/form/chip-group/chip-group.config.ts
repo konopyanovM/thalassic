@@ -21,9 +21,8 @@ export const DEFAULT_CHIP_GROUP_CONFIG: ChipGroupConfig = {
   variant: 'outlined',
   checkedVariant: undefined,
   orientation: 'horizontal',
-  multiple: true,
+  multiple: false,
   unselectable: false,
   rounded: false,
   fluid: false,
 };
-
