@@ -1,7 +1,7 @@
 export interface SkeletonConfig {
-  size: number | null;
-  width: number | null;
-  height: number | null;
+  size: number | string | null;
+  width: number | string | null;
+  height: number | string | null;
   radius: number;
   duration: number;
   rounded: boolean;

@@ -30,6 +30,10 @@ import { TOGGLE_GROUP_CONFIG } from './toggle-group.token';
     '[class]': 'classes()',
   },
 })
+/**
+ * `value` is always an array — in single mode (`multiple = false`) it holds 0 or
+ * 1 items, read it as `value()[0]`. See {@link SelectionGroup} for the contract.
+ */
 export class ToggleGroup<T, V = unknown> extends SelectionGroup<T, V> {
   private readonly _config = inject(TOGGLE_GROUP_CONFIG);
 

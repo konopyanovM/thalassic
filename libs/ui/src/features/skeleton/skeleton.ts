@@ -23,9 +23,9 @@ import { SKELETON_CONFIG } from './skeleton.token';
 export class Skeleton {
   private _config: SkeletonConfig = inject(SKELETON_CONFIG);
 
-  public readonly size: InputSignal<number | null> = input<number | null>(this._config.size);
-  public readonly width: InputSignal<number | null> = input<number | null>(this._config.width);
-  public readonly height: InputSignal<number | null> = input<number | null>(this._config.height);
+  public readonly size: InputSignal<number | string | null> = input<number | string | null>(this._config.size);
+  public readonly width: InputSignal<number | string | null> = input<number | string | null>(this._config.width);
+  public readonly height: InputSignal<number | string | null> = input<number | string | null>(this._config.height);
   public readonly radius: InputSignal<number> = input<number>(this._config.radius);
   public readonly duration: InputSignal<number> = input<number>(this._config.duration);
   public readonly rounded: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
@@ -56,10 +56,16 @@ export class Skeleton {
     const radius = this.radius();
 
     return {
-      '--tls-skeleton-width': width !== null ? `${width}px` : '100%',
-      '--tls-skeleton-height': height !== null ? `${height}px` : '100%',
+      '--tls-skeleton-width': this.resolveDimension(width),
+      '--tls-skeleton-height': this.resolveDimension(height),
       '--tls-skeleton-radius': rounded ? '50%' : `${radius}px`,
       '--tls-skeleton-duration': `${this.duration()}ms`,
     };
   });
+
+  private resolveDimension(value: number | string | null): string {
+    if (value === null) return '100%';
+    if (typeof value === 'string') return value;
+    return `${value}px`;
+  }
 }

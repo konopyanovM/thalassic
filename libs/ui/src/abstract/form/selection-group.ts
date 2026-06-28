@@ -18,6 +18,14 @@ import { ValueFormControl } from './value-form-control';
  * Subclasses provide the visual shell and own the `multiple` and `unselectable`
  * inputs (defaults differ per component), while this base owns the selection
  * state machine: value model, option normalization, and the toggle logic.
+ *
+ * `value` is ALWAYS an array, regardless of `multiple`. In single mode
+ * (`multiple = false`) it holds 0 or 1 items — read the selection as
+ * `value()[0]`. In multiple mode it holds every selected value. This is a
+ * deliberate, strongly-typed contract: unlike Select/MultiSelect (which split
+ * scalar `V | null` vs array `V[]` into two components), this family stays a
+ * single unified component and keeps one `V[]` type rather than loosening it to
+ * a runtime-dependent `V | V[]`.
  */
 @Directive()
 export abstract class SelectionGroup<T, V = unknown> extends ValueFormControl<V[]> {
