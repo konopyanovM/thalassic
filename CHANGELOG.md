@@ -1,3 +1,20 @@
+## 0.15.0 (2026-06-28)
+
+### 🚀 Features
+
+- **ui:** expose FormControl, ValueFormControl, and CheckboxFormControl as public API ([7d2471c](https://github.com/konopyanovm/thalassic/commit/7d2471c))
+- **ui/menu:** add link support to action items ([3abdc95](https://github.com/konopyanovm/thalassic/commit/3abdc95))
+- **ui/skeleton:** accept string values for size, width, and height inputs ([328e487](https://github.com/konopyanovm/thalassic/commit/328e487))
+
+### 🩹 Fixes
+
+- **themes:** typography font sizes rescaled ([35cb9a3](https://github.com/konopyanovm/thalassic/commit/35cb9a3))
+- **ui:** border added to select and multiselect ([e7999fe](https://github.com/konopyanovm/thalassic/commit/e7999fe))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.14.2 (2026-06-24)
 
 ### 🩹 Fixes
