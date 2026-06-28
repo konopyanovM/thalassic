@@ -11,6 +11,16 @@
           @let actionItem = item;
           @if (itemTemplate(); as template) {
             <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{ $implicit: actionItem }" />
+          } @else if (actionItem.link) {
+            <a
+              role="menuitem"
+              class="tls-menu__item"
+              [routerLink]="actionItem.link"
+              [class.tls-menu__item--disabled]="actionItem.disabled ?? false"
+              (click)="onItemClick(actionItem)"
+            >
+              <ng-container [ngTemplateOutlet]="actionItemContent" [ngTemplateOutletContext]="{ $implicit: actionItem }" />
+            </a>
           } @else {
             <button
               role="menuitem"
@@ -18,19 +28,23 @@
               [disabled]="actionItem.disabled ?? false"
               (click)="onItemClick(actionItem)"
             >
-              @if (actionItem.icon) {
-                @if (iconTemplate(); as template) {
-                  <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{ $implicit: actionItem.icon, data: actionItem }" />
-                } @else {
-                  <tls-icon class="tls-menu__item-icon" [iconSrc]="actionItem.icon" />
-                }
-              }
-              <span class="tls-menu__item-label">{{ actionItem.label }}</span>
-              @if (actionItem.shortcut) {
-                <kbd class="tls-menu__item-shortcut">{{ actionItem.shortcut }}</kbd>
-              }
+              <ng-container [ngTemplateOutlet]="actionItemContent" [ngTemplateOutletContext]="{ $implicit: actionItem }" />
             </button>
           }
+
+          <ng-template #actionItemContent let-actionItem>
+            @if (actionItem.icon) {
+              @if (iconTemplate(); as template) {
+                <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{ $implicit: actionItem.icon, data: actionItem }" />
+              } @else {
+                <tls-icon class="tls-menu__item-icon" [iconSrc]="actionItem.icon" />
+              }
+            }
+            <span class="tls-menu__item-label">{{ actionItem.label }}</span>
+            @if (actionItem.shortcut) {
+              <kbd class="tls-menu__item-shortcut">{{ actionItem.shortcut }}</kbd>
+            }
+          </ng-template>
         }
         @case ('label') {
           @let labelItem = item;

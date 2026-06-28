@@ -47,6 +47,7 @@
     appearance: none;
     border: none;
     text-align: left;
+    text-decoration: none;
     cursor: pointer;
     white-space: nowrap;
 
@@ -60,7 +61,7 @@
 
     transition: background-color var(--motion-fast) var(--motion-ease-in-out);
 
-    &:hover:not(:disabled) {
+    &:hover:not(:disabled):not(&--disabled) {
       background-color: var(--tls-menu-item-background-hover);
     }
 
@@ -69,9 +70,11 @@
       background-color: var(--tls-menu-item-background-hover);
     }
 
-    &:disabled {
+    &:disabled,
+    &--disabled {
       opacity: 0.4;
       cursor: not-allowed;
+      pointer-events: none;
     }
   }
 

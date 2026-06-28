@@ -3,6 +3,7 @@ import {
   FlexibleConnectedPositionStrategyOrigin,
 } from '@angular/cdk/overlay';
 import { NgTemplateOutlet } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import {
   booleanAttribute,
   Component,
@@ -29,7 +30,7 @@ import { MenuActionItem, MenuItemDefinition } from './menu.types';
 
 @Component({
   selector: 'tls-menu',
-  imports: [NgTemplateOutlet, Icon],
+  imports: [NgTemplateOutlet, Icon, RouterLink],
   templateUrl: './menu.html',
 })
 export class Menu {

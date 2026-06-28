@@ -16,6 +16,7 @@ export interface MenuActionItem extends BaseMenuItem {
   disabled?: boolean;
   data?: unknown;
   action?: () => void;
+  link?: string | unknown[];
 }
 
 export interface MenuDivider extends BaseMenuItem {
