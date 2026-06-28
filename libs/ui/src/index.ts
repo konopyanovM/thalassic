@@ -1,3 +1,4 @@
+export { FormControl, ValueFormControl, CheckboxFormControl } from './abstract';
 export * from './features';
 export * from './providers';
 export * from './types';
