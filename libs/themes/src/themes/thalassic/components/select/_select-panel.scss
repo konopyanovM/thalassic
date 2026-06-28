@@ -3,6 +3,7 @@
   --tls-select-panel-padding-block: var(--spacing-1);
   --tls-select-panel-background: var(--color-surface-container-lowest);
   --tls-select-panel-border-radius: var(--radius-md);
+  --tls-select-panel-border: 1px solid var(--color-outline-variant);
   --tls-select-panel-shadow: var(--shadow-sm);
 
   width: 100%;
@@ -12,6 +13,7 @@
   padding: var(--tls-select-panel-padding-block) 0;
 
   background-color: var(--tls-select-panel-background);
+  border: var(--tls-select-panel-border);
   border-radius: var(--tls-select-panel-border-radius);
   box-shadow: var(--tls-select-panel-shadow);
 

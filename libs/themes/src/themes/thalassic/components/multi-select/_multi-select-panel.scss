@@ -3,6 +3,7 @@
   --tls-multi-select-panel-padding-block: var(--spacing-1);
   --tls-multi-select-panel-background: var(--color-surface-container-lowest);
   --tls-multi-select-panel-border-radius: var(--radius-md);
+  --tls-multi-select-panel-border: 1px solid var(--color-outline-variant);
   --tls-multi-select-panel-shadow: var(--shadow-sm);
 
   width: 100%;
@@ -12,6 +13,7 @@
   padding: var(--tls-multi-select-panel-padding-block) 0;
 
   background-color: var(--tls-multi-select-panel-background);
+  border: var(--tls-multi-select-panel-border);
   border-radius: var(--tls-multi-select-panel-border-radius);
   box-shadow: var(--tls-multi-select-panel-shadow);
 
