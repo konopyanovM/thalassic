@@ -19,11 +19,11 @@
 
   background: var(--tls-stepper-background-color);
 
-  display: block;
+  display: flex;
+  flex-direction: column;
 
-  transition:
-    border-color var(--motion-theme),
-    background-color var(--motion-theme);
+  transition: border-color var(--motion-theme),
+  background-color var(--motion-theme);
 
   &.tls-stepper--completed {
     .tls-stepper-content {
@@ -74,9 +74,8 @@
 
         color: var(--tls-stepper-label-color);
 
-        transition:
-          color var(--motion-fast),
-          background-color var(--motion-fast);
+        transition: color var(--motion-fast),
+        background-color var(--motion-fast);
 
         &__index {
           width: var(--tls-stepper-index-size);
@@ -129,6 +128,8 @@
   // Content
   .tls-stepper-content {
     padding: var(--tls-stepper-content-padding);
+
+    flex-grow: 1;
 
     // Step
     .tls-step {
