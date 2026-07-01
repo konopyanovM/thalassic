@@ -1,3 +1,13 @@
+## 0.15.1 (2026-07-01)
+
+### 🩹 Fixes
+
+- **ui/stepper:** fixed stepper height inherit ([ff65455](https://github.com/konopyanovm/thalassic/commit/ff65455))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.15.0 (2026-06-28)
 
 ### 🚀 Features
