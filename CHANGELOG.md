@@ -1,3 +1,13 @@
+## 0.15.2 (2026-07-01)
+
+### 🩹 Fixes
+
+- **ui/stepper:** removed padding and added gap to stepper ([604a8c0](https://github.com/konopyanovm/thalassic/commit/604a8c0))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.15.1 (2026-07-01)
 
 ### 🩹 Fixes
