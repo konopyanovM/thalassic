@@ -39,7 +39,13 @@
 }
 
 <ng-template #panel>
-  <ul class="tls-select__panel" role="listbox" [id]="listboxId">
+  <ul
+    class="tls-select__panel"
+    animate.enter="tls-select__panel--enter"
+    animate.leave="tls-select__panel--leave"
+    role="listbox"
+    [id]="listboxId"
+  >
     @for (option of normalizedOptions(); track option.value; let index = $index) {
       <li
         class="tls-select__option"

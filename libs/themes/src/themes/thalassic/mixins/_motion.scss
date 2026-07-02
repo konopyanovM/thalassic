@@ -1,0 +1,21 @@
+// Gates its content on the resolved motion level reflected by `MotionService`
+// onto the document root (`data-motion` attribute).
+//
+// - `essential`: functional motion (panel origin cues, focus). Plays at the
+//   `essential` and `full` levels.
+// - `full`: expressive/decorative motion. Plays only at the `full` level.
+//
+// At the `none` level (or when no attribute is present) nothing is emitted, so
+// the wrapped animation never runs.
+@mixin motion($tier: essential) {
+  @if $tier == full {
+    :root[data-motion='full'] & {
+      @content;
+    }
+  } @else {
+    :root[data-motion='essential'] &,
+    :root[data-motion='full'] & {
+      @content;
+    }
+  }
+}

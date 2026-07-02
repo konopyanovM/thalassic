@@ -13,15 +13,31 @@ const preview: Preview = {
         ],
       },
     },
+    motion: {
+      description: 'Motion level',
+      toolbar: {
+        title: 'Motion',
+        icon: 'lightning',
+        items: [
+          { value: 'none', title: 'None' },
+          { value: 'essential', title: 'Essential' },
+          { value: 'full', title: 'Full' },
+        ],
+      },
+    },
   },
   initialGlobals: {
     theme: 'light',
+    motion: 'full',
   },
   decorators: [
     (story, context) => {
       const theme = context.globals['theme'] ?? 'light';
       document.documentElement.classList.toggle('tls-dark', theme === 'dark');
       document.documentElement.classList.toggle('tls-light', theme === 'light');
+
+      const motion = context.globals['motion'] ?? 'full';
+      document.documentElement.setAttribute('data-motion', motion);
       return story();
     },
   ],
