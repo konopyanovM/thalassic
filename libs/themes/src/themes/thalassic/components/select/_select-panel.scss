@@ -61,8 +61,6 @@
     line-height: var(--font-body-medium-line-height);
     letter-spacing: var(--font-body-medium-letter-spacing);
 
-    transition: background-color var(--motion-fast) var(--motion-ease-in-out);
-
     &:focus-visible {
       outline: none;
     }

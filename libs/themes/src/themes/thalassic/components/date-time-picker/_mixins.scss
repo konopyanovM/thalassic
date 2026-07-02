@@ -19,7 +19,6 @@
   color: var(--color-on-surface);
 
   cursor: pointer;
-  transition: background-color var(--motion-fast) var(--motion-ease-in-out);
 
   &:hover {
     background-color: var(--color-surface-container-high);
@@ -64,8 +63,6 @@
 
   cursor: pointer;
 
-  transition: background-color var(--motion-fast) var(--motion-ease-in-out);
-
   &:hover {
     background-color: var(--color-surface-container-high);
   }
@@ -90,8 +87,6 @@
   color: var(--color-on-surface-variant);
 
   cursor: pointer;
-
-  transition: background-color var(--motion-fast) var(--motion-ease-in-out);
 
   svg {
     width: 8px;
