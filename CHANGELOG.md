@@ -1,3 +1,13 @@
+## 0.15.3 (2026-07-02)
+
+### 🚀 Features
+
+- **core/container:** add @container-driven tls-container ([3ac5f68](https://github.com/konopyanovm/thalassic/commit/3ac5f68))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.15.2 (2026-07-01)
 
 ### 🩹 Fixes
