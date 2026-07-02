@@ -1,6 +1,41 @@
 @use '../tools';
 
+// Container-query driven. The `.tls-container` element establishes its own
+// containment context, and `.tls-container__content` reads that context to step
+// its max-width. Use when the container should react to its own available space
+// rather than the viewport, so it behaves correctly anywhere it is placed.
 .tls-container {
+  container: tls-container / inline-size;
+
+  height: 100%;
+  width: 100%;
+
+  &__content {
+    height: 100%;
+    max-width: tools.$breakpoint-2xl;
+    margin: 0 auto;
+
+    @container tls-container (max-width: #{tools.$breakpoint-2xl}) {
+      max-width: tools.$breakpoint-xl;
+    }
+    @container tls-container (max-width: #{tools.$breakpoint-xl}) {
+      max-width: tools.$breakpoint-lg;
+    }
+    @container tls-container (max-width: #{tools.$breakpoint-lg}) {
+      max-width: tools.$breakpoint-md;
+    }
+    @container tls-container (max-width: #{tools.$breakpoint-md}) {
+      max-width: tools.$breakpoint-sm;
+    }
+    @container tls-container (max-width: #{tools.$breakpoint-sm}) {
+      padding: 0 16px;
+    }
+  }
+}
+
+// Media-query driven. Steps its max-width down from the viewport width — use
+// when the container should respond to the viewport rather than its own space.
+.tls-container-media {
   height: 100%;
   width: 100%;
   max-width: tools.$breakpoint-2xl;
