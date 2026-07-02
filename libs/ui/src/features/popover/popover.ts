@@ -15,6 +15,8 @@ import { POPOVER_CONFIG } from './popover.token';
     <ng-template #content>
       <div
         class="tls-popover"
+        animate.enter="tls-popover--enter"
+        animate.leave="tls-popover--leave"
         [id]="id"
         role="dialog"
         aria-modal="false"

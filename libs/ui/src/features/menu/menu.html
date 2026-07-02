@@ -1,6 +1,8 @@
 <ng-template #panel>
   <div
     class="tls-menu"
+    animate.enter="tls-menu--enter"
+    animate.leave="tls-menu--leave"
     [id]="id"
     role="menu"
     [attr.aria-label]="ariaLabel() ?? null"

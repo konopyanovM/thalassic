@@ -12,6 +12,11 @@ import { filter } from 'rxjs';
 
 const TRANSPARENT_BACKDROP_CLASS = 'cdk-overlay-transparent-backdrop';
 
+// Upper bound for how long to keep a non-reused pane alive after detach so the
+// panel's `animate.leave` can finish. Disposes on `animationend`; this only
+// fires when no exit animation runs (e.g. the `none` motion level).
+const LEAVE_ANIMATION_FALLBACK_MS = 500;
+
 export interface ConnectedOverlayConfig {
   /** Template projected into the overlay. */
   content: TemplateRef<unknown>;
@@ -91,6 +96,10 @@ export class OverlayManager {
       });
 
       this._wireDismissal(this._overlayRef, config);
+    } else {
+      // Reused ref (`reuse: true`): re-apply the position strategy so a new
+      // origin/point takes effect instead of reopening at the previous spot.
+      this._overlayRef.updatePositionStrategy(this._buildPositionStrategy(config));
     }
 
     if (config.minWidth != null) {
@@ -103,16 +112,26 @@ export class OverlayManager {
 
   public close(): void {
     if (!this._isOpen()) return;
+    this._isOpen.set(false);
 
-    if (this._config?.reuse) {
-      this._overlayRef?.detach();
-    } else {
-      this._overlayRef?.dispose();
-      this._overlayRef = null;
+    const overlayRef = this._overlayRef;
+    const config = this._config;
+
+    if (overlayRef) {
+      // Detach (not dispose) so the pane survives while Angular's `animate.leave`
+      // plays the panel's exit animation. A reused overlay keeps its ref for the
+      // next open; a one-off overlay is disposed once the animation has finished,
+      // so the pane is never torn down mid-animation.
+      overlayRef.detach();
+
+      const reuse = Boolean(config && config.reuse);
+      if (!reuse) {
+        this._overlayRef = null;
+        this._disposeAfterAnimation(overlayRef);
+      }
     }
 
-    this._isOpen.set(false);
-    this._config?.onClose?.();
+    if (config && config.onClose) config.onClose();
   }
 
   // Private
@@ -157,6 +176,31 @@ export class OverlayManager {
         )
         .subscribe(() => this.close());
     }
+  }
+
+  /**
+   * Disposes a detached overlay once the panel's exit animation has finished, so
+   * the pane is not torn down while `animate.leave` is still playing. Falls back
+   * to a timeout when no animation runs (e.g. the `none` motion level).
+   */
+  private _disposeAfterAnimation(overlayRef: OverlayRef): void {
+    const paneElement = overlayRef.overlayElement;
+    if (!paneElement) {
+      overlayRef.dispose();
+      return;
+    }
+
+    let settled = false;
+    const finalize = (): void => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(timeoutId);
+      paneElement.removeEventListener('animationend', finalize);
+      overlayRef.dispose();
+    };
+
+    paneElement.addEventListener('animationend', finalize);
+    const timeoutId = window.setTimeout(finalize, LEAVE_ANIMATION_FALLBACK_MS);
   }
 
   private _dispose(): void {

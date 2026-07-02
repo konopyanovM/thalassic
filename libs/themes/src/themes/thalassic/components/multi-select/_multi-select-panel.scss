@@ -1,3 +1,5 @@
+@use '../../mixins' as mixins;
+
 .tls-multi-select__panel {
   --tls-multi-select-panel-max-height: 240px;
   --tls-multi-select-panel-padding-block: var(--spacing-1);
@@ -19,6 +21,8 @@
 
   overflow-y: auto;
   list-style: none;
+
+  @include mixins.panel-open;
 }
 
 .tls-multi-select__option {
