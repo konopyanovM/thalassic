@@ -192,6 +192,22 @@ describe('Menu', () => {
 
       expect(getMenu().isOpen()).toBe(false);
     });
+
+    it('should ignore only the trailing auxclick of the opening right-click', () => {
+      // The right-click that opens the menu ends with an `auxclick`; that first
+      // trailing `auxclick` must not dismiss the menu the instant it appears...
+      getMenu().openAtPoint(20, 40);
+      fixture.detectChanges();
+
+      document.body.dispatchEvent(new MouseEvent('auxclick', { bubbles: true }));
+      fixture.detectChanges();
+      expect(getMenu().isOpen()).toBe(true);
+
+      // ...but a later outside `auxclick` (a separate gesture) still dismisses.
+      document.body.dispatchEvent(new MouseEvent('auxclick', { bubbles: true }));
+      fixture.detectChanges();
+      expect(getMenu().isOpen()).toBe(false);
+    });
   });
 
   describe('inline mode', () => {

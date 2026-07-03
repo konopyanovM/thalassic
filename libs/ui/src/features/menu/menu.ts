@@ -114,6 +114,7 @@ export class Menu {
       positions: this._positions(),
       scrollStrategy: 'close',
       hasBackdrop: false,
+      ignoreTrailingAuxClick: true,
     });
   }
 

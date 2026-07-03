@@ -40,6 +40,14 @@ export interface ConnectedOverlayConfig {
   closeOnBackdropClick?: boolean;
   /** Close on an outside pointer event. Defaults to `true` when no backdrop is rendered. */
   closeOnOutsidePointer?: boolean;
+  /**
+   * Ignore the first outside `auxclick` after opening. Set when the overlay is
+   * opened by a right-click gesture (a context menu): that same gesture ends
+   * with an `auxclick`, which CDK would otherwise treat as an outside pointer
+   * event and use to dismiss the menu the instant the button is released.
+   * Defaults to `false`.
+   */
+  ignoreTrailingAuxClick?: boolean;
   /** Close when Escape is pressed. Defaults to `true`. */
   closeOnEscape?: boolean;
   /** Minimum width applied to the pane on every open (e.g. to match a trigger). */
@@ -71,6 +79,14 @@ export class OverlayManager {
   private _overlayRef: OverlayRef | null = null;
   private _config: ConnectedOverlayConfig | null = null;
   private readonly _isOpen = signal(false);
+
+  // Armed by `ignoreTrailingAuxClick` on open: swallow the first outside
+  // `auxclick` so the right-click gesture that opened a context menu doesn't
+  // immediately dismiss it. Consumed one-shot (not on a timer) because the user
+  // may hold the button arbitrarily long before releasing — the `auxclick`
+  // fires on release — so the guard must survive until that first `auxclick`
+  // actually arrives. Later outside pointers still dismiss.
+  private _ignoreTrailingAuxClick = false;
 
   public readonly isOpen = this._isOpen.asReadonly();
 
@@ -108,11 +124,14 @@ export class OverlayManager {
 
     this._overlayRef.attach(new TemplatePortal(config.content, this._viewContainerRef));
     this._isOpen.set(true);
+
+    this._ignoreTrailingAuxClick = Boolean(config.ignoreTrailingAuxClick);
   }
 
   public close(): void {
     if (!this._isOpen()) return;
     this._isOpen.set(false);
+    this._ignoreTrailingAuxClick = false;
 
     const overlayRef = this._overlayRef;
     const config = this._config;
@@ -163,6 +182,16 @@ export class OverlayManager {
         .pipe(
           takeUntilDestroyed(this._destroyRef),
           filter(event => event.type === 'click' || event.type === 'auxclick'),
+          filter(event => {
+            // Swallow exactly the first outside `auxclick` after an armed open —
+            // the release of the right-click that opened a context menu — then
+            // let every later outside pointer dismiss as usual.
+            if (this._ignoreTrailingAuxClick && event.type === 'auxclick') {
+              this._ignoreTrailingAuxClick = false;
+              return false;
+            }
+            return true;
+          }),
         )
         .subscribe(() => this.close());
     }
