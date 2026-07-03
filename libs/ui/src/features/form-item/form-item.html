@@ -1,7 +1,11 @@
 @if (label() || reserveLabelSpace()) {
   <label class="form-item-label">
     <span class="form-item-label__text">{{ label() }}</span>
-    <span class="form-item-label__required">*</span>
+    @if (showRequired()) {
+      <span class="form-item-label__required">*</span>
+    } @else if (showOptional()) {
+      <span class="form-item-label__optional">{{ optionalText() }}</span>
+    }
   </label>
 }
 <div class="form-item-control">

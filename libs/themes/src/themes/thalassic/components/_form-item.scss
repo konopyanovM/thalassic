@@ -8,12 +8,6 @@
     }
   }
 
-  &.tls-form-item--required {
-    .form-item-label__required {
-      display: inline;
-    }
-  }
-
   &.tls-form-item--label-space-reserved {
     .form-item-label {
       min-height: var(--font-label-medium-line-height);
@@ -46,12 +40,19 @@
     letter-spacing: var(--font-label-medium-letter-spacing);
 
     &__required {
-      display: none;
       color: var(--color-danger);
 
       font-size: var(--font-label-large-size);
       font-weight: var(--font-label-large-weight);
       letter-spacing: var(--font-label-large-letter-spacing);
+    }
+
+    &__optional {
+      color: var(--color-on-surface-variant);
+
+      font-size: var(--font-label-small-size);
+      font-weight: var(--font-label-small-weight);
+      letter-spacing: var(--font-label-small-letter-spacing);
     }
   }
 

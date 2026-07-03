@@ -20,6 +20,8 @@ export class FormItem {
   public reserveErrorSpace = input<boolean>(this._config.reserveErrorSpace);
   public reserveLabelSpace = input<boolean>(this._config.reserveLabelSpace);
   public displayErrors = input<boolean>(this._config.displayErrors);
+  public showRequiredMarker = input<boolean>(this._config.showRequiredMarker);
+  public optionalText = input<string | undefined>(this._config.optionalText);
 
   protected isInvalid = computed(() => {
     const control = this.control();
@@ -28,11 +30,19 @@ export class FormItem {
     return control.invalid() && control.touched();
   });
 
-  protected isRequired = computed(() => {
+  protected showRequired = computed(() => {
     const control = this.control();
     if (!control) return false;
 
-    return control.required();
+    return this.showRequiredMarker() && control.required();
+  });
+
+  protected showOptional = computed(() => {
+    const control = this.control();
+    if (!control) return false;
+    if (!this.optionalText()) return false;
+
+    return !control.required();
   });
 
   protected hostClasses = computed(() => {
@@ -41,7 +51,6 @@ export class FormItem {
     const array = [className];
 
     if (this.isInvalid()) array.push(`${className}--invalid`);
-    if (this.isRequired()) array.push(`${className}--required`);
     if (this.reserveErrorSpace()) array.push(`${className}--error-space-reserved`);
     if (this.reserveLabelSpace()) array.push(`${className}--label-space-reserved`);
 

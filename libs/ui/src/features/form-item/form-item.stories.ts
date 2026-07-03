@@ -86,6 +86,16 @@ export const CustomErrorMessage: Story = {
   }),
 };
 
+export const OptionalMarker: Story = {
+  args: {
+    showRequiredMarker: false,
+    optionalText: '(optional)',
+  },
+  render: renderFormItem({
+    control: `<tls-input placeholder="you@example.com" />`,
+  }),
+};
+
 export const WithoutLabel: Story = {
   args: {
     label: undefined,
