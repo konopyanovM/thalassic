@@ -1,3 +1,20 @@
+## 0.16.0 (2026-07-04)
+
+### 🚀 Features
+
+- **core/motion:** add motion levels with animated select panel ([7ea7667](https://github.com/konopyanovM/thalassic/commit/7ea7667))
+- **core/motion:** add motion levels with animated overlay panels ([3dfeaf8](https://github.com/konopyanovM/thalassic/commit/3dfeaf8))
+- **themes:** increase control heights ([adc333e](https://github.com/konopyanovM/thalassic/commit/adc333e))
+- **ui/form-item:** added show required marker and optional text options ([1b112c7](https://github.com/konopyanovM/thalassic/commit/1b112c7))
+
+### 🩹 Fixes
+
+- **ui/menu:** fixed context instant close ([afc7e21](https://github.com/konopyanovM/thalassic/commit/afc7e21))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.15.3 (2026-07-02)
 
 ### 🚀 Features
