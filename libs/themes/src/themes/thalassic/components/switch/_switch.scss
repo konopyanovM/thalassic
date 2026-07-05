@@ -60,14 +60,18 @@
   // Checked
   &.tls-switch--checked {
     --tls-switch-handle-gap: 3px;
+    --tls-switch-translate: calc(
+      var(--tls-switch-width) - var(--tls-switch-handle-size) -
+        (var(--tls-switch-handle-gap) * 2) - (var(--tls-switch-border-width) * 2)
+    );
 
     .tls-switch-handle {
-      $translate-x: calc(
-        var(--tls-switch-width) - var(--tls-switch-handle-size) -
-          (var(--tls-switch-handle-gap) * 2) - (var(--tls-switch-border-width) * 2)
-      );
+      transform: translateX(var(--tls-switch-translate));
+    }
 
-      transform: translateX(#{$translate-x});
+    // The handle travels toward the trailing edge; mirror it in RTL.
+    :root[dir='rtl'] & .tls-switch-handle {
+      transform: translateX(calc(-1 * var(--tls-switch-translate)));
     }
   }
 

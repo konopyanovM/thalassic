@@ -71,7 +71,7 @@
     .tls-multi-select__clear {
       position: absolute;
       top: 50%;
-      right: calc(var(--tls-form-control-padding-inline) * 2 + var(--tls-multi-select-icon-size));
+      inset-inline-end: calc(var(--tls-form-control-padding-inline) * 2 + var(--tls-multi-select-icon-size));
 
       display: flex;
       align-items: center;

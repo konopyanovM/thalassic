@@ -1,3 +1,4 @@
+import { Directionality } from '@angular/cdk/bidi';
 import {
   Component,
   computed,
@@ -32,6 +33,7 @@ import { pinInputType } from './pin-input.types';
 })
 export class PinInput extends ValueFormControl<string> {
   private _config = inject(PIN_INPUT_CONFIG);
+  private readonly _directionality = inject(Directionality);
 
   private readonly _inputs = viewChildren<ElementRef<HTMLInputElement>>('cell');
 
@@ -90,12 +92,12 @@ export class PinInput extends ValueFormControl<string> {
         this._setCell(index - 1, '');
         this._focusCell(index - 1);
       }
-    } else if (event.key === 'ArrowLeft') {
+    } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
       event.preventDefault();
-      this._focusCell(index - 1);
-    } else if (event.key === 'ArrowRight') {
-      event.preventDefault();
-      this._focusCell(index + 1);
+      // Arrows are physical; map them to previous/next cell per layout direction.
+      const isRtl = this._directionality.value === 'rtl';
+      const goToPrevious = isRtl ? event.key === 'ArrowRight' : event.key === 'ArrowLeft';
+      this._focusCell(goToPrevious ? index - 1 : index + 1);
     }
 
     element.value = this.getCellValue(index);

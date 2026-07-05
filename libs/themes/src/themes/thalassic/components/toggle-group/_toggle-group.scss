@@ -17,7 +17,7 @@
 
     .tls-toggle-group__option:not(:first-child) {
       border-top: var(--tls-toggle-group-border-width) solid var(--tls-toggle-group-border-color);
-      border-left: none;
+      border-inline-start: none;
     }
   }
 
@@ -54,7 +54,7 @@
     }
 
     &:not(:first-child) {
-      border-left: var(--tls-toggle-group-border-width) solid var(--tls-toggle-group-border-color);
+      border-inline-start: var(--tls-toggle-group-border-width) solid var(--tls-toggle-group-border-color);
     }
 
     &:focus-visible {

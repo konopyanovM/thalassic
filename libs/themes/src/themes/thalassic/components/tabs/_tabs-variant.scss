@@ -42,8 +42,8 @@
         margin-bottom: -1px;
 
         border-width: 0;
-        border-left-width: var(--tls-tabs-active-border-width);
-        border-right-width: var(--tls-tabs-active-border-width);
+        border-inline-start-width: var(--tls-tabs-active-border-width);
+        border-inline-end-width: var(--tls-tabs-active-border-width);
         border-style: solid;
 
         &:hover {
@@ -51,7 +51,7 @@
         }
 
         &:first-child {
-          border-left-width: 0;
+          border-inline-start-width: 0;
         }
 
         &.tls-tabs-header__item--active {

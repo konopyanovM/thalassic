@@ -42,7 +42,7 @@
 
       &__divider {
         top: 0;
-        left: calc(var(--tls-stepper-index-size) / 2 - (var(--tls-stepper-divider-width) / 2));
+        inset-inline-start: calc(var(--tls-stepper-index-size) / 2 - (var(--tls-stepper-divider-width) / 2));
 
         width: var(--tls-stepper-divider-width);
         height: 100%;

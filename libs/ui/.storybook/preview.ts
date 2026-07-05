@@ -25,10 +25,22 @@ const preview: Preview = {
         ],
       },
     },
+    direction: {
+      description: 'Layout direction',
+      toolbar: {
+        title: 'Direction',
+        icon: 'transfer',
+        items: [
+          { value: 'ltr', title: 'LTR' },
+          { value: 'rtl', title: 'RTL' },
+        ],
+      },
+    },
   },
   initialGlobals: {
     theme: 'light',
     motion: 'full',
+    direction: 'ltr',
   },
   decorators: [
     (story, context) => {
@@ -38,6 +50,9 @@ const preview: Preview = {
 
       const motion = context.globals['motion'] ?? 'full';
       document.documentElement.setAttribute('data-motion', motion);
+
+      const direction = context.globals['direction'] ?? 'ltr';
+      document.documentElement.setAttribute('dir', direction);
       return story();
     },
   ],

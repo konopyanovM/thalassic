@@ -1,3 +1,4 @@
+import { Directionality } from '@angular/cdk/bidi';
 import { NgTemplateOutlet } from '@angular/common';
 import {
   Component,
@@ -37,6 +38,7 @@ export class Stepper {
 
   private _config: StepperConfig = inject(STEPPER_CONFIG);
   private _stepperService: StepperService = inject(StepperService);
+  private readonly _directionality = inject(Directionality);
 
   protected steps: Signal<readonly Step[]> = contentChildren(Step);
   protected completedTemplateRef = contentChild<TemplateRef<unknown>>('completedTemplate');
@@ -92,8 +94,12 @@ export class Stepper {
 
   protected onKeydown(event: KeyboardEvent, index: number): void {
     const orientation = this.orientation();
-    const keyNext = orientation === 'horizontal' ? 'ArrowRight' : 'ArrowDown';
-    const keyPrev = orientation === 'horizontal' ? 'ArrowLeft' : 'ArrowUp';
+    // Horizontal arrows are physical; swap them in RTL so Next still advances.
+    const isRtl = this._directionality.value === 'rtl';
+    const horizontalNext = isRtl ? 'ArrowLeft' : 'ArrowRight';
+    const horizontalPrev = isRtl ? 'ArrowRight' : 'ArrowLeft';
+    const keyNext = orientation === 'horizontal' ? horizontalNext : 'ArrowDown';
+    const keyPrev = orientation === 'horizontal' ? horizontalPrev : 'ArrowUp';
 
     let target: number | null = null;
 

@@ -66,7 +66,7 @@
   &__close {
     position: absolute;
     top: var(--tls-drawer-close-padding);
-    right: var(--tls-drawer-close-padding);
+    inset-inline-end: var(--tls-drawer-close-padding);
     z-index: 1;
 
     display: flex;

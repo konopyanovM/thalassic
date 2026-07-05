@@ -30,7 +30,7 @@
   &__close {
     position: absolute;
     top: var(--tls-dialog-close-padding);
-    right: var(--tls-dialog-close-padding);
+    inset-inline-end: var(--tls-dialog-close-padding);
     z-index: 1;
 
     display: flex;
