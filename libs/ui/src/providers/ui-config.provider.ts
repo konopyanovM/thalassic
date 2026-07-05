@@ -38,6 +38,7 @@ import {
   DEFAULT_SWITCH_CONFIG,
   DEFAULT_TABLE_CONFIG,
   DEFAULT_TABS_CONFIG,
+  DEFAULT_TABS_QUERY_SYNC_CONFIG,
   DEFAULT_TEXTAREA_CONFIG,
   DEFAULT_TOGGLE_GROUP_CONFIG,
   DEFAULT_TOOLTIP_CONFIG,
@@ -62,6 +63,7 @@ import {
   SWITCH_CONFIG,
   TABLE_CONFIG,
   TABS_CONFIG,
+  TABS_QUERY_SYNC_CONFIG,
   TEXTAREA_CONFIG,
   TOGGLE_GROUP_CONFIG,
   TOOLTIP_CONFIG,
@@ -169,6 +171,10 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
     },
     { provide: TABLE_CONFIG, useValue: deepMerge(DEFAULT_TABLE_CONFIG, config.components.table) },
     { provide: TABS_CONFIG, useValue: deepMerge(DEFAULT_TABS_CONFIG, config.components.tabs) },
+    {
+      provide: TABS_QUERY_SYNC_CONFIG,
+      useValue: deepMerge(DEFAULT_TABS_QUERY_SYNC_CONFIG, config.components.tabsQuerySync),
+    },
     {
       provide: TEXTAREA_CONFIG,
       useValue: deepMerge(DEFAULT_TEXTAREA_CONFIG, config.components.textarea),

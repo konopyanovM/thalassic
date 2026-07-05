@@ -28,6 +28,7 @@ import {
   SwitchConfig,
   TableConfig,
   TabsConfig,
+  TabsQuerySyncConfig,
   TextareaConfig,
   ToggleGroupConfig,
   TooltipConfig,
@@ -64,6 +65,7 @@ export interface tlsUiConfigProvider {
     switch?: Partial<SwitchConfig>;
     table?: Partial<TableConfig>;
     tabs?: Partial<TabsConfig>;
+    tabsQuerySync?: Partial<TabsQuerySyncConfig>;
     textarea?: Partial<TextareaConfig>;
     toggleGroup?: Partial<ToggleGroupConfig>;
     tooltip?: Partial<TooltipConfig>;
