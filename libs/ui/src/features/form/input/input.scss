@@ -1,9 +1,14 @@
 :host {
-  width: auto;
+  --tls-input-width: 200px;
 
   display: inline-block;
+  width: var(--tls-input-width);
 
-  &:has(.tls-form-control.tls-form-control--fluid) {
+  .tls-form-control {
     width: 100%;
+  }
+
+  &:has(.tls-form-control--fluid) {
+    --tls-input-width: 100%;
   }
 }

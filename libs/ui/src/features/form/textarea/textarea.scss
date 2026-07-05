@@ -1,9 +1,14 @@
 :host {
-  width: auto;
+  --tls-textarea-width: 200px;
 
   display: inline-block;
+  width: var(--tls-textarea-width);
 
-  &:has(.tls-form-control.tls-form-control--fluid) {
+  .tls-form-control {
     width: 100%;
+  }
+
+  &:has(.tls-form-control--fluid) {
+    --tls-textarea-width: 100%;
   }
 }
