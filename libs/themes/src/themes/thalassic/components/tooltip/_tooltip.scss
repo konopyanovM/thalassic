@@ -1,3 +1,5 @@
+@use '../../mixins' as mixins;
+
 .tls-tooltip {
   --tls-tooltip-box-shadow: 0 2px 8px -1px var(--color-shade-30);
   --tls-tooltip-padding: var(--spacing-3);
@@ -11,4 +13,6 @@
   background-color: var(--tls-tooltip-color);
 
   box-shadow: var(--tls-tooltip-box-shadow);
+
+  @include mixins.panel-open;
 }

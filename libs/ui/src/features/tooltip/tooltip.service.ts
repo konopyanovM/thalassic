@@ -6,6 +6,7 @@ import {
 } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { ComponentRef, inject, Injectable } from '@angular/core';
+import { LEAVE_ANIMATION_FALLBACK_MS } from './tooltip.constants';
 
 @Injectable()
 export class TooltipService {
@@ -44,9 +45,45 @@ export class TooltipService {
     }
   }
 
+  // Detaches the tooltip so Angular's `animate.leave` plays the exit animation,
+  // then disposes the pane once that animation finishes. The pane is kept alive
+  // in the meantime so it is not torn down mid-animation.
+  public hide() {
+    if (!this._overlayRef) return;
+
+    const overlayRef = this._overlayRef;
+    this._overlayRef = null;
+
+    overlayRef.detach();
+    this._disposeAfterAnimation(overlayRef);
+  }
+
   public dispose() {
     if (!this._overlayRef) return;
     this._overlayRef.dispose();
     this._overlayRef = null;
+  }
+
+  // Private methods
+  // Disposes a detached overlay once the tooltip's exit animation has finished.
+  // Falls back to a timeout when no animation runs (e.g. the `none` motion level).
+  private _disposeAfterAnimation(overlayRef: OverlayRef) {
+    const paneElement = overlayRef.overlayElement;
+    if (!paneElement) {
+      overlayRef.dispose();
+      return;
+    }
+
+    let settled = false;
+    const finalize = () => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(timeoutId);
+      paneElement.removeEventListener('animationend', finalize);
+      overlayRef.dispose();
+    };
+
+    paneElement.addEventListener('animationend', finalize);
+    const timeoutId = window.setTimeout(finalize, LEAVE_ANIMATION_FALLBACK_MS);
   }
 }

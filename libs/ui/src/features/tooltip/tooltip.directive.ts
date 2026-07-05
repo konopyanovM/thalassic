@@ -70,7 +70,7 @@ export class TooltipDirective implements OnDestroy {
   }
 
   protected onMouseLeave() {
-    this._tooltipService.dispose();
+    this._hide();
   }
 
   protected onTouchStart(event: TouchEvent) {
@@ -106,7 +106,7 @@ export class TooltipDirective implements OnDestroy {
   }
 
   private _hide() {
-    this._tooltipService.dispose();
+    this._tooltipService.hide();
     this._visible.set(false);
     this._renderer.removeAttribute(this._elementRef.nativeElement, 'aria-describedby');
   }

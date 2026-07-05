@@ -19,6 +19,8 @@ import { tooltipColor } from './tooltip.types';
     '[class]': 'hostClasses()',
     'role': 'tooltip',
     '[id]': 'id',
+    'animate.enter': 'tls-tooltip--enter',
+    'animate.leave': 'tls-tooltip--leave',
   },
 })
 export class Tooltip {
