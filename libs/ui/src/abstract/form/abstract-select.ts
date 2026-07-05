@@ -32,7 +32,6 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
   private readonly panelTemplate = viewChild<TemplateRef<void>>('panel');
 
   // Shared inputs (config-independent)
-  public readonly inputId = input<string | null>(null);
   public readonly options: InputSignal<optionInput<T>[]> = input<optionInput<T>[]>([]);
   public readonly optionLabel = input<keyof T | undefined>(undefined);
   public readonly optionValue = input<keyof T | undefined>(undefined);

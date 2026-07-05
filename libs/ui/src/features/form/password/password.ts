@@ -30,9 +30,10 @@ import { PASSWORD_CONFIG } from './password.token';
 export class Password extends ValueFormControl<string> {
   private _config = inject(PASSWORD_CONFIG);
 
+  override readonly supportsLabelFor = true;
+
   public readonly value: ModelSignal<string> = model<string>('');
   public readonly visible: ModelSignal<boolean> = model<boolean>(false);
-  public readonly inputId = input<string | null>(null);
   public readonly placeholder = input<string>(this._config.placeholder);
   public readonly size: InputSignal<controlSize> = input<controlSize>(this._config.size);
   public readonly fluid: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(

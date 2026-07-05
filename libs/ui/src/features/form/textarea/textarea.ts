@@ -27,8 +27,9 @@ import { TEXTAREA_CONFIG } from './textarea.token';
 export class Textarea extends ValueFormControl<string> {
   private _config = inject(TEXTAREA_CONFIG);
 
+  override readonly supportsLabelFor = true;
+
   public readonly value: ModelSignal<string> = model<string>('');
-  public readonly inputId = input<string | null>(null);
   public readonly placeholder = input<string>(this._config.placeholder);
   public readonly size: InputSignal<controlSize> = input<controlSize>(this._config.size);
   public readonly fluid: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(

@@ -28,6 +28,8 @@ export class MultiSelect<T, V = unknown> extends AbstractSelect<T, V, V[]> {
 
   private readonly _config = inject(MULTI_SELECT_CONFIG);
 
+  override readonly supportsLabelFor = true;
+
   protected readonly uniqueId = `tls-multi-select-${MultiSelect._nextUniqueId++}`;
   protected readonly hostClassBase = 'tls-multi-select';
   protected readonly panelClass = 'tls-multi-select-panel';

@@ -28,6 +28,8 @@ export class Select<T, V = unknown> extends AbstractSelect<T, V, V | null> {
 
   private readonly _config = inject(SELECT_CONFIG);
 
+  override readonly supportsLabelFor = true;
+
   protected readonly uniqueId = `tls-select-${Select._nextUniqueId++}`;
   protected readonly hostClassBase = 'tls-select';
   protected readonly panelClass = 'tls-select-panel';

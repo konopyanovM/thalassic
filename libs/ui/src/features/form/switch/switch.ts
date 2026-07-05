@@ -35,8 +35,9 @@ export class Switch extends CheckboxFormControl {
 
   protected override CLASS_NAME = 'tls-switch';
 
+  override readonly supportsLabelFor = true;
+
   public readonly checked: ModelSignal<boolean> = model<boolean>(false);
-  public readonly inputId = input<string>();
   public readonly color: InputSignal<switchColor> = input<switchColor>(this._config.color);
   public readonly tabindex: InputSignal<string | number> = input<string | number>(0);
 

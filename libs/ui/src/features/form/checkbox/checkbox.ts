@@ -26,10 +26,11 @@ export class Checkbox extends CheckboxFormControl {
 
   protected override CLASS_NAME = 'tls-checkbox';
 
+  override readonly supportsLabelFor = true;
+
   public indeterminate = model<boolean>(false);
 
   public readonly checked: ModelSignal<boolean> = model<boolean>(false);
-  public readonly inputId = input<string>();
   public readonly tabindex: InputSignal<string | number> = input<string | number>(0);
 
   protected readonly hostClasses: Signal<string[]> = computed(() => {

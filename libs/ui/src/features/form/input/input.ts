@@ -25,10 +25,11 @@ export class Input extends ValueFormControl<string> {
   // Injections
   private _config = inject(INPUT_CONFIG);
 
+  override readonly supportsLabelFor = true;
+
   // Inputs
   public readonly type = input<string>(this._config.type);
   public readonly value: ModelSignal<string> = model<string>('');
-  public readonly inputId = input<string | null>(null);
   public readonly placeholder = input<string>(this._config.placeholder);
   public readonly size: InputSignal<controlSize> = input<controlSize>(this._config.size);
   public readonly fluid: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(

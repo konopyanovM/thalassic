@@ -1,7 +1,7 @@
 <textarea
   [name]="name()"
   [class]="classes()"
-  [attr.id]="inputId()"
+  [attr.id]="effectiveInputId()"
   [attr.aria-label]="ariaLabel() ?? null"
   [attr.aria-labelledby]="labelledBy()"
   [attr.aria-invalid]="invalid() ? 'true' : null"

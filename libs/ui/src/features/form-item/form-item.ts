@@ -27,6 +27,9 @@ export class FormItem {
   /** Stable id for the label element, linked to the control via `aria-labelledby`. */
   protected readonly labelId = `tls-form-item-label-${FormItem._counter}`;
 
+  /** Stable id assigned to the native control element, linked from the label via `for`. */
+  protected readonly controlId = `tls-form-item-control-${FormItem._counter}`;
+
   /** Stable id for the error element, linked to the control via `aria-describedby`. */
   protected readonly errorId = `tls-form-item-error-${FormItem._counter++}`;
 
@@ -58,6 +61,12 @@ export class FormItem {
     if (!this.optionalText()) return false;
 
     return !control.required();
+  });
+
+  protected labelFor = computed(() => {
+    const control = this.control();
+    if (!control || !control.supportsLabelFor) return null;
+    return control.effectiveInputId();
   });
 
   protected hostClasses = computed(() => {
@@ -92,6 +101,9 @@ export class FormItem {
       // Point the control's aria-labelledby at the rendered label element so screen readers
       // announce the visible label text when the control receives focus.
       control.labelId.set(this.label() ? this.labelId : null);
+
+      // Assign the stable control id so the label's `for` attribute can target the native element.
+      control.formItemInputId.set(control.supportsLabelFor ? this.controlId : null);
 
       // Point the control's aria-describedby at the rendered error element (and clear it when no
       // error is shown) so screen readers announce the validation message on focus.

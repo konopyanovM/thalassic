@@ -38,6 +38,9 @@ export abstract class FormControl implements FormUiControl {
   /** `id`(s) of element(s) describing the control (help text, hint), forwarded to `aria-describedby`. */
   public readonly ariaDescribedby = input<string | undefined>(undefined);
 
+  /** Consumer-provided `id` for the inner native control element (e.g. to wire up an external label). */
+  public readonly inputId = input<string | null>(null);
+
   /**
    * `id` of the validation-error element, set by an enclosing `tls-form-item` while it renders an
    * error. Merged with `ariaDescribedby` so the control's `aria-describedby` points at both the
@@ -51,6 +54,15 @@ export abstract class FormControl implements FormUiControl {
    * honouring any consumer-supplied labelling.
    */
   public readonly labelId: WritableSignal<string | null> = signal<string | null>(null);
+
+  /**
+   * `id` assigned to the native control element by an enclosing `tls-form-item`, so the label's
+   * `for` attribute can point at the control. Consumer's `inputId` takes precedence.
+   */
+  public readonly formItemInputId: WritableSignal<string | null> = signal<string | null>(null);
+
+  /** Whether this control has a single native labelable element that a `<label for>` can target. */
+  readonly supportsLabelFor: boolean = false;
 
   /** Combined `aria-describedby` value (consumer description + form-item error), or null when empty. */
   protected readonly describedBy: Signal<string | null> = computed<string | null>(() => {
@@ -77,6 +89,11 @@ export abstract class FormControl implements FormUiControl {
 
     return ids.length > 0 ? ids.join(' ') : null;
   });
+
+  /** Resolved `id` for the native control element: consumer's `inputId` first, then form-item's assigned id. */
+  readonly effectiveInputId: Signal<string | null> = computed<string | null>(
+    () => this.inputId() ?? this.formItemInputId(),
+  );
 
   public readonly disabled: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
     false,

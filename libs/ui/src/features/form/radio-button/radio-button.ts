@@ -25,9 +25,10 @@ export class RadioButton extends ValueFormControl<unknown> {
 
   protected override CLASS_NAME = 'tls-radio-button';
 
+  override readonly supportsLabelFor = true;
+
   public readonly radioValue: InputSignal<unknown> = input.required<unknown>();
   public readonly value: ModelSignal<unknown> = model<unknown>('');
-  public readonly inputId = input<string>();
   public readonly tabindex: InputSignal<string | number> = input<string | number>(0);
 
   protected readonly checked: Signal<boolean> = computed(() => this.radioValue() === this.value());

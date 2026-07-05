@@ -1,7 +1,7 @@
 <input
   type="checkbox"
   class="tls-switch-input"
-  [id]="inputId()"
+  [attr.id]="effectiveInputId()"
   [name]="name()"
   [attr.aria-label]="ariaLabel() ?? null"
   [attr.aria-labelledby]="labelledBy()"
