@@ -1,3 +1,13 @@
+## 0.17.1 (2026-07-05)
+
+### 🩹 Fixes
+
+- **ui:** fixed controls widths ([1924ac0](https://github.com/konopyanovM/thalassic/commit/1924ac0))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.17.0 (2026-07-05)
 
 ### 🚀 Features
