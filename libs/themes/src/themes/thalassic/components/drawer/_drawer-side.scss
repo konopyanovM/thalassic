@@ -1,0 +1,80 @@
+.tls-drawer {
+  // Named size presets. A custom length string is applied inline as
+  // `--tls-drawer-size` by the component (`.tls-drawer--custom`), so it needs no rule.
+  &--sm {
+    --tls-drawer-size: 320px;
+  }
+
+  &--md {
+    --tls-drawer-size: 400px;
+  }
+
+  &--lg {
+    --tls-drawer-size: 560px;
+  }
+
+  &--start,
+  &--end {
+    height: 100dvh;
+    width: var(--tls-drawer-size);
+    max-width: 100dvw;
+  }
+
+  &--top,
+  &--bottom {
+    width: 100dvw;
+    height: var(--tls-drawer-size);
+    max-height: 100dvh;
+  }
+
+  &--start {
+    --tls-drawer-offset: translateX(-100%);
+  }
+
+  &--end {
+    --tls-drawer-offset: translateX(100%);
+  }
+
+  &--top {
+    --tls-drawer-offset: translateY(-100%);
+  }
+
+  &--bottom {
+    --tls-drawer-offset: translateY(100%);
+  }
+
+  // Rounds the inner edge only (the two corners facing the viewport). Opt-in; the
+  // drawer sits flush by default.
+  &--rounded {
+    &.tls-drawer--start {
+      border-radius: 0 var(--tls-drawer-border-radius) var(--tls-drawer-border-radius) 0;
+    }
+
+    &.tls-drawer--end {
+      border-radius: var(--tls-drawer-border-radius) 0 0 var(--tls-drawer-border-radius);
+    }
+
+    &.tls-drawer--top {
+      border-radius: 0 0 var(--tls-drawer-border-radius) var(--tls-drawer-border-radius);
+    }
+
+    &.tls-drawer--bottom {
+      border-radius: var(--tls-drawer-border-radius) var(--tls-drawer-border-radius) 0 0;
+    }
+  }
+
+  // Fills the cross axis edge-to-edge; the main axis stretches to the full viewport.
+  &--full {
+    --tls-drawer-border-radius: 0;
+
+    &.tls-drawer--start,
+    &.tls-drawer--end {
+      width: 100dvw;
+    }
+
+    &.tls-drawer--top,
+    &.tls-drawer--bottom {
+      height: 100dvh;
+    }
+  }
+}

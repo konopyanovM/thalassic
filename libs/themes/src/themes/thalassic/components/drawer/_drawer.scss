@@ -1,0 +1,121 @@
+@use '../../mixins' as mixins;
+
+@keyframes tls-drawer-slide-in {
+  from {
+    transform: var(--tls-drawer-offset);
+  }
+
+  to {
+    transform: none;
+  }
+}
+
+@keyframes tls-drawer-slide-out {
+  from {
+    transform: none;
+  }
+
+  to {
+    transform: var(--tls-drawer-offset);
+  }
+}
+
+.tls-drawer-backdrop {
+  --tls-drawer-backdrop: rgb(0 0 0 / 0.4);
+
+  background-color: var(--tls-drawer-backdrop);
+}
+
+.tls-drawer {
+  --tls-drawer-background: var(--color-surface-container-lowest);
+  --tls-drawer-color: var(--color-on-surface);
+  --tls-drawer-border-radius: var(--radius-xl);
+  --tls-drawer-shadow: var(--shadow-lg);
+  --tls-drawer-padding: var(--spacing-6);
+  --tls-drawer-close-size: 16px;
+  --tls-drawer-close-padding: var(--spacing-4);
+
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  pointer-events: auto;
+
+  background-color: var(--tls-drawer-background);
+  color: var(--tls-drawer-color);
+  box-shadow: var(--tls-drawer-shadow);
+
+  // The slide communicates the panel's spatial origin, so it is a functional cue
+  // on the `essential` tier and survives reduced motion (resolved by `MotionService`).
+  // Enter and leave use distinct keyframe names, not one shared keyframe with
+  // `reverse`: the container keeps its `--enter` class for the panel's whole
+  // lifetime, so swapping to `--leave` must change `animation-name` to force the
+  // browser to start a fresh animation (a mere `animation-direction` change does
+  // not restart an already-finished animation).
+  @include mixins.motion(essential) {
+    &--enter {
+      animation: tls-drawer-slide-in var(--motion-instant) var(--motion-ease-out) both;
+    }
+
+    &--leave {
+      animation: tls-drawer-slide-out var(--motion-instant) var(--motion-ease-in) both;
+    }
+  }
+
+  &__close {
+    position: absolute;
+    top: var(--tls-drawer-close-padding);
+    right: var(--tls-drawer-close-padding);
+    z-index: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: var(--tls-drawer-close-size);
+    height: var(--tls-drawer-close-size);
+
+    color: var(--color-outline);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+
+    transition: color var(--motion-fast) var(--motion-ease-in-out);
+
+    &:hover {
+      color: var(--color-on-surface);
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &__header {
+    padding: var(--tls-drawer-padding) var(--tls-drawer-padding) 0;
+  }
+
+  &__title {
+    font-size: var(--font-title-large-size);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--font-title-large-line-height);
+    color: var(--color-on-surface);
+  }
+
+  &__body {
+    flex: 1;
+    padding: var(--spacing-4) var(--tls-drawer-padding);
+    overflow-y: auto;
+  }
+
+  &__footer {
+    padding: 0 var(--tls-drawer-padding) var(--tls-drawer-padding);
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--spacing-3);
+  }
+}

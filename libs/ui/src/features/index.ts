@@ -4,6 +4,7 @@ export * from './button';
 export * from './chip';
 export * from './dialog';
 export * from './divider';
+export * from './drawer';
 export * from './form-control-group';
 export * from './form-item';
 export * from './form/checkbox';
