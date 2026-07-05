@@ -1,3 +1,16 @@
+## 0.17.0 (2026-07-05)
+
+### 🚀 Features
+
+- **ui:** forward accessibility attributes to inner controls ([3726b4f](https://github.com/konopyanovM/thalassic/commit/3726b4f))
+- **ui:** added input number component ([9fc3339](https://github.com/konopyanovM/thalassic/commit/9fc3339))
+- **ui/form-item:** wire label to projected controls via aria-labelledby ([d4a0ebd](https://github.com/konopyanovM/thalassic/commit/d4a0ebd))
+- **ui/form-item:** connect label to controls via for/id and aria-labelledby ([4c77ac3](https://github.com/konopyanovM/thalassic/commit/4c77ac3))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.16.0 (2026-07-04)
 
 ### 🚀 Features
