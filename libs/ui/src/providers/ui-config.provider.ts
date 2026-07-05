@@ -28,6 +28,7 @@ import {
   DEFAULT_MENU_CONFIG,
   DEFAULT_MULTI_SELECT_CONFIG,
   DEFAULT_PAGINATION_CONFIG,
+  DEFAULT_PAGINATION_QUERY_SYNC_CONFIG,
   DEFAULT_PASSWORD_CONFIG,
   DEFAULT_PIN_INPUT_CONFIG,
   DEFAULT_POPOVER_CONFIG,
@@ -53,6 +54,7 @@ import {
   MENU_CONFIG,
   MULTI_SELECT_CONFIG,
   PAGINATION_CONFIG,
+  PAGINATION_QUERY_SYNC_CONFIG,
   PASSWORD_CONFIG,
   PIN_INPUT_CONFIG,
   POPOVER_CONFIG,
@@ -136,6 +138,10 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
     {
       provide: PAGINATION_CONFIG,
       useValue: deepMerge(DEFAULT_PAGINATION_CONFIG, config.components.pagination),
+    },
+    {
+      provide: PAGINATION_QUERY_SYNC_CONFIG,
+      useValue: deepMerge(DEFAULT_PAGINATION_QUERY_SYNC_CONFIG, config.components.paginationQuerySync),
     },
     {
       provide: PASSWORD_CONFIG,

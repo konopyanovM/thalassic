@@ -18,6 +18,7 @@ import {
   MenuConfig,
   MultiSelectConfig,
   PaginationConfig,
+  PaginationQuerySyncConfig,
   PasswordConfig,
   PinInputConfig,
   PopoverConfig,
@@ -55,6 +56,7 @@ export interface tlsUiConfigProvider {
     menu?: Partial<MenuConfig>;
     multiSelect?: Partial<MultiSelectConfig>;
     pagination?: Partial<PaginationConfig>;
+    paginationQuerySync?: Partial<PaginationQuerySyncConfig>;
     password?: Partial<PasswordConfig>;
     pinInput?: Partial<PinInputConfig>;
     popover?: Partial<PopoverConfig>;
