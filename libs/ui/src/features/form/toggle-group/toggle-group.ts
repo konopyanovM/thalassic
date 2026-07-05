@@ -28,6 +28,10 @@ import { TOGGLE_GROUP_CONFIG } from './toggle-group.token';
   host: {
     role: 'group',
     '[class]': 'classes()',
+    '[attr.aria-label]': 'ariaLabel() ?? null',
+    '[attr.aria-labelledby]': 'labelledBy()',
+    '[attr.aria-describedby]': 'describedBy()',
+    '[attr.aria-invalid]': "invalid() ? 'true' : null",
   },
 })
 /**

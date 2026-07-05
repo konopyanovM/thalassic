@@ -24,7 +24,7 @@ import { pinInputType } from './pin-input.types';
     role: 'group',
     '[class]': 'hostClasses()',
     '[attr.aria-label]': 'ariaLabel() ?? null',
-    '[attr.aria-labelledby]': 'ariaLabelledby() ?? null',
+    '[attr.aria-labelledby]': 'labelledBy()',
     '[attr.aria-invalid]': "invalid() ? 'true' : null",
     '[attr.aria-describedby]': 'describedBy()',
   },

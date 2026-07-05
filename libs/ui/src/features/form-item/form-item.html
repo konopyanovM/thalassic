@@ -1,5 +1,5 @@
 @if (label() || reserveLabelSpace()) {
-  <label class="form-item-label">
+  <label class="form-item-label" [id]="labelId">
     <span class="form-item-label__text">{{ label() }}</span>
     @if (showRequired()) {
       <span class="form-item-label__required">*</span>

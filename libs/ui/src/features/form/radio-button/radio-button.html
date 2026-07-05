@@ -4,7 +4,7 @@
   [id]="inputId()"
   [name]="name()"
   [attr.aria-label]="ariaLabel() ?? null"
-  [attr.aria-labelledby]="ariaLabelledby() ?? null"
+  [attr.aria-labelledby]="labelledBy()"
   [attr.aria-invalid]="invalid() ? 'true' : null"
   [attr.aria-required]="required() ? 'true' : null"
   [attr.aria-describedby]="describedBy()"

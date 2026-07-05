@@ -45,6 +45,13 @@ export abstract class FormControl implements FormUiControl {
    */
   public readonly errorMessageId: WritableSignal<string | null> = signal<string | null>(null);
 
+  /**
+   * `id` of the visible `<label>` element rendered by an enclosing `tls-form-item`. Merged with
+   * `ariaLabelledby` so the control's `aria-labelledby` points at the form-item label while still
+   * honouring any consumer-supplied labelling.
+   */
+  public readonly labelId: WritableSignal<string | null> = signal<string | null>(null);
+
   /** Combined `aria-describedby` value (consumer description + form-item error), or null when empty. */
   protected readonly describedBy: Signal<string | null> = computed<string | null>(() => {
     const ids: string[] = [];
@@ -54,6 +61,19 @@ export abstract class FormControl implements FormUiControl {
 
     const errorId = this.errorMessageId();
     if (errorId) ids.push(errorId);
+
+    return ids.length > 0 ? ids.join(' ') : null;
+  });
+
+  /** Combined `aria-labelledby` value (consumer label id + form-item label), or null when empty. */
+  protected readonly labelledBy: Signal<string | null> = computed<string | null>(() => {
+    const ids: string[] = [];
+
+    const labelledby = this.ariaLabelledby();
+    if (labelledby) ids.push(labelledby);
+
+    const formItemLabelId = this.labelId();
+    if (formItemLabelId) ids.push(formItemLabelId);
 
     return ids.length > 0 ? ids.join(' ') : null;
   });

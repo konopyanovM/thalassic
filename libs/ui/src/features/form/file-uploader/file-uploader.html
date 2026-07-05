@@ -12,7 +12,7 @@
   role="button"
   [attr.tabindex]="notInteractive() ? -1 : 0"
   [attr.aria-label]="ariaLabel() ?? (multiple() ? 'Upload files' : 'Upload file')"
-  [attr.aria-labelledby]="ariaLabelledby() ?? null"
+  [attr.aria-labelledby]="labelledBy()"
   [attr.aria-invalid]="invalid() ? 'true' : null"
   [attr.aria-describedby]="describedBy()"
   [class.tls-file-uploader__drop-zone--dragging]="dragState() === 'valid'"

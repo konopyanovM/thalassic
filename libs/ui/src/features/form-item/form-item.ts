@@ -24,8 +24,11 @@ export class FormItem {
 
   protected control: Signal<FormControl | undefined> = contentChild(FORM_CONTROL);
 
+  /** Stable id for the label element, linked to the control via `aria-labelledby`. */
+  protected readonly labelId = `tls-form-item-label-${FormItem._counter}`;
+
   /** Stable id for the error element, linked to the control via `aria-describedby`. */
-  protected readonly errorId = `tls-form-item-error-${++FormItem._counter}`;
+  protected readonly errorId = `tls-form-item-error-${FormItem._counter++}`;
 
   // Inputs
   public label = input<string>();
@@ -82,12 +85,16 @@ export class FormItem {
 
   // constructor
   constructor() {
-    // Point the projected control's aria-describedby at the rendered error element (and clear it
-    // when no error is shown), so screen readers announce the validation message on focus.
     effect(() => {
       const control = this.control();
       if (!control) return;
 
+      // Point the control's aria-labelledby at the rendered label element so screen readers
+      // announce the visible label text when the control receives focus.
+      control.labelId.set(this.label() ? this.labelId : null);
+
+      // Point the control's aria-describedby at the rendered error element (and clear it when no
+      // error is shown) so screen readers announce the validation message on focus.
       const describesError = this.displayErrors() && this.isInvalid();
       control.errorMessageId.set(describesError ? this.errorId : null);
     });
