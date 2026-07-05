@@ -10,8 +10,6 @@ import {
   Signal,
   signal,
 } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
-import { Observable } from 'rxjs';
 import { MOTION_ATTRIBUTE } from './constants';
 import { MotionConfig } from './motion.config';
 import { MOTION_CONFIG } from './motion.token';
@@ -44,11 +42,6 @@ export class MotionService {
   // Private
   private _currentLevel = signal<motionLevel>('full');
   private _currentPreference = signal<motionPreference>('full');
-
-  public onLevelChange: Observable<motionLevel> = toObservable<motionLevel>(this._currentLevel);
-  public onPreferenceChange: Observable<motionPreference> = toObservable<motionPreference>(
-    this._currentPreference,
-  );
 
   constructor() {
     this._initMotion();

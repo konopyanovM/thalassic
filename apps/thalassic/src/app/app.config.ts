@@ -2,7 +2,7 @@ import { provideHttpClient, withFetch } from '@angular/common/http';
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
-import { provideMotion, provideTheme } from '@thalassic/core';
+import { provideDirection, provideMotion, provideTheme } from '@thalassic/core';
 import { appRoutes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -13,5 +13,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch()),
     provideTheme(),
     provideMotion(),
+    provideDirection(),
   ],
 };

@@ -1,3 +1,4 @@
+import { Directionality } from '@angular/cdk/bidi';
 import { Dialog as CdkDialog, DialogRef, DialogRole } from '@angular/cdk/dialog';
 import { Overlay, PositionStrategy } from '@angular/cdk/overlay';
 import { ComponentType } from '@angular/cdk/portal';
@@ -26,6 +27,7 @@ export interface DrawerOpenConfig<D = unknown> {
 export class DrawerService {
   private readonly _dialog = inject(CdkDialog);
   private readonly _overlay = inject(Overlay);
+  private readonly _directionality = inject(Directionality);
   private readonly _config = inject(DRAWER_CONFIG);
 
   // Currently-open drawers, tracked so `closeAll` can play each slide-out and so it
@@ -58,6 +60,7 @@ export class DrawerService {
         return [{ provide: DrawerRef, useValue: drawerRef }];
       },
       positionStrategy: this._buildPositionStrategy(resolvedConfig.side),
+      direction: this._directionality.value,
       hasBackdrop: true,
       backdropClass: 'tls-drawer-backdrop',
       // Suppress CDK's synchronous auto-close so every dismissal routes through
@@ -89,16 +92,19 @@ export class DrawerService {
   // Private
   private _buildPositionStrategy(side: drawerSide): PositionStrategy {
     const position = this._overlay.position().global();
+    const isRtl = this._directionality.value === 'rtl';
 
     switch (side) {
-      case 'start':
-        return position.top('0').left('0');
-      case 'end':
-        return position.top('0').right('0');
       case 'top':
         return position.top('0').left('0');
       case 'bottom':
         return position.bottom('0').left('0');
+      // `start`/`end` are logical: `start` pins to the leading edge (left in LTR,
+      // right in RTL), `end` to the trailing edge.
+      case 'start':
+        return isRtl ? position.top('0').right('0') : position.top('0').left('0');
+      case 'end':
+        return isRtl ? position.top('0').left('0') : position.top('0').right('0');
     }
   }
 

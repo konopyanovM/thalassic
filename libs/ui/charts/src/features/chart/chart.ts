@@ -3,16 +3,15 @@ import {
   Component,
   computed,
   contentChildren,
-  DestroyRef,
+  effect,
   ElementRef,
   inject,
   input,
   OnDestroy,
-  OnInit,
   Signal,
+  untracked,
   viewChild,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ThemeService } from '@thalassic/core';
 import {
   Chart as ChartJS,
@@ -35,10 +34,9 @@ import { CHART_CONFIG } from './chart.token';
   },
   providers: [ChartService],
 })
-export class Chart implements OnInit, OnDestroy {
+export class Chart implements OnDestroy {
   private _config: ChartConfig = inject<ChartConfig>(CHART_CONFIG);
   private _chartService = inject(ChartService);
-  private _destroyRef = inject(DestroyRef);
 
   private _themeService = inject(ThemeService, { optional: true });
 
@@ -87,6 +85,8 @@ export class Chart implements OnInit, OnDestroy {
         this._chart = new ChartJS(this.canvasElement, config);
       }
     });
+
+    this._initThemeSync();
   }
 
   // Accessors
@@ -95,23 +95,28 @@ export class Chart implements OnInit, OnDestroy {
   }
 
   // Private methods
-  private _tryInitThemeListener() {
-    if (this._themeService) {
-      this._themeService.onThemeChange.pipe(takeUntilDestroyed(this._destroyRef)).subscribe(() => {
-        if (this._chart) {
-          const colorOptions = this._chartService.getColorOptions(this.chartElements());
-          this._chart.options = { ...this._options(), ...colorOptions };
-          this._chart.update('none');
-        }
+  // Recolors the chart when the theme changes. Reacts only to the theme signal;
+  // everything else is read untracked so unrelated option/element updates don't
+  // trigger a redundant chart update.
+  private _initThemeSync(): void {
+    if (!this._themeService) return;
+
+    const currentTheme = this._themeService.currentTheme;
+
+    effect(() => {
+      currentTheme();
+
+      untracked(() => {
+        if (!this._chart) return;
+
+        const colorOptions = this._chartService.getColorOptions(this.chartElements());
+        this._chart.options = { ...this._options(), ...colorOptions };
+        this._chart.update('none');
       });
-    }
+    });
   }
 
   // Lifecycle
-  ngOnInit(): void {
-    this._tryInitThemeListener();
-  }
-
   ngOnDestroy(): void {
     if (this._chart) this._chart.destroy();
   }

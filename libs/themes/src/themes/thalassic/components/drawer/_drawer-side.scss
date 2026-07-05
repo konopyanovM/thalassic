@@ -63,6 +63,29 @@
     }
   }
 
+  // In RTL the logical `start`/`end` edges swap sides, so the slide offset and the
+  // rounded inner corners mirror. `top`/`bottom` are unaffected. The position
+  // strategy resolves the physical edge separately (see DrawerService).
+  :root[dir='rtl'] & {
+    &--start {
+      --tls-drawer-offset: translateX(100%);
+    }
+
+    &--end {
+      --tls-drawer-offset: translateX(-100%);
+    }
+
+    &--rounded {
+      &.tls-drawer--start {
+        border-radius: var(--tls-drawer-border-radius) 0 0 var(--tls-drawer-border-radius);
+      }
+
+      &.tls-drawer--end {
+        border-radius: 0 var(--tls-drawer-border-radius) var(--tls-drawer-border-radius) 0;
+      }
+    }
+  }
+
   // Fills the cross axis edge-to-edge; the main axis stretches to the full viewport.
   &--full {
     --tls-drawer-border-radius: 0;
