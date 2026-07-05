@@ -13,11 +13,16 @@
 }
 <input
   class="tls-chip-input__field"
+  [attr.aria-label]="ariaLabel() ?? null"
+  [attr.aria-labelledby]="ariaLabelledby() ?? null"
+  [attr.aria-invalid]="invalid() ? 'true' : null"
+  [attr.aria-required]="required() ? 'true' : null"
+  [attr.aria-describedby]="describedBy()"
   [placeholder]="placeholder()"
   [disabled]="disabled()"
   [readonly]="readonly()"
   [value]="inputValue()"
-  (input)="inputValue.set($any($event.target).value)"
+  (input)="onInput($event)"
   (keydown)="onKeydown($event)"
   (blur)="touched.set(true)"
 />

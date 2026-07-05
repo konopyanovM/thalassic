@@ -65,6 +65,10 @@ export class Table {
   );
   public readonly trackBy = input<TableTrackBy>();
 
+  /** Accessible name for the table, forwarded to the inner `<table>` element. */
+  public readonly ariaLabel = input<string | undefined>(undefined);
+  public readonly ariaLabelledby = input<string | undefined>(undefined);
+
   protected readonly tableColumns = contentChildren(TableColumn);
 
   // Merges columnDefinitions input and tls-table-column content children into a single list.

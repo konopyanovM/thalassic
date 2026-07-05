@@ -47,6 +47,12 @@ export class ChipInput extends ValueFormControl<string[]> {
     return array.concat(this.controlClasses());
   });
 
+  protected onInput(event: Event): void {
+    const target = event.target as HTMLInputElement;
+
+    this.inputValue.set(target.value);
+  }
+
   protected onKeydown(event: KeyboardEvent): void {
     if (this.notInteractive()) return;
 

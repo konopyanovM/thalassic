@@ -1,4 +1,10 @@
-<ul class="tls-stepper-header" role="tablist" [attr.aria-orientation]="orientation()">
+<ul
+  class="tls-stepper-header"
+  role="tablist"
+  [attr.aria-orientation]="orientation()"
+  [attr.aria-label]="ariaLabel() ?? null"
+  [attr.aria-labelledby]="ariaLabelledby() ?? null"
+>
   @for (step of steps(); track step.value(); let index = $index; let last = $last) {
     <li role="presentation"
         class="tls-stepper-header__item"

@@ -6,12 +6,22 @@ import { paginationItem } from './pagination.types';
 @Component({
   selector: 'tls-pagination',
   templateUrl: './pagination.html',
-  host: { '[class]': 'classes()' },
+  host: {
+    role: 'navigation',
+    '[class]': 'classes()',
+    '[attr.aria-label]': 'ariaLabelledby() ? null : ariaLabel()',
+    '[attr.aria-labelledby]': 'ariaLabelledby() ?? null',
+  },
 })
 export class Pagination {
   private readonly _config = inject(PAGINATION_CONFIG);
 
   public readonly value = model<number>(1);
+
+  /** Accessible name for the pagination navigation landmark. */
+  public readonly ariaLabel = input<string>('Pagination');
+  public readonly ariaLabelledby = input<string | undefined>(undefined);
+
   public readonly pageSize = input<number>(this._config.pageSize);
   public readonly total = input<number>(0);
   public readonly size = input<controlSize>(this._config.size);

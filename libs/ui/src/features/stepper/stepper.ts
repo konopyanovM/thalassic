@@ -51,6 +51,10 @@ export class Stepper {
   public readonly completed: InputSignal<boolean> = input<boolean>(false);
   public readonly linear: InputSignal<boolean> = input<boolean>(this._config.linear);
 
+  /** Accessible name for the stepper tablist. */
+  public readonly ariaLabel = input<string | undefined>(undefined);
+  public readonly ariaLabelledby = input<string | undefined>(undefined);
+
   public readonly stepSelect: OutputEmitterRef<StepperSelectEvent> = output<StepperSelectEvent>();
 
   protected hostClasses = computed(() => {

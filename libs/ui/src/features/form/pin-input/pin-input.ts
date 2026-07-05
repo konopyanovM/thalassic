@@ -21,7 +21,12 @@ import { pinInputType } from './pin-input.types';
   imports: [],
   templateUrl: './pin-input.html',
   host: {
+    role: 'group',
     '[class]': 'hostClasses()',
+    '[attr.aria-label]': 'ariaLabel() ?? null',
+    '[attr.aria-labelledby]': 'ariaLabelledby() ?? null',
+    '[attr.aria-invalid]': "invalid() ? 'true' : null",
+    '[attr.aria-describedby]': 'describedBy()',
   },
   providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => PinInput) }],
 })

@@ -4,6 +4,8 @@
     [class]="classes()"
     [attr.href]="linkHref()"
     [tabindex]="tabindex()"
+    [attr.aria-label]="ariaLabel() ?? null"
+    [attr.aria-labelledby]="ariaLabelledby() ?? null"
     [attr.aria-disabled]="disabled()"
     (click)="onLinkClick($event)"
   >
@@ -15,6 +17,8 @@
     [class]="classes()"
     [type]="type()"
     [tabindex]="tabindex()"
+    [attr.aria-label]="ariaLabel() ?? null"
+    [attr.aria-labelledby]="ariaLabelledby() ?? null"
     [disabled]="disabled()"
     [attr.aria-disabled]="disabled()"
   >

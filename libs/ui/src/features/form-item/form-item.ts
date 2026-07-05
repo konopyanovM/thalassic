@@ -1,4 +1,12 @@
-import { Component, computed, contentChild, inject, input, Signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  contentChild,
+  effect,
+  inject,
+  input,
+  Signal,
+} from '@angular/core';
 import { ValidationError, WithOptionalFieldTree } from '@angular/forms/signals';
 import { FORM_CONTROL, FormControl } from '../../abstract/form';
 import { FORM_ITEM_CONFIG } from './form-item.token';
@@ -11,9 +19,13 @@ import { FORM_ITEM_CONFIG } from './form-item.token';
 })
 export class FormItem {
   // Injections
+  private static _counter = 0;
   private _config = inject(FORM_ITEM_CONFIG);
 
   protected control: Signal<FormControl | undefined> = contentChild(FORM_CONTROL);
+
+  /** Stable id for the error element, linked to the control via `aria-describedby`. */
+  protected readonly errorId = `tls-form-item-error-${++FormItem._counter}`;
 
   // Inputs
   public label = input<string>();
@@ -67,6 +79,19 @@ export class FormItem {
     if (this.errorMessages().length > 0) return this.errorMessages()[0];
     else return null;
   });
+
+  // constructor
+  constructor() {
+    // Point the projected control's aria-describedby at the rendered error element (and clear it
+    // when no error is shown), so screen readers announce the validation message on focus.
+    effect(() => {
+      const control = this.control();
+      if (!control) return;
+
+      const describesError = this.displayErrors() && this.isInvalid();
+      control.errorMessageId.set(describesError ? this.errorId : null);
+    });
+  }
 
   // Private methods
   private _getErrorMessages(errors: readonly WithOptionalFieldTree<ValidationError>[]): string[] {

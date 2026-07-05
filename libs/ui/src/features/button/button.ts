@@ -25,6 +25,19 @@ export class Button extends ButtonBase {
   /** The text label displayed inside the button. Takes priority over projected content. */
   public readonly label = input<string>();
 
+  /**
+   * Accessible name forwarded to the inner `<button>`/`<a>`. Required for icon-only buttons,
+   * where there is no visible text for screen readers to announce. Placed on the inner control
+   * because the host `tls-button` element is a non-interactive wrapper.
+   */
+  public readonly ariaLabel = input<string | undefined>(undefined);
+
+  /**
+   * `id` of an element whose text names the inner `<button>`/`<a>`, for when the accessible
+   * name already exists as visible text. Takes precedence over `ariaLabel` per the ARIA spec.
+   */
+  public readonly ariaLabelledby = input<string | undefined>(undefined);
+
   public readonly type: InputSignal<buttonType> = input<buttonType>(this._config.type);
 
   /** An optional URL that causes the button to render as an anchor link. */

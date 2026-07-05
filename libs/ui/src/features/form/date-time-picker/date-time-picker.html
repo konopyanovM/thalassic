@@ -56,6 +56,11 @@
 @if (inline()) {
   <div
     class="tls-date-time-picker__panel"
+    role="group"
+    [attr.aria-label]="ariaLabel() ?? null"
+    [attr.aria-labelledby]="ariaLabelledby() ?? null"
+    [attr.aria-invalid]="invalid() ? 'true' : null"
+    [attr.aria-describedby]="describedBy()"
     [class.tls-date-time-picker__panel--disabled]="disabled()"
     [class.tls-date-time-picker__panel--readonly]="readonly()"
     [class.tls-date-time-picker__panel--invalid]="invalid()"
@@ -67,6 +72,11 @@
     type="button"
     class="tls-date-time-picker__trigger"
     aria-haspopup="dialog"
+    [attr.aria-label]="ariaLabel() ?? null"
+    [attr.aria-labelledby]="ariaLabelledby() ?? null"
+    [attr.aria-invalid]="invalid() ? 'true' : null"
+    [attr.aria-required]="required() ? 'true' : null"
+    [attr.aria-describedby]="describedBy()"
     [attr.aria-expanded]="popoverRef.isOpen()"
     [disabled]="disabled()"
     (click)="popoverRef.toggle($event)"

@@ -7,7 +7,9 @@ import {
   InputSignalWithTransform,
   model,
   ModelSignal,
+  signal,
   Signal,
+  WritableSignal,
 } from '@angular/core';
 import { FormUiControl, ValidationError, WithOptionalFieldTree } from '@angular/forms/signals';
 
@@ -19,6 +21,42 @@ export abstract class FormControl implements FormUiControl {
 
   // Inputs
   public readonly name: InputSignal<string> = input<string>('');
+
+  /**
+   * Accessible name forwarded to the inner native control (`<input>`/`<textarea>`/trigger),
+   * for controls used without an associated visible `<label>`. Placed on the inner control
+   * because the host element is a non-interactive wrapper.
+   */
+  public readonly ariaLabel = input<string | undefined>(undefined);
+
+  /**
+   * `id` of an element whose text names the inner native control, for when the accessible
+   * name already exists as visible text. Takes precedence over `ariaLabel` per the ARIA spec.
+   */
+  public readonly ariaLabelledby = input<string | undefined>(undefined);
+
+  /** `id`(s) of element(s) describing the control (help text, hint), forwarded to `aria-describedby`. */
+  public readonly ariaDescribedby = input<string | undefined>(undefined);
+
+  /**
+   * `id` of the validation-error element, set by an enclosing `tls-form-item` while it renders an
+   * error. Merged with `ariaDescribedby` so the control's `aria-describedby` points at both the
+   * consumer's description and the live error message.
+   */
+  public readonly errorMessageId: WritableSignal<string | null> = signal<string | null>(null);
+
+  /** Combined `aria-describedby` value (consumer description + form-item error), or null when empty. */
+  protected readonly describedBy: Signal<string | null> = computed<string | null>(() => {
+    const ids: string[] = [];
+
+    const describedby = this.ariaDescribedby();
+    if (describedby) ids.push(describedby);
+
+    const errorId = this.errorMessageId();
+    if (errorId) ids.push(errorId);
+
+    return ids.length > 0 ? ids.join(' ') : null;
+  });
 
   public readonly disabled: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
     false,

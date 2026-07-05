@@ -1,4 +1,11 @@
-<table cdk-table [class]="classes()" [dataSource]="dataSource" [trackBy]="resolvedTrackBy()">
+<table
+  cdk-table
+  [class]="classes()"
+  [dataSource]="dataSource"
+  [trackBy]="resolvedTrackBy()"
+  [attr.aria-label]="ariaLabel() ?? null"
+  [attr.aria-labelledby]="ariaLabelledby() ?? null"
+>
   @for (column of effectiveColumnDefinitions(); track column.key) {
     <ng-container [cdkColumnDef]="column.key">
       <!-- Header cell -->

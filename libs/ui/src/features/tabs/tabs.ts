@@ -33,6 +33,10 @@ export class Tabs {
   public readonly variant: InputSignal<tabsVariant> = input<tabsVariant>(this._config.variant);
   public readonly selected: ModelSignal<tabValue | null> = model<tabValue | null>(null);
 
+  /** Accessible name for the tablist. */
+  public readonly ariaLabel = input<string | undefined>(undefined);
+  public readonly ariaLabelledby = input<string | undefined>(undefined);
+
   protected hostClasses = computed(() => {
     const className = 'tls-tabs';
 

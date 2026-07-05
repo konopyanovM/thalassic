@@ -1,4 +1,9 @@
-<ul class="tls-tabs-header">
+<ul
+  class="tls-tabs-header"
+  role="tablist"
+  [attr.aria-label]="ariaLabel() ?? null"
+  [attr.aria-labelledby]="ariaLabelledby() ?? null"
+>
   @for (tab of tabs(); track tab) {
     <li
       class="tls-tabs-header__item"

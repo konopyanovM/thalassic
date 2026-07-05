@@ -14,7 +14,7 @@
 @if (displayErrors()) {
   <small class="form-item-error">
     @if (isInvalid()) {
-      <span class="form-item-error__text">
+      <span class="form-item-error__text" [id]="errorId">
       {{ firstErrorMessage() }}
     </span>
     }
