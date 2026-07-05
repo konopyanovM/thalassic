@@ -1,3 +1,21 @@
+## 0.18.0 (2026-07-05)
+
+### 🚀 Features
+
+- **core:** added rtl direction support and migrated service state to signals ([3c9d8be](https://github.com/konopyanovM/thalassic/commit/3c9d8be))
+- **ui:** added tabs query sync directive ([49b6a54](https://github.com/konopyanovM/thalassic/commit/49b6a54))
+- **ui:** added pagination query sync directive and shared query sync class ([4430e86](https://github.com/konopyanovM/thalassic/commit/4430e86))
+- **ui:** made components rtl-aware ([08e8c4e](https://github.com/konopyanovM/thalassic/commit/08e8c4e))
+- **ui/tooltip:** added enter and leave animations to tooltip ([0029664](https://github.com/konopyanovM/thalassic/commit/0029664))
+
+### 🩹 Fixes
+
+- **ui/stepper:** added overflow hidden to tls stepper content ([6db7203](https://github.com/konopyanovM/thalassic/commit/6db7203))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.17.1 (2026-07-05)
 
 ### 🩹 Fixes
