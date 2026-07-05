@@ -12,6 +12,7 @@ export * from './form/chip-group';
 export * from './form/chip-input';
 export * from './form/file-uploader';
 export * from './form/input';
+export * from './form/input-number';
 export * from './form/password';
 export * from './form/pin-input';
 export * from './form/radio-button';
