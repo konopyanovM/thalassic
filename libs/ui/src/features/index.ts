@@ -26,6 +26,7 @@ export * from './form/toggle-group';
 export * from './icon';
 export * from './loader';
 export * from './menu';
+export * from './odometer';
 export * from './pagination';
 export * from './popover';
 export * from './skeleton';

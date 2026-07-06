@@ -1,0 +1,11 @@
+<span class="tls-odometer__value">{{ ariaLabel() ?? formattedValue() }}</span>
+
+<span class="tls-odometer__row" aria-hidden="true">
+  @for (token of tokens(); track token.key) {
+    @if (token.digit === null) {
+      <span class="tls-odometer__symbol">{{ token.symbol }}</span>
+    } @else {
+      <tls-odometer-digit class="tls-odometer__digit" [digit]="token.digit" [duration]="duration()" />
+    }
+  }
+</span>
