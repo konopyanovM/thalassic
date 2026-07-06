@@ -89,7 +89,8 @@
     },
     "git": {
       "commit": true,
-      "tag": true
+      "tag": true,
+      "push": true
     }
   }
 }
