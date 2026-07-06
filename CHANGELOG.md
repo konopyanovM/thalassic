@@ -1,3 +1,14 @@
+## 0.19.0 (2026-07-06)
+
+### 🚀 Features
+
+- **ui:** added confirm component and service ([3c05ef1](https://github.com/konopyanovM/thalassic/commit/3c05ef1))
+- **ui:** added odometer component ([4202ba3](https://github.com/konopyanovM/thalassic/commit/4202ba3))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.18.0 (2026-07-05)
 
 ### 🚀 Features
