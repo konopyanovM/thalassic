@@ -35,6 +35,50 @@ Repo-wide TypeScript conventions — apply to every project (apps/back, apps/fro
   }
   ```
   not separate .exercises, .exercises--grid, .exercises__skeleton blocks. (This nesting sits inside the component's top-level :host { } like every other rule.)
+- Declaration order — group properties outside-in, one blank line between groups: order a rule's own declarations by the box-model / outside-in sequence below, and separate each present group from the next with exactly one blank line (never blank-line within a group). Omit a group entirely when it has no declarations — never leave an empty gap for it. The groups, in order:
+  1. Positioning — `position`, `inset`/`top`/`right`/`bottom`/`left` (prefer the logical `inset-inline-*`/`inset-block-*`), `z-index`
+  2. Sizing — `width`, `height`, `min-*`, `max-*`, `aspect-ratio`
+  3. Spacing — `margin`, `padding`
+  4. Layout — `display`, `flex`/`flex-*`, `grid`/`grid-*`, `align-*`, `justify-*`, `gap`
+  5. Border — `border`, `border-*`, `border-radius`, `outline`
+  6. Background / effects — `background`/`background-*`, `box-shadow`, `opacity`
+  7. Typography — `font`/`font-*`, `line-height`, `letter-spacing`, `text-*`, `white-space`, `overflow`, `color`
+  8. Interaction / misc — `cursor`, `pointer-events`, `transform`, `scale`
+  9. Transition / animation — `transition`, `animation`
+
+  After the block's own declarations (and a blank line), nested rules follow in this order, each preceded by a blank line: pseudo-states/combinators (`&:hover`, `&:active`, `& + &`) → pseudo-elements → `&__element` → `&--modifier` → media queries (always last, nested inside the parent rule). Example:
+  ```scss
+  .profile {
+    position: relative;
+
+    width: 100%;
+
+    padding-inline: var(--spacing-2);
+
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+
+    border: none;
+    border-radius: var(--radius-md);
+
+    background-color: transparent;
+
+    color: var(--color-on-surface);
+
+    cursor: pointer;
+
+    transition: background-color var(--motion-ease-in-out) var(--motion-fast);
+
+    &:hover {
+      background-color: var(--color-surface-container-highest);
+    }
+
+    &__name {
+      font-weight: 600;
+    }
+  }
+  ```
 
 ## Motion / animations
 

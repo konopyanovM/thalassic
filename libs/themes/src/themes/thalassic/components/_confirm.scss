@@ -1,0 +1,67 @@
+@use '../mixins' as mixins;
+
+.tls-confirm {
+  --tls-confirm-padding: var(--spacing-4);
+  --tls-confirm-max-width: 320px;
+
+  --tls-confirm-border-radius: var(--radius-lg);
+  --tls-confirm-border-width: 1px;
+
+  --tls-confirm-box-shadow: var(--shadow-md);
+  --tls-confirm-background-color: var(--color-surface-container-lowest);
+  --tls-confirm-color: var(--color-on-surface);
+  --tls-confirm-border-color: var(--color-outline-variant);
+
+  max-width: var(--tls-confirm-max-width);
+
+  padding: var(--tls-confirm-padding);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+
+  border: var(--tls-confirm-border-width) solid var(--tls-confirm-border-color);
+  border-radius: var(--tls-confirm-border-radius);
+
+  background-color: var(--tls-confirm-background-color);
+  box-shadow: var(--tls-confirm-box-shadow);
+
+  color: var(--tls-confirm-color);
+
+  @include mixins.panel-open;
+
+  &__title {
+    margin: 0;
+
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  &__message {
+    margin: 0;
+
+    font-size: var(--font-size-sm);
+    color: var(--color-on-surface-variant);
+  }
+
+  &__actions {
+    display: flex;
+    gap: var(--spacing-2);
+
+    &--start {
+      justify-content: flex-start;
+    }
+
+    &--center {
+      justify-content: center;
+    }
+
+    &--end {
+      justify-content: flex-end;
+    }
+
+    &--space-between {
+      justify-content: space-between;
+    }
+  }
+}
