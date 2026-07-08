@@ -8,6 +8,8 @@ export interface TextareaConfig {
   fluid: boolean;
   rows: number;
   resize: textareaResize;
+  autosize: boolean;
+  maxRows: number;
 }
 
 export const DEFAULT_TEXTAREA_CONFIG: TextareaConfig = {
@@ -16,4 +18,7 @@ export const DEFAULT_TEXTAREA_CONFIG: TextareaConfig = {
   fluid: false,
   rows: 3,
   resize: 'vertical',
+  autosize: false,
+  // Row cap while autosizing. `0` means unbounded — the textarea grows freely.
+  maxRows: 0,
 };

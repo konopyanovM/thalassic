@@ -11,8 +11,11 @@
   [disabled]="disabled()"
   [readonly]="readonly()"
   [rows]="rows()"
-  [style.resize]="resize()"
+  [style.resize]="effectiveResize()"
   [value]="value()"
+  [cdkTextareaAutosize]="autosize()"
+  [cdkAutosizeMinRows]="rows()"
+  [cdkAutosizeMaxRows]="maxRows()"
   (input)="onInput($event)"
   (blur)="touched.set(true)"
 ></textarea>

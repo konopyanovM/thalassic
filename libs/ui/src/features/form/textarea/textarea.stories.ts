@@ -15,6 +15,8 @@ const meta: Meta<TextareaComponent> = {
     fluid: false,
     rows: 3,
     resize: 'vertical',
+    autosize: false,
+    maxRows: 0,
     ...STORY_FORM_CONTROL_ARGS,
   },
   argTypes: {

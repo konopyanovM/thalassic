@@ -1,3 +1,4 @@
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import {
   booleanAttribute,
   Component,
@@ -19,16 +20,19 @@ import { TEXTAREA_CONFIG } from './textarea.token';
 
 @Component({
   selector: 'tls-textarea',
+  imports: [CdkTextareaAutosize],
   templateUrl: './textarea.html',
   styleUrl: './textarea.scss',
   host: { class: 'tls-textarea' },
   providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => Textarea) }],
 })
 export class Textarea extends ValueFormControl<string> {
-  private _config = inject(TEXTAREA_CONFIG);
+  // Injections
+  private readonly _config = inject(TEXTAREA_CONFIG);
 
   override readonly supportsLabelFor = true;
 
+  // Inputs
   public readonly value: ModelSignal<string> = model<string>('');
   public readonly placeholder = input<string>(this._config.placeholder);
   public readonly size: InputSignal<controlSize> = input<controlSize>(this._config.size);
@@ -41,7 +45,17 @@ export class Textarea extends ValueFormControl<string> {
     { transform: numberAttribute },
   );
   public readonly resize: InputSignal<textareaResize> = input<textareaResize>(this._config.resize);
+  public readonly autosize: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    this._config.autosize,
+    { transform: booleanAttribute },
+  );
+  // Upper bound, in rows, on the autosized height. `0` grows without a cap.
+  public readonly maxRows: InputSignalWithTransform<number, unknown> = input<number, unknown>(
+    this._config.maxRows,
+    { transform: numberAttribute },
+  );
 
+  // Computed
   protected readonly classes: Signal<string[]> = computed(() => {
     const array: string[] = [this.CLASS_NAME];
 
@@ -50,6 +64,11 @@ export class Textarea extends ValueFormControl<string> {
 
     return array.concat(this.controlClasses());
   });
+
+  // Autosize owns the height, so the manual resize handle is suppressed.
+  protected readonly effectiveResize: Signal<textareaResize> = computed(() =>
+    this.autosize() ? 'none' : this.resize(),
+  );
 
   // Protected methods
   protected onInput(event: Event) {
