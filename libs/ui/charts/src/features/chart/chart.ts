@@ -7,6 +7,7 @@ import {
   ElementRef,
   inject,
   input,
+  InputSignal,
   OnDestroy,
   Signal,
   untracked,
@@ -48,7 +49,7 @@ export class Chart implements OnDestroy {
   private _chart: ChartJS | null = null;
 
   public labels = input<unknown[]>([]);
-  public options = input<ChartOptions | undefined>(undefined);
+  public options: InputSignal<ChartOptions | undefined> = input<ChartOptions | undefined>(undefined);
 
   // Computed
   private _options = computed(() => {

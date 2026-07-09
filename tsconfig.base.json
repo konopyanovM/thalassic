@@ -15,12 +15,11 @@
     "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    "baseUrl": ".",
     "paths": {
-      "@thalassic/ui": ["libs/ui/src/index.ts"],
-      "@thalassic/ui/charts": ["libs/ui/charts/src/index.ts"],
-      "@thalassic/core": ["libs/core/src/index.ts"],
-      "@thalassic/themes": ["libs/themes/src/index.ts"]
+      "@thalassic/ui": ["./libs/ui/src/index.ts"],
+      "@thalassic/ui/charts": ["./libs/ui/charts/src/index.ts"],
+      "@thalassic/core": ["./libs/core/src/index.ts"],
+      "@thalassic/themes": ["./libs/themes/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

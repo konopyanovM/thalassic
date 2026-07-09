@@ -11,6 +11,9 @@ describe('YearPicker', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(YearPicker);
+    fixture.componentRef.setInput('viewDate', new Date(2024, 0, 1));
+    fixture.componentRef.setInput('selectedDate', null);
+    fixture.componentRef.setInput('yearsPerPage', 12);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

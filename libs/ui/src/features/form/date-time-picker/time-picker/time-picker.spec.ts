@@ -11,6 +11,7 @@ describe('TimePicker', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(TimePicker);
+    fixture.componentRef.setInput('value', new Date(2024, 0, 1, 12, 0));
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

@@ -8,5 +8,10 @@
     "types": []
   },
   "include": ["src/**/*.ts", "charts/src/**/*.ts"],
-  "exclude": ["**/*.spec.ts", "**/*.test.ts", "**/*.stories.ts", "**/*.stories.js"]
+  "exclude": [
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/*.stories.ts",
+    "**/*.stories.js"
+  ]
 }

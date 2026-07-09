@@ -1,8 +1,9 @@
+import { TestBed } from '@angular/core/testing';
 import { ButtonDirective } from './button.directive';
 
 describe('ButtonDirective', () => {
   it('should create an instance', () => {
-    const directive = new ButtonDirective();
+    const directive = TestBed.runInInjectionContext(() => new ButtonDirective());
     expect(directive).toBeTruthy();
   });
 });

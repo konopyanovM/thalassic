@@ -1,6 +1,6 @@
-import { FieldTree } from '@angular/forms/signals';
+import { ReadonlyFieldTree } from '@angular/forms/signals';
 
-export type ErrorMessageFn = (fieldTree?: FieldTree<unknown>) => string;
+export type ErrorMessageFn = (fieldTree?: ReadonlyFieldTree<unknown>) => string;
 
 export type ErrorMessageMap = Record<string, ErrorMessageFn>;
 

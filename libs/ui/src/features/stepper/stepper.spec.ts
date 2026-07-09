@@ -11,6 +11,7 @@ describe('Stepper', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(Stepper);
+    fixture.componentRef.setInput('active', 'step-1');
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

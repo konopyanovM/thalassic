@@ -3,7 +3,7 @@ import { FormCheckboxControl } from '@angular/forms/signals';
 import { FormControl } from './form-control';
 
 @Directive()
-export abstract class CheckboxFormControl extends FormControl implements FormCheckboxControl {
+export abstract class CheckboxFormControl extends FormControl<boolean> implements FormCheckboxControl {
   public abstract readonly checked: ModelSignal<boolean>;
 
   protected override controlClasses = computed(() => {

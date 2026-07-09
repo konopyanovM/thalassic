@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideTheme } from '@thalassic/core';
 import { ThemeToggle } from './theme-toggle';
 
 describe('ThemeToggle', () => {
@@ -8,6 +9,7 @@ describe('ThemeToggle', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ThemeToggle],
+      providers: [provideTheme()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ThemeToggle);

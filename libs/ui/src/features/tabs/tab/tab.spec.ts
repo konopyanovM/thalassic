@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { TabsService } from '../tabs.service';
 import { Tab } from './tab';
 
 describe('Tab', () => {
@@ -8,11 +9,14 @@ describe('Tab', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Tab]
+      imports: [Tab],
+      providers: [TabsService],
     })
     .compileComponents();
 
     fixture = TestBed.createComponent(Tab);
+    fixture.componentRef.setInput('value', 'tab-1');
+    fixture.componentRef.setInput('label', 'Tab 1');
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

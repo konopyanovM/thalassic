@@ -15,7 +15,7 @@ import { FormUiControl, ValidationError, WithOptionalFieldTree } from '@angular/
 
 
 @Directive()
-export abstract class FormControl implements FormUiControl {
+export abstract class FormControl<TValue = unknown> implements FormUiControl<TValue> {
   // Models
   public readonly touched: ModelSignal<boolean> = model<boolean>(false);
 
