@@ -1,3 +1,13 @@
+# 22.0.0 (2026-07-09)
+
+### 🚀 Features
+
+- added autosize to textarea ([d9f5371](https://github.com/konopyanovM/thalassic/commit/d9f5371))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 0.19.0 (2026-07-06)
 
 ### 🚀 Features
