@@ -41,7 +41,7 @@ Reference files (read the relevant one before implementing):
 | Select | `reference/select.md` | combobox + listbox (single) |
 | Multiselect | `reference/multiselect.md` | combobox + listbox (`multi`) |
 | Menu | `reference/menu.md` | `ngMenu`, `ngMenuTrigger`, `ngMenuContent`, `ngMenuItem` |
-| Menubar | _pending — URL needed_ | — |
+| Menubar | `reference/menubar.md` | `ngMenuBar` (in `@angular/aria/menu`) |
 | Toolbar | `reference/toolbar.md` | `ngToolbar`, `ngToolbarWidget`, `ngToolbarWidgetGroup` |
 | Accordion | `reference/accordion.md` | `ngAccordionGroup`, `ngAccordionTrigger`, `ngAccordionPanel`, `ngAccordionContent` |
 | Tabs | `reference/tabs.md` | `ngTabs`, `ngTabList`, `ngTab`, `ngTabPanel`, `ngTabContent` |
