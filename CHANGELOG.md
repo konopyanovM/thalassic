@@ -1,3 +1,13 @@
+## 22.0.1 (2026-07-12)
+
+### 🚀 Features
+
+- **ui/form-item:** added label position and spread inputs ([59a799c](https://github.com/konopyanovM/thalassic/commit/59a799c))
+
+### ❤️ Thank You
+
+- konopyanov
+
 # 22.0.0 (2026-07-09)
 
 ### 🚀 Features
