@@ -1,5 +1,7 @@
 import { argsToTemplate, Meta, moduleMetadata, StoryObj } from '@storybook/angular';
+import { Checkbox as CheckboxComponent } from '../form/checkbox';
 import { Input as InputComponent } from '../form/input';
+import { Switch as SwitchComponent } from '../form/switch';
 import { FormItem } from './form-item';
 
 const meta: Meta<FormItem> = {
@@ -8,13 +10,23 @@ const meta: Meta<FormItem> = {
   title: 'Form/FormItem',
   decorators: [
     moduleMetadata({
-      imports: [InputComponent],
+      imports: [InputComponent, SwitchComponent, CheckboxComponent],
     }),
   ],
   args: {
     label: 'Email',
+    labelPosition: 'top',
+    spread: false,
     reserveErrorSpace: true,
+    reserveLabelSpace: false,
     displayErrors: true,
+    showRequiredMarker: true,
+  },
+  argTypes: {
+    labelPosition: {
+      control: { type: 'inline-radio' },
+      options: ['top', 'start', 'end'],
+    },
   },
 };
 export default meta;
@@ -111,5 +123,46 @@ export const WithoutReservedErrorSpace: Story = {
   },
   render: renderFormItem({
     control: `<tls-input placeholder="you@example.com" />`,
+  }),
+};
+
+export const InlineSwitch: Story = {
+  args: {
+    label: 'Enable notifications',
+    labelPosition: 'end',
+  },
+  render: renderFormItem({
+    control: `<tls-switch [checked]="true" />`,
+  }),
+};
+
+export const InlineCheckbox: Story = {
+  args: {
+    label: 'I accept the terms',
+    labelPosition: 'end',
+  },
+  render: renderFormItem({
+    control: `<tls-checkbox />`,
+  }),
+};
+
+export const LabelStart: Story = {
+  args: {
+    label: 'Dark mode',
+    labelPosition: 'start',
+  },
+  render: renderFormItem({
+    control: `<tls-switch />`,
+  }),
+};
+
+export const Spread: Story = {
+  args: {
+    label: 'Dark mode',
+    labelPosition: 'start',
+    spread: true,
+  },
+  render: renderFormItem({
+    control: `<tls-switch />`,
   }),
 };

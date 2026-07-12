@@ -1,6 +1,7 @@
 import {
   Component,
   computed,
+  forwardRef,
   inject,
   input,
   InputSignal,
@@ -8,7 +9,7 @@ import {
   ModelSignal,
   Signal,
 } from '@angular/core';
-import { CheckboxFormControl } from '../../../abstract/form';
+import { CheckboxFormControl, FORM_CONTROL } from '../../../abstract/form';
 import { CHECKBOX_CONFIG } from './checkbox.token';
 
 @Component({
@@ -20,6 +21,7 @@ import { CHECKBOX_CONFIG } from './checkbox.token';
     '[class]': 'hostClasses()',
     '[tabindex]': '-1',
   },
+  providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => Checkbox) }],
 })
 export class Checkbox extends CheckboxFormControl {
   private _config = inject(CHECKBOX_CONFIG);

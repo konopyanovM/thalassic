@@ -1,15 +1,17 @@
-@if (label() || reserveLabelSpace()) {
-  <label class="form-item-label" [id]="labelId" [attr.for]="labelFor()">
-    <span class="form-item-label__text">{{ label() }}</span>
-    @if (showRequired()) {
-      <span class="form-item-label__required">*</span>
-    } @else if (showOptional()) {
-      <span class="form-item-label__optional">{{ optionalText() }}</span>
-    }
-  </label>
-}
-<div class="form-item-control">
-  <ng-content></ng-content>
+<div class="form-item-main">
+  @if (label() || reserveLabelSpace()) {
+    <label class="form-item-label" [id]="labelId" [attr.for]="labelFor()">
+      <span class="form-item-label__text">{{ label() }}</span>
+      @if (showRequired()) {
+        <span class="form-item-label__required">*</span>
+      } @else if (showOptional()) {
+        <span class="form-item-label__optional">{{ optionalText() }}</span>
+      }
+    </label>
+  }
+  <div class="form-item-control">
+    <ng-content></ng-content>
+  </div>
 </div>
 @if (displayErrors()) {
   <small class="form-item-error">

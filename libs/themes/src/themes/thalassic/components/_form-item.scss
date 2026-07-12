@@ -14,6 +14,33 @@
     }
   }
 
+  &.tls-form-item--label-start,
+  &.tls-form-item--label-end {
+    .form-item-main {
+      flex-direction: row;
+      align-items: center;
+      gap: var(--spacing-2);
+    }
+
+    .form-item-label {
+      margin-bottom: 0;
+    }
+  }
+
+  &.tls-form-item--label-end {
+    .form-item-label {
+      order: 1;
+    }
+  }
+
+  &.tls-form-item--spread {
+    width: 100%;
+
+    .form-item-main {
+      justify-content: space-between;
+    }
+  }
+
   &:not(.tls-form-item--error-space-reserved) {
     .form-item-error {
       min-height: auto;
@@ -26,6 +53,18 @@
 
   &:has(.tls-form-control--fluid, .tls-file-uploader--fluid, .tls-form-control-group--fluid) {
     width: 100%;
+  }
+
+  .form-item-main {
+    display: flex;
+    flex-direction: column;
+  }
+
+  // Flex layout takes the control out of inline formatting so the slot hugs the control's
+  // real height instead of the inherited line-box height (which would leave a baseline gap
+  // below inline-block controls such as the checkbox).
+  .form-item-control {
+    display: flex;
   }
 
   .form-item-label {

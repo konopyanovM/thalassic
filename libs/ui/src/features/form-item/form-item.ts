@@ -1,4 +1,5 @@
 import {
+  booleanAttribute,
   Component,
   computed,
   contentChild,
@@ -10,6 +11,7 @@ import {
 import { ValidationError, WithOptionalFieldTree } from '@angular/forms/signals';
 import { FORM_CONTROL, FormControl } from '../../abstract/form';
 import { FORM_ITEM_CONFIG } from './form-item.token';
+import { labelPosition } from './form-item.types';
 
 @Component({
   selector: 'tls-form-item',
@@ -35,6 +37,16 @@ export class FormItem {
 
   // Inputs
   public label = input<string>();
+  /**
+   * Placement of the label relative to the control. `top` stacks the label above the control;
+   * `start` / `end` place it inline before / after the control (typical for a checkbox or switch).
+   */
+  public labelPosition = input<labelPosition>('top');
+  /**
+   * Pushes the label and control to opposite ends of an inline row (`space-between`), spanning the
+   * item to full width. Only applies to inline (`start` / `end`) label positions.
+   */
+  public spread = input<boolean, unknown>(false, { transform: booleanAttribute });
   public reserveErrorSpace = input<boolean>(this._config.reserveErrorSpace);
   public reserveLabelSpace = input<boolean>(this._config.reserveLabelSpace);
   public displayErrors = input<boolean>(this._config.displayErrors);
@@ -75,6 +87,10 @@ export class FormItem {
     const array = [className];
 
     if (this.isInvalid()) array.push(`${className}--invalid`);
+    if (this.labelPosition() !== 'top') {
+      array.push(`${className}--label-${this.labelPosition()}`);
+      if (this.spread()) array.push(`${className}--spread`);
+    }
     if (this.reserveErrorSpace()) array.push(`${className}--error-space-reserved`);
     if (this.reserveLabelSpace()) array.push(`${className}--label-space-reserved`);
 
