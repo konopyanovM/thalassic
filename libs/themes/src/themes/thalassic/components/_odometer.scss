@@ -59,7 +59,8 @@
     // digit swaps instantly.
     @include mixins.motion(essential) {
       &--animate {
-        transition: transform var(--tls-odometer-duration, 600ms) var(--tls-odometer-easing);
+        transition: transform var(--tls-odometer-duration, 600ms) var(--tls-odometer-easing)
+          var(--tls-odometer-delay, 0ms);
       }
     }
   }

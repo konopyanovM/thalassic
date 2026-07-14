@@ -39,6 +39,8 @@ export class Odometer {
   public readonly value: InputSignal<number> = input.required<number>();
   /** Duration of a single-digit roll, in milliseconds. */
   public readonly duration: InputSignal<number> = input<number>(this._config.duration);
+  /** Delay before a digit roll starts, in milliseconds. */
+  public readonly delay: InputSignal<number> = input<number>(this._config.delay);
   /** Minimum number of integer digits, left-padded with zeros (`007`). */
   public readonly minIntegerDigits: InputSignal<number> = input<number>(
     this._config.minIntegerDigits,

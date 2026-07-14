@@ -31,12 +31,14 @@ import {
   host: {
     class: 'tls-odometer-digit',
     '[style.--tls-odometer-duration.ms]': 'duration()',
+    '[style.--tls-odometer-delay.ms]': 'delay()',
   },
 })
 export class OdometerDigit {
   // Inputs
   public readonly digit: InputSignal<number> = input.required<number>();
   public readonly duration: InputSignal<number> = input.required<number>();
+  public readonly delay: InputSignal<number> = input.required<number>();
 
   // State
   protected readonly strip: readonly number[] = ODOMETER_STRIP;

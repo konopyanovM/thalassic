@@ -5,7 +5,12 @@
     @if (token.digit === null) {
       <span class="tls-odometer__symbol">{{ token.symbol }}</span>
     } @else {
-      <tls-odometer-digit class="tls-odometer__digit" [digit]="token.digit" [duration]="duration()" />
+      <tls-odometer-digit
+        class="tls-odometer__digit"
+        [digit]="token.digit"
+        [duration]="duration()"
+        [delay]="delay()"
+      />
     }
   }
 </span>

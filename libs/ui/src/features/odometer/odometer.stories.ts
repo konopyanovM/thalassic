@@ -8,6 +8,7 @@ const meta: Meta<OdometerComponent> = {
   args: {
     value: 2026,
     duration: DEFAULT_ODOMETER_CONFIG.duration,
+    delay: DEFAULT_ODOMETER_CONFIG.delay,
     minIntegerDigits: DEFAULT_ODOMETER_CONFIG.minIntegerDigits,
     fractionDigits: DEFAULT_ODOMETER_CONFIG.fractionDigits,
     decimalSeparator: DEFAULT_ODOMETER_CONFIG.decimalSeparator,
@@ -15,6 +16,7 @@ const meta: Meta<OdometerComponent> = {
   argTypes: {
     value: { control: { type: 'number' } },
     duration: { control: { type: 'number', min: 0, step: 50 } },
+    delay: { control: { type: 'number', min: 0, step: 50 } },
     minIntegerDigits: { control: { type: 'number', min: 1 } },
     fractionDigits: { control: { type: 'number', min: 0 } },
     decimalSeparator: { control: { type: 'text' } },
