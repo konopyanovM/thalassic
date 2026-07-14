@@ -1,3 +1,17 @@
+## 22.1.0 (2026-07-14)
+
+### 🚀 Features
+
+- added fluid option to toggle group ([dc5820b](https://github.com/konopyanovM/thalassic/commit/dc5820b))
+- file uploader renamed to file input, add variant input to file input ([c3de03f](https://github.com/konopyanovM/thalassic/commit/c3de03f))
+- **ui/file-input:** added size and hide file list inputs ([ebfca1d](https://github.com/konopyanovM/thalassic/commit/ebfca1d))
+- **ui/odometer:** added delay input ([c8afd87](https://github.com/konopyanovM/thalassic/commit/c8afd87))
+- **ui/tabs:** added disable tab input ([c8be22d](https://github.com/konopyanovM/thalassic/commit/c8be22d))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.0.1 (2026-07-12)
 
 ### 🚀 Features
