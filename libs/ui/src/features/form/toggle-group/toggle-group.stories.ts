@@ -22,6 +22,7 @@ const meta: Meta<ToggleGroup<StoryOption, string>> = {
     size: 'md',
     color: 'primary',
     orientation: 'horizontal',
+    fluid: false,
     ...STORY_FORM_CONTROL_ARGS,
   },
   argTypes: {

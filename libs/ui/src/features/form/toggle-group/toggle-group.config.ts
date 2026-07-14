@@ -6,6 +6,7 @@ export interface ToggleGroupConfig {
   orientation: orientation;
   multiple: boolean;
   unselectable: boolean;
+  fluid: boolean;
 }
 
 export const DEFAULT_TOGGLE_GROUP_CONFIG: ToggleGroupConfig = {
@@ -14,4 +15,5 @@ export const DEFAULT_TOGGLE_GROUP_CONFIG: ToggleGroupConfig = {
   orientation: 'horizontal',
   multiple: false,
   unselectable: false,
+  fluid: false,
 };

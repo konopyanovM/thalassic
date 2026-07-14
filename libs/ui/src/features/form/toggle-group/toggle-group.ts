@@ -56,6 +56,11 @@ export class ToggleGroup<T, V = unknown> extends SelectionGroup<T, V> {
   public readonly orientation: InputSignal<orientation> = input<orientation>(
     this._config.orientation,
   );
+  /** Whether the group stretches to fill its container's width with equal-width options. */
+  public readonly fluid: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    this._config.fluid,
+    { transform: booleanAttribute },
+  );
 
   protected readonly optionTemplate =
     contentChild<TemplateRef<selectionGroupTemplateContext<T, V>>>('option');
@@ -68,6 +73,7 @@ export class ToggleGroup<T, V = unknown> extends SelectionGroup<T, V> {
       `${className}--${this.color()}`,
       `${className}--${this.orientation()}`,
     ];
+    if (this.fluid()) array.push(`${className}--fluid`);
     return array.concat(this.controlClasses());
   });
 }
