@@ -12,7 +12,7 @@ export * from './form/checkbox';
 export * from './form/date-time-picker';
 export * from './form/chip-group';
 export * from './form/chip-input';
-export * from './form/file-uploader';
+export * from './form/file-input';
 export * from './form/input';
 export * from './form/input-number';
 export * from './form/password';

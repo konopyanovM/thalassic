@@ -1,11 +1,12 @@
 import { argsToTemplate, Meta, StoryObj } from '@storybook/angular';
 import { STORY_FORM_CONTROL_ARGS } from '../../../../.storybook/constants';
-import { FileUploader } from './file-uploader';
+import { FileInput } from './file-input';
 
-const meta: Meta<FileUploader> = {
-  component: FileUploader,
-  title: 'Form/FileUploader',
+const meta: Meta<FileInput> = {
+  component: FileInput,
+  title: 'Form/FileInput',
   args: {
+    variant: 'dropzone',
     multiple: false,
     accept: '',
     fluid: false,
@@ -14,11 +15,16 @@ const meta: Meta<FileUploader> = {
 };
 export default meta;
 
-type Story = StoryObj<FileUploader>;
+type Story = StoryObj<FileInput>;
 
-export const FileUploaderStory: Story = {
-  name: 'FileUploader',
+export const FileInputStory: Story = {
+  name: 'FileInput',
   args: {},
+};
+
+export const ButtonVariantStory: Story = {
+  name: 'Button variant',
+  args: { variant: 'button' },
 };
 
 export const MultipleFilesStory: Story = {
@@ -42,14 +48,14 @@ export const CustomDropZoneStory: Story = {
   render: args => ({
     props: args,
     template: `
-      <tls-file-uploader ${argsToTemplate(args)}>
+      <tls-file-input ${argsToTemplate(args)}>
         <ng-template #dropZone let-state let-accept="accept">
           <strong>{{ state === 'invalid' ? '🚫 Wrong file type' : '📁 Tap to upload' }}</strong>
           @if (accept) {
             <small>Accepted: {{ accept }}</small>
           }
         </ng-template>
-      </tls-file-uploader>
+      </tls-file-input>
     `,
   }),
 };
@@ -60,12 +66,12 @@ export const CustomFileRowStory: Story = {
   render: args => ({
     props: args,
     template: `
-      <tls-file-uploader ${argsToTemplate(args)}>
+      <tls-file-input ${argsToTemplate(args)}>
         <ng-template #file let-file let-index="index" let-remove="remove">
           <span>{{ index + 1 }}. {{ file.name }} ({{ file.size }} bytes)</span>
           <button type="button" (click)="remove(index)">Delete</button>
         </ng-template>
-      </tls-file-uploader>
+      </tls-file-input>
     `,
   }),
 };

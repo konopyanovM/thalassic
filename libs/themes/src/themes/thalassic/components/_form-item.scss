@@ -51,7 +51,7 @@
     }
   }
 
-  &:has(.tls-form-control--fluid, .tls-file-uploader--fluid, .tls-form-control-group--fluid) {
+  &:has(.tls-form-control--fluid, .tls-file-input--fluid, .tls-form-control-group--fluid) {
     width: 100%;
   }
 

@@ -8,6 +8,7 @@ import {
   forwardRef,
   inject,
   input,
+  InputSignal,
   InputSignalWithTransform,
   model,
   ModelSignal,
@@ -17,31 +18,38 @@ import {
   viewChild,
 } from '@angular/core';
 import { FORM_CONTROL, ValueFormControl } from '../../../abstract/form';
-import { FILE_UPLOADER_CONFIG } from './file-uploader.token';
+import { ButtonDirective } from '../../button';
+import { FILE_INPUT_CONFIG } from './file-input.token';
 import {
   acceptInput,
-  FileUploaderDropZoneContext,
-  FileUploaderFileContext,
-  fileUploaderDragState,
-} from './file-uploader.types';
+  FileInputDropZoneContext,
+  FileInputFileContext,
+  fileInputDragState,
+  fileInputVariant,
+} from './file-input.types';
 
 function normalizeAccept(value: acceptInput): string {
   return Array.isArray(value) ? value.join(',') : value;
 }
 
 @Component({
-  selector: 'tls-file-uploader',
-  templateUrl: './file-uploader.html',
-  imports: [NgTemplateOutlet],
-  providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => FileUploader) }],
+  selector: 'tls-file-input',
+  templateUrl: './file-input.html',
+  imports: [NgTemplateOutlet, ButtonDirective],
+  providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => FileInput) }],
   host: { '[class]': 'classes()' },
 })
-export class FileUploader extends ValueFormControl<File[]> {
-  private readonly _config = inject(FILE_UPLOADER_CONFIG);
+export class FileInput extends ValueFormControl<File[]> {
+  // Injections
+  private readonly _config = inject(FILE_INPUT_CONFIG);
 
-  protected override CLASS_NAME = 'tls-file-uploader';
+  protected override CLASS_NAME = 'tls-file-input';
 
+  // Inputs
   public readonly value: ModelSignal<File[]> = model<File[]>([]);
+  public readonly variant: InputSignal<fileInputVariant> = input<fileInputVariant>(
+    this._config.variant,
+  );
   public readonly multiple: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
     this._config.multiple,
     { transform: booleanAttribute },
@@ -55,19 +63,25 @@ export class FileUploader extends ValueFormControl<File[]> {
     { transform: booleanAttribute },
   );
 
-  protected readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>('fileInput');
-  protected readonly dragState = signal<fileUploaderDragState>('idle');
+  // State
+  protected readonly nativeInput = viewChild.required<ElementRef<HTMLInputElement>>('nativeInput');
+  protected readonly dragState = signal<fileInputDragState>('idle');
 
   protected readonly dropZoneTemplate =
-    contentChild<TemplateRef<FileUploaderDropZoneContext>>('dropZone');
-  protected readonly fileTemplate = contentChild<TemplateRef<FileUploaderFileContext>>('file');
+    contentChild<TemplateRef<FileInputDropZoneContext>>('dropZone');
+  protected readonly fileTemplate = contentChild<TemplateRef<FileInputFileContext>>('file');
 
+  // Computed
   protected readonly classes: Signal<string[]> = computed(() => {
     const className = this.CLASS_NAME;
-    const array = [className];
+    const array = [className, `${className}--${this.variant()}`];
     if (this.fluid()) array.push(`${className}--fluid`);
     return array.concat(this.controlClasses());
   });
+
+  protected readonly triggerLabel: Signal<string> = computed(() =>
+    this.multiple() ? 'Choose files' : 'Choose file',
+  );
 
   protected readonly acceptHint: Signal<string> = computed(() => {
     const accept = this.accept().trim();
@@ -82,9 +96,10 @@ export class FileUploader extends ValueFormControl<File[]> {
     return [...new Set(labels)].join(', ');
   });
 
+  // Protected methods
   protected openFilePicker(): void {
     if (this.notInteractive()) return;
-    this.fileInput().nativeElement.click();
+    this.nativeInput().nativeElement.click();
   }
 
   protected onFilesSelected(event: Event): void {

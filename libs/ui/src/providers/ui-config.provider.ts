@@ -19,7 +19,7 @@ import {
   DEFAULT_DATE_TIME_PICKER_CONFIG,
   DEFAULT_DIALOG_CONFIG,
   DEFAULT_DIVIDER_CONFIG,
-  DEFAULT_FILE_UPLOADER_CONFIG,
+  DEFAULT_FILE_INPUT_CONFIG,
   DEFAULT_FORM_CONTROL_GROUP_CONFIG,
   DEFAULT_FORM_ITEM_CONFIG,
   DEFAULT_ICON_CONFIG,
@@ -45,7 +45,7 @@ import {
   DEFAULT_TOOLTIP_CONFIG,
   DIALOG_CONFIG,
   DIVIDER_CONFIG,
-  FILE_UPLOADER_CONFIG,
+  FILE_INPUT_CONFIG,
   FORM_CONTROL_GROUP_CONFIG,
   FORM_ITEM_CONFIG,
   ICON_CONFIG,
@@ -113,8 +113,8 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
       useValue: deepMerge(DEFAULT_DIVIDER_CONFIG, config.components.divider),
     },
     {
-      provide: FILE_UPLOADER_CONFIG,
-      useValue: deepMerge(DEFAULT_FILE_UPLOADER_CONFIG, config.components.fileUploader),
+      provide: FILE_INPUT_CONFIG,
+      useValue: deepMerge(DEFAULT_FILE_INPUT_CONFIG, config.components.fileInput),
     },
     {
       provide: FORM_CONTROL_GROUP_CONFIG,

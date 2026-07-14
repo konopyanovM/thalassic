@@ -1,8 +1,8 @@
 @use '../mixins' as mixins;
 
-.tls-file-uploader {
-  --tls-file-uploader-border-color: var(--color-outline-variant);
-  --tls-file-uploader-border-radius: var(--radius-md);
+.tls-file-input {
+  --tls-file-input-border-color: var(--color-outline-variant);
+  --tls-file-input-border-radius: var(--radius-md);
 
   display: inline-flex;
   flex-direction: column;
@@ -12,6 +12,16 @@
 
   &--fluid {
     width: 100%;
+  }
+
+  &--button {
+    align-items: flex-start;
+
+    .tls-file-input__hint {
+      margin-top: 0;
+
+      text-align: start;
+    }
   }
 
   &__input {
@@ -26,8 +36,8 @@
 
     padding: var(--spacing-6);
 
-    border: 2px dashed var(--tls-file-uploader-border-color);
-    border-radius: var(--tls-file-uploader-border-radius);
+    border: 2px dashed var(--tls-file-input-border-color);
+    border-radius: var(--tls-file-input-border-radius);
     color: var(--color-on-surface-variant);
 
     cursor: pointer;
@@ -43,13 +53,13 @@
 
     &:hover:not(&--disabled),
     &--dragging {
-      --tls-file-uploader-border-color: var(--color-primary);
+      --tls-file-input-border-color: var(--color-primary);
 
       background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
     }
 
     &--rejected {
-      --tls-file-uploader-border-color: var(--color-danger);
+      --tls-file-input-border-color: var(--color-danger);
 
       color: var(--color-danger);
       background-color: color-mix(in srgb, var(--color-danger) 8%, transparent);
@@ -136,12 +146,12 @@
   }
 
   &--disabled {
-    .tls-file-uploader__drop-zone {
+    .tls-file-input__drop-zone {
       pointer-events: none;
     }
   }
 
-  &:not(.tls-file-uploader--disabled).tls-file-uploader--touched.tls-file-uploader--invalid {
-    --tls-file-uploader-border-color: var(--color-danger);
+  &:not(.tls-file-input--disabled).tls-file-input--touched.tls-file-input--invalid {
+    --tls-file-input-border-color: var(--color-danger);
   }
 }

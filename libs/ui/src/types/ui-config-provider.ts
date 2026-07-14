@@ -9,7 +9,7 @@ import {
   DateTimePickerConfig,
   DialogConfig,
   DividerConfig,
-  FileUploaderConfig,
+  FileInputConfig,
   FormControlGroupConfig,
   FormItemConfig,
   IconConfig,
@@ -47,7 +47,7 @@ export interface tlsUiConfigProvider {
     dateTimePicker?: Partial<DateTimePickerConfig>;
     dialog?: Partial<DialogConfig>;
     divider?: Partial<DividerConfig>;
-    fileUploader?: Partial<FileUploaderConfig>;
+    fileInput?: Partial<FileInputConfig>;
     formControlGroup?: Partial<FormControlGroupConfig>;
     formItem?: Partial<FormItemConfig>;
     icon?: Partial<IconConfig>;
