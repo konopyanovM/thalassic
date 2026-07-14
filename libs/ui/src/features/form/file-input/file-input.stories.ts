@@ -1,5 +1,5 @@
 import { argsToTemplate, Meta, StoryObj } from '@storybook/angular';
-import { STORY_FORM_CONTROL_ARGS } from '../../../../.storybook/constants';
+import { STORY_FORM_CONTROL_ARGS, STORY_SIZE_OPTIONS } from '../../../../.storybook/constants';
 import { FileInput } from './file-input';
 
 const meta: Meta<FileInput> = {
@@ -7,10 +7,18 @@ const meta: Meta<FileInput> = {
   title: 'Form/FileInput',
   args: {
     variant: 'dropzone',
+    size: 'md',
     multiple: false,
     accept: '',
     fluid: false,
+    hideFileList: false,
     ...STORY_FORM_CONTROL_ARGS,
+  },
+  argTypes: {
+    size: {
+      control: { type: 'select' },
+      options: STORY_SIZE_OPTIONS,
+    },
   },
 };
 export default meta;
@@ -27,6 +35,11 @@ export const ButtonVariantStory: Story = {
   args: { variant: 'button' },
 };
 
+export const HiddenFileListStory: Story = {
+  name: 'Hidden file list',
+  args: { multiple: true, hideFileList: true },
+};
+
 export const MultipleFilesStory: Story = {
   name: 'Multiple Files',
   args: { multiple: true },
@@ -35,11 +48,6 @@ export const MultipleFilesStory: Story = {
 export const AcceptImagesStory: Story = {
   name: 'Accept Images',
   args: { accept: 'image/*' },
-};
-
-export const AcceptRuleArrayStory: Story = {
-  name: 'Accept (rule array)',
-  args: { accept: ['image/*', '.pdf', 'video/mp4'] },
 };
 
 export const CustomDropZoneStory: Story = {

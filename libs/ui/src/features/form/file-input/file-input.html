@@ -12,6 +12,7 @@
     type="button"
     tlsButton
     variant="outlined"
+    [size]="size()"
     [disabled]="notInteractive()"
     [attr.disabled]="notInteractive() ? '' : null"
     [attr.aria-label]="ariaLabel()"
@@ -62,7 +63,7 @@
     }
   </div>
 }
-@if (value().length) {
+@if (value().length && !hideFileList()) {
   <ul class="tls-file-input__file-list">
     @for (file of value(); track file; let fileIndex = $index) {
       <li class="tls-file-input__file">

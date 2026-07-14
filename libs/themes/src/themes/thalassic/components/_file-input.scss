@@ -3,6 +3,8 @@
 .tls-file-input {
   --tls-file-input-border-color: var(--color-outline-variant);
   --tls-file-input-border-radius: var(--radius-md);
+  --tls-file-input-drop-zone-padding: var(--spacing-6);
+  --tls-file-input-label-font-size: var(--font-body-medium-size);
 
   display: inline-flex;
   flex-direction: column;
@@ -24,6 +26,16 @@
     }
   }
 
+  &--sm {
+    --tls-file-input-drop-zone-padding: var(--spacing-4);
+    --tls-file-input-label-font-size: var(--font-body-small-size);
+  }
+
+  &--lg {
+    --tls-file-input-drop-zone-padding: var(--spacing-8);
+    --tls-file-input-label-font-size: var(--font-body-large-size);
+  }
+
   &__input {
     display: none;
   }
@@ -34,7 +46,7 @@
     align-items: center;
     justify-content: center;
 
-    padding: var(--spacing-6);
+    padding: var(--tls-file-input-drop-zone-padding);
 
     border: 2px dashed var(--tls-file-input-border-color);
     border-radius: var(--tls-file-input-border-radius);
@@ -74,7 +86,7 @@
   &__label {
     pointer-events: none;
 
-    font-size: var(--font-body-medium-size);
+    font-size: var(--tls-file-input-label-font-size);
     text-align: center;
   }
 

@@ -18,6 +18,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { FORM_CONTROL, ValueFormControl } from '../../../abstract/form';
+import { controlSize } from '../../../types';
 import { ButtonDirective } from '../../button';
 import { FILE_INPUT_CONFIG } from './file-input.token';
 import {
@@ -50,6 +51,7 @@ export class FileInput extends ValueFormControl<File[]> {
   public readonly variant: InputSignal<fileInputVariant> = input<fileInputVariant>(
     this._config.variant,
   );
+  public readonly size: InputSignal<controlSize> = input<controlSize>(this._config.size);
   public readonly multiple: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
     this._config.multiple,
     { transform: booleanAttribute },
@@ -62,6 +64,10 @@ export class FileInput extends ValueFormControl<File[]> {
     this._config.fluid,
     { transform: booleanAttribute },
   );
+  public readonly hideFileList: InputSignalWithTransform<boolean, unknown> = input<
+    boolean,
+    unknown
+  >(this._config.hideFileList, { transform: booleanAttribute });
 
   // State
   protected readonly nativeInput = viewChild.required<ElementRef<HTMLInputElement>>('nativeInput');
@@ -74,7 +80,7 @@ export class FileInput extends ValueFormControl<File[]> {
   // Computed
   protected readonly classes: Signal<string[]> = computed(() => {
     const className = this.CLASS_NAME;
-    const array = [className, `${className}--${this.variant()}`];
+    const array = [className, `${className}--${this.variant()}`, `${className}--${this.size()}`];
     if (this.fluid()) array.push(`${className}--fluid`);
     return array.concat(this.controlClasses());
   });
