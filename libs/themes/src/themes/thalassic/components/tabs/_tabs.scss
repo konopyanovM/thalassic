@@ -6,6 +6,7 @@
   --tls-tabs-border-width: 1px;
   --tls-tabs-active-border-color: var(--color-primary);
   --tls-tabs-active-border-width: 2px;
+  --tls-tabs-disabled-opacity: 0.38;
   --tls-tabs-content-padding: var(--spacing-4);
 
   background: var(--tls-tabs-background-color);
@@ -40,6 +41,14 @@
       &.tls-tabs-header__item--active {
         color: var(--tls-tabs-active-label-color);
         border-color: var(--tls-tabs-active-border-color);
+      }
+
+      &.tls-tabs-header__item--disabled {
+        opacity: var(--tls-tabs-disabled-opacity);
+
+        .tls-tabs-header__item-button {
+          cursor: not-allowed;
+        }
       }
 
       &-button {

@@ -8,10 +8,12 @@
     <li
       class="tls-tabs-header__item"
       [class.tls-tabs-header__item--active]="tab.value() === selected()"
+      [class.tls-tabs-header__item--disabled]="tab.disabled()"
     >
       <button
         class="tls-tabs-header__item-button"
         role="tab"
+        [disabled]="tab.disabled()"
         (click)="selected.set(tab.value())"
         [attr.aria-selected]="tab.value() === selected()"
       >
