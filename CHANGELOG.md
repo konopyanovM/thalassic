@@ -1,3 +1,13 @@
+## 22.2.0 (2026-07-16)
+
+### 🚀 Features
+
+- **ui:** added pending loader to some form controls ([8439e3c](https://github.com/konopyanovM/thalassic/commit/8439e3c))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.1.0 (2026-07-14)
 
 ### 🚀 Features
