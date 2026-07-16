@@ -15,12 +15,13 @@ import {
 } from '@angular/core';
 import { FORM_CONTROL, ValueFormControl } from '../../../abstract/form';
 import { controlSize } from '../../../types';
+import { Loader } from '../../loader';
 import { textareaResize } from './textarea.config';
 import { TEXTAREA_CONFIG } from './textarea.token';
 
 @Component({
   selector: 'tls-textarea',
-  imports: [CdkTextareaAutosize],
+  imports: [CdkTextareaAutosize, Loader],
   templateUrl: './textarea.html',
   styleUrl: './textarea.scss',
   host: { class: 'tls-textarea' },

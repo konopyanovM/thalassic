@@ -62,10 +62,24 @@
         display: flex;
         align-items: center;
 
+        &--hidden {
+          visibility: hidden;
+        }
+
         .tls-select__chevron {
           transition: transform var(--motion-fast) var(--motion-ease-in-out);
         }
       }
+    }
+
+    .tls-select__spinner {
+      position: absolute;
+      inset-block: 0;
+      inset-inline-end: var(--tls-form-control-padding-inline);
+
+      margin-block: auto;
+
+      pointer-events: none;
     }
 
     &:has(.tls-select__clear) .tls-select__trigger {

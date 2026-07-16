@@ -1,11 +1,25 @@
 :host {
   --tls-textarea-width: 200px;
 
+  position: relative;
+
   display: inline-block;
   width: var(--tls-textarea-width);
 
   .tls-form-control {
     width: 100%;
+
+    &__spinner {
+      position: absolute;
+      inset-block-start: var(--spacing-2);
+      inset-inline-end: var(--spacing-3);
+
+      pointer-events: none;
+    }
+
+    &--pending {
+      padding-inline-end: var(--spacing-8);
+    }
   }
 
   &:has(.tls-form-control--fluid) {

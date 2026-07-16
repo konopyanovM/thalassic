@@ -9,6 +9,7 @@
   [attr.aria-labelledby]="labelledBy()"
   [attr.aria-invalid]="invalid() ? 'true' : null"
   [attr.aria-required]="required() ? 'true' : null"
+  [attr.aria-busy]="pending() ? 'true' : null"
   [attr.aria-describedby]="describedBy()"
   aria-haspopup="listbox"
   [attr.aria-controls]="isOpen() ? listboxId : null"
@@ -23,7 +24,7 @@
   <span class="tls-select__value" [class.tls-form-control__placeholder]="!selectedLabel()">
     {{ selectedLabel() || placeholder() }}
   </span>
-  <div class="tls-select__icon" aria-hidden="true">
+  <div class="tls-select__icon" aria-hidden="true" [class.tls-select__icon--hidden]="pending()">
     <svg class="tls-select__chevron" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
     </svg>
@@ -41,6 +42,9 @@
       <path d="M1 1L9 9M9 1L1 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
     </svg>
   </button>
+}
+@if (pending()) {
+  <tls-loader class="tls-select__spinner" size="xs" aria-hidden="true" />
 }
 
 <ng-template #panel>

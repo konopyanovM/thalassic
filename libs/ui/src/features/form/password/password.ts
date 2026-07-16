@@ -16,12 +16,13 @@ import {
 import { FORM_CONTROL, ValueFormControl } from '../../../abstract/form';
 import { controlSize } from '../../../types';
 import { FormControlGroup } from '../../form-control-group';
+import { Loader } from '../../loader';
 import { PASSWORD_CONFIG } from './password.token';
 
 @Component({
   selector: 'tls-password',
   templateUrl: './password.html',
-  imports: [FormControlGroup, NgTemplateOutlet],
+  imports: [FormControlGroup, NgTemplateOutlet, Loader],
   host: {
     class: 'tls-password',
   },

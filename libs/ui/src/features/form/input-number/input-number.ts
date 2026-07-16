@@ -14,12 +14,14 @@ import {
 } from '@angular/core';
 import { FORM_CONTROL, ValueFormControl } from '../../../abstract/form';
 import { controlSize } from '../../../types';
+import { Loader } from '../../loader';
 import { INPUT_NUMBER_CONFIG } from './input-number.token';
 
 @Component({
   selector: 'tls-input-number',
   templateUrl: './input-number.html',
   styleUrl: './input-number.scss',
+  imports: [Loader],
   providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => InputNumber) }],
 })
 export class InputNumber extends ValueFormControl<number | null> {

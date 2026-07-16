@@ -19,6 +19,7 @@ import {
 import { Day, format } from 'date-fns';
 import { FORM_CONTROL, ValueFormControl } from '../../../abstract/form';
 import { controlSize } from '../../../types';
+import { Loader } from '../../loader';
 import { Popover } from '../../popover';
 import { Calendar } from './calendar';
 import { DATE_TIME_PICKER_CONFIG } from './date-time-picker.token';
@@ -31,7 +32,7 @@ type ActiveView = 'calendar' | 'month-picker' | 'year-picker' | 'time-picker' | 
 
 @Component({
   selector: 'tls-date-time-picker',
-  imports: [Calendar, MonthPicker, YearPicker, TimePicker, Popover, NgTemplateOutlet],
+  imports: [Calendar, MonthPicker, YearPicker, TimePicker, Popover, NgTemplateOutlet, Loader],
   templateUrl: './date-time-picker.html',
   host: { '[class]': 'hostClasses()' },
   providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => DateTimePicker) }],

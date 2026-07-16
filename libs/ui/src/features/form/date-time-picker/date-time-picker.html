@@ -60,6 +60,7 @@
     [attr.aria-label]="ariaLabel() ?? null"
     [attr.aria-labelledby]="labelledBy()"
     [attr.aria-invalid]="invalid() ? 'true' : null"
+    [attr.aria-busy]="pending() ? 'true' : null"
     [attr.aria-describedby]="describedBy()"
     [class.tls-date-time-picker__panel--disabled]="disabled()"
     [class.tls-date-time-picker__panel--readonly]="readonly()"
@@ -76,6 +77,7 @@
     [attr.aria-labelledby]="labelledBy()"
     [attr.aria-invalid]="invalid() ? 'true' : null"
     [attr.aria-required]="required() ? 'true' : null"
+    [attr.aria-busy]="pending() ? 'true' : null"
     [attr.aria-describedby]="describedBy()"
     [attr.aria-expanded]="popoverRef.isOpen()"
     [disabled]="disabled()"
@@ -83,6 +85,9 @@
     (blur)="touched.set(true)"
   >
     <span [class.tls-form-control__placeholder]="!value()">{{ triggerLabel() }}</span>
+    @if (pending()) {
+      <tls-loader class="tls-date-time-picker__spinner" size="xs" aria-hidden="true" />
+    }
   </button>
   <tls-popover #popoverRef position="bottom-start">
     <ng-container [ngTemplateOutlet]="pickerTemplate" />
