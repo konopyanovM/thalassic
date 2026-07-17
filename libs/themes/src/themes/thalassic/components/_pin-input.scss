@@ -52,7 +52,7 @@
     }
   }
 
-  &:not(.tls-pin-input--disabled).tls-pin-input--touched.tls-pin-input--invalid {
+  &:not(.tls-pin-input--disabled).tls-pin-input--show-error {
     --tls-pin-input-border-color: var(--color-danger);
 
     .tls-pin-input__cell {

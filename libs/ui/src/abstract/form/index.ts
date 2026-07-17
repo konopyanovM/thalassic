@@ -1,6 +1,8 @@
 // Form control base classes
 export * from './form-control';
 export * from './form-control.token';
+export * from './form-control.config';
+export * from './form-control.config.token';
 export * from './value-form-control';
 export * from './checkbox-form-control';
 

@@ -163,7 +163,7 @@
     }
   }
 
-  &:not(.tls-file-input--disabled).tls-file-input--touched.tls-file-input--invalid {
+  &:not(.tls-file-input--disabled).tls-file-input--show-error {
     --tls-file-input-border-color: var(--color-danger);
   }
 }

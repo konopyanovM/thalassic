@@ -85,7 +85,7 @@
     }
   }
 
-  &:not(.tls-checkbox--disabled).tls-checkbox--touched.tls-checkbox--invalid {
+  &:not(.tls-checkbox--disabled).tls-checkbox--show-error {
     --tls-checkbox-border-color: var(--color-danger);
 
     .tls-checkbox-input {

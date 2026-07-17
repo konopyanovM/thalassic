@@ -2,6 +2,7 @@ import {
   booleanAttribute,
   computed,
   Directive,
+  inject,
   input,
   InputSignal,
   InputSignalWithTransform,
@@ -9,13 +10,16 @@ import {
   ModelSignal,
   signal,
   Signal,
-  WritableSignal,
+  WritableSignal
 } from '@angular/core';
 import { FormUiControl, ValidationError, WithOptionalFieldTree } from '@angular/forms/signals';
-
+import { FORM_CONTROL_CONFIG } from './form-control.config.token';
 
 @Directive()
 export abstract class FormControl<TValue = unknown> implements FormUiControl<TValue> {
+  // Injections
+  private readonly _formControlConfig = inject(FORM_CONTROL_CONFIG);
+
   // Models
   public readonly touched: ModelSignal<boolean> = model<boolean>(false);
 
@@ -132,6 +136,18 @@ export abstract class FormControl<TValue = unknown> implements FormUiControl<TVa
     { transform: booleanAttribute },
   );
 
+  // Computed
+  /**
+   * Whether the control's invalid state should be surfaced (red styling and form-item error message).
+   * Always requires the field to be invalid and touched; the `touched-dirty` trigger additionally
+   * requires it to be dirty, keeping an untouched, empty field silent until the user has engaged.
+   */
+  public readonly showError: Signal<boolean> = computed<boolean>(() => {
+    if (!this.invalid() || !this.touched()) return false;
+    if (this._formControlConfig.errorTrigger === 'touched-dirty') return this.dirty();
+    return true;
+  });
+
   protected CLASS_NAME = 'tls-form-control';
 
   protected notInteractive: Signal<boolean> = computed<boolean>(
@@ -150,6 +166,7 @@ export abstract class FormControl<TValue = unknown> implements FormUiControl<TVa
     if (this.pending()) array.push(`${className}--pending`);
     if (this.touched()) array.push(`${className}--touched`);
     if (this.dirty()) array.push(`${className}--dirty`);
+    if (this.showError()) array.push(`${className}--show-error`);
 
     return array;
   }

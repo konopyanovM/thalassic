@@ -112,7 +112,7 @@
     }
   }
 
-  &:not(.tls-toggle-group--disabled).tls-toggle-group--touched.tls-toggle-group--invalid {
+  &:not(.tls-toggle-group--disabled).tls-toggle-group--show-error {
     --tls-toggle-group-border-color: var(--color-danger);
   }
 }

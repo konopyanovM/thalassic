@@ -1,5 +1,6 @@
 import { EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
 import { deepMerge } from '@thalassic/core';
+import { DEFAULT_FORM_CONTROL_CONFIG, FORM_CONTROL_CONFIG } from '../abstract/form';
 import {
   ALERT_CONFIG,
   BUTTON_CONFIG,
@@ -73,7 +74,17 @@ import {
 import { tlsUiConfigProvider } from '../types';
 
 export const provideThalassicUIConfig = (config: tlsUiConfigProvider): EnvironmentProviders => {
+  // Query-sync configs nest under their parent feature in the public API but resolve to their own
+  // separate DI tokens, so split the nested `querySync` off from the component's own config.
+  const { querySync: paginationQuerySync, ...pagination } = config.components.pagination ?? {};
+  const { querySync: tabsQuerySync, ...tabs } = config.components.tabs ?? {};
+
   return makeEnvironmentProviders([
+    // Cross-cutting form defaults
+    {
+      provide: FORM_CONTROL_CONFIG,
+      useValue: deepMerge(DEFAULT_FORM_CONTROL_CONFIG, config.formControl),
+    },
     // Components
     {
       provide: ALERT_CONFIG,
@@ -137,11 +148,11 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
     },
     {
       provide: PAGINATION_CONFIG,
-      useValue: deepMerge(DEFAULT_PAGINATION_CONFIG, config.components.pagination),
+      useValue: deepMerge(DEFAULT_PAGINATION_CONFIG, pagination),
     },
     {
       provide: PAGINATION_QUERY_SYNC_CONFIG,
-      useValue: deepMerge(DEFAULT_PAGINATION_QUERY_SYNC_CONFIG, config.components.paginationQuerySync),
+      useValue: deepMerge(DEFAULT_PAGINATION_QUERY_SYNC_CONFIG, paginationQuerySync),
     },
     {
       provide: PASSWORD_CONFIG,
@@ -176,10 +187,10 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
       useValue: deepMerge(DEFAULT_SWITCH_CONFIG, config.components.switch),
     },
     { provide: TABLE_CONFIG, useValue: deepMerge(DEFAULT_TABLE_CONFIG, config.components.table) },
-    { provide: TABS_CONFIG, useValue: deepMerge(DEFAULT_TABS_CONFIG, config.components.tabs) },
+    { provide: TABS_CONFIG, useValue: deepMerge(DEFAULT_TABS_CONFIG, tabs) },
     {
       provide: TABS_QUERY_SYNC_CONFIG,
-      useValue: deepMerge(DEFAULT_TABS_QUERY_SYNC_CONFIG, config.components.tabsQuerySync),
+      useValue: deepMerge(DEFAULT_TABS_QUERY_SYNC_CONFIG, tabsQuerySync),
     },
     {
       provide: TEXTAREA_CONFIG,

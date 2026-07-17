@@ -57,7 +57,7 @@ export class FormItem {
     const control = this.control();
     if (!control) return false;
 
-    return control.invalid() && control.touched();
+    return control.showError();
   });
 
   protected showRequired = computed(() => {

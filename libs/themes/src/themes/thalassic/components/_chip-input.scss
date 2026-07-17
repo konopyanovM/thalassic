@@ -37,7 +37,7 @@ tls-chip-input.tls-form-control {
     }
   }
 
-  &:not(.tls-form-control--disabled).tls-form-control--touched.tls-form-control--invalid {
+  &:not(.tls-form-control--disabled).tls-form-control--show-error {
     .tls-chip-input__field::placeholder {
       color: var(--color-danger);
     }

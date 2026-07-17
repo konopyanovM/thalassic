@@ -83,13 +83,9 @@
     cursor: not-allowed;
   }
 
-  &:not(
-      .tls-form-control--disabled
-    ).tls-form-control.tls-form-control--touched.tls-form-control--invalid,
+  &:not(.tls-form-control--disabled).tls-form-control--show-error,
   &:has(
-    .tls-form-control:not(
-        .tls-form-control--disabled
-      ).tls-form-control.tls-form-control--touched.tls-form-control--invalid
+    .tls-form-control:not(.tls-form-control--disabled).tls-form-control--show-error
   ) {
     --tls-form-control-group-border-color: var(--color-danger);
 

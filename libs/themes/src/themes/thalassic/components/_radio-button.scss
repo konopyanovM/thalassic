@@ -93,7 +93,7 @@
     }
   }
 
-  &:not(.tls-radio-button--disabled).tls-radio-button--touched.tls-radio-button--invalid {
+  &:not(.tls-radio-button--disabled).tls-radio-button--show-error {
     --tls-radio-button-border-color: var(--color-danger);
 
     .tls-radio-button-input {

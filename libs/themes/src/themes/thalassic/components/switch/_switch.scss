@@ -81,7 +81,7 @@
     filter: brightness(0.9);
   }
 
-  &:not(.tls-switch--disabled).tls-switch--touched.tls-switch--invalid {
+  &:not(.tls-switch--disabled).tls-switch--show-error {
     --tls-switch-border-color: var(--color-danger);
 
     box-shadow: 0 0 4px -1px var(--color-danger);

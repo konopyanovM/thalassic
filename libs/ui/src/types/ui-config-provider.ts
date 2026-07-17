@@ -32,10 +32,13 @@ import {
   TabsQuerySyncConfig,
   TextareaConfig,
   ToggleGroupConfig,
-  TooltipConfig,
+  TooltipConfig
 } from '../features';
+import { FormControlConfig } from '../abstract/form';
 
 export interface tlsUiConfigProvider {
+  /** Cross-cutting defaults inherited by every form control (not tied to a single component). */
+  formControl?: Partial<FormControlConfig>;
   components: {
     alert?: Partial<AlertConfig>;
     button?: Partial<ButtonConfig>;
@@ -55,8 +58,7 @@ export interface tlsUiConfigProvider {
     loader?: Partial<LoaderConfig>;
     menu?: Partial<MenuConfig>;
     multiSelect?: Partial<MultiSelectConfig>;
-    pagination?: Partial<PaginationConfig>;
-    paginationQuerySync?: Partial<PaginationQuerySyncConfig>;
+    pagination?: Partial<PaginationConfig> & { querySync?: Partial<PaginationQuerySyncConfig> };
     password?: Partial<PasswordConfig>;
     pinInput?: Partial<PinInputConfig>;
     popover?: Partial<PopoverConfig>;
@@ -66,8 +68,7 @@ export interface tlsUiConfigProvider {
     stepper?: Partial<StepperConfig>;
     switch?: Partial<SwitchConfig>;
     table?: Partial<TableConfig>;
-    tabs?: Partial<TabsConfig>;
-    tabsQuerySync?: Partial<TabsQuerySyncConfig>;
+    tabs?: Partial<TabsConfig> & { querySync?: Partial<TabsQuerySyncConfig> };
     textarea?: Partial<TextareaConfig>;
     toggleGroup?: Partial<ToggleGroupConfig>;
     tooltip?: Partial<TooltipConfig>;
