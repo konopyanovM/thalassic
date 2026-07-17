@@ -7,13 +7,13 @@
   align-items: center;
 
   border-radius: var(--radius-md);
-  border: var(--tls-form-control-group-border-width) var(--tls-form-control-group-border-style)
-    var(--tls-form-control-group-border-color);
+  border: var(--tls-form-control-group-border-width) var(--tls-form-control-group-border-style) var(--tls-form-control-group-border-color);
 
-  transition:
-    border-color var(--motion-fast) var(--motion-ease-in-out),
-    background-color var(--motion-fast) var(--motion-ease-in-out),
-    box-shadow var(--motion-fast) var(--motion-ease-in-out);
+  background-color: var(--color-surface-container-lowest);
+
+  transition: border-color var(--motion-fast) var(--motion-ease-in-out),
+  background-color var(--motion-fast) var(--motion-ease-in-out),
+  box-shadow var(--motion-fast) var(--motion-ease-in-out);
 
   &:hover {
     --tls-form-control-group-border-color: var(--color-primary);

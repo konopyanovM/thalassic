@@ -1,5 +1,9 @@
 import { argsToTemplate, Meta, StoryObj } from '@storybook/angular';
-import { STORY_FORM_CONTROL_ARGS, STORY_SIZE_OPTIONS } from '../../../../.storybook/constants';
+import {
+  STORY_FILE_INPUT_VARIANT_OPTIONS,
+  STORY_FORM_CONTROL_ARGS,
+  STORY_SIZE_OPTIONS,
+} from '../../../../.storybook/constants';
 import { FileInput } from './file-input';
 
 const meta: Meta<FileInput> = {
@@ -15,6 +19,10 @@ const meta: Meta<FileInput> = {
     ...STORY_FORM_CONTROL_ARGS,
   },
   argTypes: {
+    variant: {
+      control: { type: 'select' },
+      options: STORY_FILE_INPUT_VARIANT_OPTIONS,
+    },
     size: {
       control: { type: 'select' },
       options: STORY_SIZE_OPTIONS,

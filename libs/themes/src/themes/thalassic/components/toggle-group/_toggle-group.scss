@@ -10,6 +10,9 @@
 
   border: var(--tls-toggle-group-border-width) solid var(--tls-toggle-group-border-color);
   border-radius: var(--tls-toggle-group-border-radius);
+  
+  background-color: var(--color-surface-container-lowest);
+
   overflow: hidden;
 
   &--vertical {
