@@ -1,3 +1,13 @@
+## 22.2.1 (2026-07-17)
+
+### 🩹 Fixes
+
+- **ui:** form control group and toggle group background fixed ([62671dc](https://github.com/konopyanovM/thalassic/commit/62671dc))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.2.0 (2026-07-16)
 
 ### 🚀 Features
