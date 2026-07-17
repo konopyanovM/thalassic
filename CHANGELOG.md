@@ -1,3 +1,17 @@
+## 22.3.0 (2026-07-17)
+
+### 🚀 Features
+
+- **ui:** added error trigger option ([1e79d37](https://github.com/konopyanovM/thalassic/commit/1e79d37))
+
+### 🩹 Fixes
+
+- components types expose ([28300b3](https://github.com/konopyanovM/thalassic/commit/28300b3))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.2.1 (2026-07-17)
 
 ### 🩹 Fixes
