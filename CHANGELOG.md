@@ -1,3 +1,13 @@
+## 22.3.1 (2026-07-18)
+
+### 🩹 Fixes
+
+- make touched dirty as default error trigger ([3e82dc7](https://github.com/konopyanovM/thalassic/commit/3e82dc7))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.3.0 (2026-07-17)
 
 ### 🚀 Features
