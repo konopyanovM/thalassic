@@ -11,5 +11,5 @@ export interface FormControlConfig {
 }
 
 export const DEFAULT_FORM_CONTROL_CONFIG: FormControlConfig = {
-  errorTrigger: 'touched',
+  errorTrigger: 'touched-dirty',
 };
