@@ -1,3 +1,13 @@
+## 22.4.0 (2026-07-19)
+
+### 🚀 Features
+
+- **core:** add container-breakpoint mixin ([e48831d](https://github.com/konopyanovM/thalassic/commit/e48831d))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.3.1 (2026-07-18)
 
 ### 🩹 Fixes
