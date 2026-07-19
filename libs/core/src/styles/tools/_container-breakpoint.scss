@@ -1,0 +1,29 @@
+@use 'breakpoint';
+
+@mixin container-breakpoint($size, $container-name) {
+  @if $size == sm {
+    @container #{$container-name} (max-width: #{breakpoint.$breakpoint-sm}) {
+      @content;
+    }
+  } @else if $size == md {
+    @container #{$container-name} (max-width: #{breakpoint.$breakpoint-md}) {
+      @content;
+    }
+  } @else if $size == lg {
+    @container #{$container-name} (max-width: #{breakpoint.$breakpoint-lg}) {
+      @content;
+    }
+  } @else if $size == xl {
+    @container #{$container-name} (max-width: #{breakpoint.$breakpoint-xl}) {
+      @content;
+    }
+  } @else if $size == 2xl {
+    @container #{$container-name} (max-width: #{breakpoint.$breakpoint-2xl}) {
+      @content;
+    }
+  } @else {
+    @container #{$container-name} (max-width: #{$size}) {
+      @content;
+    }
+  }
+}

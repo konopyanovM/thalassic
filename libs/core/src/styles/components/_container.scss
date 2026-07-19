@@ -15,19 +15,19 @@
     max-width: tools.$breakpoint-2xl;
     margin: 0 auto;
 
-    @container tls-container (max-width: #{tools.$breakpoint-2xl}) {
+    @include tools.container-breakpoint(2xl, tls-container) {
       max-width: tools.$breakpoint-xl;
     }
-    @container tls-container (max-width: #{tools.$breakpoint-xl}) {
+    @include tools.container-breakpoint(xl, tls-container) {
       max-width: tools.$breakpoint-lg;
     }
-    @container tls-container (max-width: #{tools.$breakpoint-lg}) {
+    @include tools.container-breakpoint(lg, tls-container) {
       max-width: tools.$breakpoint-md;
     }
-    @container tls-container (max-width: #{tools.$breakpoint-md}) {
+    @include tools.container-breakpoint(md, tls-container) {
       max-width: tools.$breakpoint-sm;
     }
-    @container tls-container (max-width: #{tools.$breakpoint-sm}) {
+    @include tools.container-breakpoint(sm, tls-container) {
       padding: 0 16px;
     }
   }
