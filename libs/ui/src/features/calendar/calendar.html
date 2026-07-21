@@ -1,0 +1,60 @@
+<div class="tls-calendar__header">
+  <div class="tls-calendar__nav">
+    <tls-button
+      variant="text"
+      size="sm"
+      ariaLabel="Previous"
+      class="tls-calendar__nav-button"
+      (click)="previous()"
+    >
+      <svg viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M7 1L1 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </tls-button>
+
+    <tls-button variant="outlined" size="sm" (click)="today()">Today</tls-button>
+
+    <tls-button
+      variant="text"
+      size="sm"
+      ariaLabel="Next"
+      class="tls-calendar__nav-button"
+      (click)="next()"
+    >
+      <svg viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M1 1L7 7L1 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </tls-button>
+  </div>
+
+  <h2 class="tls-calendar__title">{{ title() }}</h2>
+
+  <tls-toggle-group
+    class="tls-calendar__views"
+    size="sm"
+    [options]="viewOptions"
+    [optionLabel]="'label'"
+    [optionValue]="'value'"
+    [optionDisabled]="'disabled'"
+    [multiple]="false"
+    [unselectable]="false"
+    [value]="[view()]"
+    (valueChange)="onViewChange($event)"
+  />
+</div>
+
+@switch (view()) {
+  @case ('month') {
+    <tls-calendar-month-view
+      [activeDate]="activeDate()"
+      [events]="events()"
+      [weekStartsOn]="weekStartsOn()"
+      [weekDays]="weekDays()"
+      [maxEventsPerDay]="maxEventsPerDay()"
+      [eventTemplate]="eventTemplate()"
+      [label]="ariaLabel() ?? title()"
+      (dateSelect)="dateSelect.emit($event)"
+      (eventSelect)="eventSelect.emit($event)"
+    />
+  }
+}

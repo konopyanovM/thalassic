@@ -7,28 +7,16 @@ import {
   OutputEmitterRef,
   Signal,
 } from '@angular/core';
-import {
-  addMonths,
-  Day,
-  eachDayOfInterval,
-  endOfMonth,
-  endOfWeek,
-  format,
-  isSameDay,
-  isSameMonth,
-  isToday,
-  startOfMonth,
-  startOfWeek,
-  subMonths,
-} from 'date-fns';
+import { addMonths, Day, format, isSameDay, isSameMonth, isToday, subMonths } from 'date-fns';
+import { buildMonthDays, rotateWeekDays } from '../../../../utils';
 
 @Component({
-  selector: 'tls-calendar',
+  selector: 'tls-date-picker-calendar',
   imports: [],
-  templateUrl: './calendar.html',
-  host: { class: 'tls-calendar' },
+  templateUrl: './date-picker-calendar.html',
+  host: { class: 'tls-date-picker-calendar' },
 })
-export class Calendar {
+export class DatePickerCalendar {
   // Inputs
   public readonly viewDate: InputSignal<Date> = input.required<Date>();
   public readonly selectedDate: InputSignal<Date | null> = input.required<Date | null>();
@@ -41,25 +29,17 @@ export class Calendar {
   public readonly navigateUp: OutputEmitterRef<void> = output<void>();
 
   // Computed
-  protected readonly displayedWeekDays: Signal<string[]> = computed(() => {
-    const startDay = this.weekStartsOn();
-    const days = this.weekDays();
-    return [...days.slice(startDay), ...days.slice(0, startDay)];
-  });
+  protected readonly displayedWeekDays: Signal<string[]> = computed(() =>
+    rotateWeekDays(this.weekDays(), this.weekStartsOn()),
+  );
 
   protected readonly headerLabel: Signal<string> = computed(() =>
     format(this.viewDate(), 'MMMM yyyy'),
   );
 
-  protected readonly days: Signal<Date[]> = computed(() => {
-    const monthStart = startOfMonth(this.viewDate());
-    const monthEnd = endOfMonth(this.viewDate());
-    const weekStartsOn = this.weekStartsOn();
-    return eachDayOfInterval({
-      start: startOfWeek(monthStart, { weekStartsOn }),
-      end: endOfWeek(monthEnd, { weekStartsOn }),
-    });
-  });
+  protected readonly days: Signal<Date[]> = computed(() =>
+    buildMonthDays(this.viewDate(), this.weekStartsOn()),
+  );
 
   // Protected methods
   protected prevMonth(): void {

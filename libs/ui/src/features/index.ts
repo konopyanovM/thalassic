@@ -1,6 +1,7 @@
 // Features
 export * from './alert';
 export * from './button';
+export * from './calendar';
 export * from './chip';
 export * from './confirm';
 export * from './dialog';

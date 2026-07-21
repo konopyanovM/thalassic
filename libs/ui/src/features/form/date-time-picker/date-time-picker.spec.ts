@@ -36,7 +36,7 @@ describe('DateTimePicker', () => {
   const queryBackdrop = () =>
     overlayContainerElement.querySelector<HTMLElement>('.cdk-overlay-backdrop');
   const queryDays = () =>
-    Array.from(overlayContainerElement.querySelectorAll<HTMLButtonElement>('.tls-calendar__day'));
+    Array.from(overlayContainerElement.querySelectorAll<HTMLButtonElement>('.tls-date-picker-calendar__day'));
 
   const setup = async () => {
     fixture = TestBed.createComponent(HostComponent);

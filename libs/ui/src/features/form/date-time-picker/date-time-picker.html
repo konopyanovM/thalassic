@@ -1,7 +1,7 @@
 <ng-template #pickerTemplate>
   @switch (activeView()) {
     @case ('calendar') {
-      <tls-calendar
+      <tls-date-picker-calendar
         [viewDate]="viewDate()"
         [selectedDate]="value()"
         [weekStartsOn]="weekStartsOn()"
@@ -36,7 +36,7 @@
       />
     }
     @case ('date-time') {
-      <tls-calendar
+      <tls-date-picker-calendar
         [viewDate]="viewDate()"
         [selectedDate]="value()"
         [weekStartsOn]="weekStartsOn()"

@@ -1,0 +1,39 @@
+.tls-calendar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+
+  &__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-4);
+  }
+
+  &__nav {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+  }
+
+  &__nav-button {
+    svg {
+      width: 8px;
+      height: 14px;
+    }
+  }
+
+  &__title {
+    margin: 0;
+
+    font-size: var(--font-title-large-size);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--font-title-large-line-height);
+    color: var(--color-on-surface);
+  }
+
+  &__views {
+    flex-shrink: 0;
+  }
+}

@@ -1,6 +1,7 @@
 import {
   AlertConfig,
   ButtonConfig,
+  CalendarConfig,
   CheckboxConfig,
   ChipConfig,
   ChipControlConfig,
@@ -42,6 +43,7 @@ export interface tlsUiConfigProvider {
   components: {
     alert?: Partial<AlertConfig>;
     button?: Partial<ButtonConfig>;
+    calendar?: Partial<CalendarConfig>;
     checkbox?: Partial<CheckboxConfig>;
     chip?: Partial<ChipConfig>;
     chipControl?: Partial<ChipControlConfig>;

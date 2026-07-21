@@ -4,6 +4,7 @@ import { DEFAULT_FORM_CONTROL_CONFIG, FORM_CONTROL_CONFIG } from '../abstract/fo
 import {
   ALERT_CONFIG,
   BUTTON_CONFIG,
+  CALENDAR_CONFIG,
   CHECKBOX_CONFIG,
   CHIP_CONFIG,
   CHIP_CONTROL_CONFIG,
@@ -12,6 +13,7 @@ import {
   DATE_TIME_PICKER_CONFIG,
   DEFAULT_ALERT_CONFIG,
   DEFAULT_BUTTON_CONFIG,
+  DEFAULT_CALENDAR_CONFIG,
   DEFAULT_CHECKBOX_CONFIG,
   DEFAULT_CHIP_CONFIG,
   DEFAULT_CHIP_CONTROL_CONFIG,
@@ -93,6 +95,10 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
     {
       provide: BUTTON_CONFIG,
       useValue: deepMerge(DEFAULT_BUTTON_CONFIG, config.components.button),
+    },
+    {
+      provide: CALENDAR_CONFIG,
+      useValue: deepMerge(DEFAULT_CALENDAR_CONFIG, config.components.calendar),
     },
     {
       provide: CHECKBOX_CONFIG,

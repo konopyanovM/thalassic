@@ -1,0 +1,166 @@
+@use '../../mixins' as mixins;
+
+.tls-calendar-month-view {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+
+  &__weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--spacing-1);
+  }
+
+  &__weekday {
+    padding-block: var(--spacing-2);
+
+    font-size: var(--font-label-medium-size);
+    font-weight: var(--font-weight-medium);
+    text-align: center;
+    color: var(--color-on-surface-variant);
+  }
+
+  &__grid {
+    display: grid;
+    grid-auto-rows: minmax(var(--spacing-20), 1fr);
+    gap: var(--spacing-1);
+  }
+
+  &__week {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--spacing-1);
+  }
+
+  &__day {
+    min-width: 0;
+
+    padding: var(--spacing-2);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+
+    border: 1px solid var(--color-outline-variant);
+    border-radius: var(--radius-sm);
+
+    background-color: var(--color-surface-container-lowest);
+
+    color: var(--color-on-surface);
+
+    cursor: pointer;
+
+    @include mixins.motion(essential) {
+      transition: background-color var(--motion-fast) var(--motion-ease-in-out);
+    }
+
+    &:hover {
+      background-color: var(--color-surface-container-low);
+    }
+
+    &:focus-visible {
+      @include mixins.focus-ring;
+    }
+
+    &--outside {
+      background-color: var(--color-surface-container);
+
+      color: var(--color-on-surface-variant);
+    }
+
+    &--today {
+      .tls-calendar-month-view__day-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        width: var(--spacing-6);
+        height: var(--spacing-6);
+
+        border-radius: 50%;
+
+        background-color: var(--color-primary);
+
+        color: var(--color-on-primary);
+      }
+    }
+  }
+
+  &__day-number {
+    font-size: var(--font-label-large-size);
+    font-weight: var(--font-weight-medium);
+  }
+
+  &__events {
+    margin: 0;
+    padding: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+
+    list-style: none;
+  }
+
+  &__event {
+    width: 100%;
+
+    padding: var(--spacing-1) var(--spacing-2);
+
+    border: none;
+    border-radius: var(--radius-sm);
+
+    background-color: var(--tls-calendar-event-color, var(--color-primary-container));
+
+    font-size: var(--font-label-small-size);
+    text-align: start;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--tls-calendar-event-on-color, var(--color-on-primary-container));
+
+    cursor: pointer;
+
+    &--primary {
+      --tls-calendar-event-color: var(--color-primary-container);
+      --tls-calendar-event-on-color: var(--color-on-primary-container);
+    }
+
+    &--secondary {
+      --tls-calendar-event-color: var(--color-secondary-container);
+      --tls-calendar-event-on-color: var(--color-on-secondary-container);
+    }
+
+    &--tertiary {
+      --tls-calendar-event-color: var(--color-tertiary-container);
+      --tls-calendar-event-on-color: var(--color-on-tertiary-container);
+    }
+
+    &--success {
+      --tls-calendar-event-color: var(--color-success-container);
+      --tls-calendar-event-on-color: var(--color-on-success-container);
+    }
+
+    &--info {
+      --tls-calendar-event-color: var(--color-info-container);
+      --tls-calendar-event-on-color: var(--color-on-info-container);
+    }
+
+    &--warning {
+      --tls-calendar-event-color: var(--color-warning-container);
+      --tls-calendar-event-on-color: var(--color-on-warning-container);
+    }
+
+    &--danger {
+      --tls-calendar-event-color: var(--color-danger-container);
+      --tls-calendar-event-on-color: var(--color-on-danger-container);
+    }
+  }
+
+  &__more {
+    padding-inline: var(--spacing-2);
+
+    font-size: var(--font-label-small-size);
+    color: var(--color-on-surface-variant);
+  }
+}

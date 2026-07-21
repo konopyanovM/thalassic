@@ -1,0 +1,62 @@
+<div class="tls-calendar-month-view__weekdays" aria-hidden="true">
+  @for (weekday of weekdayHeaders(); track weekday) {
+    <span class="tls-calendar-month-view__weekday">{{ weekday }}</span>
+  }
+</div>
+
+<div
+  ngGrid
+  class="tls-calendar-month-view__grid"
+  rowWrap="nowrap"
+  colWrap="nowrap"
+  [attr.aria-label]="label() ?? null"
+>
+  @for (week of weeks(); track $index) {
+    <div ngGridRow class="tls-calendar-month-view__week">
+      @for (cell of week; track cell.date.getTime()) {
+        <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -- ngGridCell manages role and roving tabindex -->
+        <div
+          ngGridCell
+          class="tls-calendar-month-view__day"
+          [class.tls-calendar-month-view__day--outside]="!cell.inCurrentMonth"
+          [class.tls-calendar-month-view__day--today]="cell.isToday"
+          (click)="dateSelect.emit(cell.date)"
+          (keydown.enter)="dateSelect.emit(cell.date)"
+          (keydown.space)="onDaySpace($event, cell.date)"
+        >
+          <span class="tls-calendar-month-view__day-number">{{ cell.dayNumber }}</span>
+
+          @if (cell.visibleEvents.length > 0 || cell.hiddenCount > 0) {
+            <ul class="tls-calendar-month-view__events">
+              @for (event of cell.visibleEvents; track event.id) {
+                <li>
+                  <button
+                    type="button"
+                    tabindex="-1"
+                    [class]="eventClasses(event)"
+                    [style.--tls-calendar-event-color]="eventColor(event)"
+                    (click)="onEventClick($event, event)"
+                  >
+                    @if (eventTemplate(); as template) {
+                      <ng-container
+                        [ngTemplateOutlet]="template"
+                        [ngTemplateOutletContext]="eventContext(event)"
+                      />
+                    } @else {
+                      {{ event.title }}
+                    }
+                  </button>
+                </li>
+              }
+              @if (cell.hiddenCount > 0) {
+                <li>
+                  <span class="tls-calendar-month-view__more">+{{ cell.hiddenCount }} more</span>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

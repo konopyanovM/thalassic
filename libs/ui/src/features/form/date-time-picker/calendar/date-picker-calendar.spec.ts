@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Calendar } from './calendar';
+import { DatePickerCalendar } from './date-picker-calendar';
 
-describe('Calendar', () => {
-  let component: Calendar;
-  let fixture: ComponentFixture<Calendar>;
+describe('DatePickerCalendar', () => {
+  let component: DatePickerCalendar;
+  let fixture: ComponentFixture<DatePickerCalendar>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Calendar],
+      imports: [DatePickerCalendar],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Calendar);
+    fixture = TestBed.createComponent(DatePickerCalendar);
     fixture.componentRef.setInput('viewDate', new Date(2024, 0, 1));
     fixture.componentRef.setInput('selectedDate', null);
     fixture.componentRef.setInput('weekStartsOn', 0);
