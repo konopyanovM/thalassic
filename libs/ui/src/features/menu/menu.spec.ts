@@ -244,4 +244,46 @@ describe('Menu', () => {
 
     expect(queryPanel()).toBeNull();
   });
+
+  describe('keyboard navigation', () => {
+    beforeEach(() => {
+      host.items.set([
+        { type: 'item', label: 'First', action: () => host.clicks.push('First') },
+        { type: 'item', label: 'Disabled', disabled: true, action: () => host.clicks.push('Disabled') },
+        { type: 'item', label: 'Second', action: () => host.clicks.push('Second') },
+      ]);
+      fixture.detectChanges();
+
+      getMenu().open(trigger);
+      fixture.detectChanges();
+    });
+
+    const dispatchKey = (key: string): void => {
+      queryPanel()?.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
+      fixture.detectChanges();
+    };
+
+    it('should move roving focus to the next item on ArrowDown, skipping the disabled one', () => {
+      // The default active item on open is already 'First' (unfocused), so the
+      // first ArrowDown advances past the disabled item straight to 'Second'.
+      dispatchKey('ArrowDown');
+      expect(document.activeElement?.textContent).toContain('Second');
+
+      dispatchKey('ArrowUp');
+      expect(document.activeElement?.textContent).toContain('First');
+    });
+
+    it('should move roving focus to the last item on End', () => {
+      dispatchKey('End');
+      expect(document.activeElement?.textContent).toContain('Second');
+    });
+
+    it('should run the action and close on Enter', () => {
+      dispatchKey('Home');
+      dispatchKey('Enter');
+
+      expect(host.clicks).toEqual(['First']);
+      expect(getMenu().isOpen()).toBe(false);
+    });
+  });
 });

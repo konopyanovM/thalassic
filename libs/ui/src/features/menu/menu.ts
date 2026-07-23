@@ -1,3 +1,4 @@
+import { Menu as AriaMenu, MenuItem as AriaMenuItem } from '@angular/aria/menu';
 import {
   ConnectedPosition,
   FlexibleConnectedPositionStrategyOrigin,
@@ -30,7 +31,7 @@ import { MenuActionItem, MenuItemDefinition } from './menu.types';
 
 @Component({
   selector: 'tls-menu',
-  imports: [NgTemplateOutlet, Icon, RouterLink],
+  imports: [NgTemplateOutlet, Icon, RouterLink, AriaMenu, AriaMenuItem],
   templateUrl: './menu.html',
 })
 export class Menu {

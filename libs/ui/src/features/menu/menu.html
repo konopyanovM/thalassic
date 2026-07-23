@@ -4,7 +4,11 @@
     animate.enter="tls-menu--enter"
     animate.leave="tls-menu--leave"
     [id]="id"
-    role="menu"
+    ngMenu
+    tabindex="-1"
+    [softDisabled]="false"
+    (itemSelected)="onItemClick($event)"
+    (keydown.escape)="close()"
     [attr.aria-label]="ariaLabel() ?? null"
   >
     @for (item of items(); track $index) {
@@ -15,20 +19,22 @@
             <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{ $implicit: actionItem }" />
           } @else if (actionItem.link) {
             <a
-              role="menuitem"
+              ngMenuItem
+              [value]="actionItem"
+              [disabled]="actionItem.disabled ?? false"
               class="tls-menu__item"
               [routerLink]="actionItem.link"
               [class.tls-menu__item--disabled]="actionItem.disabled ?? false"
-              (click)="onItemClick(actionItem)"
             >
               <ng-container [ngTemplateOutlet]="actionItemContent" [ngTemplateOutletContext]="{ $implicit: actionItem }" />
             </a>
           } @else {
             <button
-              role="menuitem"
-              class="tls-menu__item"
+              ngMenuItem
+              [value]="actionItem"
               [disabled]="actionItem.disabled ?? false"
-              (click)="onItemClick(actionItem)"
+              class="tls-menu__item"
+              [attr.disabled]="actionItem.disabled ? '' : null"
             >
               <ng-container [ngTemplateOutlet]="actionItemContent" [ngTemplateOutletContext]="{ $implicit: actionItem }" />
             </button>
