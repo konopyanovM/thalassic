@@ -1,5 +1,5 @@
-import { isAfter, isBefore, startOfDay } from 'date-fns';
 import { CalendarEvent } from './calendar.types';
+import { eventCoversDay } from './event-covers-day';
 
 /**
  * Events overlapping `day`, sorted by start time. A multi-day event is returned for every day
@@ -7,9 +7,5 @@ import { CalendarEvent } from './calendar.types';
  */
 export const eventsForDay = (day: Date, events: CalendarEvent[]): CalendarEvent[] =>
   events
-    .filter(event => {
-      const start = startOfDay(event.start);
-      const end = startOfDay(event.end ?? event.start);
-      return !isBefore(day, start) && !isAfter(day, end);
-    })
+    .filter(event => eventCoversDay(event, day))
     .sort((first, second) => first.start.getTime() - second.start.getTime());

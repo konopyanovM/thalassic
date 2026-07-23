@@ -15,9 +15,11 @@ import {
   HOUR_HEIGHT,
   HOUR_LABEL_FORMAT,
   MIN_EVENT_HEIGHT,
+  PX_PER_MINUTE,
   TIME_GRID_HEADING_FORMAT,
 } from './calendar.constants';
 import { CalendarEvent, CalendarEventContext, calendarView } from './calendar.types';
+import { eventCoversDay } from './event-covers-day';
 
 /** A timed event with its absolute placement inside a day column. */
 interface TimedEventLayout {
@@ -36,8 +38,6 @@ interface TimeGridColumn {
   allDayEvents: CalendarEvent[];
   timedEvents: TimedEventLayout[];
 }
-
-const PX_PER_MINUTE = HOUR_HEIGHT / 60;
 
 /**
  * A time-grid of one or more day columns with an hour axis. Timed events are positioned by
@@ -92,7 +92,7 @@ export class CalendarTimeGrid {
       const windowStart = addHours(dayStart, hourStart);
       const windowEnd = addHours(dayStart, hourEnd);
 
-      const dayEvents = events.filter(event => this._coversDay(event, day));
+      const dayEvents = events.filter(event => eventCoversDay(event, dayStart));
       const allDayEvents = dayEvents.filter(event => this._isAllDay(event));
       const timed = dayEvents.filter(event => !this._isAllDay(event));
 
@@ -141,14 +141,6 @@ export class CalendarTimeGrid {
   // Private methods
   private _isAllDay(event: CalendarEvent): boolean {
     return event.allDay === true || !isSameDay(event.start, event.end ?? event.start);
-  }
-
-  private _coversDay(event: CalendarEvent, day: Date): boolean {
-    const dayStart = startOfDay(day).getTime();
-    const nextDayStart = addHours(startOfDay(day), 24).getTime();
-    const start = event.start.getTime();
-    const end = (event.end ?? event.start).getTime();
-    return start < nextDayStart && end >= dayStart;
   }
 
   private _clamp(date: Date, min: Date, max: Date): Date {

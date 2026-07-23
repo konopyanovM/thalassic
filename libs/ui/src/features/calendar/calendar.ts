@@ -120,8 +120,8 @@ export class Calendar {
 
     switch (this.view()) {
       case 'week': {
-        const start = startOfWeek(activeDate, { weekStartsOn });
-        return { start, end: startOfDay(addDays(endOfWeek(activeDate, { weekStartsOn }), 1)) };
+        const { start, end } = this._weekBounds(activeDate);
+        return { start, end: startOfDay(addDays(end, 1)) };
       }
       case 'day': {
         const start = startOfDay(activeDate);
@@ -144,11 +144,7 @@ export class Calendar {
     const activeDate = this.activeDate();
     if (this.view() === 'day') return [startOfDay(activeDate)];
 
-    const weekStartsOn = this.weekStartsOn();
-    return eachDayOfInterval({
-      start: startOfWeek(activeDate, { weekStartsOn }),
-      end: endOfWeek(activeDate, { weekStartsOn }),
-    });
+    return eachDayOfInterval(this._weekBounds(activeDate));
   });
 
   constructor() {
@@ -192,10 +188,16 @@ export class Calendar {
     }
   }
 
-  private _weekTitle(activeDate: Date): string {
+  private _weekBounds(activeDate: Date): { start: Date; end: Date } {
     const weekStartsOn = this.weekStartsOn();
-    const start = startOfWeek(activeDate, { weekStartsOn });
-    const end = endOfWeek(activeDate, { weekStartsOn });
+    return {
+      start: startOfWeek(activeDate, { weekStartsOn }),
+      end: endOfWeek(activeDate, { weekStartsOn }),
+    };
+  }
+
+  private _weekTitle(activeDate: Date): string {
+    const { start, end } = this._weekBounds(activeDate);
     return `${format(start, 'MMM d')} – ${format(end, 'MMM d, yyyy')}`;
   }
 }

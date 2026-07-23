@@ -10,6 +10,7 @@ import {
   TemplateRef,
 } from '@angular/core';
 import { format } from 'date-fns';
+import { TIME_AWARE_VIEWS } from './calendar.constants';
 import { CalendarEvent, CalendarEventContext, calendarView } from './calendar.types';
 
 /**
@@ -49,7 +50,7 @@ export class CalendarEventItem {
   protected readonly defaultLabel: Signal<string> = computed(() => {
     const event = this.event();
     const view = this.view();
-    if (view !== 'month' && event.allDay !== true) {
+    if (TIME_AWARE_VIEWS.includes(view) && event.allDay !== true) {
       return `${format(event.start, 'p')} ${event.title}`;
     }
     return event.title;

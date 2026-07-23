@@ -24,6 +24,9 @@ export const HOUR_HEIGHT = 48;
 /** Minimum rendered height (px) for a timed event, so brief events stay readable. */
 export const MIN_EVENT_HEIGHT = 24;
 
+/** Vertical pixels per minute in the time-grid, derived from the hour row height. */
+export const PX_PER_MINUTE = HOUR_HEIGHT / 60;
+
 /** `date-fns` format token for a time-grid column heading, e.g. "Mon 20". */
 export const TIME_GRID_HEADING_FORMAT = 'EEE d';
 
@@ -35,6 +38,9 @@ export const AGENDA_WEEKDAY_FORMAT = 'EEEE';
 
 /** `date-fns` format token for an agenda day's date, e.g. "Jul 22". */
 export const AGENDA_DATE_FORMAT = 'MMM d';
+
+/** Views that prefix an event chip with its start time; the month grid shows the title alone. */
+export const TIME_AWARE_VIEWS: calendarView[] = ['week', 'day', 'agenda'];
 
 /** View switcher options. */
 export const CALENDAR_VIEW_OPTIONS: { label: string; value: calendarView }[] = [
