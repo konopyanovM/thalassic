@@ -1,11 +1,10 @@
-import { Directionality } from '@angular/cdk/bidi';
+import { Tab as AriaTab, TabList, Tabs as AriaTabs } from '@angular/aria/tabs';
 import { NgTemplateOutlet } from '@angular/common';
 import {
   Component,
   computed,
   contentChild,
   contentChildren,
-  ElementRef,
   inject,
   input,
   InputSignal,
@@ -15,36 +14,27 @@ import {
   OutputEmitterRef,
   Signal,
   TemplateRef,
-  viewChildren,
 } from '@angular/core';
 import { Step } from './step';
 import { StepperConfig } from './stepper.config';
-import { StepperService } from './stepper.service';
 import { STEPPER_CONFIG } from './stepper.token';
 import { stepperOrientation, StepperSelectEvent, stepperValue } from './stepper.types';
 
 @Component({
   selector: 'tls-stepper',
-  imports: [NgTemplateOutlet],
+  imports: [NgTemplateOutlet, TabList, AriaTab],
   templateUrl: './stepper.html',
+  hostDirectives: [AriaTabs],
   host: {
     '[class]': 'hostClasses()',
   },
-  providers: [StepperService],
 })
 export class Stepper {
-  private static _counter = 0;
-  protected readonly panelId = `tls-stepper-panel-${++Stepper._counter}`;
-
   private _config: StepperConfig = inject(STEPPER_CONFIG);
-  private _stepperService: StepperService = inject(StepperService);
-  private readonly _directionality = inject(Directionality);
 
   protected steps: Signal<readonly Step[]> = contentChildren(Step);
   protected completedTemplateRef = contentChild<TemplateRef<unknown>>('completedTemplate');
   protected completedIconTemplateRef = contentChild<TemplateRef<unknown>>('stepCompletedIcon');
-
-  private _stepButtons = viewChildren<ElementRef<HTMLButtonElement>>('stepButton');
 
   public readonly active: ModelSignal<stepperValue> = model.required<stepperValue>();
   public readonly orientation: InputSignal<stepperOrientation> = input<stepperOrientation>(
@@ -74,65 +64,13 @@ export class Stepper {
     this.steps().findIndex(step => step.value() === this.active()),
   );
 
-  constructor() {
-    this._stepperService.active = this.active.asReadonly();
-  }
-
   // Protected methods
-  protected onSelect(step: Step, index: number): void {
-    if (step.disabled()) return;
-    if (this.linear() && index > this.activeIndex() + 1) return;
+  protected onSelectedTabChange(value: stepperValue | undefined): void {
+    if (value === undefined) return;
 
-    this.active.set(step.value());
+    const index = this.steps().findIndex(step => step.value() === value);
 
-    const eventData: StepperSelectEvent = {
-      index: index,
-      value: step.value(),
-    };
-    this.stepSelect.emit(eventData);
-  }
-
-  protected onKeydown(event: KeyboardEvent, index: number): void {
-    const orientation = this.orientation();
-    // Horizontal arrows are physical; swap them in RTL so Next still advances.
-    const isRtl = this._directionality.value === 'rtl';
-    const horizontalNext = isRtl ? 'ArrowLeft' : 'ArrowRight';
-    const horizontalPrev = isRtl ? 'ArrowRight' : 'ArrowLeft';
-    const keyNext = orientation === 'horizontal' ? horizontalNext : 'ArrowDown';
-    const keyPrev = orientation === 'horizontal' ? horizontalPrev : 'ArrowUp';
-
-    let target: number | null = null;
-
-    switch (event.key) {
-      case keyNext:
-        target = this._nextFocusable(index, 1);
-        break;
-      case keyPrev:
-        target = this._nextFocusable(index, -1);
-        break;
-      case 'Home':
-        target = this._nextFocusable(-1, 1);
-        break;
-      case 'End':
-        target = this._nextFocusable(this.steps().length, -1);
-        break;
-      default:
-        return;
-    }
-
-    event.preventDefault();
-    if (target === null) return;
-
-    this._stepButtons()[target]?.nativeElement.focus();
-    this.onSelect(this.steps()[target], target);
-  }
-
-  // Private methods
-  private _nextFocusable(from: number, direction: 1 | -1): number | null {
-    const steps = this.steps();
-    for (let i = from + direction; i >= 0 && i < steps.length; i += direction) {
-      if (!steps[i].disabled() && !(this.linear() && i > this.activeIndex() + 1)) return i;
-    }
-    return null;
+    this.active.set(value);
+    this.stepSelect.emit({ index, value });
   }
 }

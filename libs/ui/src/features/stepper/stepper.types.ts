@@ -1,6 +1,6 @@
 import { color, orientation } from '../../types';
 
-export type stepperValue = string | number;
+export type stepperValue = string;
 
 export type stepperColor = color;
 

@@ -1,7 +1,11 @@
 <ul
   class="tls-stepper-header"
-  role="tablist"
-  [attr.aria-orientation]="orientation()"
+  ngTabList
+  [orientation]="orientation()"
+  [wrap]="false"
+  [softDisabled]="false"
+  [selectedTab]="active()"
+  (selectedTabChange)="onSelectedTabChange($event)"
   [attr.aria-label]="ariaLabel() ?? null"
   [attr.aria-labelledby]="ariaLabelledby() ?? null"
 >
@@ -9,23 +13,17 @@
     <li role="presentation"
         class="tls-stepper-header__item"
         [class]="`tls-stepper-header--${step.color()}`"
-        [class.tls-stepper-header__item--active]="step.value() === active()"
+        [class.tls-stepper-header__item--active]="ariaTab.selected()"
         [class.tls-stepper-header__item--disabled]="step.disabled()"
         [class.tls-stepper-header__item--unreachable]="linear() && index > activeIndex() + 1"
         [class.tls-stepper-header__item--completed]="activeIndex() > index || completed()">
-      @let id = 'tls-stepper-tab-' + step.value();
       <button
-        #stepButton
+        #ariaTab="ngTab"
+        ngTab
         class="tls-stepper-header-button"
-        role="tab"
         type="button"
-        [attr.aria-controls]="panelId"
-        [id]="id"
-        [tabindex]="step.value() === active() ? 0 : -1"
-        [disabled]="step.disabled()"
-        [attr.aria-selected]="step.value() === active()"
-        (click)="onSelect(step, index)"
-        (keydown)="onKeydown($event, index)"
+        [value]="step.value()"
+        [disabled]="step.disabled() || (linear() && index > activeIndex() + 1)"
       >
         <span class="tls-stepper-header-button__index">
           @let isCompleted = activeIndex() > index || completed();
@@ -58,10 +56,7 @@
     </li>
   }
 </ul>
-<div class="tls-stepper-content"
-     [id]="panelId"
-     role="tabpanel"
-     [attr.aria-labelledby]="'tls-stepper-tab-' + active()">
+<div class="tls-stepper-content">
   <ng-content></ng-content>
   @if (completed() && completedTemplateRef()) {
     <div class="tls-stepper-content__template">
