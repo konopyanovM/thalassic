@@ -1,5 +1,8 @@
 import { argsToTemplate, Meta, moduleMetadata, StoryObj } from '@storybook/angular';
-import { STORY_TABS_VARIANT_OPTIONS } from '../../../.storybook/constants';
+import {
+  STORY_ORIENTATION_OPTIONS,
+  STORY_TABS_VARIANT_OPTIONS,
+} from '../../../.storybook/constants';
 import { Tab as TabComponent } from './tab/tab';
 import { Tabs as TabsComponent } from './tabs';
 
@@ -15,11 +18,16 @@ const meta: Meta<TabsComponent> = {
   args: {
     selected: '1',
     variant: 'flat',
+    orientation: 'horizontal',
   },
   argTypes: {
     variant: {
       control: { type: 'select' },
       options: STORY_TABS_VARIANT_OPTIONS,
+    },
+    orientation: {
+      control: { type: 'select' },
+      options: STORY_ORIENTATION_OPTIONS,
     },
   },
   render: args => ({

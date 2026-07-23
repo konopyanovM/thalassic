@@ -1,20 +1,24 @@
 <ul
   class="tls-tabs-header"
   role="tablist"
+  [attr.aria-orientation]="orientation()"
   [attr.aria-label]="ariaLabel() ?? null"
   [attr.aria-labelledby]="ariaLabelledby() ?? null"
 >
-  @for (tab of tabs(); track tab) {
+  @for (tab of tabs(); track tab; let index = $index) {
     <li
       class="tls-tabs-header__item"
       [class.tls-tabs-header__item--active]="tab.value() === selected()"
       [class.tls-tabs-header__item--disabled]="tab.disabled()"
     >
       <button
+        #tabButton
         class="tls-tabs-header__item-button"
         role="tab"
         [disabled]="tab.disabled()"
+        [tabindex]="tab.value() === focusableTabValue() ? 0 : -1"
         (click)="selected.set(tab.value())"
+        (keydown)="onKeydown($event, index)"
         [attr.aria-selected]="tab.value() === selected()"
       >
         {{ tab.label() }}
