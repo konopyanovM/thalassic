@@ -4,4 +4,6 @@ export type tabsVariant = 'flat' | 'outlined';
 
 export type tabsOrientation = orientation;
 
+export type tabsHeaderPosition = 'start' | 'end';
+
 export type tabValue = string;

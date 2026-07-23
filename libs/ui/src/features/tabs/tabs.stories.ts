@@ -19,6 +19,7 @@ const meta: Meta<TabsComponent> = {
     selected: '1',
     variant: 'flat',
     orientation: 'horizontal',
+    headerPosition: 'start',
   },
   argTypes: {
     variant: {
@@ -28,6 +29,10 @@ const meta: Meta<TabsComponent> = {
     orientation: {
       control: { type: 'select' },
       options: STORY_ORIENTATION_OPTIONS,
+    },
+    headerPosition: {
+      control: { type: 'inline-radio' },
+      options: ['start', 'end'],
     },
   },
   render: args => ({

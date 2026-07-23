@@ -2,6 +2,7 @@
   // Vertical
   &.tls-tabs--vertical {
     display: flex;
+    flex-direction: row;
 
     .tls-tabs-header {
       flex-direction: column;

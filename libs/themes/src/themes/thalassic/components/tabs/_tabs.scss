@@ -11,7 +11,8 @@
 
   background: var(--tls-tabs-background-color);
 
-  display: block;
+  display: flex;
+  flex-direction: column;
 
   transition:
     border-color var(--motion-theme),

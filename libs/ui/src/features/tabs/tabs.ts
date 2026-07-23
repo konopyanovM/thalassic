@@ -14,7 +14,7 @@ import {
 import { Tab } from './tab';
 import { TabsConfig } from './tabs.config';
 import { TABS_CONFIG } from './tabs.token';
-import { tabsOrientation, tabsVariant, tabValue } from './tabs.types';
+import { tabsHeaderPosition, tabsOrientation, tabsVariant, tabValue } from './tabs.types';
 
 @Component({
   selector: 'tls-tabs',
@@ -34,6 +34,9 @@ export class Tabs {
   public readonly orientation: InputSignal<tabsOrientation> = input<tabsOrientation>(
     this._config.orientation,
   );
+  public readonly headerPosition: InputSignal<tabsHeaderPosition> = input<tabsHeaderPosition>(
+    this._config.headerPosition,
+  );
   public readonly selected: ModelSignal<tabValue | undefined> = model<tabValue | undefined>(
     undefined,
   );
@@ -49,6 +52,7 @@ export class Tabs {
 
     array.push(`${className}--${this.variant()}`);
     array.push(`${className}--${this.orientation()}`);
+    array.push(`${className}--header-${this.headerPosition()}`);
 
     return array;
   });
