@@ -1,3 +1,20 @@
+## 22.5.0 (2026-07-23)
+
+### 🚀 Features
+
+- added full calendar component ([63e0c7b](https://github.com/konopyanovM/thalassic/commit/63e0c7b))
+- added header position input to tabs ([519bf2a](https://github.com/konopyanovM/thalassic/commit/519bf2a))
+- **ui:** added calendar component ([6e6a12b](https://github.com/konopyanovM/thalassic/commit/6e6a12b))
+- **ui/tabs:** added orientation to tabs component ([42d239b](https://github.com/konopyanovM/thalassic/commit/42d239b))
+
+### 🩹 Fixes
+
+- calendar bug fixes and improvements ([0362d0f](https://github.com/konopyanovM/thalassic/commit/0362d0f))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.4.0 (2026-07-19)
 
 ### 🚀 Features
