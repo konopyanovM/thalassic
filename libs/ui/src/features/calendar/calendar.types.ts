@@ -9,11 +9,8 @@ export interface CalendarEvent {
   start: Date;
   end?: Date;
   allDay?: boolean;
-  /**
-   * Tints the default event chip. A semantic token (`'primary'`, `'success'`, …) applies the
-   * matching container/on-container pair; any other value is used as a raw CSS background color.
-   */
-  color?: color | string;
+  /** Tints the default event chip with a semantic color token's container/on-container pair. */
+  color?: color;
   /** Consumer payload, surfaced in the template context and selection outputs. */
   data?: unknown;
 }

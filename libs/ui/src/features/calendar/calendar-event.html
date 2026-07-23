@@ -1,0 +1,12 @@
+<button
+  type="button"
+  tabindex="-1"
+  [class]="classes()"
+  (click)="onClick($event)"
+>
+  @if (template(); as template) {
+    <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="context()" />
+  } @else {
+    <span class="tls-calendar-event__label">{{ defaultLabel() }}</span>
+  }
+</button>

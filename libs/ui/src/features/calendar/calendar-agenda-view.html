@@ -1,0 +1,28 @@
+@for (day of days(); track day.date.getTime()) {
+  <div class="tls-calendar-agenda-view__day" role="listitem">
+    <button
+      type="button"
+      class="tls-calendar-agenda-view__date"
+      [class.tls-calendar-agenda-view__date--today]="day.isToday"
+      (click)="dateSelect.emit(day.date)"
+    >
+      <span class="tls-calendar-agenda-view__weekday">{{ day.weekday }}</span>
+      <span class="tls-calendar-agenda-view__date-label">{{ day.dateLabel }}</span>
+    </button>
+
+    <ul class="tls-calendar-agenda-view__events">
+      @for (event of day.events; track event.id) {
+        <li>
+          <tls-calendar-event
+            view="agenda"
+            [event]="event"
+            [template]="eventTemplate()"
+            (activate)="eventSelect.emit($event)"
+          />
+        </li>
+      }
+    </ul>
+  </div>
+} @empty {
+  <p class="tls-calendar-agenda-view__empty">No events</p>
+}

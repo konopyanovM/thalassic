@@ -1,0 +1,124 @@
+@use '../../mixins' as mixins;
+
+.tls-calendar-time-grid {
+  --tls-calendar-gutter: var(--spacing-16);
+
+  display: block;
+
+  &__header,
+  &__all-day,
+  &__body {
+    display: grid;
+    grid-template-columns: var(--tls-calendar-gutter) repeat(var(--tls-calendar-columns), minmax(0, 1fr));
+  }
+
+  &__header {
+    border-block-end: 1px solid var(--color-outline-variant);
+  }
+
+  &__heading {
+    width: 100%;
+
+    padding: var(--spacing-2);
+
+    border: none;
+
+    background-color: transparent;
+
+    font-size: var(--font-label-medium-size);
+    font-weight: var(--font-weight-medium);
+    text-align: center;
+    color: var(--color-on-surface-variant);
+
+    cursor: pointer;
+
+    &:focus-visible {
+      @include mixins.focus-ring;
+    }
+
+    &--today {
+      color: var(--color-primary);
+    }
+  }
+
+  &__all-day {
+    border-block-end: 1px solid var(--color-outline-variant);
+  }
+
+  &__gutter-label {
+    padding: var(--spacing-2);
+
+    font-size: var(--font-label-small-size);
+    text-align: end;
+    color: var(--color-on-surface-variant);
+  }
+
+  &__all-day-cell {
+    padding: var(--spacing-1);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+
+    border-inline-start: 1px solid var(--color-outline-variant);
+  }
+
+  &__gutter {
+    display: flex;
+    flex-direction: column;
+  }
+
+  // Labels keep their default top alignment, so each sits just under its hour line and the
+  // first ("12 AM") stays clear of the all-day row above. `border-box` keeps the top padding
+  // inside the hour height so rows stay aligned with the columns.
+  &__hour-label {
+    box-sizing: border-box;
+    height: var(--tls-calendar-hour-height);
+
+    padding-block-start: var(--spacing-1);
+    padding-inline-end: var(--spacing-2);
+
+    font-size: var(--font-label-small-size);
+    text-align: end;
+    color: var(--color-on-surface-variant);
+  }
+
+  &__column {
+    position: relative;
+
+    border-inline-start: 1px solid var(--color-outline-variant);
+
+    &--today {
+      background-color: var(--color-surface-container-low);
+    }
+  }
+
+  &__hour-line {
+    // Keep the top border inside the height so rows stay exactly one hour tall and the lines
+    // line up with the gutter's hour labels.
+    box-sizing: border-box;
+    height: var(--tls-calendar-hour-height);
+
+    border-block-start: 1px solid var(--color-outline-variant);
+  }
+
+  &__event {
+    // `border-box` keeps the inline top/height/width from the template accurate once padded.
+    box-sizing: border-box;
+    position: absolute;
+
+    padding: 2px;
+
+    z-index: 1;
+  }
+
+  &__now {
+    position: absolute;
+    inset-inline: 0;
+    z-index: 2;
+
+    height: 0;
+
+    border-block-start: 2px solid var(--color-primary);
+  }
+}

@@ -59,7 +59,7 @@ describe('Calendar', () => {
     expect(latest.end.getTime()).toBeGreaterThan(new Date(2026, 7, 31).getTime());
   });
 
-  it('buckets a multi-day event onto every day it covers', async () => {
+  it('renders a multi-day event as one bar spanning its days', async () => {
     const event: CalendarEvent = {
       id: '1',
       title: 'Conference',
@@ -69,34 +69,35 @@ describe('Calendar', () => {
     fixture.componentRef.setInput('events', [event]);
     await fixture.whenStable();
 
-    const chips = (fixture.nativeElement as HTMLElement).querySelectorAll(
-      '.tls-calendar-month-view__event',
+    const bars = (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLElement>(
+      'tls-calendar-event',
     );
-    expect(chips.length).toBe(3);
+    expect(bars.length).toBe(1);
+    // Jul 20 is a Monday → column 2, spanning 3 days (Mon–Wed).
+    expect(bars[0].style.gridColumn).toBe('2 / span 3');
   });
 
-  it('applies a modifier class for a semantic color and an inline var for a raw one', async () => {
+  it('applies a modifier class for a semantic color and none for an uncolored event', async () => {
     fixture.componentRef.setInput('events', [
       { id: 'token', title: 'Token', start: new Date(2026, 6, 20), color: 'success' },
-      { id: 'raw', title: 'Raw', start: new Date(2026, 6, 21), color: '#7c3aed' },
+      { id: 'plain', title: 'Plain', start: new Date(2026, 6, 21) },
     ]);
     await fixture.whenStable();
 
     const chips = Array.from(
       (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLElement>(
-        '.tls-calendar-month-view__event',
+        '.tls-calendar-event__button',
       ),
     );
     const tokenChip = chips.find(chip => (chip.textContent ?? '').includes('Token'));
-    const rawChip = chips.find(chip => (chip.textContent ?? '').includes('Raw'));
+    const plainChip = chips.find(chip => (chip.textContent ?? '').includes('Plain'));
 
     expect(tokenChip).toBeTruthy();
-    expect(rawChip).toBeTruthy();
-    if (!tokenChip || !rawChip) return;
+    expect(plainChip).toBeTruthy();
+    if (!tokenChip || !plainChip) return;
 
-    expect(tokenChip.classList).toContain('tls-calendar-month-view__event--success');
-    expect(tokenChip.style.getPropertyValue('--tls-calendar-event-color')).toBe('');
-    expect(rawChip.classList).not.toContain('tls-calendar-month-view__event--success');
-    expect(rawChip.style.getPropertyValue('--tls-calendar-event-color')).toBe('#7c3aed');
+    expect(tokenChip.classList).toContain('tls-calendar-event__button--success');
+    expect(plainChip.classList).not.toContain('tls-calendar-event__button--success');
+    expect(plainChip.className).toBe('tls-calendar-event__button');
   });
 });

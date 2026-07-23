@@ -18,13 +18,28 @@ export const DAY_NUMBER_FORMAT = 'd';
 /** `date-fns` format token for the single-day view title, e.g. "Monday, July 20, 2026". */
 export const DAY_TITLE_FORMAT = 'EEEE, MMMM d, yyyy';
 
-/**
- * View switcher options. Views beyond `month` are disabled until their sub-views ship;
- * flip `disabled` off as each lands.
- */
-export const CALENDAR_VIEW_OPTIONS: { label: string; value: calendarView; disabled: boolean }[] = [
-  { label: 'Month', value: 'month', disabled: false },
-  { label: 'Week', value: 'week', disabled: true },
-  { label: 'Day', value: 'day', disabled: true },
-  { label: 'Agenda', value: 'agenda', disabled: true },
+/** Pixel height of one hour row in the week/day time-grid; drives event positioning too. */
+export const HOUR_HEIGHT = 48;
+
+/** Minimum rendered height (px) for a timed event, so brief events stay readable. */
+export const MIN_EVENT_HEIGHT = 24;
+
+/** `date-fns` format token for a time-grid column heading, e.g. "Mon 20". */
+export const TIME_GRID_HEADING_FORMAT = 'EEE d';
+
+/** `date-fns` format token for an hour label in the time gutter, e.g. "9 AM". */
+export const HOUR_LABEL_FORMAT = 'h a';
+
+/** `date-fns` format token for an agenda day's weekday, e.g. "Wednesday". */
+export const AGENDA_WEEKDAY_FORMAT = 'EEEE';
+
+/** `date-fns` format token for an agenda day's date, e.g. "Jul 22". */
+export const AGENDA_DATE_FORMAT = 'MMM d';
+
+/** View switcher options. */
+export const CALENDAR_VIEW_OPTIONS: { label: string; value: calendarView }[] = [
+  { label: 'Month', value: 'month' },
+  { label: 'Week', value: 'week' },
+  { label: 'Day', value: 'day' },
+  { label: 'Agenda', value: 'agenda' },
 ];

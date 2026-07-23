@@ -10,10 +10,11 @@
   rowWrap="nowrap"
   colWrap="nowrap"
   [attr.aria-label]="label() ?? null"
+  [style.--tls-calendar-max-lanes]="maxEventsPerDay()"
 >
   @for (week of weeks(); track $index) {
     <div ngGridRow class="tls-calendar-month-view__week">
-      @for (cell of week; track cell.date.getTime()) {
+      @for (cell of week.days; track cell.date.getTime()) {
         <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -- ngGridCell manages role and roving tabindex -->
         <div
           ngGridCell
@@ -26,37 +27,28 @@
         >
           <span class="tls-calendar-month-view__day-number">{{ cell.dayNumber }}</span>
 
-          @if (cell.visibleEvents.length > 0 || cell.hiddenCount > 0) {
-            <ul class="tls-calendar-month-view__events">
-              @for (event of cell.visibleEvents; track event.id) {
-                <li>
-                  <button
-                    type="button"
-                    tabindex="-1"
-                    [class]="eventClasses(event)"
-                    [style.--tls-calendar-event-color]="eventColor(event)"
-                    (click)="onEventClick($event, event)"
-                  >
-                    @if (eventTemplate(); as template) {
-                      <ng-container
-                        [ngTemplateOutlet]="template"
-                        [ngTemplateOutletContext]="eventContext(event)"
-                      />
-                    } @else {
-                      {{ event.title }}
-                    }
-                  </button>
-                </li>
-              }
-              @if (cell.hiddenCount > 0) {
-                <li>
-                  <span class="tls-calendar-month-view__more">+{{ cell.hiddenCount }} more</span>
-                </li>
-              }
-            </ul>
+          @if (cell.hiddenCount > 0) {
+            <span class="tls-calendar-month-view__more">+{{ cell.hiddenCount }} more</span>
           }
         </div>
       }
+
+      <!-- Event bars span day columns and stack by lane, overlaid on the cells above. -->
+      <div class="tls-calendar-month-view__bars">
+        @for (bar of week.bars; track bar.event.id) {
+          <tls-calendar-event
+            view="month"
+            class="tls-calendar-month-view__bar"
+            [class.tls-calendar-month-view__bar--continues-before]="bar.continuesBefore"
+            [class.tls-calendar-month-view__bar--continues-after]="bar.continuesAfter"
+            [event]="bar.event"
+            [template]="eventTemplate()"
+            [style.grid-column]="bar.gridColumn"
+            [style.grid-row]="bar.gridRow"
+            (activate)="eventSelect.emit($event)"
+          />
+        }
+      </div>
     </div>
   }
 </div>

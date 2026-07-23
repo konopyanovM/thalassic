@@ -1,0 +1,68 @@
+<div class="tls-calendar-time-grid__header">
+  <div class="tls-calendar-time-grid__gutter-spacer"></div>
+  @for (column of columns(); track column.date.getTime()) {
+    <button
+      type="button"
+      class="tls-calendar-time-grid__heading"
+      [class.tls-calendar-time-grid__heading--today]="column.isToday"
+      (click)="dateSelect.emit(column.date)"
+    >
+      {{ column.heading }}
+    </button>
+  }
+</div>
+
+@if (showAllDayRow()) {
+  <div class="tls-calendar-time-grid__all-day">
+    <div class="tls-calendar-time-grid__gutter-label">All day</div>
+    @for (column of columns(); track column.date.getTime()) {
+      <div class="tls-calendar-time-grid__all-day-cell">
+        @for (event of column.allDayEvents; track event.id) {
+          <tls-calendar-event
+            [view]="view()"
+            [event]="event"
+            [template]="eventTemplate()"
+            (activate)="eventSelect.emit($event)"
+          />
+        }
+      </div>
+    }
+  </div>
+}
+
+<div class="tls-calendar-time-grid__body">
+  <div class="tls-calendar-time-grid__gutter">
+    @for (hour of hours(); track hour) {
+      <div class="tls-calendar-time-grid__hour-label">{{ hourLabel(hour) }}</div>
+    }
+  </div>
+
+  @for (column of columns(); track column.date.getTime()) {
+    <div
+      class="tls-calendar-time-grid__column"
+      [class.tls-calendar-time-grid__column--today]="column.isToday"
+    >
+      @for (hour of hours(); track hour) {
+        <div class="tls-calendar-time-grid__hour-line"></div>
+      }
+
+      @for (layout of column.timedEvents; track layout.event.id) {
+        <tls-calendar-event
+          class="tls-calendar-time-grid__event"
+          [view]="view()"
+          [event]="layout.event"
+          [template]="eventTemplate()"
+          [style.top.px]="layout.top"
+          [style.height.px]="layout.height"
+          [style.inset-inline-start.%]="laneOffset(layout)"
+          [style.width.%]="laneWidth(layout)"
+          (activate)="eventSelect.emit($event)"
+        />
+      }
+
+      @if (column.isToday && nowOffset() !== null) {
+        <div class="tls-calendar-time-grid__now" [style.top.px]="nowOffset()"></div>
+      }
+    </div>
+  }
+</div>
