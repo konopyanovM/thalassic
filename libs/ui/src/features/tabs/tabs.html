@@ -1,25 +1,26 @@
 <ul
   class="tls-tabs-header"
-  role="tablist"
-  [attr.aria-orientation]="orientation()"
+  ngTabList
+  [orientation]="orientation()"
+  [softDisabled]="false"
+  [(selectedTab)]="selected"
   [attr.aria-label]="ariaLabel() ?? null"
   [attr.aria-labelledby]="ariaLabelledby() ?? null"
 >
-  @for (tab of tabs(); track tab; let index = $index) {
+  @for (tab of tabs(); track tab) {
     <li
+      role="presentation"
       class="tls-tabs-header__item"
-      [class.tls-tabs-header__item--active]="tab.value() === selected()"
+      [class.tls-tabs-header__item--active]="ariaTab.selected()"
       [class.tls-tabs-header__item--disabled]="tab.disabled()"
     >
       <button
-        #tabButton
+        #ariaTab="ngTab"
+        ngTab
         class="tls-tabs-header__item-button"
-        role="tab"
+        type="button"
+        [value]="tab.value()"
         [disabled]="tab.disabled()"
-        [tabindex]="tab.value() === focusableTabValue() ? 0 : -1"
-        (click)="selected.set(tab.value())"
-        (keydown)="onKeydown($event, index)"
-        [attr.aria-selected]="tab.value() === selected()"
       >
         {{ tab.label() }}
       </button>

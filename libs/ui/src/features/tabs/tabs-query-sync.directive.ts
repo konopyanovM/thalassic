@@ -18,7 +18,7 @@ export class TabsQuerySyncDirective extends QuerySyncDirective implements OnInit
     effect(() => {
       const selected = this._tabs.selected();
       const param = this.tlsTabsQuerySync();
-      if (selected === null) return;
+      if (selected === undefined) return;
       this.syncToUrl(param, selected);
     });
   }

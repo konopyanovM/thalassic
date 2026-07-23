@@ -4,4 +4,4 @@ export type tabsVariant = 'flat' | 'outlined';
 
 export type tabsOrientation = orientation;
 
-export type tabValue = string | number;
+export type tabValue = string;
