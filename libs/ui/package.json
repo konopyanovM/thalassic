@@ -1,6 +1,6 @@
 {
   "name": "@thalassic/ui",
-  "version": "22.5.0",
+  "version": "22.5.1",
   "license": "MIT",
   "peerDependencies": {
     "@angular/aria": "^22.0.0",

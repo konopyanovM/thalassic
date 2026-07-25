@@ -1,3 +1,13 @@
+## 22.5.1 (2026-07-25)
+
+### 🚀 Features
+
+- **ui/tabs:** added header template input to tabs ([cc72757](https://github.com/konopyanovM/thalassic/commit/cc72757))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.5.0 (2026-07-23)
 
 ### 🚀 Features
