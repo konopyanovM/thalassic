@@ -2,11 +2,13 @@ import {
   booleanAttribute,
   Component,
   computed,
+  contentChild,
   inject,
   input,
   InputSignal,
   InputSignalWithTransform,
   Signal,
+  TemplateRef,
 } from '@angular/core';
 import { TabPanel } from '@angular/aria/tabs';
 import { tabValue } from '../tabs.types';
@@ -25,6 +27,8 @@ import { tabValue } from '../tabs.types';
 })
 export class Tab {
   private readonly _tabPanel = inject(TabPanel);
+
+  public readonly headerTemplateRef = contentChild<TemplateRef<unknown>>('tabHeader');
 
   // Inputs
   public readonly value: Signal<tabValue> = this._tabPanel.value;

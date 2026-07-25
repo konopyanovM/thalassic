@@ -21,8 +21,13 @@
         type="button"
         [value]="tab.value()"
         [disabled]="tab.disabled()"
+        [attr.aria-label]="tab.headerTemplateRef() ? tab.label() : null"
       >
-        {{ tab.label() }}
+        @if (tab.headerTemplateRef(); as headerTemplateRef) {
+          <ng-container [ngTemplateOutlet]="headerTemplateRef"></ng-container>
+        } @else {
+          {{ tab.label() }}
+        }
       </button>
     </li>
   }

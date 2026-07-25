@@ -14,9 +14,8 @@
   display: flex;
   flex-direction: column;
 
-  transition:
-    border-color var(--motion-theme),
-    background-color var(--motion-theme);
+  transition: border-color var(--motion-theme),
+  background-color var(--motion-theme);
 
   overflow: clip;
 
@@ -26,14 +25,15 @@
     border-color: var(--tls-tabs-border-color);
 
     &__item {
+      display: flex;
+
       color: var(--tls-tabs-label-color);
 
       border-color: transparent;
 
-      transition:
-        color var(--motion-fast),
-        border-color var(--motion-fast),
-        background-color var(--motion-theme);
+      transition: color var(--motion-fast),
+      border-color var(--motion-fast),
+      background-color var(--motion-theme);
 
       &:has(&-link:hover, &-link:focus) {
         background-color: var(--color-grey-95);
@@ -58,7 +58,7 @@
         // TODO: use mixin
         font-size: var(--font-label-large-size);
         font-weight: var(--font-label-large-weight);
-        line-height: var(--font-label-large-border-height);
+        line-height: var(--font-label-large-line-height);
         letter-spacing: var(--font-label-large-letter-spacing);
 
         cursor: pointer;

@@ -54,3 +54,23 @@ type Story = StoryObj<TabsComponent>;
 export const Tabs: Story = {
   args: {},
 };
+
+export const CustomHeaderTemplate: Story = {
+  args: {},
+  render: args => ({
+    props: args,
+    template: `
+    <tls-tabs ${argsToTemplate(args)}>
+       <tls-tab value="0" label="label1">
+         <ng-template #tabHeader>🏠 Home</ng-template>
+         Content 1
+       </tls-tab>
+       <tls-tab value="1" label="label2">
+         <ng-template #tabHeader>⚙️ Settings</ng-template>
+         Content 2
+       </tls-tab>
+       <tls-tab value="2" label="label3">Content 3</tls-tab>
+    </tls-tabs>
+    `,
+  }),
+};

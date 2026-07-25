@@ -8,15 +8,27 @@
       &__item {
         margin-bottom: -1px;
 
-        &:hover {
-          .tls-tabs-header__item-button {
-            background-color: var(--color-surface-container);
-          }
-        }
+        // Border is always reserved at the active width and toggles only
+        // border-color (transparent to active) so switching tabs never
+        // changes the item's box height and shifts the label.
+        border-bottom-width: var(--tls-tabs-active-border-width);
+        border-bottom-style: solid;
 
-        &.tls-tabs-header__item--active {
-          border-bottom-width: var(--tls-tabs-active-border-width);
-          border-bottom-style: solid;
+        // Hover fill sits on the item, not the button, so it paints under
+        // the item's border and reaches the divider line instead of
+        // stopping short and leaving a gap.
+        &:hover {
+          background-color: var(--color-surface-container);
+
+          // The item's border overlaps the header's divider line by
+          // `--tls-tabs-border-width` (see `margin-bottom: -1px` above).
+          // Made opaque only while hovering, it paints over the hover
+          // fill and keeps that shared pixel visible instead of the
+          // fill covering it. The active item already has an opaque
+          // border, so it's excluded here.
+          &:not(.tls-tabs-header__item--active) {
+            border-bottom-color: var(--tls-tabs-border-color);
+          }
         }
       }
     }

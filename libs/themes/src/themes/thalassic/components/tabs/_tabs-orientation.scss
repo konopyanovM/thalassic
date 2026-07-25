@@ -25,10 +25,14 @@
           margin-bottom: 0;
           margin-inline-end: -1px;
 
-          &.tls-tabs-header__item--active {
-            border-bottom-width: 0;
-            border-inline-end-width: var(--tls-tabs-active-border-width);
-            border-inline-end-style: solid;
+          border-bottom-width: 0;
+          border-inline-end-width: var(--tls-tabs-active-border-width);
+          border-inline-end-style: solid;
+
+          // See the flat variant's own hover rule for why this is needed:
+          // it keeps the divider line visible under the hover fill.
+          &:hover:not(.tls-tabs-header__item--active) {
+            border-inline-end-color: var(--tls-tabs-border-color);
           }
         }
       }

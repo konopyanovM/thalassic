@@ -1,4 +1,5 @@
 import { Tab as AriaTab, TabList, Tabs as AriaTabs } from '@angular/aria/tabs';
+import { NgTemplateOutlet } from '@angular/common';
 import {
   Component,
   computed,
@@ -18,7 +19,7 @@ import { tabsHeaderPosition, tabsOrientation, tabsVariant, tabValue } from './ta
 
 @Component({
   selector: 'tls-tabs',
-  imports: [TabList, AriaTab],
+  imports: [TabList, AriaTab, NgTemplateOutlet],
   templateUrl: './tabs.html',
   hostDirectives: [AriaTabs],
   host: {
