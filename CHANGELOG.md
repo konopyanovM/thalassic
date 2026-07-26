@@ -1,3 +1,23 @@
+## 22.6.0 (2026-07-26)
+
+### 🚀 Features
+
+- added progress bar to toast ([37936f9](https://github.com/konopyanovM/thalassic/commit/37936f9))
+- added font awesome icon config adapter ([5fdbd54](https://github.com/konopyanovM/thalassic/commit/5fdbd54))
+- **ui:** added badge component ([70d4190](https://github.com/konopyanovM/thalassic/commit/70d4190))
+- **ui:** added tonal variants to button and badge ([5184141](https://github.com/konopyanovM/thalassic/commit/5184141))
+- **ui:** tonal variant added to other components ([832323f](https://github.com/konopyanovM/thalassic/commit/832323f))
+- **ui:** toast component added ([992e962](https://github.com/konopyanovM/thalassic/commit/992e962))
+- **ui:** added icon registry ([9bc5389](https://github.com/konopyanovM/thalassic/commit/9bc5389))
+
+### 🩹 Fixes
+
+- **ui:** fixed pagination and tabs query sync ([6d8d94a](https://github.com/konopyanovM/thalassic/commit/6d8d94a))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.5.1 (2026-07-25)
 
 ### 🚀 Features
