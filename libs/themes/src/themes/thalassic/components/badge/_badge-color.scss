@@ -2,4 +2,5 @@
 
 .tls-badge {
   @include mixins.color-variants('tls-badge', $tonal: true);
+  @include mixins.tonal-swap('tls-badge');
 }

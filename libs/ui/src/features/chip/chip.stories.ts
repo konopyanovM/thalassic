@@ -1,10 +1,11 @@
 import { argsToTemplate, Meta, moduleMetadata, StoryObj } from '@storybook/angular';
-import { STORY_COLOR_OPTIONS, STORY_SIZE_OPTIONS } from '../../../.storybook/constants';
-import { chipVariant } from './chip.types';
+import {
+  STORY_CHIP_VARIANT_OPTIONS,
+  STORY_COLOR_OPTIONS,
+  STORY_SIZE_OPTIONS,
+} from '../../../.storybook/constants';
 import { Chip as ChipComponent } from './chip';
 import { ChipControl } from './chip.directive';
-
-const CHIP_VARIANT_OPTIONS: chipVariant[] = ['filled', 'tonal', 'outlined', 'text'];
 
 const meta: Meta<ChipComponent> = {
   component: ChipComponent,
@@ -25,7 +26,7 @@ const meta: Meta<ChipComponent> = {
     },
     variant: {
       control: { type: 'select' },
-      options: CHIP_VARIANT_OPTIONS,
+      options: STORY_CHIP_VARIANT_OPTIONS,
     },
     size: {
       control: { type: 'select' },
@@ -88,7 +89,7 @@ export const Control: StoryObj<ChipControl> = {
     },
     checkedVariant: {
       control: { type: 'select' },
-      options: [undefined, ...CHIP_VARIANT_OPTIONS],
+      options: [undefined, ...STORY_CHIP_VARIANT_OPTIONS],
     },
   },
   render: args => ({

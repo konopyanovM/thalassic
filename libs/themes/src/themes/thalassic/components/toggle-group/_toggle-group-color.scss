@@ -1,5 +1,6 @@
 @use '../../mixins' as mixins;
 
 .tls-toggle-group {
-  @include mixins.color-variants('tls-toggle-group');
+  @include mixins.color-variants('tls-toggle-group', $tonal: true);
+  @include mixins.tonal-swap('tls-toggle-group');
 }

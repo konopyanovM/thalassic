@@ -3,12 +3,16 @@ $colors: primary, secondary, tertiary, success, info, warning, danger;
 // Maps each theme hue onto a component's --<block>-color / --<block>-on-color pair.
 // Expects the component to consume those two custom properties.
 //
-// With $tonal: true, each hue also exposes the container token pair and a `tonal`
-// variant class swaps the container pair in — for components that offer a lower
-// emphasis, tonal appearance alongside the solid fill.
-@mixin color-variants($block, $tonal: false) {
+// With $tonal: true, each hue additionally exposes the container token pair
+// (--<block>-color-container / --<block>-on-color-container) for a lower-emphasis,
+// tonal appearance.
+//
+// $modifier prefixes the hue classes, so a component with a second, independently
+// colored state can reuse the same mapping (e.g. $modifier: 'checked-' emits
+// `--checked-primary` … `--checked-danger`).
+@mixin color-variants($block, $tonal: false, $modifier: '') {
   @each $color in $colors {
-    &.#{$block}--#{$color} {
+    &.#{$block}--#{$modifier}#{$color} {
       --#{$block}-color: var(--color-#{$color});
       --#{$block}-on-color: var(--color-on-#{$color});
 
@@ -18,11 +22,18 @@ $colors: primary, secondary, tertiary, success, info, warning, danger;
       }
     }
   }
+}
 
-  @if $tonal {
-    &.#{$block}--tonal {
-      --#{$block}-color: var(--#{$block}-color-container);
-      --#{$block}-on-color: var(--#{$block}-on-color-container);
-    }
+// Convenience for components with a single variant layer: a `tonal` class that swaps
+// the active pair to the container pair, so one fill rule serves both filled and
+// tonal. Requires color-variants(..., $tonal: true).
+//
+// Do NOT use for a component with a second variant layer (e.g. chip's base vs
+// checked variant): swapping a shared token leaks the tonal treatment across the
+// state boundary. Such components consume the container pair directly per rule.
+@mixin tonal-swap($block, $modifier: '') {
+  &.#{$block}--#{$modifier}tonal {
+    --#{$block}-color: var(--#{$block}-color-container);
+    --#{$block}-on-color: var(--#{$block}-on-color-container);
   }
 }

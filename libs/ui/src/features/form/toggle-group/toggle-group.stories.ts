@@ -4,6 +4,7 @@ import {
   STORY_FORM_CONTROL_ARGS,
   STORY_ORIENTATION_OPTIONS,
   STORY_SIZE_OPTIONS,
+  STORY_TOGGLE_GROUP_VARIANT_OPTIONS,
 } from '../../../../.storybook/constants';
 import { ToggleGroup } from './toggle-group';
 
@@ -21,6 +22,7 @@ const meta: Meta<ToggleGroup<StoryOption, string>> = {
     multiple: false,
     size: 'md',
     color: 'primary',
+    variant: 'filled',
     orientation: 'horizontal',
     fluid: false,
     ...STORY_FORM_CONTROL_ARGS,
@@ -33,6 +35,10 @@ const meta: Meta<ToggleGroup<StoryOption, string>> = {
     color: {
       control: { type: 'select' },
       options: STORY_COLOR_OPTIONS,
+    },
+    variant: {
+      control: { type: 'select' },
+      options: STORY_TOGGLE_GROUP_VARIANT_OPTIONS,
     },
     orientation: {
       control: { type: 'select' },

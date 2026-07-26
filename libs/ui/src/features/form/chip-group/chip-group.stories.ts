@@ -1,11 +1,11 @@
 import { argsToTemplate, Meta, StoryObj } from '@storybook/angular';
 import {
+  STORY_CHIP_VARIANT_OPTIONS,
   STORY_COLOR_OPTIONS,
   STORY_FORM_CONTROL_ARGS,
   STORY_ORIENTATION_OPTIONS,
   STORY_SIZE_OPTIONS
 } from '../../../../.storybook/constants';
-import { chipVariant } from '../../chip';
 import { ChipGroup } from './chip-group';
 
 interface StoryOption {
@@ -13,8 +13,6 @@ interface StoryOption {
   id: string;
   inactive: boolean;
 }
-
-const CHIP_VARIANT_OPTIONS: chipVariant[] = ['filled', 'outlined', 'text'];
 
 const meta: Meta<ChipGroup<StoryOption, string>> = {
   component: ChipGroup,
@@ -45,11 +43,11 @@ const meta: Meta<ChipGroup<StoryOption, string>> = {
     },
     variant: {
       control: { type: 'select' },
-      options: CHIP_VARIANT_OPTIONS,
+      options: STORY_CHIP_VARIANT_OPTIONS,
     },
     checkedVariant: {
       control: { type: 'select' },
-      options: [undefined, ...CHIP_VARIANT_OPTIONS],
+      options: [undefined, ...STORY_CHIP_VARIANT_OPTIONS],
     },
     orientation: {
       control: { type: 'select' },

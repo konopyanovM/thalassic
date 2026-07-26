@@ -19,6 +19,7 @@ import {
 } from '../../../abstract/form';
 import { color, controlSize, orientation } from '../../../types';
 import { TOGGLE_GROUP_CONFIG } from './toggle-group.token';
+import { toggleGroupVariant } from './toggle-group.types';
 
 @Component({
   selector: 'tls-toggle-group',
@@ -53,6 +54,9 @@ export class ToggleGroup<T, V = unknown> extends SelectionGroup<T, V> {
   >(this._config.unselectable, { transform: booleanAttribute });
   public readonly size: InputSignal<controlSize> = input<controlSize>(this._config.size);
   public readonly color: InputSignal<color> = input<color>(this._config.color);
+  public readonly variant: InputSignal<toggleGroupVariant> = input<toggleGroupVariant>(
+    this._config.variant,
+  );
   public readonly orientation: InputSignal<orientation> = input<orientation>(
     this._config.orientation,
   );
@@ -71,6 +75,7 @@ export class ToggleGroup<T, V = unknown> extends SelectionGroup<T, V> {
       className,
       `${className}--${this.size()}`,
       `${className}--${this.color()}`,
+      `${className}--${this.variant()}`,
       `${className}--${this.orientation()}`,
     ];
     if (this.fluid()) array.push(`${className}--fluid`);

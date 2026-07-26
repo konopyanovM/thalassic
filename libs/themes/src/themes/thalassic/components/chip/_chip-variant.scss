@@ -1,8 +1,12 @@
 .tls-chip {
-  &.tls-chip--filled,
-  &.tls-chip--tonal {
+  &.tls-chip--filled {
     background-color: var(--tls-chip-color);
     color: var(--tls-chip-on-color);
+  }
+
+  &.tls-chip--tonal {
+    background-color: var(--tls-chip-color-container);
+    color: var(--tls-chip-on-color-container);
   }
 
   &.tls-chip--outlined {
