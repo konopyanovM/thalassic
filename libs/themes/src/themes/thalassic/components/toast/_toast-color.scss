@@ -1,0 +1,43 @@
+.tls-toast {
+  &.tls-toast--primary {
+    --tls-toast-color: var(--color-on-primary-container);
+    --tls-toast-background-color: var(--color-primary-container);
+    --tls-toast-icon-color: var(--color-primary);
+  }
+
+  &.tls-toast--secondary {
+    --tls-toast-color: var(--color-on-secondary-container);
+    --tls-toast-background-color: var(--color-secondary-container);
+    --tls-toast-icon-color: var(--color-secondary);
+  }
+
+  &.tls-toast--tertiary {
+    --tls-toast-color: var(--color-on-tertiary-container);
+    --tls-toast-background-color: var(--color-tertiary-container);
+    --tls-toast-icon-color: var(--color-tertiary);
+  }
+
+  &.tls-toast--success {
+    --tls-toast-color: var(--color-on-success-container);
+    --tls-toast-background-color: var(--color-success-container);
+    --tls-toast-icon-color: var(--color-success);
+  }
+
+  &.tls-toast--info {
+    --tls-toast-color: var(--color-on-info-container);
+    --tls-toast-background-color: var(--color-info-container);
+    --tls-toast-icon-color: var(--color-info);
+  }
+
+  &.tls-toast--warning {
+    --tls-toast-color: var(--color-on-warning-container);
+    --tls-toast-background-color: var(--color-warning-container);
+    --tls-toast-icon-color: var(--color-warning);
+  }
+
+  &.tls-toast--danger {
+    --tls-toast-color: var(--color-on-danger-container);
+    --tls-toast-background-color: var(--color-danger-container);
+    --tls-toast-icon-color: var(--color-danger);
+  }
+}

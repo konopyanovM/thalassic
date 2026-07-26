@@ -1,0 +1,171 @@
+@use '../../mixins' as mixins;
+
+@keyframes tls-toast-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.tls-toast-outlet {
+  position: fixed;
+  inset: 0;
+
+  pointer-events: none;
+}
+
+.tls-toast-region {
+  --tls-toast-region-inset: var(--spacing-4);
+  --tls-toast-width: 360px;
+
+  position: absolute;
+
+  width: var(--tls-toast-width);
+  max-width: calc(100vw - var(--tls-toast-region-inset) * 2);
+
+  pointer-events: auto;
+
+  &--top {
+    inset-block-start: var(--tls-toast-region-inset);
+  }
+
+  &--bottom {
+    inset-block-end: var(--tls-toast-region-inset);
+  }
+
+  &--start {
+    inset-inline-start: var(--tls-toast-region-inset);
+  }
+
+  &--end {
+    inset-inline-end: var(--tls-toast-region-inset);
+  }
+
+  &--center {
+    inset-inline: 0;
+
+    margin-inline: auto;
+  }
+
+  // Toasts are anchored to the region's block edge and overlap there; the outlet
+  // offsets them with transforms. The scale origin sits on that same edge so the
+  // pile shrinks toward the anchor.
+  &--top .tls-toast {
+    inset-block-start: 0;
+
+    transform-origin: top center;
+  }
+
+  &--bottom .tls-toast {
+    inset-block-end: 0;
+
+    transform-origin: bottom center;
+  }
+}
+
+.tls-toast {
+  position: absolute;
+  inset-inline: 0;
+
+  @include mixins.motion(essential) {
+    transition: transform var(--motion-default) var(--motion-ease-out);
+
+    &--enter {
+      animation: tls-toast-fade var(--motion-default) var(--motion-ease-out) both;
+    }
+
+    &--leave {
+      animation: tls-toast-fade var(--motion-default) var(--motion-ease-in) reverse both;
+    }
+  }
+
+  &__surface {
+    padding: var(--spacing-3) var(--spacing-4);
+
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-3);
+
+    border-radius: var(--radius-md);
+
+    background-color: var(--tls-toast-background-color);
+    box-shadow: var(--shadow-md);
+    opacity: var(--tls-toast-depth-opacity, 1);
+
+    color: var(--tls-toast-color);
+
+    @include mixins.motion(essential) {
+      transition: opacity var(--motion-default) var(--motion-ease-out);
+    }
+  }
+
+  &__icon {
+    flex-shrink: 0;
+
+    display: flex;
+
+    color: var(--tls-toast-icon-color);
+  }
+
+  &__body {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+
+    flex: 1;
+  }
+
+  &__title {
+    margin: 0;
+
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  &__message {
+    margin: 0;
+
+    font-size: var(--font-size-sm);
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+
+  &__action {
+    flex-shrink: 0;
+
+    margin-inline-start: calc(var(--spacing-2) * -1);
+  }
+
+  &__close {
+    flex-shrink: 0;
+
+    width: 28px;
+    height: 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: var(--radius-sm);
+
+    background-color: transparent;
+
+    color: inherit;
+
+    cursor: pointer;
+
+    @include mixins.motion(essential) {
+      transition: background-color var(--motion-fast) var(--motion-ease-in-out);
+    }
+
+    &:hover {
+      background-color: rgb(var(--color-shadow) / 0.12);
+    }
+  }
+}

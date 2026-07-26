@@ -44,6 +44,7 @@ import {
   DEFAULT_TABS_CONFIG,
   DEFAULT_TABS_QUERY_SYNC_CONFIG,
   DEFAULT_TEXTAREA_CONFIG,
+  DEFAULT_TOAST_CONFIG,
   DEFAULT_TOGGLE_GROUP_CONFIG,
   DEFAULT_TOOLTIP_CONFIG,
   DIALOG_CONFIG,
@@ -70,6 +71,8 @@ import {
   TABS_CONFIG,
   TABS_QUERY_SYNC_CONFIG,
   TEXTAREA_CONFIG,
+  TOAST_CONFIG,
+  ToastConfig,
   TOGGLE_GROUP_CONFIG,
   TOOLTIP_CONFIG,
 } from '../features';
@@ -201,6 +204,12 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
     {
       provide: TEXTAREA_CONFIG,
       useValue: deepMerge(DEFAULT_TEXTAREA_CONFIG, config.components.textarea),
+    },
+    {
+      provide: TOAST_CONFIG,
+      // `severityColors` is a deep-partial override; deepMerge merges it recursively,
+      // but its `Partial<T>` signature only models a shallow partial, so cast to it.
+      useValue: deepMerge(DEFAULT_TOAST_CONFIG, config.components.toast as Partial<ToastConfig>),
     },
     {
       provide: TOGGLE_GROUP_CONFIG,

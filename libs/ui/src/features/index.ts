@@ -35,4 +35,5 @@ export * from './skeleton';
 export * from './stepper';
 export * from './table';
 export * from './tabs';
+export * from './toast';
 export * from './tooltip';

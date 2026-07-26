@@ -32,6 +32,9 @@ import {
   TabsConfig,
   TabsQuerySyncConfig,
   TextareaConfig,
+  toastColor,
+  ToastConfig,
+  toastSeverity,
   ToggleGroupConfig,
   TooltipConfig
 } from '../features';
@@ -72,6 +75,9 @@ export interface tlsUiConfigProvider {
     table?: Partial<TableConfig>;
     tabs?: Partial<TabsConfig> & { querySync?: Partial<TabsQuerySyncConfig> };
     textarea?: Partial<TextareaConfig>;
+    toast?: Partial<Omit<ToastConfig, 'severityColors'>> & {
+      severityColors?: Partial<Record<toastSeverity, toastColor>>;
+    };
     toggleGroup?: Partial<ToggleGroupConfig>;
     tooltip?: Partial<TooltipConfig>;
   };

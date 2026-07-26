@@ -1,0 +1,28 @@
+<div
+  [class]="regionClasses()"
+  role="region"
+  aria-label="Notifications"
+  [style.height.px]="regionHeight()"
+  (mouseenter)="onPointerEnter()"
+  (mouseleave)="onPointerLeave()"
+  (focusin)="onFocusIn()"
+  (focusout)="onFocusOut()"
+>
+  @for (toast of toasts(); track toast.id; let index = $index) {
+    <tls-toast
+      #toastEl
+      [style.transform]="layouts()[index].transform"
+      [style.z-index]="layouts()[index].zIndex"
+      [style.--tls-toast-depth-opacity]="layouts()[index].depthOpacity"
+      [message]="toast.message"
+      [title]="toast.title"
+      [color]="toast.color"
+      [closable]="toast.closable"
+      [showIcon]="toast.showIcon"
+      [action]="toast.action"
+      [ariaLabel]="toast.ariaLabel"
+      (dismissed)="onDismiss(toast.id)"
+      (actionTriggered)="onAction(toast)"
+    ></tls-toast>
+  }
+</div>
