@@ -11,7 +11,11 @@ export class PaginationQuerySyncDirective extends QuerySyncDirective implements 
   private readonly _config = inject(PAGINATION_QUERY_SYNC_CONFIG);
 
   // Inputs
-  public readonly tlsPaginationQuerySync = input<string>(this._config.paramKey);
+  // The selector doubles as the input, so a valueless `tlsPaginationQuerySync` binds `''`.
+  // Coerce an empty value back to the configured default param key.
+  public readonly tlsPaginationQuerySync = input(this._config.paramKey, {
+    transform: (value: string) => value || this._config.paramKey,
+  });
 
   constructor() {
     super();

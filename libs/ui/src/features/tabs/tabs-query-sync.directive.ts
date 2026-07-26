@@ -11,7 +11,11 @@ export class TabsQuerySyncDirective extends QuerySyncDirective implements OnInit
   private readonly _config = inject(TABS_QUERY_SYNC_CONFIG);
 
   // Inputs
-  public readonly tlsTabsQuerySync = input<string>(this._config.paramKey);
+  // The selector doubles as the input, so a valueless `tlsTabsQuerySync` binds `''`.
+  // Coerce an empty value back to the configured default param key.
+  public readonly tlsTabsQuerySync = input(this._config.paramKey, {
+    transform: (value: string) => value || this._config.paramKey,
+  });
 
   constructor() {
     super();
