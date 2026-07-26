@@ -1,55 +1,5 @@
+@use '../../mixins' as mixins;
+
 .tls-badge {
-  &.tls-badge--primary {
-    --tls-badge-color: var(--color-primary);
-    --tls-badge-on-color: var(--color-on-primary);
-    --tls-badge-color-container: var(--color-primary-container);
-    --tls-badge-on-color-container: var(--color-on-primary-container);
-  }
-
-  &.tls-badge--secondary {
-    --tls-badge-color: var(--color-secondary);
-    --tls-badge-on-color: var(--color-on-secondary);
-    --tls-badge-color-container: var(--color-secondary-container);
-    --tls-badge-on-color-container: var(--color-on-secondary-container);
-  }
-
-  &.tls-badge--tertiary {
-    --tls-badge-color: var(--color-tertiary);
-    --tls-badge-on-color: var(--color-on-tertiary);
-    --tls-badge-color-container: var(--color-tertiary-container);
-    --tls-badge-on-color-container: var(--color-on-tertiary-container);
-  }
-
-  &.tls-badge--success {
-    --tls-badge-color: var(--color-success);
-    --tls-badge-on-color: var(--color-on-success);
-    --tls-badge-color-container: var(--color-success-container);
-    --tls-badge-on-color-container: var(--color-on-success-container);
-  }
-
-  &.tls-badge--info {
-    --tls-badge-color: var(--color-info);
-    --tls-badge-on-color: var(--color-on-info);
-    --tls-badge-color-container: var(--color-info-container);
-    --tls-badge-on-color-container: var(--color-on-info-container);
-  }
-
-  &.tls-badge--warning {
-    --tls-badge-color: var(--color-warning);
-    --tls-badge-on-color: var(--color-on-warning);
-    --tls-badge-color-container: var(--color-warning-container);
-    --tls-badge-on-color-container: var(--color-on-warning-container);
-  }
-
-  &.tls-badge--danger {
-    --tls-badge-color: var(--color-danger);
-    --tls-badge-on-color: var(--color-on-danger);
-    --tls-badge-color-container: var(--color-danger-container);
-    --tls-badge-on-color-container: var(--color-on-danger-container);
-  }
-
-  &.tls-badge--tonal {
-    --tls-badge-color: var(--tls-badge-color-container);
-    --tls-badge-on-color: var(--tls-badge-on-color-container);
-  }
+  @include mixins.color-variants('tls-badge', $tonal: true);
 }

@@ -1,36 +1,5 @@
+@use '../../mixins' as mixins;
+
 .tls-tooltip {
-  &.tls-tooltip--primary {
-    --tls-tooltip-on-color: var(--color-on-primary);
-    --tls-tooltip-color: var(--color-primary);
-  }
-
-  &.tls-tooltip--secondary {
-    --tls-tooltip-on-color: var(--color-on-secondary);
-    --tls-tooltip-color: var(--color-secondary);
-  }
-
-  &.tls-tooltip--tertiary {
-    --tls-tooltip-on-color: var(--color-on-tertiary);
-    --tls-tooltip-color: var(--color-tertiary);
-  }
-
-  &.tls-tooltip--success {
-    --tls-tooltip-on-color: var(--color-on-success);
-    --tls-tooltip-color: var(--color-success);
-  }
-
-  &.tls-tooltip--info {
-    --tls-tooltip-on-color: var(--color-on-info);
-    --tls-tooltip-color: var(--color-info);
-  }
-
-  &.tls-tooltip--warning {
-    --tls-tooltip-on-color: var(--color-on-warning);
-    --tls-tooltip-color: var(--color-warning);
-  }
-
-  &.tls-tooltip--danger {
-    --tls-tooltip-on-color: var(--color-on-danger);
-    --tls-tooltip-color: var(--color-danger);
-  }
+  @include mixins.color-variants('tls-tooltip');
 }

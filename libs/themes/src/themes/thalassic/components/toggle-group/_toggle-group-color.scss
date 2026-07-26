@@ -1,36 +1,5 @@
+@use '../../mixins' as mixins;
+
 .tls-toggle-group {
-  &--primary {
-    --tls-toggle-group-color: var(--color-primary);
-    --tls-toggle-group-on-color: var(--color-on-primary);
-  }
-
-  &--secondary {
-    --tls-toggle-group-color: var(--color-secondary);
-    --tls-toggle-group-on-color: var(--color-on-secondary);
-  }
-
-  &--tertiary {
-    --tls-toggle-group-color: var(--color-tertiary);
-    --tls-toggle-group-on-color: var(--color-on-tertiary);
-  }
-
-  &--success {
-    --tls-toggle-group-color: var(--color-success);
-    --tls-toggle-group-on-color: var(--color-on-success);
-  }
-
-  &--info {
-    --tls-toggle-group-color: var(--color-info);
-    --tls-toggle-group-on-color: var(--color-on-info);
-  }
-
-  &--warning {
-    --tls-toggle-group-color: var(--color-warning);
-    --tls-toggle-group-on-color: var(--color-on-warning);
-  }
-
-  &--danger {
-    --tls-toggle-group-color: var(--color-danger);
-    --tls-toggle-group-on-color: var(--color-on-danger);
-  }
+  @include mixins.color-variants('tls-toggle-group');
 }

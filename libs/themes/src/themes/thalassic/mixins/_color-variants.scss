@@ -1,0 +1,28 @@
+$colors: primary, secondary, tertiary, success, info, warning, danger;
+
+// Maps each theme hue onto a component's --<block>-color / --<block>-on-color pair.
+// Expects the component to consume those two custom properties.
+//
+// With $tonal: true, each hue also exposes the container token pair and a `tonal`
+// variant class swaps the container pair in — for components that offer a lower
+// emphasis, tonal appearance alongside the solid fill.
+@mixin color-variants($block, $tonal: false) {
+  @each $color in $colors {
+    &.#{$block}--#{$color} {
+      --#{$block}-color: var(--color-#{$color});
+      --#{$block}-on-color: var(--color-on-#{$color});
+
+      @if $tonal {
+        --#{$block}-color-container: var(--color-#{$color}-container);
+        --#{$block}-on-color-container: var(--color-on-#{$color}-container);
+      }
+    }
+  }
+
+  @if $tonal {
+    &.#{$block}--tonal {
+      --#{$block}-color: var(--#{$block}-color-container);
+      --#{$block}-on-color: var(--#{$block}-on-color-container);
+    }
+  }
+}

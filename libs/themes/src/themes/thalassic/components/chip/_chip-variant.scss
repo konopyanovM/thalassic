@@ -1,5 +1,6 @@
 .tls-chip {
-  &.tls-chip--filled {
+  &.tls-chip--filled,
+  &.tls-chip--tonal {
     background-color: var(--tls-chip-color);
     color: var(--tls-chip-on-color);
   }

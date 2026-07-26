@@ -4,7 +4,7 @@ import { chipVariant } from './chip.types';
 import { Chip as ChipComponent } from './chip';
 import { ChipControl } from './chip.directive';
 
-const CHIP_VARIANT_OPTIONS: chipVariant[] = ['filled', 'outlined', 'text'];
+const CHIP_VARIANT_OPTIONS: chipVariant[] = ['filled', 'tonal', 'outlined', 'text'];
 
 const meta: Meta<ChipComponent> = {
   component: ChipComponent,
