@@ -69,4 +69,8 @@
       </svg>
     </button>
   }
+
+  @if (progressVisible()) {
+    <span class="tls-toast__progress" [style.--tls-toast-duration]="progressDuration()" aria-hidden="true"></span>
+  }
 </div>

@@ -68,6 +68,12 @@ export class ToastOutlet {
     () => this._service.config.stacking === 'expanded' || this._interacting(),
   );
 
+  // Auto-dismiss is frozen while interacting (when `pauseOnHover` is on); the
+  // countdown bars mirror that so they stay in lockstep with the timers.
+  protected readonly paused = computed<boolean>(
+    () => this._service.config.pauseOnHover && this._interacting(),
+  );
+
   protected readonly regionClasses = computed<string[]>(() => {
     const [blockEdge, inlineEdge] = this.position().split('-');
     const classes = [

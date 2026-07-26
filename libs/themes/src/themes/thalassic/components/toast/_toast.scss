@@ -10,6 +10,16 @@
   }
 }
 
+@keyframes tls-toast-progress {
+  from {
+    width: 100%;
+  }
+
+  to {
+    width: 0%;
+  }
+}
+
 .tls-toast-outlet {
   position: fixed;
   inset: 0;
@@ -83,6 +93,8 @@
   }
 
   &__surface {
+    position: relative;
+
     padding: var(--spacing-3) var(--spacing-4);
 
     display: flex;
@@ -166,6 +178,41 @@
 
     &:hover {
       background-color: rgb(var(--color-shadow) / 0.12);
+    }
+  }
+
+  // Countdown bar hugging the surface's block-end edge; its width animates from
+  // full to empty over the auto-dismiss delay. Only rendered under motion (the
+  // mixin hides it at the `none` level, so no misleading static bar is shown).
+  &__progress {
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline-start: 0;
+
+    width: 100%;
+    height: 3px;
+
+    display: none;
+
+    border-end-start-radius: var(--radius-md);
+    border-end-end-radius: var(--radius-md);
+
+    background-color: var(--tls-toast-icon-color);
+    opacity: 0.9;
+
+    @include mixins.motion(essential) {
+      display: block;
+
+      animation: tls-toast-progress var(--tls-toast-duration, 5000ms) linear forwards;
+    }
+  }
+
+  // Freezes the bar while the stack is hovered / focused, in lockstep with the
+  // paused auto-dismiss timers. Gated by the same motion tier so it outranks the
+  // `animation` shorthand above (which resets `animation-play-state` to running).
+  &--paused &__progress {
+    @include mixins.motion(essential) {
+      animation-play-state: paused;
     }
   }
 }

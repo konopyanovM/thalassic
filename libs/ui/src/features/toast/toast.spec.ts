@@ -50,6 +50,17 @@ describe('ToastService', () => {
     expect(service.toasts().map(toast => toast.message)).toEqual(['6', '5', '4', '3', '2']);
   });
 
+  it('records the resolved duration and progress preference on the toast', () => {
+    service.show({ message: 'default' });
+    service.show({ message: 'no bar', showProgress: false, duration: 0 });
+
+    const [plain, defaulted] = service.toasts();
+    expect(defaulted.duration).toBe(DEFAULT_TOAST_CONFIG.duration);
+    expect(defaulted.showProgress).toBe(true);
+    expect(plain.showProgress).toBe(false);
+    expect(plain.duration).toBe(0);
+  });
+
   it('applies semantic colors via the convenience methods', () => {
     service.danger('bad', { duration: 0 });
     service.success('ok', { duration: 0 });

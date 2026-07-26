@@ -17,6 +17,8 @@ export interface ToastConfig {
   closable: boolean;
   /** Whether toasts render a leading, color-coded status icon by default. */
   showIcon: boolean;
+  /** Whether auto-dismissing toasts render a countdown progress bar of their remaining time. */
+  showProgress: boolean;
   /** Whether hovering / focusing the stack pauses every toast's auto-dismiss timer. */
   pauseOnHover: boolean;
 }
@@ -35,5 +37,6 @@ export const DEFAULT_TOAST_CONFIG: ToastConfig = {
   },
   closable: true,
   showIcon: true,
+  showProgress: true,
   pauseOnHover: true,
 };

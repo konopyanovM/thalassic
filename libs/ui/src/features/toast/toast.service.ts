@@ -16,6 +16,8 @@ export interface ToastOptions {
   closable?: boolean;
   /** Whether to render the leading status icon. Falls back to the config. */
   showIcon?: boolean;
+  /** Whether to render the auto-dismiss countdown progress bar. Falls back to the config. */
+  showProgress?: boolean;
   /** Optional action button. */
   action?: toastAction;
   /** Accessible name for the toast, when the message alone is not descriptive enough. */
@@ -28,8 +30,11 @@ export interface ToastState {
   readonly message: string;
   readonly title: string | undefined;
   readonly color: toastColor;
+  /** Resolved auto-dismiss delay in ms; `0` keeps it open until dismissed. Drives the progress bar. */
+  readonly duration: number;
   readonly closable: boolean;
   readonly showIcon: boolean;
+  readonly showProgress: boolean;
   readonly action: toastAction | undefined;
   readonly ariaLabel: string | undefined;
 }
@@ -79,13 +84,17 @@ export class ToastService {
   public show(options: ToastOptions): ToastRef {
     this._ensureOutlet();
 
+    const duration = options.duration ?? this._config.duration;
+
     const toast: ToastState = {
       id: ++this._counter,
       message: options.message,
       title: options.title,
       color: options.color ?? this._config.color,
+      duration,
       closable: options.closable ?? this._config.closable,
       showIcon: options.showIcon ?? this._config.showIcon,
+      showProgress: options.showProgress ?? this._config.showProgress,
       action: options.action,
       ariaLabel: options.ariaLabel,
     };
@@ -94,7 +103,6 @@ export class ToastService {
     this._toasts.update(toasts => [toast, ...toasts].slice(0, this._config.max));
     this._pruneOrphanTimers();
 
-    const duration = options.duration ?? this._config.duration;
     if (duration > 0) this._startTimer(toast.id, duration);
 
     return { id: toast.id, dismiss: () => this.dismiss(toast.id) };

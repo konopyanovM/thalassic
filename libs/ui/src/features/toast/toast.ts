@@ -40,6 +40,11 @@ export class Toast {
   public readonly color = input.required<toastColor>();
   public readonly closable = input<boolean>(true);
   public readonly showIcon = input<boolean>(true);
+  public readonly showProgress = input<boolean>(true);
+  /** Auto-dismiss delay in ms driving the countdown bar; `0` renders no bar. */
+  public readonly duration = input<number>(0);
+  /** Freezes the countdown bar, kept in lockstep with the paused auto-dismiss timer. */
+  public readonly paused = input<boolean>(false);
   public readonly action = input<toastAction | undefined>(undefined);
   public readonly ariaLabel = input<string | undefined>(undefined);
 
@@ -48,12 +53,21 @@ export class Toast {
   public readonly actionTriggered = output<void>();
 
   // Computed
-  protected readonly hostClasses = computed<string[]>(() => [
-    'tls-toast',
-    `tls-toast--${this.color()}`,
-  ]);
+  protected readonly hostClasses = computed<string[]>(() => {
+    const classes = ['tls-toast', `tls-toast--${this.color()}`];
+    if (this.paused()) classes.push('tls-toast--paused');
+    return classes;
+  });
 
   protected readonly icon = computed<toastIcon>(() => ICON_BY_COLOR[this.color()]);
+
+  // The countdown bar only makes sense for a toast that actually auto-dismisses.
+  protected readonly progressVisible = computed<boolean>(
+    () => this.showProgress() && this.duration() > 0,
+  );
+
+  // CSS animation duration for the countdown bar, matching the auto-dismiss delay.
+  protected readonly progressDuration = computed<string>(() => `${this.duration()}ms`);
 
   // Urgent severities announce assertively; the rest announce politely.
   protected readonly role = computed<'alert' | 'status'>(() => {
