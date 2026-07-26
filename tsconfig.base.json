@@ -18,6 +18,7 @@
     "paths": {
       "@thalassic/ui": ["./libs/ui/src/index.ts"],
       "@thalassic/ui/charts": ["./libs/ui/charts/src/index.ts"],
+      "@thalassic/ui/fontawesome": ["./libs/ui/fontawesome/src/index.ts"],
       "@thalassic/core": ["./libs/core/src/index.ts"],
       "@thalassic/themes": ["./libs/themes/src/index.ts"]
     }
