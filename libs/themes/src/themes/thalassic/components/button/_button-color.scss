@@ -2,36 +2,55 @@
   &.tls-button--primary {
     --tls-button-on-color: var(--color-on-primary);
     --tls-button-color: var(--color-primary);
+    --tls-button-on-color-container: var(--color-on-primary-container);
+    --tls-button-color-container: var(--color-primary-container);
   }
 
   &.tls-button--secondary {
     --tls-button-on-color: var(--color-on-secondary);
     --tls-button-color: var(--color-secondary);
+    --tls-button-on-color-container: var(--color-on-secondary-container);
+    --tls-button-color-container: var(--color-secondary-container);
   }
 
   &.tls-button--tertiary {
     --tls-button-on-color: var(--color-on-tertiary);
     --tls-button-color: var(--color-tertiary);
+    --tls-button-on-color-container: var(--color-on-tertiary-container);
+    --tls-button-color-container: var(--color-tertiary-container);
   }
 
   &.tls-button--success {
     --tls-button-on-color: var(--color-on-success);
     --tls-button-color: var(--color-success);
+    --tls-button-on-color-container: var(--color-on-success-container);
+    --tls-button-color-container: var(--color-success-container);
   }
 
   &.tls-button--info {
     --tls-button-on-color: var(--color-on-info);
     --tls-button-color: var(--color-info);
+    --tls-button-on-color-container: var(--color-on-info-container);
+    --tls-button-color-container: var(--color-info-container);
   }
 
   &.tls-button--warning {
     --tls-button-on-color: var(--color-on-warning);
     --tls-button-color: var(--color-warning);
+    --tls-button-on-color-container: var(--color-on-warning-container);
+    --tls-button-color-container: var(--color-warning-container);
   }
 
   &.tls-button--danger {
     --tls-button-on-color: var(--color-on-danger);
     --tls-button-color: var(--color-danger);
+    --tls-button-on-color-container: var(--color-on-danger-container);
+    --tls-button-color-container: var(--color-danger-container);
+  }
+
+  &.tls-button--tonal {
+    --tls-button-color: var(--tls-button-color-container);
+    --tls-button-on-color: var(--tls-button-on-color-container);
   }
 
   &.tls-button--disabled {

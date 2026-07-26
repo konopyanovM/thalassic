@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { controlSize } from '../../types';
 import { BADGE_CONFIG } from './badge.token';
-import { badgeColor, badgePosition } from './badge.types';
+import { badgeColor, badgePosition, badgeVariant } from './badge.types';
 
 @Component({
   selector: 'tls-badge',
@@ -27,6 +27,7 @@ export class Badge {
   public readonly value = input<number | string>();
   public readonly max: InputSignal<number> = input<number>(this._config.max);
   public readonly color: InputSignal<badgeColor> = input<badgeColor>(this._config.color);
+  public readonly variant: InputSignal<badgeVariant> = input<badgeVariant>(this._config.variant);
   public readonly position: InputSignal<badgePosition> = input<badgePosition>(this._config.position);
   public readonly size: InputSignal<controlSize> = input<controlSize>(this._config.size);
   public readonly dot: InputSignalWithTransform<boolean, unknown> = input(false, {
@@ -72,6 +73,7 @@ export class Badge {
     const array: string[] = [className];
 
     array.push(`${className}--${this.color()}`);
+    array.push(`${className}--${this.variant()}`);
     array.push(`${className}--${this.position()}`);
     array.push(`${className}--${this.size()}`);
 

@@ -13,7 +13,8 @@
   }
 
   // Variants
-  &--filled {
+  &--filled,
+  &--tonal {
     color: var(--tls-button-on-color);
 
     &::before {

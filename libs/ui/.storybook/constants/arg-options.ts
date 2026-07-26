@@ -1,3 +1,4 @@
+import { badgeVariant } from '../../src/features/badge/badge.types';
 import { buttonVariant } from '../../src/features/button/button.types';
 import { fileInputVariant } from '../../src/features/form/file-input/file-input.types';
 import { pinInputType } from '../../src/features/form/pin-input';
@@ -16,6 +17,7 @@ export const STORY_COLOR_OPTIONS: color[] = [
 
 export const STORY_VARIANT_OPTIONS: buttonVariant[] = [
   'filled',
+  'tonal',
   'outlined',
   'text',
   'elevated',
@@ -24,6 +26,8 @@ export const STORY_VARIANT_OPTIONS: buttonVariant[] = [
 export const STORY_ORIENTATION_OPTIONS: orientation[] = ['horizontal', 'vertical'] as const;
 
 export const STORY_SIZE_OPTIONS: controlSize[] = ['sm', 'md', 'lg'] as const;
+
+export const STORY_BADGE_VARIANT_OPTIONS: badgeVariant[] = ['filled', 'tonal'] as const;
 
 export const STORY_TABS_VARIANT_OPTIONS: tabsVariant[] = ['flat', 'outlined'] as const;
 
