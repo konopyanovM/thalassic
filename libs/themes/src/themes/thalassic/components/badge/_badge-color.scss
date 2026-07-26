@@ -1,0 +1,36 @@
+.tls-badge {
+  &.tls-badge--primary {
+    --tls-badge-color: var(--color-primary);
+    --tls-badge-on-color: var(--color-on-primary);
+  }
+
+  &.tls-badge--secondary {
+    --tls-badge-color: var(--color-secondary);
+    --tls-badge-on-color: var(--color-on-secondary);
+  }
+
+  &.tls-badge--tertiary {
+    --tls-badge-color: var(--color-tertiary);
+    --tls-badge-on-color: var(--color-on-tertiary);
+  }
+
+  &.tls-badge--success {
+    --tls-badge-color: var(--color-success);
+    --tls-badge-on-color: var(--color-on-success);
+  }
+
+  &.tls-badge--info {
+    --tls-badge-color: var(--color-info);
+    --tls-badge-on-color: var(--color-on-info);
+  }
+
+  &.tls-badge--warning {
+    --tls-badge-color: var(--color-warning);
+    --tls-badge-on-color: var(--color-on-warning);
+  }
+
+  &.tls-badge--danger {
+    --tls-badge-color: var(--color-danger);
+    --tls-badge-on-color: var(--color-on-danger);
+  }
+}

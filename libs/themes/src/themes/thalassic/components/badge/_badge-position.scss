@@ -1,0 +1,21 @@
+.tls-badge {
+  &--top-start &__indicator {
+    inset-block-start: var(--tls-badge-offset);
+    inset-inline-start: var(--tls-badge-offset);
+  }
+
+  &--top-end &__indicator {
+    inset-block-start: var(--tls-badge-offset);
+    inset-inline-end: var(--tls-badge-offset);
+  }
+
+  &--bottom-start &__indicator {
+    inset-block-end: var(--tls-badge-offset);
+    inset-inline-start: var(--tls-badge-offset);
+  }
+
+  &--bottom-end &__indicator {
+    inset-block-end: var(--tls-badge-offset);
+    inset-inline-end: var(--tls-badge-offset);
+  }
+}

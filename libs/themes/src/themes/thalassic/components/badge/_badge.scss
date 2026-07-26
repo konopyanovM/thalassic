@@ -1,0 +1,62 @@
+@use '../../mixins' as mixins;
+
+@keyframes tls-badge-pop {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.tls-badge {
+  position: relative;
+
+  display: inline-flex;
+
+  &__indicator {
+    --tls-badge-offset: calc(var(--tls-badge-size) / -2);
+
+    position: absolute;
+    z-index: 1;
+
+    min-width: var(--tls-badge-size);
+    height: var(--tls-badge-size);
+
+    padding-inline: var(--tls-badge-padding-inline);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: var(--radius-xl);
+
+    background-color: var(--tls-badge-color);
+
+    font-size: var(--tls-badge-font-size);
+    font-weight: 600;
+    line-height: 1;
+    color: var(--tls-badge-on-color);
+
+    pointer-events: none;
+
+    @include mixins.motion(essential) {
+      &--enter {
+        animation: tls-badge-pop var(--motion-instant) var(--motion-ease-out) both;
+      }
+
+      &--leave {
+        animation: tls-badge-pop var(--motion-instant) var(--motion-ease-in) reverse both;
+      }
+    }
+  }
+
+  &--dot &__indicator {
+    --tls-badge-size: var(--tls-badge-dot-size);
+
+    padding-inline: 0;
+  }
+}

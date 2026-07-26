@@ -1,0 +1,16 @@
+<ng-content />
+
+@if (visible()) {
+  <span
+    class="tls-badge__indicator"
+    role="status"
+    [attr.aria-label]="ariaLabel() ?? null"
+    [attr.aria-hidden]="decorative() ? 'true' : null"
+    animate.enter="tls-badge__indicator--enter"
+    animate.leave="tls-badge__indicator--leave"
+  >
+    @if (!dot()) {
+      {{ displayValue() }}
+    }
+  </span>
+}

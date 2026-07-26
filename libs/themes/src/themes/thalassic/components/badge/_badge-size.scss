@@ -1,0 +1,22 @@
+.tls-badge {
+  &.tls-badge--sm {
+    --tls-badge-size: 16px;
+    --tls-badge-dot-size: 6px;
+    --tls-badge-padding-inline: var(--spacing-1);
+    --tls-badge-font-size: var(--font-label-small-size);
+  }
+
+  &.tls-badge--md {
+    --tls-badge-size: 20px;
+    --tls-badge-dot-size: 8px;
+    --tls-badge-padding-inline: var(--spacing-2);
+    --tls-badge-font-size: var(--font-label-small-size);
+  }
+
+  &.tls-badge--lg {
+    --tls-badge-size: 24px;
+    --tls-badge-dot-size: 10px;
+    --tls-badge-padding-inline: var(--spacing-2);
+    --tls-badge-font-size: var(--font-label-medium-size);
+  }
+}
