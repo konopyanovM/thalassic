@@ -43,9 +43,9 @@
     cursor: pointer;
     color: var(--color-on-surface-variant);
 
-    svg {
-      width: 14px;
-      height: 8px;
+    .tls-icon {
+      width: 18px;
+      height: 18px;
     }
 
     &:hover {

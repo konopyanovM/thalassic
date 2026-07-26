@@ -13,13 +13,14 @@ import {
 } from '@angular/core';
 import { AbstractSelect, FORM_CONTROL, Option } from '../../../abstract/form';
 import { controlSize } from '../../../types';
+import { Icon } from '../../icon';
 import { Loader } from '../../loader';
 import { SELECT_CONFIG } from './select.token';
 
 @Component({
   selector: 'tls-select',
   templateUrl: './select.html',
-  imports: [Loader],
+  imports: [Loader, Icon],
   host: {
     '[class]': 'hostClasses()',
   },

@@ -10,11 +10,12 @@ import {
   Signal,
 } from '@angular/core';
 import { CheckboxFormControl, FORM_CONTROL } from '../../../abstract/form';
+import { Icon } from '../../icon';
 import { CHECKBOX_CONFIG } from './checkbox.token';
 
 @Component({
   selector: 'tls-checkbox',
-  imports: [],
+  imports: [Icon],
   templateUrl: './checkbox.html',
   host: {
     role: 'checkbox',

@@ -29,10 +29,9 @@
 
     background-color: var(--color-surface);
 
-    transition:
-      box-shadow var(--motion-fast) var(--motion-ease-in-out),
-      border-color var(--motion-fast) var(--motion-ease-in-out),
-      background-color var(--motion-fast) var(--motion-ease-in-out);
+    transition: box-shadow var(--motion-fast) var(--motion-ease-in-out),
+    border-color var(--motion-fast) var(--motion-ease-in-out),
+    background-color var(--motion-fast) var(--motion-ease-in-out);
 
     &:checked {
       background-color: var(--color-primary);
@@ -47,6 +46,10 @@
     position: absolute;
     inset: 0;
 
+    width: calc(var(--tls-checkbox-size) * 0.75);
+    height: calc(var(--tls-checkbox-size) * 0.75);
+    margin: auto;
+
     opacity: 0;
     scale: 0;
 
@@ -54,9 +57,8 @@
 
     color: var(--tls-checkbox-checked-icon-color);
 
-    transition:
-      scale var(--motion-default) var(--motion-ease-bounce),
-      opacity var(--motion-fast) var(--motion-ease-in-out);
+    transition: scale var(--motion-default) var(--motion-ease-bounce),
+    opacity var(--motion-fast) var(--motion-ease-in-out);
   }
 
   // Checked & Indeterminate

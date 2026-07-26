@@ -25,9 +25,7 @@
     {{ selectedLabel() || placeholder() }}
   </span>
   <div class="tls-select__icon" aria-hidden="true" [class.tls-select__icon--hidden]="pending()">
-    <svg class="tls-select__chevron" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-    </svg>
+    <tls-icon class="tls-select__chevron" name="chevron-down" aria-hidden="true" />
   </div>
 </button>
 @if (clearable() && hasValue()) {
@@ -38,9 +36,7 @@
     aria-label="Clear"
     (click)="clear()"
   >
-    <svg class="tls-select__clear-icon" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M1 1L9 9M9 1L1 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-    </svg>
+    <tls-icon class="tls-select__clear-icon" name="close" aria-hidden="true" />
   </button>
 }
 @if (pending()) {

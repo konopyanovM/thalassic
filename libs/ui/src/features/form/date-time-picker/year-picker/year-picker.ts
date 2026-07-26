@@ -8,10 +8,11 @@ import {
   Signal,
 } from '@angular/core';
 import { addYears, getYear, setYear, subYears } from 'date-fns';
+import { Icon } from '../../../icon';
 
 @Component({
   selector: 'tls-year-picker',
-  imports: [],
+  imports: [Icon],
   templateUrl: './year-picker.html',
   host: { class: 'tls-year-picker' },
 })

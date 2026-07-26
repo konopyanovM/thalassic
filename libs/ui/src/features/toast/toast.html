@@ -6,41 +6,7 @@
 -->
 <div class="tls-toast__surface">
   @if (showIcon()) {
-    <span class="tls-toast__icon" aria-hidden="true">
-      @switch (icon()) {
-        @case ('success') {
-          <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"
-               stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="8" cy="8" r="6.5"></circle>
-            <path d="M5.2 8.2 7.1 10l3.7-4"></path>
-          </svg>
-        }
-        @case ('warning') {
-          <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"
-               stroke-linecap="round" stroke-linejoin="round">
-            <path d="M8 2 14.5 13.5H1.5z"></path>
-            <path d="M8 6.5v3"></path>
-            <path d="M8 11.6h.01"></path>
-          </svg>
-        }
-        @case ('danger') {
-          <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"
-               stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="8" cy="8" r="6.5"></circle>
-            <path d="M8 4.8v3.4"></path>
-            <path d="M8 10.7h.01"></path>
-          </svg>
-        }
-        @default {
-          <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"
-               stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="8" cy="8" r="6.5"></circle>
-            <path d="M8 7.4v3.4"></path>
-            <path d="M8 5.2h.01"></path>
-          </svg>
-        }
-      }
-    </span>
+    <tls-icon class="tls-toast__icon" [name]="icon()" aria-hidden="true" />
   }
 
   <div class="tls-toast__body">
@@ -63,10 +29,7 @@
 
   @if (closable()) {
     <button type="button" class="tls-toast__close" aria-label="Dismiss" (click)="onClose()">
-      <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6"
-           stroke-linecap="round" aria-hidden="true">
-        <path d="m4 4 8 8M12 4l-8 8"></path>
-      </svg>
+      <tls-icon class="tls-toast__close-icon" name="close" aria-hidden="true" />
     </button>
   }
 

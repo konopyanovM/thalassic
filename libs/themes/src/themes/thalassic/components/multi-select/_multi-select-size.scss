@@ -1,16 +1,16 @@
 .tls-multi-select {
   &.tls-form-control--sm {
-    --tls-multi-select-icon-size: 0.625rem;
-    --tls-multi-select-clear-size: 0.625rem;
+    --tls-multi-select-icon-size: 0.875rem;
+    --tls-multi-select-clear-size: 0.875rem;
   }
 
   &.tls-form-control--md {
-    --tls-multi-select-icon-size: 0.75rem;
-    --tls-multi-select-clear-size: 0.75rem;
+    --tls-multi-select-icon-size: 1rem;
+    --tls-multi-select-clear-size: 1rem;
   }
 
   &.tls-form-control--lg {
-    --tls-multi-select-icon-size: 0.875rem;
-    --tls-multi-select-clear-size: 0.875rem;
+    --tls-multi-select-icon-size: 1.125rem;
+    --tls-multi-select-clear-size: 1.125rem;
   }
 }

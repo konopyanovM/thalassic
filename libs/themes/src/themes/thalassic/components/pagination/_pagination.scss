@@ -38,6 +38,11 @@
     &-icon {
       width: var(--tls-pagination-button-icon-size);
       height: var(--tls-pagination-button-icon-size);
+
+      .tls-icon {
+        width: 100%;
+        height: 100%;
+      }
     }
   }
 

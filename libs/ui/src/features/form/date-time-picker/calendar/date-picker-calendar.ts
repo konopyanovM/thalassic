@@ -9,10 +9,11 @@ import {
 } from '@angular/core';
 import { addMonths, Day, format, isSameDay, isSameMonth, isToday, subMonths } from 'date-fns';
 import { buildMonthDays, rotateWeekDays } from '../../../../utils';
+import { Icon } from '../../../icon';
 
 @Component({
   selector: 'tls-date-picker-calendar',
-  imports: [],
+  imports: [Icon],
   templateUrl: './date-picker-calendar.html',
   host: { class: 'tls-date-picker-calendar' },
 })

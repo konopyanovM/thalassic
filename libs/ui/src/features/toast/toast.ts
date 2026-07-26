@@ -1,18 +1,17 @@
 import { Component, computed, input, output } from '@angular/core';
 import { Button } from '../button';
+import { Icon, systemIcon } from '../icon';
 import { toastAction, toastColor } from './toast.types';
 
 /** Status glyph rendered in the leading icon slot, derived from the toast color. */
-type toastIcon = 'success' | 'warning' | 'danger' | 'info';
-
-const ICON_BY_COLOR: Record<toastColor, toastIcon> = {
+const ICON_BY_COLOR: Record<toastColor, systemIcon> = {
   primary: 'info',
   secondary: 'info',
   tertiary: 'info',
   success: 'success',
   info: 'info',
   warning: 'warning',
-  danger: 'danger',
+  danger: 'error',
 };
 
 /**
@@ -23,7 +22,7 @@ const ICON_BY_COLOR: Record<toastColor, toastIcon> = {
  */
 @Component({
   selector: 'tls-toast',
-  imports: [Button],
+  imports: [Button, Icon],
   templateUrl: './toast.html',
   host: {
     '[class]': 'hostClasses()',
@@ -59,7 +58,7 @@ export class Toast {
     return classes;
   });
 
-  protected readonly icon = computed<toastIcon>(() => ICON_BY_COLOR[this.color()]);
+  protected readonly icon = computed<systemIcon>(() => ICON_BY_COLOR[this.color()]);
 
   // The countdown bar only makes sense for a toast that actually auto-dismisses.
   protected readonly progressVisible = computed<boolean>(

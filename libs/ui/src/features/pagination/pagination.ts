@@ -1,10 +1,12 @@
 import { booleanAttribute, Component, computed, inject, input, model } from '@angular/core';
 import { controlSize } from '../../types';
+import { Icon } from '../icon';
 import { PAGINATION_CONFIG } from './pagination.token';
 import { paginationItem } from './pagination.types';
 
 @Component({
   selector: 'tls-pagination',
+  imports: [Icon],
   templateUrl: './pagination.html',
   host: {
     role: 'navigation',

@@ -8,10 +8,11 @@ import {
   Signal,
 } from '@angular/core';
 import { getHours, getMinutes, setHours, setMinutes, startOfDay } from 'date-fns';
+import { Icon } from '../../../icon';
 
 @Component({
   selector: 'tls-time-picker',
-  imports: [],
+  imports: [Icon],
   templateUrl: './time-picker.html',
   host: { class: 'tls-time-picker' },
 })

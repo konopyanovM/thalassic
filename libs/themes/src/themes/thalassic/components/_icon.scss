@@ -1,15 +1,35 @@
+// Default 1em box at zero specificity, so any consumer size class (e.g.
+// .tls-select__chevron) overrides it without needing a compound selector.
+:where(.tls-icon) {
+  width: 1em;
+  height: 1em;
+}
+
 .tls-icon {
-  width: auto;
-  height: auto;
-
-  min-width: auto;
-  min-height: auto;
-
-  display: inline-block;
+  display: inline-flex;
 
   color: inherit;
 
   .tls-svg-icon {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
     color: inherit;
+
+    svg {
+      width: 100%;
+      height: 100%;
+
+      display: block;
+    }
+  }
+
+  .tls-img-icon {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
   }
 }

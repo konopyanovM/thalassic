@@ -8,12 +8,13 @@ import {
   Signal,
 } from '@angular/core';
 import { addYears, format, getMonth, getYear, isSameMonth, setMonth, subYears } from 'date-fns';
+import { Icon } from '../../../icon';
 
 const MONTH_INDEXES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
 @Component({
   selector: 'tls-month-picker',
-  imports: [],
+  imports: [Icon],
   templateUrl: './month-picker.html',
   host: { class: 'tls-month-picker' },
 })

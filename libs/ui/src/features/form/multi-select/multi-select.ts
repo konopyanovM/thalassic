@@ -13,13 +13,14 @@ import {
 } from '@angular/core';
 import { AbstractSelect, FORM_CONTROL, Option } from '../../../abstract/form';
 import { controlSize } from '../../../types';
+import { Icon } from '../../icon';
 import { Loader } from '../../loader';
 import { MULTI_SELECT_CONFIG } from './multi-select.token';
 
 @Component({
   selector: 'tls-multi-select',
   templateUrl: './multi-select.html',
-  imports: [Loader],
+  imports: [Loader, Icon],
   host: {
     '[class]': 'hostClasses()',
   },

@@ -67,6 +67,9 @@
         }
 
         .tls-multi-select__chevron {
+          width: 100%;
+          height: 100%;
+
           transition: transform var(--motion-fast) var(--motion-ease-in-out);
         }
       }

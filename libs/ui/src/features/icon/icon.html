@@ -1,7 +1,11 @@
-@if (isSvg() && iconSrc()) {
+@if (name()) {
+  @if (registryComponent(); as iconComponent) {
+    <ng-container [ngComponentOutlet]="iconComponent" />
+  } @else {
+    <span [innerHTML]="registrySvg()" class="tls-svg-icon"></span>
+  }
+} @else if (isSvgSrc() && iconSrc()) {
   <span [innerHTML]="svgContent()" class="tls-svg-icon"></span>
 } @else if (iconSrc()) {
   <img [src]="iconSrc()" [alt]="alt()" class="tls-img-icon" />
-} @else {
-  {{ iconSrc() }}
 }

@@ -29,6 +29,10 @@ export class IconService {
     return cache;
   }
 
+  public sanitizeSvg(svg: string): SafeHtml {
+    return this._sanitizeSvg(svg);
+  }
+
   // Private methods
   private _isUrlAllowed(url: string, allowedSource: string[]): boolean {
     return allowedSource.some(source => url.startsWith(source));

@@ -1,6 +1,7 @@
 import { CdkDialogContainer, DialogRef } from '@angular/cdk/dialog';
 import { CdkPortalOutlet } from '@angular/cdk/portal';
 import { Component, computed, inject, signal } from '@angular/core';
+import { Icon } from '../icon';
 import { DrawerConfig } from './drawer.config';
 import { DRAWER_NAMED_SIZES, LEAVE_ANIMATION_FALLBACK_MS } from './drawer.constants';
 import { DRAWER_CONFIG } from './drawer.token';
@@ -9,7 +10,7 @@ import { drawerSize } from './drawer.types';
 @Component({
   selector: 'tls-drawer',
   templateUrl: './drawer.html',
-  imports: [CdkPortalOutlet],
+  imports: [CdkPortalOutlet, Icon],
   host: {
     '[class]': 'hostClasses()',
     '[style.--tls-drawer-size]': 'customSize',

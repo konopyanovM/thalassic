@@ -31,6 +31,7 @@ import {
 } from 'date-fns';
 import { Button } from '../button';
 import { ToggleGroup } from '../form/toggle-group';
+import { Icon } from '../icon';
 import { buildMonthDays } from '../../utils';
 import { CalendarAgendaView } from './calendar-agenda-view';
 import { CalendarMonthView } from './calendar-month-view';
@@ -47,7 +48,7 @@ import { CalendarEvent, CalendarEventContext, CalendarRange, calendarView } from
 @Component({
   selector: 'tls-calendar',
   templateUrl: './calendar.html',
-  imports: [Button, ToggleGroup, CalendarMonthView, CalendarTimeGrid, CalendarAgendaView],
+  imports: [Button, ToggleGroup, CalendarMonthView, CalendarTimeGrid, CalendarAgendaView, Icon],
   host: {
     '[class]': 'hostClasses()',
   },
