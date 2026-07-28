@@ -1,0 +1,115 @@
+@use '../../mixins' as mixins;
+
+.tls-image-compare {
+  // Divider line running the full length of the component.
+  --tls-image-compare-line-color: var(--color-surface);
+  --tls-image-compare-line-thickness: 2px;
+
+  // Circular grab handle centred on the divider.
+  --tls-image-compare-handle-size: var(--spacing-8);
+  --tls-image-compare-handle-color: var(--color-surface);
+  --tls-image-compare-handle-border: var(--tls-image-compare-line-thickness);
+
+  position: relative;
+
+  width: 100%;
+
+  display: block;
+
+  overflow: hidden;
+
+  // A pointer-down anywhere drags the divider, so suppress native pan/zoom
+  // gestures across the whole component (not just the handle) — otherwise a
+  // touch drag over the image scrolls the page and cancels the pointer.
+  touch-action: none;
+
+  &--dragging {
+    user-select: none;
+  }
+
+  &__layer {
+    // Projected media never captures the pointer or gets dragged as an image.
+    > * {
+      display: block;
+
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+  }
+
+  // The `after` layer sits in normal flow: its media's natural aspect ratio
+  // gives the whole component its height.
+  &__after {
+    > * {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  // The `before` layer overlays the `after` layer at the same box and is clipped
+  // to the divider band; its media is stretched to cover that box so the two
+  // images register pixel-for-pixel.
+  &__before {
+    position: absolute;
+    inset: 0;
+
+    > * {
+      width: 100%;
+      height: 100%;
+
+      object-fit: cover;
+    }
+  }
+
+  &__handle {
+    position: absolute;
+    z-index: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: transparent;
+
+    &:focus-visible {
+      outline: none;
+
+      .tls-image-compare__grip {
+        border-color: var(--color-primary);
+      }
+    }
+
+    &:hover {
+      .tls-image-compare__grip {
+        border-color: var(--color-primary);
+      }
+    }
+
+    // Divider line. Axis-specific sizing/insets live in the orientation partial.
+    &::before {
+      content: '';
+
+      position: absolute;
+
+      background-color: var(--tls-image-compare-line-color);
+    }
+  }
+
+  &__grip {
+    // Lifts the handle above the divider line in paint order.
+    position: relative;
+
+    width: var(--tls-image-compare-handle-size);
+    height: var(--tls-image-compare-handle-size);
+
+    border: var(--tls-image-compare-handle-border) solid transparent;
+    border-radius: 50%;
+
+    background-color: var(--tls-image-compare-handle-color);
+    box-shadow: var(--shadow-sm);
+
+    @include mixins.motion(essential) {
+      transition: border-color var(--motion-fast);
+    }
+  }
+}

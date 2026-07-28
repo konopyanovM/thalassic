@@ -1,0 +1,25 @@
+<div class="tls-image-compare__layer tls-image-compare__after">
+  <ng-content select="[after]"></ng-content>
+</div>
+
+<div class="tls-image-compare__layer tls-image-compare__before" [style.clip-path]="clipPath()">
+  <ng-content select="[before]"></ng-content>
+</div>
+
+<div
+  #handle
+  class="tls-image-compare__handle"
+  role="slider"
+  tabindex="0"
+  [attr.aria-orientation]="orientation()"
+  [attr.aria-valuenow]="valueNow()"
+  [attr.aria-valuemin]="0"
+  [attr.aria-valuemax]="100"
+  [attr.aria-label]="ariaLabel() ?? null"
+  [attr.aria-labelledby]="ariaLabelledby() ?? null"
+  [style.inset-inline-start.%]="isHorizontal() ? clampedPosition() : null"
+  [style.inset-block-start.%]="isHorizontal() ? null : clampedPosition()"
+  (keydown)="onHandleKeydown($event)"
+>
+  <span class="tls-image-compare__grip" aria-hidden="true"></span>
+</div>

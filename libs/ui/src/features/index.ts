@@ -26,6 +26,7 @@ export * from './form/switch';
 export * from './form/textarea';
 export * from './form/toggle-group';
 export * from './icon';
+export * from './image-compare';
 export * from './loader';
 export * from './menu';
 export * from './odometer';

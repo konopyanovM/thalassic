@@ -1,0 +1,47 @@
+.tls-image-compare {
+  // Horizontal: the divider is vertical and wipes along the inline axis. The
+  // inline slide mirrors in RTL, where the layout-start edge sits on the
+  // opposite physical side.
+  &--horizontal {
+    // The whole component is grabbable — a pointer-down anywhere drags the
+    // divider — so the resize cursor lives on the host, not just the handle.
+    cursor: ew-resize;
+
+    > .tls-image-compare__handle {
+      inset-block: 0;
+
+      transform: translateX(-50%);
+
+      :root[dir='rtl'] & {
+        transform: translateX(50%);
+      }
+
+      // Vertical divider line down the centre of the handle.
+      &::before {
+        inset-block: 0;
+        inset-inline-start: calc(50% - var(--tls-image-compare-line-thickness) / 2);
+
+        width: var(--tls-image-compare-line-thickness);
+      }
+    }
+  }
+
+  // Vertical: the divider is horizontal and wipes along the block axis.
+  &--vertical {
+    cursor: ns-resize;
+
+    > .tls-image-compare__handle {
+      inset-inline: 0;
+
+      transform: translateY(-50%);
+
+      // Horizontal divider line across the centre of the handle.
+      &::before {
+        inset-inline: 0;
+        inset-block-start: calc(50% - var(--tls-image-compare-line-thickness) / 2);
+
+        height: var(--tls-image-compare-line-thickness);
+      }
+    }
+  }
+}

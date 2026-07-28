@@ -14,6 +14,7 @@ import {
   FormControlGroupConfig,
   FormItemConfig,
   IconConfig,
+  ImageCompareConfig,
   InputConfig,
   LoaderConfig,
   MenuConfig,
@@ -60,6 +61,7 @@ export interface tlsUiConfigProvider {
     formControlGroup?: Partial<FormControlGroupConfig>;
     formItem?: Partial<FormItemConfig>;
     icon?: Partial<IconConfig>;
+    imageCompare?: Partial<ImageCompareConfig>;
     input?: Partial<InputConfig>;
     loader?: Partial<LoaderConfig>;
     menu?: Partial<MenuConfig>;

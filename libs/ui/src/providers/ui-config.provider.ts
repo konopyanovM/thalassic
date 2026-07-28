@@ -26,6 +26,7 @@ import {
   DEFAULT_FORM_CONTROL_GROUP_CONFIG,
   DEFAULT_FORM_ITEM_CONFIG,
   DEFAULT_ICON_CONFIG,
+  DEFAULT_IMAGE_COMPARE_CONFIG,
   DEFAULT_INPUT_CONFIG,
   DEFAULT_LOADER_CONFIG,
   DEFAULT_MENU_CONFIG,
@@ -54,6 +55,7 @@ import {
   FORM_CONTROL_GROUP_CONFIG,
   FORM_ITEM_CONFIG,
   ICON_CONFIG,
+  IMAGE_COMPARE_CONFIG,
   INPUT_CONFIG,
   LOADER_CONFIG,
   MENU_CONFIG,
@@ -147,6 +149,10 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
       useValue: deepMerge(DEFAULT_FORM_ITEM_CONFIG, config.components.formItem),
     },
     { provide: ICON_CONFIG, useValue: deepMerge(DEFAULT_ICON_CONFIG, config.components.icon) },
+    {
+      provide: IMAGE_COMPARE_CONFIG,
+      useValue: deepMerge(DEFAULT_IMAGE_COMPARE_CONFIG, config.components.imageCompare),
+    },
     { provide: INPUT_CONFIG, useValue: deepMerge(DEFAULT_INPUT_CONFIG, config.components.input) },
     {
       provide: LOADER_CONFIG,

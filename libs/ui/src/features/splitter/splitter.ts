@@ -152,6 +152,11 @@ export class Splitter {
 
     event.preventDefault();
 
+    // `preventDefault` suppresses the default focus, so focus the gutter
+    // explicitly — otherwise the arrow keys wouldn't work after a pointer drag.
+    const gutter = event.target as HTMLElement;
+    gutter.focus();
+
     const rect = this._elementRef.nativeElement.getBoundingClientRect();
 
     this._dragContainerSize = this.isHorizontal() ? rect.width : rect.height;
@@ -160,7 +165,7 @@ export class Splitter {
 
     this._activeSeam.set(seamIndex);
 
-    (event.target as HTMLElement).setPointerCapture(event.pointerId);
+    gutter.setPointerCapture(event.pointerId);
   }
 
   protected onGutterPointerMove(seamIndex: number, event: PointerEvent): void {
