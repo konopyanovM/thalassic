@@ -1,3 +1,19 @@
+## 22.7.0 (2026-07-28)
+
+### 🚀 Features
+
+- **ui:** added splitter component ([52f0ace](https://github.com/konopyanovM/thalassic/commit/52f0ace))
+- **ui:** added image compare component ([fb22edf](https://github.com/konopyanovM/thalassic/commit/fb22edf))
+- **ui/badge:** added inset input ([702e631](https://github.com/konopyanovM/thalassic/commit/702e631))
+
+### 🩹 Fixes
+
+- **ui/tabs:** fixed tabs scroll ([0431b3f](https://github.com/konopyanovM/thalassic/commit/0431b3f))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.6.0 (2026-07-26)
 
 ### 🚀 Features
