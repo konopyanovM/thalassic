@@ -32,6 +32,7 @@ export * from './odometer';
 export * from './pagination';
 export * from './popover';
 export * from './skeleton';
+export * from './splitter';
 export * from './stepper';
 export * from './table';
 export * from './tabs';

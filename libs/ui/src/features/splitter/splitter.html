@@ -1,0 +1,23 @@
+<ng-content></ng-content>
+
+@for (seam of seams(); track seam.index) {
+  <div
+    class="tls-splitter-gutter"
+    role="separator"
+    tabindex="0"
+    [attr.aria-orientation]="ariaOrientation()"
+    [attr.aria-valuenow]="seam.valueNow"
+    [attr.aria-valuemin]="seam.valueMin"
+    [attr.aria-valuemax]="seam.valueMax"
+    [attr.aria-controls]="seam.controls"
+    [style.inset-inline-start.%]="isHorizontal() ? seam.position : null"
+    [style.inset-block-start.%]="isHorizontal() ? null : seam.position"
+    (pointerdown)="onGutterPointerDown(seam.index, $event)"
+    (pointermove)="onGutterPointerMove(seam.index, $event)"
+    (pointerup)="onGutterPointerUp(seam.index, $event)"
+    (pointercancel)="onGutterPointerCancel(seam.index)"
+    (keydown)="onGutterKeydown(seam.index, $event)"
+  >
+    <span class="tls-splitter-gutter__handle" aria-hidden="true"></span>
+  </div>
+}

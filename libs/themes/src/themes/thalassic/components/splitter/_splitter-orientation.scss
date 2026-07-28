@@ -1,0 +1,61 @@
+.tls-splitter {
+  // Horizontal: panels sit side by side, separated by vertical gutters. The
+  // direct-child selector stops these rules from leaking into a nested splitter
+  // of the opposite orientation.
+  &--horizontal {
+    flex-direction: row;
+
+    > .tls-splitter-gutter {
+      inset-block: 0;
+
+      width: var(--tls-splitter-gutter-size);
+
+      cursor: col-resize;
+
+      // Centre the gutter on the seam. The inline slide mirrors in RTL, where
+      // the logical start edge sits on the opposite physical side.
+      transform: translateX(-50%);
+
+      --tls-splitter-handle-inline: var(--tls-splitter-handle-thickness);
+      --tls-splitter-handle-block: var(--tls-splitter-handle-length);
+
+      :root[dir='rtl'] & {
+        transform: translateX(50%);
+      }
+
+      // Vertical seam line down the centre of the gutter.
+      &::before {
+        inset-block: 0;
+        inset-inline-start: calc(50% - var(--tls-splitter-line-thickness) / 2);
+
+        width: var(--tls-splitter-line-thickness);
+      }
+    }
+  }
+
+  // Vertical: panels stack, separated by horizontal gutters.
+  &--vertical {
+    flex-direction: column;
+
+    > .tls-splitter-gutter {
+      inset-inline: 0;
+
+      height: var(--tls-splitter-gutter-size);
+
+      cursor: row-resize;
+
+      transform: translateY(-50%);
+
+      --tls-splitter-handle-inline: var(--tls-splitter-handle-length);
+      --tls-splitter-handle-block: var(--tls-splitter-handle-thickness);
+
+      // Horizontal seam line across the centre of the gutter.
+      &::before {
+        inset-inline: 0;
+        inset-block-start: calc(50% - var(--tls-splitter-line-thickness) / 2);
+
+        height: var(--tls-splitter-line-thickness);
+      }
+    }
+  }
+}

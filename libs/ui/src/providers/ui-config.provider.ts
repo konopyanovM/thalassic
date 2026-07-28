@@ -38,6 +38,7 @@ import {
   DEFAULT_RADIO_BUTTON_CONFIG,
   DEFAULT_SELECT_CONFIG,
   DEFAULT_SKELETON_CONFIG,
+  DEFAULT_SPLITTER_CONFIG,
   DEFAULT_STEPPER_CONFIG,
   DEFAULT_SWITCH_CONFIG,
   DEFAULT_TABLE_CONFIG,
@@ -65,6 +66,7 @@ import {
   RADIO_BUTTON_CONFIG,
   SELECT_CONFIG,
   SKELETON_CONFIG,
+  SPLITTER_CONFIG,
   STEPPER_CONFIG,
   SWITCH_CONFIG,
   TABLE_CONFIG,
@@ -186,6 +188,10 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
     {
       provide: SKELETON_CONFIG,
       useValue: deepMerge(DEFAULT_SKELETON_CONFIG, config.components.skeleton),
+    },
+    {
+      provide: SPLITTER_CONFIG,
+      useValue: deepMerge(DEFAULT_SPLITTER_CONFIG, config.components.splitter),
     },
     {
       provide: STEPPER_CONFIG,
