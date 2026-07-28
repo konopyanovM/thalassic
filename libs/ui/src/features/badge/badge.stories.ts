@@ -33,6 +33,7 @@ const meta: Meta<BadgeComponent> = {
     dot: false,
     showZero: false,
     hidden: false,
+    inset: false,
   },
   argTypes: {
     color: {
@@ -80,5 +81,11 @@ export const Dot: Story = {
   args: {
     dot: true,
     ariaLabel: 'New notifications',
+  },
+};
+
+export const Inset: Story = {
+  args: {
+    inset: true,
   },
 };

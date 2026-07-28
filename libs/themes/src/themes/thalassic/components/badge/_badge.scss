@@ -59,4 +59,8 @@
 
     padding-inline: 0;
   }
+
+  &--inset &__indicator {
+    --tls-badge-offset: 0px;
+  }
 }
