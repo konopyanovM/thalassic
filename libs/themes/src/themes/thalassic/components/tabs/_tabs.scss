@@ -24,7 +24,19 @@
 
     border-color: var(--tls-tabs-border-color);
 
+    // Tabs that exceed the header's extent scroll instead of shrinking
+    // (e.g. a horizontal strip on a narrow viewport). The scrollbar is
+    // hidden so it never covers the active-tab indicator line, while
+    // wheel/touch/keyboard scrolling stays available.
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
     &__item {
+      flex-shrink: 0;
+
       display: flex;
 
       color: var(--tls-tabs-label-color);
@@ -53,6 +65,8 @@
       }
 
       &-button {
+        width: 100%;
+
         padding: var(--spacing-3) var(--spacing-6);
 
         // TODO: use mixin

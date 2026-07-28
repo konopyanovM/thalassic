@@ -1,4 +1,12 @@
 .tls-tabs {
+  // Horizontal
+  &.tls-tabs--horizontal {
+    .tls-tabs-header {
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+  }
+
   // Vertical
   &.tls-tabs--vertical {
     display: flex;
@@ -6,6 +14,9 @@
 
     .tls-tabs-header {
       flex-direction: column;
+
+      overflow-x: hidden;
+      overflow-y: auto;
 
       border-color: var(--tls-tabs-border-color);
     }
