@@ -1,0 +1,31 @@
+@mixin display-mode($mode) {
+  @if $mode == fullscreen {
+    @media (display-mode: fullscreen) {
+      @content;
+    }
+  } @else if $mode == standalone {
+    @media (display-mode: standalone) {
+      @content;
+    }
+  } @else if $mode == minimal-ui {
+    @media (display-mode: minimal-ui) {
+      @content;
+    }
+  } @else if $mode == browser {
+    @media (display-mode: browser) {
+      @content;
+    }
+  } @else if $mode == window-controls-overlay {
+    @media (display-mode: window-controls-overlay) {
+      @content;
+    }
+  } @else if $mode == picture-in-picture {
+    @media (display-mode: picture-in-picture) {
+      @content;
+    }
+  } @else {
+    @media (display-mode: $mode) {
+      @content;
+    }
+  }
+}
