@@ -43,7 +43,7 @@ export const STORY_TOGGLE_GROUP_VARIANT_OPTIONS: toggleGroupVariant[] = [
   'tonal',
 ] as const;
 
-export const STORY_TABS_VARIANT_OPTIONS: tabsVariant[] = ['flat', 'outlined'] as const;
+export const STORY_TABS_VARIANT_OPTIONS: tabsVariant[] = ['flat', 'outlined', 'segmented'] as const;
 
 export const STORY_PIN_INPUT_TYPE_OPTIONS: pinInputType[] = ['numeric', 'alphanumeric'] as const;
 

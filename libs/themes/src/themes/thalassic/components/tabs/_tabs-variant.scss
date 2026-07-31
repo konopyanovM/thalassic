@@ -1,6 +1,9 @@
 .tls-tabs {
   // Flat
   &.tls-tabs--flat {
+    --tls-tabs-active-background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+    --tls-tabs-active-hover-background-color: color-mix(in srgb, var(--color-primary) 12%, transparent);
+
     .tls-tabs-header {
       border-bottom-width: var(--tls-tabs-border-width);
       border-bottom-style: solid;
@@ -14,21 +17,28 @@
         border-bottom-width: var(--tls-tabs-active-border-width);
         border-bottom-style: solid;
 
+        &.tls-tabs-header__item--active {
+          background-color: var(--tls-tabs-active-background-color);
+
+          &:hover {
+            background-color: var(--tls-tabs-active-hover-background-color);
+          }
+        }
+
         // Hover fill sits on the item, not the button, so it paints under
         // the item's border and reaches the divider line instead of
-        // stopping short and leaving a gap.
-        &:hover {
+        // stopping short and leaving a gap. Excludes the active item so
+        // its primary tint is not replaced by the neutral hover fill.
+        //
+        // The item's border overlaps the header's divider line by
+        // `--tls-tabs-border-width` (see `margin-bottom: -1px` above).
+        // Made opaque only while hovering, it paints over the hover
+        // fill and keeps that shared pixel visible instead of the
+        // fill covering it. The active item already has an opaque
+        // border, so it needs neither of these.
+        &:hover:not(.tls-tabs-header__item--active) {
           background-color: var(--color-surface-container);
-
-          // The item's border overlaps the header's divider line by
-          // `--tls-tabs-border-width` (see `margin-bottom: -1px` above).
-          // Made opaque only while hovering, it paints over the hover
-          // fill and keeps that shared pixel visible instead of the
-          // fill covering it. The active item already has an opaque
-          // border, so it's excluded here.
-          &:not(.tls-tabs-header__item--active) {
-            border-bottom-color: var(--tls-tabs-border-color);
-          }
+          border-bottom-color: var(--tls-tabs-border-color);
         }
       }
     }
@@ -68,6 +78,43 @@
 
         &.tls-tabs-header__item--active {
           background-color: var(--tls-tabs-background-color);
+        }
+      }
+    }
+  }
+
+  // Segmented
+  &.tls-tabs--segmented {
+    --tls-tabs-border-radius: var(--radius-lg);
+    --tls-tabs-pill-radius: var(--radius-md);
+    --tls-tabs-header-background-color: var(--color-surface-container);
+    --tls-tabs-pill-background-color: var(--color-surface);
+    --tls-tabs-header-padding: var(--spacing-2);
+    --tls-tabs-active-label-color: var(--color-on-surface);
+
+    .tls-tabs-header {
+      padding: var(--tls-tabs-header-padding);
+      gap: var(--tls-tabs-header-padding);
+
+      border-radius: var(--tls-tabs-border-radius);
+
+      background-color: var(--tls-tabs-header-background-color);
+
+      &__item {
+        border: none;
+        border-radius: var(--tls-tabs-pill-radius);
+
+        &:hover:not(.tls-tabs-header__item--active) {
+          background-color: var(--color-surface-container-high);
+        }
+
+        &.tls-tabs-header__item--active {
+          background-color: var(--tls-tabs-pill-background-color);
+          box-shadow: var(--shadow-xs);
+        }
+
+        &-button {
+          padding: var(--spacing-2) var(--spacing-5);
         }
       }
     }

@@ -1,6 +1,6 @@
 import { orientation } from '../../types';
 
-export type tabsVariant = 'flat' | 'outlined';
+export type tabsVariant = 'flat' | 'outlined' | 'segmented';
 
 export type tabsOrientation = orientation;
 
