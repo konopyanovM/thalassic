@@ -1,0 +1,13 @@
+// Produces a translucent wash of a color by mixing it with `transparent`.
+// `$amount` is the share of the color that stays opaque (e.g. 8% → the color
+// at 8% alpha), the rest being transparent. Ideal for state layers — hover,
+// active, selected fills — laid over any background.
+//
+// Works with custom-property colors (`tint(var(--color-primary), 8%)`), which
+// `rgba()` cannot, since the token is not raw channel values.
+//
+// `$space` is the mixing color space; srgb blends the intuitive "normal RGB"
+// way. Override to `oklab` for a perceptually even blend when needed.
+@function tint($color, $amount, $space: srgb) {
+  @return color-mix(in $space, #{$color} $amount, transparent);
+}

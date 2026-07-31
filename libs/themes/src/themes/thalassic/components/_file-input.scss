@@ -1,3 +1,4 @@
+@use '../functions' as functions;
 @use '../mixins' as mixins;
 
 .tls-file-input {
@@ -67,14 +68,14 @@
     &--dragging {
       --tls-file-input-border-color: var(--color-primary);
 
-      background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+      background-color: functions.tint(var(--color-primary), 8%);
     }
 
     &--rejected {
       --tls-file-input-border-color: var(--color-danger);
 
       color: var(--color-danger);
-      background-color: color-mix(in srgb, var(--color-danger) 8%, transparent);
+      background-color: functions.tint(var(--color-danger), 8%);
     }
 
     &--disabled {

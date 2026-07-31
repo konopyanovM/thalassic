@@ -1,8 +1,10 @@
+@use '../../functions' as functions;
+
 .tls-tabs {
   // Flat
   &.tls-tabs--flat {
-    --tls-tabs-active-background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
-    --tls-tabs-active-hover-background-color: color-mix(in srgb, var(--color-primary) 12%, transparent);
+    --tls-tabs-active-background-color: #{functions.tint(var(--color-primary), 8%)};
+    --tls-tabs-active-hover-background-color: #{functions.tint(var(--color-primary), 12%)};
 
     .tls-tabs-header {
       border-bottom-width: var(--tls-tabs-border-width);
