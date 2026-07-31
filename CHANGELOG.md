@@ -1,3 +1,19 @@
+## 22.8.0 (2026-07-31)
+
+### 🚀 Features
+
+- **core:** added viewport service ([a606ed3](https://github.com/konopyanovM/thalassic/commit/a606ed3))
+- **themes:** added tabs segmented variant ([d7a7473](https://github.com/konopyanovM/thalassic/commit/d7a7473))
+- **themes:** added tint scss function ([1e23738](https://github.com/konopyanovM/thalassic/commit/1e23738))
+
+### 🩹 Fixes
+
+- **core:** added display-mode mixin ([70c9883](https://github.com/konopyanovM/thalassic/commit/70c9883))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.7.0 (2026-07-28)
 
 ### 🚀 Features
