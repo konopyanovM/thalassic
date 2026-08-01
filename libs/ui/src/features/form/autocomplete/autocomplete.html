@@ -1,8 +1,9 @@
-<button
+<input
   #trigger
-  type="button"
-  class="tls-select__trigger"
+  type="text"
+  class="tls-autocomplete__trigger"
   role="combobox"
+  autocomplete="off"
   [attr.id]="effectiveInputId()"
   [attr.name]="name()"
   [attr.aria-label]="ariaLabel() ?? null"
@@ -12,54 +13,52 @@
   [attr.aria-busy]="pending() ? 'true' : null"
   [attr.aria-describedby]="describedBy()"
   aria-haspopup="listbox"
+  aria-autocomplete="list"
   [attr.aria-controls]="isOpen() ? listboxId : null"
   [attr.aria-activedescendant]="activeDescendantId()"
-  [tabindex]="disabled() ? -1 : tabindex()"
-  [disabled]="disabled()"
   [attr.aria-expanded]="isOpen()"
-  (click)="toggle()"
+  [placeholder]="placeholder()"
+  [disabled]="disabled()"
+  [readonly]="readonly()"
+  [tabindex]="disabled() ? -1 : tabindex()"
+  [value]="query()"
+  (input)="onInput($event)"
+  (click)="open()"
   (blur)="touched.set(true)"
   (keydown)="onKeydown($event)"
->
-  <span class="tls-select__value" [class.tls-form-control__placeholder]="!selectedLabel()">
-    {{ selectedLabel() || placeholder() }}
-  </span>
-  <div class="tls-select__icon" aria-hidden="true" [class.tls-select__icon--hidden]="pending()">
-    <tls-icon class="tls-select__chevron" name="chevron-down" aria-hidden="true" />
-  </div>
-</button>
+/>
 @if (clearable() && hasValue()) {
   <button
     type="button"
-    class="tls-select__clear"
+    class="tls-autocomplete__clear"
     tabindex="-1"
     aria-label="Clear"
     (click)="clear()"
   >
-    <tls-icon class="tls-select__clear-icon" name="close" aria-hidden="true" />
+    <tls-icon class="tls-autocomplete__clear-icon" name="close" aria-hidden="true" />
   </button>
 }
 @if (pending()) {
-  <tls-loader class="tls-select__spinner" size="xs" aria-hidden="true" />
+  <tls-loader class="tls-autocomplete__spinner" size="xs" aria-hidden="true" />
 }
 
 <ng-template #panel>
   <ul
-    class="tls-select__panel"
-    animate.enter="tls-select__panel--enter"
-    animate.leave="tls-select__panel--leave"
+    class="tls-autocomplete__panel"
+    animate.enter="tls-autocomplete__panel--enter"
+    animate.leave="tls-autocomplete__panel--leave"
     role="listbox"
     [id]="listboxId"
   >
     @for (option of visibleOptions(); track option.value; let index = $index) {
       <li
-        class="tls-select__option"
-        [class.tls-select__option--selected]="option.value === value()"
-        [class.tls-select__option--active]="index === activeIndex()"
-        [class.tls-select__option--disabled]="option.disabled"
+        class="tls-autocomplete__option"
+        [class.tls-autocomplete__option--selected]="option.value === value()"
+        [class.tls-autocomplete__option--active]="index === activeIndex()"
+        [class.tls-autocomplete__option--disabled]="option.disabled"
       >
         <button
-          class="tls-select__option-button"
+          class="tls-autocomplete__option-button"
           role="option"
           [id]="optionId(index)"
           [disabled]="option.disabled"
@@ -70,6 +69,8 @@
         >{{ option.label }}
         </button>
       </li>
+    } @empty {
+      <li class="tls-autocomplete__empty" role="presentation">{{ emptyMessage() }}</li>
     }
   </ul>
 </ng-template>

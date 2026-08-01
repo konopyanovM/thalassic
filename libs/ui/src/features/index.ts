@@ -10,6 +10,7 @@ export * from './divider';
 export * from './drawer';
 export * from './form-control-group';
 export * from './form-item';
+export * from './form/autocomplete';
 export * from './form/checkbox';
 export * from './form/date-time-picker';
 export * from './form/chip-group';

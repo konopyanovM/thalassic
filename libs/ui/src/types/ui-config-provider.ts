@@ -1,5 +1,6 @@
 import {
   AlertConfig,
+  AutocompleteConfig,
   ButtonConfig,
   CalendarConfig,
   CheckboxConfig,
@@ -50,6 +51,7 @@ export interface tlsUiConfigProvider {
   formControl?: Partial<FormControlConfig>;
   components: {
     alert?: Partial<AlertConfig>;
+    autocomplete?: Partial<AutocompleteConfig>;
     button?: Partial<ButtonConfig>;
     calendar?: Partial<CalendarConfig>;
     checkbox?: Partial<CheckboxConfig>;

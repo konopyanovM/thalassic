@@ -1,0 +1,99 @@
+@use '../../mixins' as mixins;
+
+.tls-autocomplete {
+  --tls-autocomplete-width: 200px;
+
+  position: relative;
+  display: inline-block;
+
+  &.tls-form-control {
+    --tls-form-control-width: var(--tls-autocomplete-width);
+
+    display: inline-flex;
+    align-items: stretch;
+    padding-inline: 0;
+
+    &.tls-form-control--fluid {
+      --tls-form-control-width: 100%;
+    }
+
+    &.tls-form-control--disabled {
+      cursor: not-allowed;
+    }
+
+    &:focus-within {
+      border: var(--tls-form-control-border-width) solid var(--color-primary);
+      box-shadow: 0 0 3px -1px var(--color-primary);
+    }
+
+    &.tls-form-control--show-error:not(.tls-form-control--disabled) .tls-autocomplete__trigger::placeholder {
+      color: var(--color-danger);
+    }
+
+    .tls-autocomplete__trigger {
+      flex: 1;
+      min-width: 0;
+
+      padding-inline: var(--tls-form-control-padding-inline);
+
+      appearance: none;
+      background: transparent;
+      border: none;
+      outline: none;
+
+      color: inherit;
+      font: inherit;
+      letter-spacing: inherit;
+
+      &::placeholder {
+        color: var(--color-outline);
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+      }
+    }
+
+    // Reserve room at the trailing edge for the clear button or spinner.
+    &:has(.tls-autocomplete__clear) .tls-autocomplete__trigger,
+    &.tls-form-control--pending .tls-autocomplete__trigger {
+      padding-inline-end: calc(
+        var(--tls-form-control-padding-inline) * 2 + var(--tls-autocomplete-clear-size)
+      );
+    }
+
+    .tls-autocomplete__spinner {
+      position: absolute;
+      inset-block: 0;
+      inset-inline-end: var(--tls-form-control-padding-inline);
+
+      margin-block: auto;
+
+      pointer-events: none;
+    }
+
+    .tls-autocomplete__clear {
+      position: absolute;
+      top: 50%;
+      inset-inline-end: var(--tls-form-control-padding-inline);
+
+      display: flex;
+      align-items: center;
+
+      color: var(--color-outline);
+
+      transform: translateY(-50%);
+
+      @include mixins.touch-target(var(--tls-autocomplete-clear-size));
+
+      &:hover {
+        color: var(--color-on-surface);
+      }
+
+      .tls-autocomplete__clear-icon {
+        width: var(--tls-autocomplete-clear-size);
+        height: var(--tls-autocomplete-clear-size);
+      }
+    }
+  }
+}

@@ -83,7 +83,7 @@ export class MultiSelect<T, V = unknown> extends AbstractSelect<T, V, V[]> {
   }
 
   protected override getInitialActiveIndex(): number {
-    const options = this.normalizedOptions();
+    const options = this.visibleOptions();
     const selected = this.selectedValues();
 
     const firstSelected = options.findIndex(

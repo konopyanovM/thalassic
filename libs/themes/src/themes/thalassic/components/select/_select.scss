@@ -1,3 +1,5 @@
+@use '../../mixins' as mixins;
+
 .tls-select {
   --tls-select-width: 200px;
   --tls-select-gap: var(--spacing-2);
@@ -104,6 +106,8 @@
       color: var(--color-outline);
 
       transform: translateY(-50%);
+
+      @include mixins.touch-target(var(--tls-select-clear-size));
 
       &:hover {
         color: var(--color-on-surface);

@@ -16,6 +16,7 @@ import {
 import { DEFAULT_FORM_CONTROL_CONFIG, FORM_CONTROL_CONFIG } from '../abstract/form';
 import {
   ALERT_CONFIG,
+  AUTOCOMPLETE_CONFIG,
   BUTTON_CONFIG,
   CALENDAR_CONFIG,
   CHECKBOX_CONFIG,
@@ -25,6 +26,7 @@ import {
   CHIP_INPUT_CONFIG,
   DATE_TIME_PICKER_CONFIG,
   DEFAULT_ALERT_CONFIG,
+  DEFAULT_AUTOCOMPLETE_CONFIG,
   DEFAULT_BUTTON_CONFIG,
   DEFAULT_CALENDAR_CONFIG,
   DEFAULT_CHECKBOX_CONFIG,
@@ -126,6 +128,10 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
     {
       provide: ALERT_CONFIG,
       useValue: deepMerge(DEFAULT_ALERT_CONFIG, config.components.alert),
+    },
+    {
+      provide: AUTOCOMPLETE_CONFIG,
+      useValue: deepMerge(DEFAULT_AUTOCOMPLETE_CONFIG, config.components.autocomplete),
     },
     {
       provide: BUTTON_CONFIG,

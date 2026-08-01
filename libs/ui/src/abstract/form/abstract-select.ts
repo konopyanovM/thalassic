@@ -28,7 +28,7 @@ import { controlSize } from '../../types';
 export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<ValueType> {
   protected readonly overlay = createOverlayManager();
 
-  private readonly triggerElement = viewChild<ElementRef<HTMLButtonElement>>('trigger');
+  private readonly triggerElement = viewChild<ElementRef<HTMLElement>>('trigger');
   private readonly panelTemplate = viewChild<TemplateRef<void>>('panel');
 
   // Shared inputs (config-independent)
@@ -53,6 +53,15 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
       value: this.optionValue(),
       disabled: this.optionDisabled(),
     }),
+  );
+
+  /**
+   * Options actually shown in the panel and traversed by keyboard navigation. Defaults to the full
+   * normalized list; a filtering control (an editable combobox) narrows it via
+   * {@link filterVisibleOptions}. `activeIndex` always indexes into this list, never the raw one.
+   */
+  protected readonly visibleOptions: Signal<Option<V>[]> = computed(() =>
+    this.filterVisibleOptions(this.normalizedOptions()),
   );
 
   protected readonly activeDescendantId: Signal<string | null> = computed(() => {
@@ -87,6 +96,19 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
   /** Reset the control to its empty value. */
   protected abstract clear(): void;
 
+  /**
+   * Narrows the option list shown in the panel. The listbox controls show every option; an editable
+   * combobox overrides this to filter by the typed query.
+   */
+  protected filterVisibleOptions(options: Option<V>[]): Option<V>[] {
+    return options;
+  }
+
+  /** Hook invoked after the panel has closed, once the trigger has regained focus. */
+  protected onClosed(): void {
+    // No-op by default; an editable combobox overrides this to reconcile its text.
+  }
+
   // Protected methods
   protected open(): void {
     const triggerElement = this.triggerElement();
@@ -111,6 +133,7 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
         this.activeIndex.set(-1);
         const trigger = this.triggerElement();
         if (trigger) trigger.nativeElement.focus();
+        this.onClosed();
       },
     });
 
@@ -154,7 +177,7 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
         this.open();
         return;
       }
-      const active = this.normalizedOptions()[this.activeIndex()];
+      const active = this.visibleOptions()[this.activeIndex()];
       if (active && !active.disabled) this.commitActiveOption(active);
     } else if (event.key === 'Home') {
       if (!this.isOpen()) return;
@@ -183,9 +206,8 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
     return `${this.uniqueId}-option-${index}`;
   }
 
-  // Private methods
-  private moveActive(direction: 1 | -1): void {
-    const options = this.normalizedOptions();
+  protected moveActive(direction: 1 | -1): void {
+    const options = this.visibleOptions();
     let next = this.activeIndex() + direction;
 
     while (next >= 0 && next < options.length) {
@@ -197,8 +219,9 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
     }
   }
 
+  // Private methods
   private moveActiveToEdge(direction: 1 | -1): void {
-    const options = this.normalizedOptions();
+    const options = this.visibleOptions();
     let next = direction === 1 ? 0 : options.length - 1;
 
     while (next >= 0 && next < options.length) {

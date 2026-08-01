@@ -52,7 +52,7 @@
     aria-multiselectable="true"
     [id]="listboxId"
   >
-    @for (option of normalizedOptions(); track option.value; let index = $index) {
+    @for (option of visibleOptions(); track option.value; let index = $index) {
       <li
         class="tls-multi-select__option"
         [class.tls-multi-select__option--selected]="isSelected(option)"

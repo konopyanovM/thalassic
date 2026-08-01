@@ -1,0 +1,13 @@
+.tls-autocomplete {
+  &.tls-form-control--sm {
+    --tls-autocomplete-clear-size: 0.875rem;
+  }
+
+  &.tls-form-control--md {
+    --tls-autocomplete-clear-size: 1rem;
+  }
+
+  &.tls-form-control--lg {
+    --tls-autocomplete-clear-size: 1.125rem;
+  }
+}

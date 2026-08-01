@@ -1,0 +1,84 @@
+@use '../../mixins' as mixins;
+
+.tls-autocomplete__panel {
+  --tls-autocomplete-panel-max-height: 240px;
+  --tls-autocomplete-panel-padding-block: var(--spacing-1);
+  --tls-autocomplete-panel-background: var(--color-surface-container-lowest);
+  --tls-autocomplete-panel-border-radius: var(--radius-md);
+  --tls-autocomplete-panel-border: 1px solid var(--color-outline-variant);
+  --tls-autocomplete-panel-shadow: var(--shadow-sm);
+
+  width: 100%;
+  max-height: var(--tls-autocomplete-panel-max-height);
+
+  margin: 0;
+  padding: var(--tls-autocomplete-panel-padding-block) 0;
+
+  background-color: var(--tls-autocomplete-panel-background);
+  border: var(--tls-autocomplete-panel-border);
+  border-radius: var(--tls-autocomplete-panel-border-radius);
+  box-shadow: var(--tls-autocomplete-panel-shadow);
+
+  overflow-y: auto;
+  list-style: none;
+
+  @include mixins.panel-open;
+}
+
+.tls-autocomplete__option {
+  --tls-autocomplete-option-color: var(--color-on-surface);
+  --tls-autocomplete-option-background: transparent;
+  --tls-autocomplete-option-padding-block: var(--spacing-2);
+  --tls-autocomplete-option-padding-inline: var(--spacing-3);
+
+  &.tls-autocomplete__option--active {
+    --tls-autocomplete-option-background: var(--color-surface-variant);
+  }
+
+  &.tls-autocomplete__option--selected {
+    --tls-autocomplete-option-color: var(--color-primary);
+  }
+
+  &.tls-autocomplete__option--disabled .tls-autocomplete__option-button {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .tls-autocomplete__option-button {
+    width: 100%;
+    padding-block: var(--tls-autocomplete-option-padding-block);
+    padding-inline: var(--tls-autocomplete-option-padding-inline);
+
+    display: flex;
+    align-items: center;
+
+    appearance: none;
+    cursor: pointer;
+    text-align: start;
+
+    color: var(--tls-autocomplete-option-color);
+    background: var(--tls-autocomplete-option-background);
+    border: none;
+
+    font-size: var(--font-body-medium-size);
+    font-weight: var(--font-body-medium-weight);
+    line-height: var(--font-body-medium-line-height);
+    letter-spacing: var(--font-body-medium-letter-spacing);
+
+    &:focus-visible {
+      outline: none;
+    }
+  }
+}
+
+.tls-autocomplete__empty {
+  padding-block: var(--spacing-2);
+  padding-inline: var(--spacing-3);
+
+  color: var(--color-outline);
+
+  font-size: var(--font-body-medium-size);
+  font-weight: var(--font-body-medium-weight);
+  line-height: var(--font-body-medium-line-height);
+  letter-spacing: var(--font-body-medium-letter-spacing);
+}

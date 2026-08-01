@@ -72,7 +72,7 @@ export class Select<T, V = unknown> extends AbstractSelect<T, V, V | null> {
   }
 
   protected override getInitialActiveIndex(): number {
-    return this.normalizedOptions().findIndex(option => option.value === this.value());
+    return this.visibleOptions().findIndex(option => option.value === this.value());
   }
 
   protected override commitActiveOption(option: Option<V>): void {
