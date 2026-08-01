@@ -1,6 +1,9 @@
+// Header-position styles are a tabs-composite concern (the header's order and
+// divider edge relative to the content panel), so they stay here and reach
+// into the shared tab-header block from the container.
 .tls-tabs {
   &.tls-tabs--header-end {
-    .tls-tabs-header {
+    .tls-tab-header {
       order: 1;
     }
 
@@ -12,33 +15,33 @@
   // Horizontal: divider faces the content, so it moves from the header's
   // bottom edge to its top edge once the header trails the content.
   &.tls-tabs--horizontal.tls-tabs--header-end {
-    &.tls-tabs--flat .tls-tabs-header {
+    .tls-tab-header--flat {
       border-bottom-width: 0;
-      border-top-width: var(--tls-tabs-border-width);
+      border-top-width: var(--tls-tab-header-border-width);
       border-top-style: solid;
 
-      &__item {
+      .tls-tab-header__item {
         margin-bottom: 0;
         margin-top: -1px;
 
         border-bottom-width: 0;
-        border-top-width: var(--tls-tabs-active-border-width);
+        border-top-width: var(--tls-tab-header-active-border-width);
         border-top-style: solid;
 
         // See the flat variant's own hover rule for why this is needed:
         // it keeps the divider line visible under the hover fill.
-        &:hover:not(.tls-tabs-header__item--active) {
-          border-top-color: var(--tls-tabs-border-color);
+        &:hover:not(.tls-tab-header__item--active) {
+          border-top-color: var(--tls-tab-header-border-color);
         }
       }
     }
 
-    &.tls-tabs--outlined .tls-tabs-header {
+    .tls-tab-header--outlined {
       border-bottom-width: 0;
-      border-top-width: var(--tls-tabs-border-width);
+      border-top-width: var(--tls-tab-header-border-width);
       border-top-style: solid;
 
-      &__item {
+      .tls-tab-header__item {
         margin-bottom: 0;
         margin-top: -1px;
       }
@@ -48,33 +51,33 @@
   // Vertical: divider faces the content, so it moves from the header's
   // inline-end edge to its inline-start edge once the header trails the content.
   &.tls-tabs--vertical.tls-tabs--header-end {
-    &.tls-tabs--flat .tls-tabs-header {
+    .tls-tab-header--flat {
       border-inline-end-width: 0;
-      border-inline-start-width: var(--tls-tabs-border-width);
+      border-inline-start-width: var(--tls-tab-header-border-width);
       border-inline-start-style: solid;
 
-      &__item {
+      .tls-tab-header__item {
         margin-inline-end: 0;
         margin-inline-start: -1px;
 
         border-inline-end-width: 0;
-        border-inline-start-width: var(--tls-tabs-active-border-width);
+        border-inline-start-width: var(--tls-tab-header-active-border-width);
         border-inline-start-style: solid;
 
         // See the flat variant's own hover rule for why this is needed:
         // it keeps the divider line visible under the hover fill.
-        &:hover:not(.tls-tabs-header__item--active) {
-          border-inline-start-color: var(--tls-tabs-border-color);
+        &:hover:not(.tls-tab-header__item--active) {
+          border-inline-start-color: var(--tls-tab-header-border-color);
         }
       }
     }
 
-    &.tls-tabs--outlined .tls-tabs-header {
+    .tls-tab-header--outlined {
       border-inline-end-width: 0;
-      border-inline-start-width: var(--tls-tabs-border-width);
+      border-inline-start-width: var(--tls-tab-header-border-width);
       border-inline-start-style: solid;
 
-      &__item {
+      .tls-tab-header__item {
         margin-inline-end: 0;
         margin-inline-start: -1px;
       }

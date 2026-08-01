@@ -1,0 +1,118 @@
+@use '../../functions' as functions;
+
+.tls-tab-header {
+  // Flat
+  &.tls-tab-header--flat {
+    --tls-tab-header-active-background-color: #{functions.tint(var(--color-primary), 8%)};
+    --tls-tab-header-active-hover-background-color: #{functions.tint(var(--color-primary), 12%)};
+
+    border-bottom-width: var(--tls-tab-header-border-width);
+    border-bottom-style: solid;
+
+    .tls-tab-header__item {
+      margin-bottom: -1px;
+
+      // Border is always reserved at the active width and toggles only
+      // border-color (transparent to active) so switching tabs never
+      // changes the item's box height and shifts the label.
+      border-bottom-width: var(--tls-tab-header-active-border-width);
+      border-bottom-style: solid;
+
+      &.tls-tab-header__item--active {
+        background-color: var(--tls-tab-header-active-background-color);
+
+        &:hover {
+          background-color: var(--tls-tab-header-active-hover-background-color);
+        }
+      }
+
+      // Hover fill sits on the item, not the control, so it paints under
+      // the item's border and reaches the divider line instead of
+      // stopping short and leaving a gap. Excludes the active item so
+      // its primary tint is not replaced by the neutral hover fill.
+      //
+      // The item's border overlaps the strip's divider line by
+      // `--tls-tab-header-border-width` (see `margin-bottom: -1px` above).
+      // Made opaque only while hovering, it paints over the hover
+      // fill and keeps that shared pixel visible instead of the
+      // fill covering it. The active item already has an opaque
+      // border, so it needs neither of these.
+      &:hover:not(.tls-tab-header__item--active) {
+        background-color: var(--color-surface-container);
+        border-bottom-color: var(--tls-tab-header-border-color);
+      }
+    }
+  }
+
+  // Outlined
+  &.tls-tab-header--outlined {
+    --tls-tab-header-background-color: var(--color-surface-container);
+    --tls-tab-header-active-background-color: var(--color-surface);
+    --tls-tab-header-active-border-width: 1px;
+    --tls-tab-header-active-border-color: var(--tls-tab-header-border-color);
+
+    border-bottom-width: var(--tls-tab-header-border-width);
+    border-bottom-style: solid;
+
+    background-color: var(--tls-tab-header-background-color);
+
+    .tls-tab-header__item {
+      margin-bottom: -1px;
+
+      border-width: 0;
+      border-inline-start-width: var(--tls-tab-header-active-border-width);
+      border-inline-end-width: var(--tls-tab-header-active-border-width);
+      border-style: solid;
+
+      &:hover {
+        color: var(--tls-tab-header-active-label-color);
+      }
+
+      &:first-child {
+        border-inline-start-width: 0;
+      }
+
+      &.tls-tab-header__item--active {
+        background-color: var(--tls-tab-header-active-background-color);
+      }
+    }
+  }
+
+  // Segmented
+  &.tls-tab-header--segmented {
+    --tls-tab-header-border-radius: var(--radius-lg);
+    --tls-tab-header-pill-radius: var(--radius-md);
+    --tls-tab-header-background-color: var(--color-surface-container);
+    --tls-tab-header-pill-background-color: var(--color-surface);
+    --tls-tab-header-padding: var(--spacing-2);
+    --tls-tab-header-active-label-color: var(--color-on-surface);
+
+    padding: var(--tls-tab-header-padding);
+    gap: var(--tls-tab-header-padding);
+
+    border-radius: var(--tls-tab-header-border-radius);
+
+    background-color: var(--tls-tab-header-background-color);
+
+    .tls-tab-header__item {
+      border: none;
+      border-radius: var(--tls-tab-header-pill-radius);
+
+      &:hover:not(.tls-tab-header__item--active) {
+        background-color: var(--color-surface-container-high);
+      }
+
+      &.tls-tab-header__item--active {
+        background-color: var(--tls-tab-header-pill-background-color);
+        box-shadow: var(--shadow-xs);
+      }
+
+      // Both shapes of the interactive element: a child control (the
+      // button inside `tls-tabs`) or the item itself (the nav anchor).
+      &.tls-tab-header__item-control,
+      .tls-tab-header__item-control {
+        padding: var(--spacing-2) var(--spacing-5);
+      }
+    }
+  }
+}

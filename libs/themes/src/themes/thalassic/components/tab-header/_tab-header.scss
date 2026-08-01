@@ -1,0 +1,89 @@
+// Shared tab-strip visuals used by two components: the header row inside
+// `tls-tabs` (buttons driving tabpanels) and the standalone `tls-tab-nav`
+// (router links styled as tabs). The block carries its own variant /
+// orientation modifiers so it renders identically in both hosts.
+//
+// Structure: the block is the strip, `__item` is one tab slot (an `<li>` in
+// `tls-tabs`, the anchor itself in `tls-tab-nav`) and `__item-control` is the
+// interactive element (the `<button>`, or again the anchor — an element may
+// carry both classes when it plays both roles).
+.tls-tab-header {
+  --tls-tab-header-label-color: var(--color-outline);
+  --tls-tab-header-active-label-color: var(--color-primary);
+  --tls-tab-header-border-color: var(--color-outline-variant);
+  --tls-tab-header-border-width: 1px;
+  --tls-tab-header-active-border-color: var(--color-primary);
+  --tls-tab-header-active-border-width: 2px;
+  --tls-tab-header-disabled-opacity: 0.38;
+
+  flex-shrink: 0;
+  display: flex;
+
+  border-color: var(--tls-tab-header-border-color);
+
+  // Tabs that exceed the strip's extent scroll instead of shrinking
+  // (e.g. a horizontal strip on a narrow viewport). The scrollbar is
+  // hidden so it never covers the active-tab indicator line, while
+  // wheel/touch/keyboard scrolling stays available.
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &__item {
+    flex-shrink: 0;
+
+    display: flex;
+
+    border-color: transparent;
+
+    color: var(--tls-tab-header-label-color);
+
+    transition: color var(--motion-fast),
+    border-color var(--motion-fast),
+    background-color var(--motion-theme);
+
+    // The control fills its item only when it is a separate child element
+    // (the button inside `tls-tabs`); a nav anchor is the item itself and
+    // is sized by its own content.
+    > .tls-tab-header__item-control {
+      width: 100%;
+    }
+
+    &.tls-tab-header__item--active {
+      color: var(--tls-tab-header-active-label-color);
+      border-color: var(--tls-tab-header-active-border-color);
+    }
+
+    &.tls-tab-header__item--disabled {
+      opacity: var(--tls-tab-header-disabled-opacity);
+
+      &,
+      .tls-tab-header__item-control {
+        cursor: not-allowed;
+      }
+    }
+
+    &-control {
+      padding: var(--spacing-3) var(--spacing-6);
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-2);
+
+      // TODO: use mixin
+      font-size: var(--font-label-large-size);
+      font-weight: var(--font-label-large-weight);
+      line-height: var(--font-label-large-line-height);
+      letter-spacing: var(--font-label-large-letter-spacing);
+      text-decoration: none;
+      color: inherit;
+
+      cursor: pointer;
+
+      transition: background-color var(--motion-fast);
+    }
+  }
+}

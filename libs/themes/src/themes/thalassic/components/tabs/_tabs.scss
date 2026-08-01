@@ -1,87 +1,20 @@
+// Container-level styles for `tls-tabs` (background, layout, content panel).
+// The header strip itself is the shared `.tls-tab-header` block
+// (components/tab-header), which `tls-tabs` renders as its tablist and
+// `tls-tab-nav` renders as router links.
 .tls-tabs {
   --tls-tabs-background-color: var(--color-surface);
-  --tls-tabs-label-color: var(--color-outline);
-  --tls-tabs-active-label-color: var(--color-primary);
-  --tls-tabs-border-color: var(--color-outline-variant);
-  --tls-tabs-border-width: 1px;
-  --tls-tabs-active-border-color: var(--color-primary);
-  --tls-tabs-active-border-width: 2px;
-  --tls-tabs-disabled-opacity: 0.38;
   --tls-tabs-content-padding: var(--spacing-4);
-
-  background: var(--tls-tabs-background-color);
 
   display: flex;
   flex-direction: column;
 
-  transition: border-color var(--motion-theme),
-  background-color var(--motion-theme);
+  background: var(--tls-tabs-background-color);
 
   overflow: clip;
 
-  .tls-tabs-header {
-    flex-shrink: 0;
-    display: flex;
-
-    border-color: var(--tls-tabs-border-color);
-
-    // Tabs that exceed the header's extent scroll instead of shrinking
-    // (e.g. a horizontal strip on a narrow viewport). The scrollbar is
-    // hidden so it never covers the active-tab indicator line, while
-    // wheel/touch/keyboard scrolling stays available.
-    scrollbar-width: none;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
-
-    &__item {
-      flex-shrink: 0;
-
-      display: flex;
-
-      color: var(--tls-tabs-label-color);
-
-      border-color: transparent;
-
-      transition: color var(--motion-fast),
-      border-color var(--motion-fast),
-      background-color var(--motion-theme);
-
-      &:has(&-link:hover, &-link:focus) {
-        background-color: var(--color-grey-95);
-      }
-
-      &.tls-tabs-header__item--active {
-        color: var(--tls-tabs-active-label-color);
-        border-color: var(--tls-tabs-active-border-color);
-      }
-
-      &.tls-tabs-header__item--disabled {
-        opacity: var(--tls-tabs-disabled-opacity);
-
-        .tls-tabs-header__item-button {
-          cursor: not-allowed;
-        }
-      }
-
-      &-button {
-        width: 100%;
-
-        padding: var(--spacing-3) var(--spacing-6);
-
-        // TODO: use mixin
-        font-size: var(--font-label-large-size);
-        font-weight: var(--font-label-large-weight);
-        line-height: var(--font-label-large-line-height);
-        letter-spacing: var(--font-label-large-letter-spacing);
-
-        cursor: pointer;
-
-        transition: background-color var(--motion-fast);
-      }
-    }
-  }
+  transition: border-color var(--motion-theme),
+  background-color var(--motion-theme);
 
   .tls-tabs-content {
     padding: var(--tls-tabs-content-padding);

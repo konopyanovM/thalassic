@@ -1,0 +1,60 @@
+.tls-tab-header {
+  // Horizontal
+  &.tls-tab-header--horizontal {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  // Vertical
+  &.tls-tab-header--vertical {
+    flex-direction: column;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    // Flat
+    &.tls-tab-header--flat {
+      border-bottom-width: 0;
+      border-inline-end-width: var(--tls-tab-header-border-width);
+      border-inline-end-style: solid;
+
+      .tls-tab-header__item {
+        margin-bottom: 0;
+        margin-inline-end: -1px;
+
+        border-bottom-width: 0;
+        border-inline-end-width: var(--tls-tab-header-active-border-width);
+        border-inline-end-style: solid;
+
+        // See the flat variant's own hover rule for why this is needed:
+        // it keeps the divider line visible under the hover fill.
+        &:hover:not(.tls-tab-header__item--active) {
+          border-inline-end-color: var(--tls-tab-header-border-color);
+        }
+      }
+    }
+
+    // Outlined
+    &.tls-tab-header--outlined {
+      border-bottom-width: 0;
+      border-inline-end-width: var(--tls-tab-header-border-width);
+      border-inline-end-style: solid;
+
+      .tls-tab-header__item {
+        margin-bottom: 0;
+        margin-inline-end: -1px;
+
+        border-inline-start-width: 0;
+        border-inline-end-width: 0;
+        border-block-start-width: var(--tls-tab-header-active-border-width);
+        border-block-end-width: var(--tls-tab-header-active-border-width);
+        border-style: solid;
+
+        &:first-child {
+          border-inline-start-width: 0;
+          border-block-start-width: 0;
+        }
+      }
+    }
+  }
+}

@@ -42,6 +42,7 @@ export * from './popover';
 export * from './skeleton';
 export * from './splitter';
 export * from './stepper';
+export * from './tab-nav';
 export * from './table';
 export * from './tabs';
 export * from './toast';

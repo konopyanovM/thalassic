@@ -59,6 +59,7 @@ import {
   DEFAULT_SPLITTER_CONFIG,
   DEFAULT_STEPPER_CONFIG,
   DEFAULT_SWITCH_CONFIG,
+  DEFAULT_TAB_NAV_CONFIG,
   DEFAULT_TABLE_CONFIG,
   DEFAULT_TABS_CONFIG,
   DEFAULT_TABS_QUERY_SYNC_CONFIG,
@@ -90,6 +91,7 @@ import {
   SPLITTER_CONFIG,
   STEPPER_CONFIG,
   SWITCH_CONFIG,
+  TAB_NAV_CONFIG,
   TABLE_CONFIG,
   TABS_CONFIG,
   TABS_QUERY_SYNC_CONFIG,
@@ -251,6 +253,10 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
       useValue: deepMerge(DEFAULT_SWITCH_CONFIG, config.components.switch),
     },
     { provide: TABLE_CONFIG, useValue: deepMerge(DEFAULT_TABLE_CONFIG, config.components.table) },
+    {
+      provide: TAB_NAV_CONFIG,
+      useValue: deepMerge(DEFAULT_TAB_NAV_CONFIG, config.components.tabNav),
+    },
     { provide: TABS_CONFIG, useValue: deepMerge(DEFAULT_TABS_CONFIG, tabs) },
     {
       provide: TABS_QUERY_SYNC_CONFIG,

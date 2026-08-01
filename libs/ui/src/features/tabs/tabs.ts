@@ -64,6 +64,20 @@ export class Tabs {
     return array;
   });
 
+  // The header strip uses the shared tab-header block (also rendered by
+  // `tls-tab-nav`), so its variant/orientation modifiers live on the strip
+  // element itself rather than on the tabs container.
+  protected headerClasses = computed(() => {
+    const className = 'tls-tab-header';
+
+    const array: string[] = [className];
+
+    array.push(`${className}--${this.variant()}`);
+    array.push(`${className}--${this.orientation()}`);
+
+    return array;
+  });
+
   constructor() {
     effect(() => {
       if (this.selected() !== undefined) return;

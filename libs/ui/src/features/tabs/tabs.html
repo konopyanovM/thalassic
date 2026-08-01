@@ -1,6 +1,6 @@
 <ul
-  class="tls-tabs-header"
   ngTabList
+  [class]="headerClasses()"
   [orientation]="orientation()"
   [softDisabled]="false"
   [(selectedTab)]="selected"
@@ -10,14 +10,14 @@
   @for (tab of tabs(); track tab) {
     <li
       role="presentation"
-      class="tls-tabs-header__item"
-      [class.tls-tabs-header__item--active]="ariaTab.selected()"
-      [class.tls-tabs-header__item--disabled]="tab.disabled()"
+      class="tls-tab-header__item"
+      [class.tls-tab-header__item--active]="ariaTab.selected()"
+      [class.tls-tab-header__item--disabled]="tab.disabled()"
     >
       <button
         #ariaTab="ngTab"
         ngTab
-        class="tls-tabs-header__item-button"
+        class="tls-tab-header__item-control"
         type="button"
         [value]="tab.value()"
         [disabled]="tab.disabled()"

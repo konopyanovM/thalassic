@@ -1,77 +1,13 @@
+// Orientation styles that concern the tabs container itself; the header
+// strip's orientation styles live in the shared tab-header block.
 .tls-tabs {
-  // Horizontal
-  &.tls-tabs--horizontal {
-    .tls-tabs-header {
-      overflow-x: auto;
-      overflow-y: hidden;
-    }
-  }
-
   // Vertical
   &.tls-tabs--vertical {
     display: flex;
     flex-direction: row;
 
-    .tls-tabs-header {
-      flex-direction: column;
-
-      overflow-x: hidden;
-      overflow-y: auto;
-
-      border-color: var(--tls-tabs-border-color);
-    }
-
     .tls-tabs-content {
       flex-grow: 1;
-    }
-
-    // Flat
-    &.tls-tabs--flat {
-      .tls-tabs-header {
-        border-bottom-width: 0;
-        border-inline-end-width: var(--tls-tabs-border-width);
-        border-inline-end-style: solid;
-
-        &__item {
-          margin-bottom: 0;
-          margin-inline-end: -1px;
-
-          border-bottom-width: 0;
-          border-inline-end-width: var(--tls-tabs-active-border-width);
-          border-inline-end-style: solid;
-
-          // See the flat variant's own hover rule for why this is needed:
-          // it keeps the divider line visible under the hover fill.
-          &:hover:not(.tls-tabs-header__item--active) {
-            border-inline-end-color: var(--tls-tabs-border-color);
-          }
-        }
-      }
-    }
-
-    // Outlined
-    &.tls-tabs--outlined {
-      .tls-tabs-header {
-        border-bottom-width: 0;
-        border-inline-end-width: var(--tls-tabs-border-width);
-        border-inline-end-style: solid;
-
-        &__item {
-          margin-bottom: 0;
-          margin-inline-end: -1px;
-
-          border-inline-start-width: 0;
-          border-inline-end-width: 0;
-          border-block-start-width: var(--tls-tabs-active-border-width);
-          border-block-end-width: var(--tls-tabs-active-border-width);
-          border-style: solid;
-
-          &:first-child {
-            border-inline-start-width: 0;
-            border-block-start-width: 0;
-          }
-        }
-      }
     }
   }
 }

@@ -34,6 +34,7 @@ import {
   StepperConfig,
   SwitchConfig,
   TableConfig,
+  TabNavConfig,
   TabsConfig,
   TabsQuerySyncConfig,
   TextareaConfig,
@@ -86,6 +87,7 @@ export interface tlsUiConfigProvider {
     stepper?: Partial<StepperConfig>;
     switch?: Partial<SwitchConfig>;
     table?: Partial<TableConfig>;
+    tabNav?: Partial<TabNavConfig>;
     tabs?: Partial<TabsConfig> & { querySync?: Partial<TabsQuerySyncConfig> };
     textarea?: Partial<TextareaConfig>;
     toast?: Partial<Omit<ToastConfig, 'severityColors'>> & {
