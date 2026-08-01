@@ -1,0 +1,79 @@
+@use '../../mixins' as mixins;
+
+.tls-toggle-button {
+  --tls-toggle-button-border-width: 1px;
+  --tls-toggle-button-border-radius: var(--radius-sm);
+
+  position: relative;
+
+  height: var(--tls-toggle-button-height);
+
+  padding-inline: var(--tls-toggle-button-padding-inline);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: var(--tls-toggle-button-border-width) solid transparent;
+  border-radius: var(--tls-toggle-button-border-radius);
+
+  background-color: transparent;
+
+  cursor: pointer;
+  user-select: none;
+
+  @include mixins.motion(essential) {
+    transition:
+      background-color var(--motion-fast) var(--motion-ease-in-out),
+      border-color var(--motion-fast) var(--motion-ease-in-out),
+      color var(--motion-fast) var(--motion-ease-in-out);
+  }
+
+  @include mixins.touch-target(var(--tls-toggle-button-height));
+
+  &:focus-visible {
+    @include mixins.focus-ring;
+  }
+
+  // Static-width label stack: both state labels share one grid cell, so the cell
+  // (and the button) always sizes to the wider label; the inactive label stays
+  // invisible but keeps reserving that width.
+  &__labels {
+    display: inline-grid;
+    justify-items: center;
+  }
+
+  &__label {
+    grid-area: 1 / 1;
+
+    &--hidden {
+      visibility: hidden;
+    }
+  }
+
+  &--icon-only {
+    aspect-ratio: 1 / 1;
+
+    padding-inline: 0;
+  }
+
+  &--fluid {
+    width: 100%;
+
+    display: flex;
+  }
+
+  &--disabled {
+    opacity: 0.5;
+
+    cursor: not-allowed;
+  }
+
+  &--readonly {
+    cursor: default;
+  }
+
+  &:not(.tls-toggle-button--disabled).tls-toggle-button--show-error {
+    border-color: var(--color-danger);
+  }
+}

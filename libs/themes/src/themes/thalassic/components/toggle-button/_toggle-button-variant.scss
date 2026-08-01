@@ -1,0 +1,21 @@
+@use '../../mixins' as mixins;
+
+.tls-toggle-button {
+  // Resting (unpressed) appearance. Each variant is gated off the checked state so
+  // the pressed appearance is owned entirely by the checked rules.
+  &--filled:not(.tls-toggle-button--checked) {
+    @include mixins.variant-treatment(filled, 'tls-toggle-button');
+  }
+
+  &--tonal:not(.tls-toggle-button--checked) {
+    @include mixins.variant-treatment(tonal, 'tls-toggle-button');
+  }
+
+  &--outlined:not(.tls-toggle-button--checked) {
+    @include mixins.variant-treatment(outlined, 'tls-toggle-button');
+  }
+
+  &--text:not(.tls-toggle-button--checked) {
+    @include mixins.variant-treatment(text, 'tls-toggle-button');
+  }
+}

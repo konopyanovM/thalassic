@@ -1,73 +1,25 @@
+@use '../../mixins' as mixins;
+
 .tls-button {
-  @mixin hover-focus-state {
-    &:not(.tls-button--disabled):hover,
-    &:not(.tls-button--disabled):focus-visible {
-      @content;
-    }
-  }
-
-  @mixin active-state {
-    &:not(.tls-button--disabled):active {
-      @content;
-    }
-  }
-
   // Variants
-  &--filled,
+  &--filled {
+    @include mixins.variant-treatment(filled, 'tls-button');
+  }
+
   &--tonal {
-    background-color: var(--tls-button-color);
-
-    color: var(--tls-button-on-color);
-
-    @include hover-focus-state {
-      background-color: color-mix(in srgb, var(--tls-button-color) 85%, var(--color-surface));
-    }
-
-    @include active-state {
-      background-color: color-mix(in srgb, var(--tls-button-color) 75%, var(--color-surface));
-    }
+    @include mixins.variant-treatment(tonal, 'tls-button');
   }
 
   &--outlined {
-    border-color: var(--tls-button-color);
-
-    color: var(--tls-button-color);
-
-    @include hover-focus-state {
-      background-color: color-mix(in srgb, var(--tls-button-color) 7.5%, var(--color-surface));
-    }
-
-    @include active-state {
-      background-color: color-mix(in srgb, var(--tls-button-color) 15%, var(--color-surface));
-    }
+    @include mixins.variant-treatment(outlined, 'tls-button');
   }
 
   &--text {
-    color: var(--tls-button-color);
-
-    @include hover-focus-state {
-      background-color: color-mix(in srgb, var(--tls-button-color) 7.5%, var(--color-surface));
-    }
-
-    @include active-state {
-      background-color: color-mix(in srgb, var(--tls-button-color) 15%, var(--color-surface));
-    }
+    @include mixins.variant-treatment(text, 'tls-button');
   }
 
   &--elevated {
-    box-shadow: var(--shadow-sm);
-
-    color: var(--tls-button-color);
-
-    @include hover-focus-state {
-      background-color: color-mix(in srgb, var(--tls-button-color) 7.5%, var(--color-surface));
-    }
-
-    @include active-state {
-      box-shadow: var(--shadow-xs);
-
-      background-color: color-mix(in srgb, var(--tls-button-color) 15%, var(--color-surface));
-    }
+    @include mixins.variant-treatment(elevated, 'tls-button');
   }
 
   &--disabled {

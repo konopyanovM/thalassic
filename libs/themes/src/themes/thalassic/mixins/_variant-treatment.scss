@@ -1,0 +1,97 @@
+// Appearance of a button-like control's variant treatment (filled / tonal /
+// outlined / text / elevated), shared across controls (tls-button,
+// tls-toggle-button). Maps the treatment onto the block's color token pair
+// (see color-variants) and emits the hover / focus-visible / active feedback
+// states, gated off the block's `--disabled` modifier.
+//
+// Emits declarations only — include it under the selector that scopes the
+// treatment (a variant class, a pressed-state layer, …). The tonal treatment
+// reads the container pair directly rather than relying on tonal-swap, so it
+// is safe for blocks with a second variant layer.
+
+@mixin _hover-focus-state($block) {
+  &:not(.#{$block}--disabled):hover,
+  &:not(.#{$block}--disabled):focus-visible {
+    @content;
+  }
+}
+
+@mixin _active-state($block) {
+  &:not(.#{$block}--disabled):active {
+    @content;
+  }
+}
+
+@mixin variant-treatment($treatment, $block) {
+  @if $treatment == filled {
+    background-color: var(--#{$block}-color);
+
+    color: var(--#{$block}-on-color);
+
+    @include _hover-focus-state($block) {
+      background-color: color-mix(in srgb, var(--#{$block}-color) 85%, var(--color-surface));
+    }
+
+    @include _active-state($block) {
+      background-color: color-mix(in srgb, var(--#{$block}-color) 75%, var(--color-surface));
+    }
+  } @else if $treatment == tonal {
+    background-color: var(--#{$block}-color-container);
+
+    color: var(--#{$block}-on-color-container);
+
+    @include _hover-focus-state($block) {
+      background-color: color-mix(
+        in srgb,
+        var(--#{$block}-color-container) 85%,
+        var(--color-surface)
+      );
+    }
+
+    @include _active-state($block) {
+      background-color: color-mix(
+        in srgb,
+        var(--#{$block}-color-container) 75%,
+        var(--color-surface)
+      );
+    }
+  } @else if $treatment == outlined {
+    border-color: var(--#{$block}-color);
+
+    color: var(--#{$block}-color);
+
+    @include _hover-focus-state($block) {
+      background-color: color-mix(in srgb, var(--#{$block}-color) 7.5%, var(--color-surface));
+    }
+
+    @include _active-state($block) {
+      background-color: color-mix(in srgb, var(--#{$block}-color) 15%, var(--color-surface));
+    }
+  } @else if $treatment == text {
+    color: var(--#{$block}-color);
+
+    @include _hover-focus-state($block) {
+      background-color: color-mix(in srgb, var(--#{$block}-color) 7.5%, var(--color-surface));
+    }
+
+    @include _active-state($block) {
+      background-color: color-mix(in srgb, var(--#{$block}-color) 15%, var(--color-surface));
+    }
+  } @else if $treatment == elevated {
+    box-shadow: var(--shadow-sm);
+
+    color: var(--#{$block}-color);
+
+    @include _hover-focus-state($block) {
+      background-color: color-mix(in srgb, var(--#{$block}-color) 7.5%, var(--color-surface));
+    }
+
+    @include _active-state($block) {
+      box-shadow: var(--shadow-xs);
+
+      background-color: color-mix(in srgb, var(--#{$block}-color) 15%, var(--color-surface));
+    }
+  } @else {
+    @error "Unknown variant treatment `#{$treatment}`.";
+  }
+}

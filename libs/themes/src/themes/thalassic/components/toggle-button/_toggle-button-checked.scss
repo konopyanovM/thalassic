@@ -1,0 +1,44 @@
+@use '../../mixins' as mixins;
+
+.tls-toggle-button {
+  // Pressed appearance: defaults to the filled treatment of the base hue, so a
+  // toggle is visually distinct out of the box even without checked overrides.
+  &--checked {
+    border-color: var(--tls-toggle-button-color);
+
+    @include mixins.variant-treatment(filled, 'tls-toggle-button');
+  }
+
+  // Re-points the shared token pair while pressed (--checked-<color> classes),
+  // emitted after the base color classes so the pressed hue wins the cascade.
+  @include mixins.color-variants('tls-toggle-button', $tonal: true, $modifier: 'checked-');
+
+  // Pressed-variant overrides (doubled class beats the default checked rule and,
+  // in the hover states, its hover rules). The explicit border/background resets
+  // undo the default checked fill for the treatments that don't set them.
+  &--checked.tls-toggle-button--checked-filled {
+    border-color: var(--tls-toggle-button-color);
+
+    @include mixins.variant-treatment(filled, 'tls-toggle-button');
+  }
+
+  &--checked.tls-toggle-button--checked-tonal {
+    border-color: transparent;
+
+    @include mixins.variant-treatment(tonal, 'tls-toggle-button');
+  }
+
+  &--checked.tls-toggle-button--checked-outlined {
+    background-color: transparent;
+
+    @include mixins.variant-treatment(outlined, 'tls-toggle-button');
+  }
+
+  &--checked.tls-toggle-button--checked-text {
+    border-color: transparent;
+
+    background-color: transparent;
+
+    @include mixins.variant-treatment(text, 'tls-toggle-button');
+  }
+}

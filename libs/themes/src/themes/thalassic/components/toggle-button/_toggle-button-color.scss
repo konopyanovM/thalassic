@@ -1,0 +1,9 @@
+// No tonal-swap here: the checked state is a second, independently styled variant
+// layer, so each variant reads its token pair directly (see _toggle-button-variant.scss
+// and _toggle-button-checked.scss) to keep the base treatment from leaking across
+// the checked boundary.
+@use '../../mixins' as mixins;
+
+.tls-toggle-button {
+  @include mixins.color-variants('tls-toggle-button', $tonal: true);
+}

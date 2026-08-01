@@ -1,0 +1,16 @@
+@if (stackedLabels()) {
+  <span class="tls-toggle-button__labels">
+    <span
+      class="tls-toggle-button__label"
+      [class.tls-toggle-button__label--hidden]="checked()"
+    >{{ label() }}</span>
+    <span
+      class="tls-toggle-button__label"
+      [class.tls-toggle-button__label--hidden]="!checked()"
+    >{{ checkedLabel() }}</span>
+  </span>
+} @else if (displayedLabel()) {
+  {{ displayedLabel() }}
+} @else {
+  <ng-content></ng-content>
+}
