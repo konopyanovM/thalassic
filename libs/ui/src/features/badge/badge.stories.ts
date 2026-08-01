@@ -34,6 +34,7 @@ const meta: Meta<BadgeComponent> = {
     showZero: false,
     hidden: false,
     inset: false,
+    bordered: false,
   },
   argTypes: {
     color: {
@@ -87,5 +88,11 @@ export const Dot: Story = {
 export const Inset: Story = {
   args: {
     inset: true,
+  },
+};
+
+export const Bordered: Story = {
+  args: {
+    bordered: true,
   },
 };

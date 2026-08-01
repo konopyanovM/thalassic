@@ -42,6 +42,9 @@ export class Badge {
   public readonly inset: InputSignalWithTransform<boolean, unknown> = input(false, {
     transform: booleanAttribute,
   });
+  public readonly bordered: InputSignalWithTransform<boolean, unknown> = input(false, {
+    transform: booleanAttribute,
+  });
   public readonly ariaLabel = input<string | undefined>(undefined);
 
   // Computed
@@ -82,6 +85,7 @@ export class Badge {
 
     if (this.dot()) array.push(`${className}--dot`);
     if (this.inset()) array.push(`${className}--inset`);
+    if (this.bordered()) array.push(`${className}--bordered`);
 
     return array;
   });

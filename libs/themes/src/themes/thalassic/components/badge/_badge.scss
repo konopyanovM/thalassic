@@ -63,4 +63,11 @@
   &--inset &__indicator {
     --tls-badge-offset: 0px;
   }
+
+  &--bordered &__indicator {
+    --tls-badge-border-width: 2px;
+    --tls-badge-border-color: var(--color-surface);
+
+    box-shadow: 0 0 0 var(--tls-badge-border-width) var(--tls-badge-border-color);
+  }
 }
