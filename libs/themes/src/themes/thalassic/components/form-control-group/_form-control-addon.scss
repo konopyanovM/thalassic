@@ -1,6 +1,9 @@
 @use '../../mixins' as mixins;
 
 .tls-form-control-addon {
+  // Addons are secondary to the control's value (icons, unit labels, toggles).
+  color: var(--color-on-surface-variant);
+
   &:focus-visible {
     @include mixins.focus-ring;
     border-radius: var(--radius-md);

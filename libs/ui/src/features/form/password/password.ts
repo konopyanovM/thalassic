@@ -42,6 +42,7 @@ export class Password extends ValueFormControl<string> {
     { transform: booleanAttribute },
   );
 
+  protected readonly startIconTemplate = contentChild<TemplateRef<unknown>>('startIcon');
   protected readonly showIconTemplate = contentChild<TemplateRef<unknown>>('showIcon');
   protected readonly hideIconTemplate = contentChild<TemplateRef<unknown>>('hideIcon');
 
