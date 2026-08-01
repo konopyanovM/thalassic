@@ -1,3 +1,20 @@
+## 22.9.0 (2026-08-01)
+
+### 🚀 Features
+
+- **themes:** added touch target mixin and applied to some components ([368205a](https://github.com/konopyanovM/thalassic/commit/368205a))
+- **ui:** autocomplete component added ([08202be](https://github.com/konopyanovM/thalassic/commit/08202be))
+- **ui:** added toggle button ([e74a8e5](https://github.com/konopyanovM/thalassic/commit/e74a8e5))
+- **ui:** added kbd directive ([60f5dad](https://github.com/konopyanovM/thalassic/commit/60f5dad))
+
+### 🩹 Fixes
+
+- **ui/badge:** added bordered option to badge ([bb50e6c](https://github.com/konopyanovM/thalassic/commit/bb50e6c))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.8.0 (2026-07-31)
 
 ### 🚀 Features
