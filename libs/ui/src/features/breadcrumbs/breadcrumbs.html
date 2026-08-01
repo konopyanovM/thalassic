@@ -1,0 +1,38 @@
+<ol class="tls-breadcrumbs__list">
+  @for (item of items(); track $index; let isLastItem = $last) {
+    <li class="tls-breadcrumbs__item">
+      @if (item.link !== undefined) {
+        <a
+          class="tls-breadcrumbs__link"
+          [routerLink]="item.link"
+          [attr.aria-current]="isLastItem ? 'page' : null"
+        >
+          <ng-container
+            [ngTemplateOutlet]="itemContent"
+            [ngTemplateOutletContext]="{ $implicit: item }"
+          />
+        </a>
+      } @else {
+        <span class="tls-breadcrumbs__text" [attr.aria-current]="isLastItem ? 'page' : null">
+          <ng-container
+            [ngTemplateOutlet]="itemContent"
+            [ngTemplateOutletContext]="{ $implicit: item }"
+          />
+        </span>
+      }
+
+      @if (!isLastItem) {
+        <span class="tls-breadcrumbs__separator" aria-hidden="true">
+          <tls-icon [name]="separatorIcon()" />
+        </span>
+      }
+    </li>
+  }
+</ol>
+
+<ng-template #itemContent let-item>
+  @if (item.icon) {
+    <tls-icon class="tls-breadcrumbs__item-icon" [iconSrc]="item.icon" />
+  }
+  <span class="tls-breadcrumbs__label">{{ item.label }}</span>
+</ng-template>
