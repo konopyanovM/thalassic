@@ -20,6 +20,7 @@
   overflow: clip;
 
   .tls-tabs-header {
+    flex-shrink: 0;
     display: flex;
 
     border-color: var(--tls-tabs-border-color);
@@ -85,12 +86,10 @@
   .tls-tabs-content {
     padding: var(--tls-tabs-content-padding);
 
-    // Tab
+    // Tab panel — the tabs primitive marks hidden panels `inert`
     .tls-tab {
-      display: none;
-
-      &--active {
-        display: block;
+      &[inert] {
+        display: none;
       }
     }
   }

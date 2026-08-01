@@ -1,51 +1,35 @@
 import {
   booleanAttribute,
   Component,
-  computed,
   contentChild,
-  inject,
   input,
   InputSignal,
   InputSignalWithTransform,
   Signal,
   TemplateRef,
+  viewChild,
 } from '@angular/core';
-import { TabPanel } from '@angular/aria/tabs';
 import { tabValue } from '../tabs.types';
 
+// A declarative content holder: the host element itself is never rendered. `tls-tabs`
+// reads the captured content/header templates and renders them inside its own
+// `ngTabPanel`/`ngTabContent` structure, which enables lazy panel rendering.
 @Component({
   selector: 'tls-tab',
-  imports: [],
   templateUrl: './tab.html',
-  // Content is projected eagerly (no `ngTabContent`) to keep `<tls-tab>content</tls-tab>`
-  // as a plain content-projecting API. This makes TabPanel log a dev-mode-only
-  // "must have an ngTabContent" diagnostic, which is expected and harmless here.
-  hostDirectives: [{ directive: TabPanel, inputs: ['value'] }],
-  host: {
-    '[class]': 'hostClasses()',
-  },
 })
 export class Tab {
-  private readonly _tabPanel = inject(TabPanel);
-
-  public readonly headerTemplateRef = contentChild<TemplateRef<unknown>>('tabHeader');
-
   // Inputs
-  public readonly value: Signal<tabValue> = this._tabPanel.value;
+  public readonly value: InputSignal<tabValue> = input.required<tabValue>();
   public readonly label: InputSignal<string> = input.required<string>();
   public readonly disabled: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
     false,
     { transform: booleanAttribute },
   );
 
-  protected hostClasses = computed(() => {
-    const className = 'tls-tab';
-
-    const array: string[] = [className];
-
-    if (this._tabPanel.visible()) array.push(`${className}--active`);
-    if (this.disabled()) array.push(`${className}--disabled`);
-
-    return array;
-  });
+  // State
+  public readonly headerTemplateRef: Signal<TemplateRef<unknown> | undefined> =
+    contentChild<TemplateRef<unknown>>('tabHeader');
+  public readonly contentTemplateRef: Signal<TemplateRef<unknown>> =
+    viewChild.required<TemplateRef<unknown>>('tabContent');
 }

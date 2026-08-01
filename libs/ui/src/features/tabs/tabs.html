@@ -33,5 +33,11 @@
   }
 </ul>
 <div class="tls-tabs-content">
-  <ng-content></ng-content>
+  @for (tab of tabs(); track tab) {
+    <div ngTabPanel class="tls-tab" [value]="tab.value()" [preserveContent]="true">
+      <ng-template ngTabContent>
+        <ng-container [ngTemplateOutlet]="tab.contentTemplateRef()"></ng-container>
+      </ng-template>
+    </div>
+  }
 </div>

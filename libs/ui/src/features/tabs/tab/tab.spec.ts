@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import { Tabs } from '../tabs';
 import { Tab } from './tab';
 
+// The `tls-tab` host is a declarative holder that is never rendered into the DOM,
+// so the instance is reached through a view query rather than `By.directive`.
 @Component({
   imports: [Tabs, Tab],
   template: `
@@ -12,7 +13,9 @@ import { Tab } from './tab';
     </tls-tabs>
   `,
 })
-class TestHostComponent {}
+class TestHostComponent {
+  readonly tab = viewChild.required(Tab);
+}
 
 @Component({
   imports: [Tabs, Tab],
@@ -25,7 +28,9 @@ class TestHostComponent {}
     </tls-tabs>
   `,
 })
-class TestHostWithHeaderTemplateComponent {}
+class TestHostWithHeaderTemplateComponent {
+  readonly tab = viewChild.required(Tab);
+}
 
 describe('Tab', () => {
   let fixture: ComponentFixture<TestHostComponent>;
@@ -38,11 +43,18 @@ describe('Tab', () => {
 
     fixture = TestBed.createComponent(TestHostComponent);
     await fixture.whenStable();
-    component = fixture.debugElement.query(By.directive(Tab)).componentInstance;
+    component = fixture.componentInstance.tab();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should render the tab content inside the selected panel', () => {
+    const panel = fixture.nativeElement.querySelector('.tls-tab') as HTMLElement;
+
+    expect(panel).toBeTruthy();
+    expect(panel.textContent).toContain('Content 1');
   });
 
   it('should not have a header template ref by default', () => {
@@ -53,9 +65,6 @@ describe('Tab', () => {
     const templateFixture = TestBed.createComponent(TestHostWithHeaderTemplateComponent);
     await templateFixture.whenStable();
 
-    const tabComponent = templateFixture.debugElement.query(By.directive(Tab))
-      .componentInstance as Tab;
-
-    expect(tabComponent.headerTemplateRef()).toBeTruthy();
+    expect(templateFixture.componentInstance.tab().headerTemplateRef()).toBeTruthy();
   });
 });
