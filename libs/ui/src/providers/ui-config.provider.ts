@@ -1,5 +1,18 @@
-import { EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import {
+  DOCUMENT,
+  EnvironmentProviders,
+  inject,
+  makeEnvironmentProviders,
+  PLATFORM_ID,
+  provideEnvironmentInitializer,
+} from '@angular/core';
 import { deepMerge } from '@thalassic/core';
+import {
+  ACCESSIBILITY_CONFIG,
+  AccessibilityConfig,
+  DEFAULT_ACCESSIBILITY_CONFIG,
+} from '../abstract/accessibility';
 import { DEFAULT_FORM_CONTROL_CONFIG, FORM_CONTROL_CONFIG } from '../abstract/form';
 import {
   ALERT_CONFIG,
@@ -88,7 +101,22 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
   const { querySync: paginationQuerySync, ...pagination } = config.components.pagination ?? {};
   const { querySync: tabsQuerySync, ...tabs } = config.components.tabs ?? {};
 
+  const accessibility: AccessibilityConfig = deepMerge(
+    DEFAULT_ACCESSIBILITY_CONFIG,
+    config.accessibility,
+  );
+
   return makeEnvironmentProviders([
+    // Cross-cutting accessibility policy
+    { provide: ACCESSIBILITY_CONFIG, useValue: accessibility },
+    // Reflect the touch-target opt-out onto the document root. Absent the attribute the
+    // expansion is active (accessible by default); this only disables it. The overflow is
+    // transparent, so a late (browser-only) reflection causes no visual flash.
+    provideEnvironmentInitializer(() => {
+      if (accessibility.expandTouchTargets) return;
+      if (!isPlatformBrowser(inject(PLATFORM_ID))) return;
+      inject(DOCUMENT).documentElement.setAttribute('data-touch-targets', 'off');
+    }),
     // Cross-cutting form defaults
     {
       provide: FORM_CONTROL_CONFIG,

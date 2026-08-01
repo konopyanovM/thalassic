@@ -2,7 +2,11 @@
 
 .tls-chip {
   &.tls-chip--control {
+    position: relative;
+
     cursor: pointer;
+
+    @include mixins.touch-target(var(--tls-chip-height));
   }
 
   &.tls-chip--checked {

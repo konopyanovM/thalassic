@@ -15,123 +15,69 @@
   // Variants
   &--filled,
   &--tonal {
+    background-color: var(--tls-button-color);
+
     color: var(--tls-button-on-color);
 
-    &::before {
-      background-color: var(--tls-button-color);
-    }
-
     @include hover-focus-state {
-      &::before {
-        opacity: 0.85;
-      }
+      background-color: color-mix(in srgb, var(--tls-button-color) 85%, var(--color-surface));
     }
 
     @include active-state {
-      &::before {
-        opacity: 0.75;
-      }
+      background-color: color-mix(in srgb, var(--tls-button-color) 75%, var(--color-surface));
     }
   }
 
   &--outlined {
+    border-color: var(--tls-button-color);
+
     color: var(--tls-button-color);
 
-    &::before {
-      background-color: var(--tls-button-color);
-
-      opacity: 0;
-    }
-
-    &::after {
-      border: var(--tls-button-border-width) solid var(--tls-button-color);
-
-      transition: border-color var(--motion-fast) var(--motion-ease-in-out);
-    }
-
     @include hover-focus-state {
-      &::before {
-        opacity: 0.075;
-      }
+      background-color: color-mix(in srgb, var(--tls-button-color) 7.5%, var(--color-surface));
     }
 
     @include active-state {
-      &::before {
-        opacity: 0.15;
-      }
+      background-color: color-mix(in srgb, var(--tls-button-color) 15%, var(--color-surface));
     }
   }
 
   &--text {
     color: var(--tls-button-color);
 
-    &::before {
-      background-color: var(--tls-button-color);
-
-      opacity: 0;
-    }
-
     @include hover-focus-state {
-      &::before {
-        opacity: 0.075;
-      }
+      background-color: color-mix(in srgb, var(--tls-button-color) 7.5%, var(--color-surface));
     }
 
     @include active-state {
-      &::before {
-        opacity: 0.15;
-      }
+      background-color: color-mix(in srgb, var(--tls-button-color) 15%, var(--color-surface));
     }
   }
 
   &--elevated {
+    box-shadow: var(--shadow-sm);
+
     color: var(--tls-button-color);
 
-    transition: box-shadow var(--motion-fast) var(--motion-ease-in-out);
-
-    &::before {
-      background-color: var(--tls-button-color);
-
-      opacity: 0;
-    }
-
-    &::after {
-      box-shadow: var(--shadow-sm);
-    }
-
     @include hover-focus-state {
-      &::before {
-        opacity: 0.075;
-      }
+      background-color: color-mix(in srgb, var(--tls-button-color) 7.5%, var(--color-surface));
     }
 
     @include active-state {
-      &::before {
-        opacity: 0.15;
-      }
+      box-shadow: var(--shadow-xs);
 
-      &::after {
-        box-shadow: var(--shadow-xs);
-      }
+      background-color: color-mix(in srgb, var(--tls-button-color) 15%, var(--color-surface));
     }
   }
 
   &--disabled {
+    border-color: var(--color-outline);
+
+    background-color: var(--tls-button-color);
+    box-shadow: none;
+
     color: var(--tls-button-on-color);
 
     cursor: not-allowed;
-
-    &::before {
-      opacity: 1;
-
-      transition: none;
-    }
-
-    &::after {
-      border: var(--tls-button-border-width) solid var(--color-outline);
-      box-shadow: none;
-
-      transition: none;
-    }
   }
 }

@@ -16,6 +16,8 @@
   --tls-switch-handle-color: var(--color-surface);
   --tls-switch-border-color: var(--tls-switch-track-color);
 
+  position: relative;
+
   width: var(--tls-switch-width);
   height: var(--tls-switch-height);
 
@@ -37,6 +39,8 @@
   &:focus-visible {
     @include mixins.focus-ring;
   }
+
+  @include mixins.touch-target(var(--tls-switch-height));
 
   .tls-switch-input {
     display: none;

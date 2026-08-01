@@ -40,9 +40,12 @@ import {
   ToggleGroupConfig,
   TooltipConfig
 } from '../features';
+import { AccessibilityConfig } from '../abstract/accessibility';
 import { FormControlConfig } from '../abstract/form';
 
 export interface tlsUiConfigProvider {
+  /** Cross-cutting accessibility policy applied across every component (not tied to a single one). */
+  accessibility?: Partial<AccessibilityConfig>;
   /** Cross-cutting defaults inherited by every form control (not tied to a single component). */
   formControl?: Partial<FormControlConfig>;
   components: {

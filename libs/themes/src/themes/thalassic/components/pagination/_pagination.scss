@@ -1,3 +1,5 @@
+@use '../../mixins' as mixins;
+
 .tls-pagination {
   --tls-pagination-gap: 16px;
   --tls-pagination-color: var(--color-secondary);
@@ -18,6 +20,8 @@
   }
 
   &__button {
+    position: relative;
+
     height: var(--tls-pagination-button-height);
     padding-inline: var(--tls-pagination-button-padding-inline);
 
@@ -30,6 +34,8 @@
     border-radius: var(--tls-pagination-radius);
 
     cursor: pointer;
+
+    @include mixins.touch-target(var(--tls-pagination-button-height));
 
     &:hover {
       outline: var(--tls-pagination-hover-outline);
@@ -58,6 +64,8 @@
   }
 
   &__item-button {
+    position: relative;
+
     width: var(--tls-pagination-item-size);
     height: var(--tls-pagination-item-size);
 
@@ -71,6 +79,8 @@
     border-radius: var(--tls-pagination-radius);
 
     cursor: pointer;
+
+    @include mixins.touch-target(var(--tls-pagination-item-size));
 
     &:hover {
       outline: var(--tls-pagination-hover-outline);

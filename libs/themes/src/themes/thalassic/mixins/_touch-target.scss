@@ -1,0 +1,30 @@
+// Expands a control's tap target to the accessible minimum (`--control-touch-target`,
+// 44px) on touch devices, without changing its visual size or disturbing layout. A
+// transparent `::after` overflows the control up to the target size and captures the
+// taps; the control must therefore establish a positioning context (`position:
+// relative`) and leave its `::after` free.
+//
+// `$height` is the control's rendered size (e.g. `var(--tls-button-height)`); the
+// overflow is symmetric and `min(0px, …)` never shrinks a control already at or above
+// the target.
+//
+// Gated on a coarse pointer and on the app-level opt-out reflected onto `:root`
+// (`data-touch-targets='off'`). Absent that attribute the expansion is active — touch
+// targets are accessible by default; disabling is opt-in through the UI config.
+//
+// Spacing constraint: the overflow reaches (`--control-touch-target` − visual size) / 2
+// beyond each edge. Adjacent expandable controls must be separated by at least that much
+// (a `gap`/`margin` ≥ the per-edge overflow) or their hit areas overlap; where they do,
+// the later-in-DOM control wins the overlap (equal `z-index` falls back to paint order),
+// stealing taps from its neighbour's edge. This mirrors the WCAG pairing of target size
+// with target spacing — space clustered controls rather than packing them tight.
+@mixin touch-target($height) {
+  @media (pointer: coarse) {
+    :root:not([data-touch-targets='off']) &::after {
+      content: '';
+
+      position: absolute;
+      inset: min(0px, calc((#{$height} - var(--control-touch-target)) / 2));
+    }
+  }
+}

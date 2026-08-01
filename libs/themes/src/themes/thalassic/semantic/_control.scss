@@ -3,6 +3,9 @@
   --control-height-md: 36px;
   --control-height-lg: 44px;
 
+  // Minimum comfortable tap target on touch devices (Apple HIG; WCAG 2.5.5 Enhanced).
+  --control-touch-target: 44px;
+
   --control-focus-ring-width: 2px;
   --control-focus-ring-offset: 2px;
   --control-focus-ring-color: var(--color-primary);
