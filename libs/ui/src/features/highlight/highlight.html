@@ -1,0 +1,9 @@
+<!-- Every segment is wrapped in an element (mark or span) so Angular's whitespace
+collapsing cannot inject spaces between adjacent segments of a split word. -->
+@for (segment of segments(); track $index) {
+  @if (segment.matched) {
+    <mark tlsMark [color]="color()">{{ segment.text }}</mark>
+  } @else {
+    <span>{{ segment.text }}</span>
+  }
+}

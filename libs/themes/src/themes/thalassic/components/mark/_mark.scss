@@ -1,0 +1,9 @@
+.tls-mark {
+  border-radius: var(--radius-sm);
+
+  background-color: var(--tls-mark-color-container);
+
+  color: var(--tls-mark-on-color-container);
+
+  box-decoration-break: clone;
+}

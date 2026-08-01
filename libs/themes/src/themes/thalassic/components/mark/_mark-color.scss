@@ -1,0 +1,5 @@
+@use '../../mixins' as mixins;
+
+.tls-mark {
+  @include mixins.color-variants('tls-mark', $tonal: true);
+}

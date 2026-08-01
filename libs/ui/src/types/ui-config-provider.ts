@@ -14,10 +14,12 @@ import {
   FileInputConfig,
   FormControlGroupConfig,
   FormItemConfig,
+  HighlightConfig,
   IconConfig,
   ImageCompareConfig,
   InputConfig,
   LoaderConfig,
+  MarkConfig,
   MenuConfig,
   MultiSelectConfig,
   PaginationConfig,
@@ -65,10 +67,12 @@ export interface tlsUiConfigProvider {
     fileInput?: Partial<FileInputConfig>;
     formControlGroup?: Partial<FormControlGroupConfig>;
     formItem?: Partial<FormItemConfig>;
+    highlight?: Partial<HighlightConfig>;
     icon?: Partial<IconConfig>;
     imageCompare?: Partial<ImageCompareConfig>;
     input?: Partial<InputConfig>;
     loader?: Partial<LoaderConfig>;
+    mark?: Partial<MarkConfig>;
     menu?: Partial<MenuConfig>;
     multiSelect?: Partial<MultiSelectConfig>;
     pagination?: Partial<PaginationConfig> & { querySync?: Partial<PaginationQuerySyncConfig> };
