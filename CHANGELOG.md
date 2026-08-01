@@ -1,3 +1,13 @@
+## 22.12.0 (2026-08-01)
+
+### 🚀 Features
+
+- **ui:** added tab nav component ([edcffca](https://github.com/konopyanovM/thalassic/commit/edcffca))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.11.0 (2026-08-01)
 
 ### 🚀 Features
