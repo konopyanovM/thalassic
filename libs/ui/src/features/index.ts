@@ -19,6 +19,7 @@ export * from './form/chip-input';
 export * from './form/file-input';
 export * from './form/input';
 export * from './form/input-number';
+export * from './form/mask';
 export * from './form/password';
 export * from './form/pin-input';
 export * from './form/radio-button';
