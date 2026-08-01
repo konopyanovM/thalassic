@@ -29,6 +29,7 @@ export * from './form/toggle-button';
 export * from './form/toggle-group';
 export * from './icon';
 export * from './image-compare';
+export * from './kbd';
 export * from './loader';
 export * from './menu';
 export * from './odometer';

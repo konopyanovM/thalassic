@@ -1,0 +1,19 @@
+.tls-kbd {
+  &.tls-kbd--sm {
+    --tls-kbd-size: 20px;
+    --tls-kbd-padding-inline: var(--spacing-1);
+    --tls-kbd-font-size: var(--font-label-small-size);
+  }
+
+  &.tls-kbd--md {
+    --tls-kbd-size: 24px;
+    --tls-kbd-padding-inline: var(--spacing-1);
+    --tls-kbd-font-size: var(--font-label-small-size);
+  }
+
+  &.tls-kbd--lg {
+    --tls-kbd-size: 28px;
+    --tls-kbd-padding-inline: var(--spacing-2);
+    --tls-kbd-font-size: var(--font-label-medium-size);
+  }
+}
