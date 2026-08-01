@@ -1,3 +1,17 @@
+## 22.11.0 (2026-08-01)
+
+### 🚀 Features
+
+- **ui:** added highlight and mark components ([5fc5acd](https://github.com/konopyanovM/thalassic/commit/5fc5acd))
+
+### 🩹 Fixes
+
+- **ui/tabs:** fixed tabs angular aria  directive ([01af3f0](https://github.com/konopyanovM/thalassic/commit/01af3f0))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.10.0 (2026-08-01)
 
 ### 🚀 Features
