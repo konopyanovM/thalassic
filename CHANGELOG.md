@@ -1,3 +1,15 @@
+## 22.10.0 (2026-08-01)
+
+### 🚀 Features
+
+- **ui:** added breadcrumbs component ([32326cc](https://github.com/konopyanovM/thalassic/commit/32326cc))
+- **ui:** added mask directive ([03ed159](https://github.com/konopyanovM/thalassic/commit/03ed159))
+- **ui/password:** added start icon template support ([4017d39](https://github.com/konopyanovM/thalassic/commit/4017d39))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.9.0 (2026-08-01)
 
 ### 🚀 Features
