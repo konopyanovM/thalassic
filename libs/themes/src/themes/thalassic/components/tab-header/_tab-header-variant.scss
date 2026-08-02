@@ -87,6 +87,14 @@
     --tls-tab-header-padding: var(--spacing-2);
     --tls-tab-header-active-label-color: var(--color-on-surface);
 
+    // On dark surfaces elevation reads through a lighter fill, not shadow: the
+    // pill's shadow is invisible there and `--color-surface` sits *below* the
+    // track's container color, so raise the pill above the track (and above the
+    // inactive hover's container-high) instead.
+    .tls-dark & {
+      --tls-tab-header-pill-background-color: var(--color-surface-container-highest);
+    }
+
     padding: var(--tls-tab-header-padding);
     gap: var(--tls-tab-header-padding);
 
