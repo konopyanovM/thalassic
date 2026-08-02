@@ -1,3 +1,21 @@
+## 22.14.0 (2026-08-02)
+
+### 🚀 Features
+
+- **ui:** custom option template for select, multi-select and autocomplete ([9340ea0](https://github.com/konopyanovM/thalassic/commit/9340ea0))
+
+### 🩹 Fixes
+
+- correctness and hardening fixes ([56e2f7a](https://github.com/konopyanovM/thalassic/commit/56e2f7a))
+- **themes:** transparent rest background and translucent state layers for text and outlined variants ([bb10d88](https://github.com/konopyanovM/thalassic/commit/bb10d88))
+- **themes/tab-header:** raise segmented active pill above the track on dark theme ([414776d](https://github.com/konopyanovM/thalassic/commit/414776d))
+- **ui:** form controls bug fixes and improvements ([aa79f51](https://github.com/konopyanovM/thalassic/commit/aa79f51))
+- **ui/password:** toggle fills the field height and scales with the group size ([d760da5](https://github.com/konopyanovM/thalassic/commit/d760da5))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.13.0 (2026-08-02)
 
 ### 🚀 Features
