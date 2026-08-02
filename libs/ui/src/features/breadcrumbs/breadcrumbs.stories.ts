@@ -50,3 +50,18 @@ export const WithIcon: Story = {
     items: [{ label: 'Home', link: '/', icon: ICON_HOME }, ...BASIC_ITEMS.slice(1)],
   },
 };
+
+// A projected `<ng-template>` overrides each item's inner content while the list
+// structure, links, separators, and current-page marker stay owned by the kit.
+export const CustomItemTemplate: Story = {
+  render: args => ({
+    props: args,
+    template: `
+      <tls-breadcrumbs ${argsToTemplate(args)}>
+        <ng-template let-item let-last="last">
+          <span [style.font-weight]="last ? 700 : 400">{{ item.label }}</span>
+        </ng-template>
+      </tls-breadcrumbs>
+    `,
+  }),
+};

@@ -1,5 +1,5 @@
 <ol class="tls-breadcrumbs__list">
-  @for (item of items(); track $index; let isLastItem = $last) {
+  @for (item of items(); track $index; let index = $index; let isLastItem = $last) {
     <li class="tls-breadcrumbs__item">
       @if (item.link !== undefined) {
         <a
@@ -9,14 +9,14 @@
         >
           <ng-container
             [ngTemplateOutlet]="itemContent"
-            [ngTemplateOutletContext]="{ $implicit: item }"
+            [ngTemplateOutletContext]="{ $implicit: item, index: index, last: isLastItem }"
           />
         </a>
       } @else {
         <span class="tls-breadcrumbs__text" [attr.aria-current]="isLastItem ? 'page' : null">
           <ng-container
             [ngTemplateOutlet]="itemContent"
-            [ngTemplateOutletContext]="{ $implicit: item }"
+            [ngTemplateOutletContext]="{ $implicit: item, index: index, last: isLastItem }"
           />
         </span>
       }
@@ -30,9 +30,16 @@
   }
 </ol>
 
-<ng-template #itemContent let-item>
-  @if (item.icon) {
-    <tls-icon class="tls-breadcrumbs__item-icon" [iconSrc]="item.icon" />
+<ng-template #itemContent let-item let-index="index" let-last="last">
+  @if (itemTemplate(); as customTemplate) {
+    <ng-container
+      [ngTemplateOutlet]="customTemplate"
+      [ngTemplateOutletContext]="{ $implicit: item, index: index, last: last }"
+    />
+  } @else {
+    @if (item.icon) {
+      <tls-icon class="tls-breadcrumbs__item-icon" [iconSrc]="item.icon" />
+    }
+    <span class="tls-breadcrumbs__label">{{ item.label }}</span>
   }
-  <span class="tls-breadcrumbs__label">{{ item.label }}</span>
 </ng-template>
