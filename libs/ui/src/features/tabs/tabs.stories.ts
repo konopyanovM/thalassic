@@ -1,6 +1,8 @@
 import { argsToTemplate, Meta, moduleMetadata, StoryObj } from '@storybook/angular';
 import {
   STORY_ORIENTATION_OPTIONS,
+  STORY_TABS_HEADER_ALIGN_OPTIONS,
+  STORY_TABS_ITEMS_ALIGN_OPTIONS,
   STORY_TABS_VARIANT_OPTIONS,
 } from '../../../.storybook/constants';
 import { Tab as TabComponent } from './tab/tab';
@@ -20,6 +22,8 @@ const meta: Meta<TabsComponent> = {
     variant: 'flat',
     orientation: 'horizontal',
     headerPosition: 'start',
+    headerAlign: 'stretch',
+    itemsAlign: 'start',
   },
   argTypes: {
     variant: {
@@ -33,6 +37,14 @@ const meta: Meta<TabsComponent> = {
     headerPosition: {
       control: { type: 'inline-radio' },
       options: ['start', 'end'],
+    },
+    headerAlign: {
+      control: { type: 'select' },
+      options: STORY_TABS_HEADER_ALIGN_OPTIONS,
+    },
+    itemsAlign: {
+      control: { type: 'select' },
+      options: STORY_TABS_ITEMS_ALIGN_OPTIONS,
     },
   },
   render: args => ({

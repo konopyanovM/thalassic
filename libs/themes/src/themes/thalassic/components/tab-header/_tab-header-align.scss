@@ -1,0 +1,53 @@
+// Alignment of the strip itself and of the tabs inside it. Both classes sit on
+// the strip element and both set properties the strip owns, so they live with
+// the shared block rather than in the tabs composite.
+//
+// The `--align-*` modifiers presume the strip is a flex item, which `tls-tabs`
+// guarantees by being a flex container. `tls-tab-nav` is a standalone strip
+// whose placement is its consumer's layout concern, so it carries only the
+// `--items-*` modifiers.
+.tls-tab-header {
+  // Placement along the container's cross axis: block when the tabs are
+  // vertical, inline when horizontal. Anything but `stretch` sizes the strip to
+  // its tabs rather than to the content panel's extent.
+  &--align-stretch {
+    align-self: stretch;
+  }
+
+  &--align-start {
+    align-self: flex-start;
+  }
+
+  &--align-center {
+    align-self: center;
+  }
+
+  &--align-end {
+    align-self: flex-end;
+  }
+
+  // Distribution of the tabs along the strip's main axis. These have nothing to
+  // distribute once the strip is sized to its tabs by a non-stretch
+  // `--align-*`.
+  &--items-start {
+    justify-content: flex-start;
+  }
+
+  &--items-center {
+    justify-content: center;
+  }
+
+  &--items-end {
+    justify-content: flex-end;
+  }
+
+  // Equal shares rather than a `justify-content` value: the base reserves each
+  // item at its content size (`flex-shrink: 0`), so growing the items is what
+  // splits the strip evenly. Tabs then shrink on a narrow strip instead of
+  // scrolling — the trade-off this value opts into.
+  &--items-stretch {
+    .tls-tab-header__item {
+      flex: 1;
+    }
+  }
+}

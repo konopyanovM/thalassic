@@ -8,6 +8,7 @@ import {
 } from '@storybook/angular';
 import {
   STORY_ORIENTATION_OPTIONS,
+  STORY_TABS_ITEMS_ALIGN_OPTIONS,
   STORY_TABS_VARIANT_OPTIONS,
 } from '../../../.storybook/constants';
 import { TabLinkDirective } from './tab-link.directive';
@@ -30,6 +31,7 @@ const meta: Meta<TabNavDirective> = {
   args: {
     variant: 'flat',
     orientation: 'horizontal',
+    itemsAlign: 'start',
     divider: false,
   },
   argTypes: {
@@ -40,6 +42,10 @@ const meta: Meta<TabNavDirective> = {
     orientation: {
       control: { type: 'select' },
       options: STORY_ORIENTATION_OPTIONS,
+    },
+    itemsAlign: {
+      control: { type: 'select' },
+      options: STORY_TABS_ITEMS_ALIGN_OPTIONS,
     },
     divider: {
       control: { type: 'boolean' },

@@ -5,7 +5,7 @@ import { toggleButtonVariant } from '../../src/features/form/toggle-button/toggl
 import { toggleGroupVariant } from '../../src/features/form/toggle-group/toggle-group.types';
 import { fileInputVariant } from '../../src/features/form/file-input/file-input.types';
 import { pinInputType } from '../../src/features/form/pin-input';
-import { tabsVariant } from '../../src/features/tabs/tabs.types';
+import { tabsHeaderAlign, tabsItemsAlign, tabsVariant } from '../../src/features/tabs/tabs.types';
 import { color, controlSize, orientation, overlayPosition } from '../../src/types';
 
 export const STORY_COLOR_OPTIONS: color[] = [
@@ -54,6 +54,20 @@ export const STORY_TOGGLE_GROUP_VARIANT_OPTIONS: toggleGroupVariant[] = [
 ] as const;
 
 export const STORY_TABS_VARIANT_OPTIONS: tabsVariant[] = ['flat', 'outlined', 'segmented'] as const;
+
+export const STORY_TABS_HEADER_ALIGN_OPTIONS: tabsHeaderAlign[] = [
+  'stretch',
+  'start',
+  'center',
+  'end',
+] as const;
+
+export const STORY_TABS_ITEMS_ALIGN_OPTIONS: tabsItemsAlign[] = [
+  'start',
+  'center',
+  'end',
+  'stretch',
+] as const;
 
 export const STORY_PIN_INPUT_TYPE_OPTIONS: pinInputType[] = ['numeric', 'alphanumeric'] as const;
 

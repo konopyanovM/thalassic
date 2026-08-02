@@ -8,7 +8,7 @@ import {
   InputSignalWithTransform,
   Signal,
 } from '@angular/core';
-import { tabsOrientation, tabsVariant } from '../tabs';
+import { tabsItemsAlign, tabsOrientation, tabsVariant } from '../tabs';
 import { TabNavConfig } from './tab-nav.config';
 import { TAB_NAV_CONFIG } from './tab-nav.token';
 
@@ -48,6 +48,9 @@ export class TabNavDirective {
   public readonly orientation: InputSignal<tabsOrientation> = input<tabsOrientation>(
     this._config.orientation,
   );
+  public readonly itemsAlign: InputSignal<tabsItemsAlign> = input<tabsItemsAlign>(
+    this._config.itemsAlign,
+  );
   public readonly divider: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
     this._config.divider,
     { transform: booleanAttribute },
@@ -61,6 +64,7 @@ export class TabNavDirective {
 
     array.push(`${className}--${this.variant()}`);
     array.push(`${className}--${this.orientation()}`);
+    array.push(`${className}--items-${this.itemsAlign()}`);
 
     if (this.divider()) array.push(`${className}--divided`);
 

@@ -21,7 +21,14 @@ import {
 import { Tab } from './tab';
 import { TabsConfig } from './tabs.config';
 import { TABS_CONFIG } from './tabs.token';
-import { tabsHeaderPosition, tabsOrientation, tabsVariant, tabValue } from './tabs.types';
+import {
+  tabsHeaderAlign,
+  tabsHeaderPosition,
+  tabsItemsAlign,
+  tabsOrientation,
+  tabsVariant,
+  tabValue,
+} from './tabs.types';
 
 @Component({
   selector: 'tls-tabs',
@@ -43,6 +50,12 @@ export class Tabs {
   );
   public readonly headerPosition: InputSignal<tabsHeaderPosition> = input<tabsHeaderPosition>(
     this._config.headerPosition,
+  );
+  public readonly headerAlign: InputSignal<tabsHeaderAlign> = input<tabsHeaderAlign>(
+    this._config.headerAlign,
+  );
+  public readonly itemsAlign: InputSignal<tabsItemsAlign> = input<tabsItemsAlign>(
+    this._config.itemsAlign,
   );
   public readonly selected: ModelSignal<tabValue | undefined> = model<tabValue | undefined>(
     undefined,
@@ -69,8 +82,8 @@ export class Tabs {
   });
 
   // The header strip uses the shared tab-header block (also rendered by
-  // `tls-tab-nav`), so its variant/orientation modifiers live on the strip
-  // element itself rather than on the tabs container.
+  // `tls-tab-nav`), so its variant/orientation/alignment modifiers live on the
+  // strip element itself rather than on the tabs container.
   protected headerClasses = computed(() => {
     const className = 'tls-tab-header';
 
@@ -78,6 +91,8 @@ export class Tabs {
 
     array.push(`${className}--${this.variant()}`);
     array.push(`${className}--${this.orientation()}`);
+    array.push(`${className}--align-${this.headerAlign()}`);
+    array.push(`${className}--items-${this.itemsAlign()}`);
 
     return array;
   });

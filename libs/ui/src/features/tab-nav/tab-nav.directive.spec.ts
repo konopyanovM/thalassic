@@ -27,6 +27,17 @@ class TestHost {}
 })
 class DividedTestHost {}
 
+@Component({
+  imports: [TabNavDirective, TabLinkDirective, RouterLink, RouterLinkActive],
+  template: `
+    <nav tlsTabNav itemsAlign="stretch" aria-label="Stretched sections">
+      <a tlsTabLink routerLink="/first" routerLinkActive>First</a>
+      <a tlsTabLink routerLink="/second" routerLinkActive>Second</a>
+    </nav>
+  `,
+})
+class AlignedTestHost {}
+
 describe('TabNavDirective', () => {
   let fixture: ComponentFixture<TestHost>;
   let navigation: HTMLElement;
@@ -50,6 +61,19 @@ describe('TabNavDirective', () => {
     expect(navigation.classList).toContain('tls-tab-header');
     expect(navigation.classList).toContain('tls-tab-header--flat');
     expect(navigation.classList).toContain('tls-tab-header--horizontal');
+    expect(navigation.classList).toContain('tls-tab-header--items-start');
+  });
+
+  // The strip's own placement is the consumer's layout concern, so only the
+  // distribution of the links inside it is exposed as an input here.
+  it('reflects the items alignment and carries no strip alignment modifier', async () => {
+    const alignedFixture = TestBed.createComponent(AlignedTestHost);
+    await alignedFixture.whenStable();
+
+    const alignedNavigation: HTMLElement = alignedFixture.nativeElement.querySelector('nav');
+
+    expect(alignedNavigation.classList).toContain('tls-tab-header--items-stretch');
+    expect(alignedNavigation.className).not.toContain('--align-');
   });
 
   it('marks each link as both tab-header item and control', () => {
