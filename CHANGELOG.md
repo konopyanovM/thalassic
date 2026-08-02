@@ -1,3 +1,13 @@
+## 22.14.3 (2026-08-02)
+
+### 🩹 Fixes
+
+- **ui:** select tab when clicking an SVG icon inside a tab or step ([cba18f9](https://github.com/konopyanovM/thalassic/commit/cba18f9))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.14.2 (2026-08-02)
 
 ### 🚀 Features
