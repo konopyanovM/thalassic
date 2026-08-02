@@ -38,12 +38,18 @@ interface ToastLayout {
   selector: 'tls-toast-outlet',
   imports: [Toast],
   templateUrl: './toast-outlet.html',
-  host: { class: 'tls-toast-outlet' },
+  host: {
+    class: 'tls-toast-outlet',
+    // Touch has no hover-out; a tap outside the stack is what collapses a
+    // touch-expanded pile (and resumes the auto-dismiss timers).
+    '(document:pointerdown)': 'onDocumentPointerDown($event)',
+  },
 })
 export class ToastOutlet {
   // Injections
   private readonly _service = inject(ToastService);
   private readonly _destroyRef = inject(DestroyRef);
+  private readonly _elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
 
   // State
   protected readonly toasts = this._service.toasts;
@@ -160,6 +166,15 @@ export class ToastOutlet {
       }
     });
 
+    // An emptied stack ends the interaction: without this, a touch-expanded
+    // pile would still count as "interacting" when the next toast arrives,
+    // freezing its auto-dismiss timer from the start.
+    effect(() => {
+      if (this.toasts().length > 0) return;
+      this._pointerInside.set(false);
+      this._focusInside.set(false);
+    });
+
     this._destroyRef.onDestroy(() => {
       if (this._resizeObserver) this._resizeObserver.disconnect();
     });
@@ -179,7 +194,20 @@ export class ToastOutlet {
     this._pointerInside.set(true);
   }
 
-  protected onPointerLeave(): void {
+  protected onPointerLeave(event: PointerEvent): void {
+    // A tap retires its pointer immediately, firing `pointerleave` within the
+    // same gesture — collapsing here would undo the expansion the tap just
+    // made. A touch-expanded pile stays open; it collapses once its toasts are
+    // dismissed (or with focus, via `focusout`).
+    if (event.pointerType === 'touch') return;
+
+    this._pointerInside.set(false);
+  }
+
+  protected onDocumentPointerDown(event: PointerEvent): void {
+    if (event.pointerType !== 'touch' || !this._pointerInside()) return;
+    if (this._elementRef.nativeElement.contains(event.target as Node)) return;
+
     this._pointerInside.set(false);
   }
 

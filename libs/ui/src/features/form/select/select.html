@@ -66,7 +66,7 @@
           [attr.aria-selected]="option.value === value()"
           [attr.aria-disabled]="option.disabled"
           (click)="select(option)"
-          (mouseenter)="onOptionHover(index, option.disabled)"
+          (pointerenter)="onOptionHover($event, index, option.disabled)"
         >{{ option.label }}
         </button>
       </li>

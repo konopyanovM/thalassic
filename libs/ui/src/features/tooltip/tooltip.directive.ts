@@ -25,17 +25,20 @@ import { tooltipColor, tooltipOrigin, tooltipPosition } from './tooltip.types';
  * toggles on touch, and dismisses on Escape without moving the pointer or focus
  * (WCAG 1.4.13). The tooltip is linked to the host via `aria-describedby` while
  * visible.
+ *
+ * Interaction is driven by pointer events, branching on `pointerType`: mouse
+ * and pen get hover semantics, touch gets tap-to-toggle. A single stream avoids
+ * the synthesized mouse events browsers replay after a tap.
  */
 @Directive({
   selector: '[tlsTooltip]',
   providers: [TooltipService],
   host: {
-    '(mouseenter)': 'onMouseEnter($event)',
-    '(mousemove)': 'onMouseMove($event)',
-    '(mouseleave)': 'onMouseLeave()',
+    '(pointerenter)': 'onPointerEnter($event)',
+    '(pointermove)': 'onPointerMove($event)',
+    '(pointerleave)': 'onPointerLeave($event)',
     '(focus)': 'onFocus()',
     '(blur)': 'onBlur()',
-    '(touchstart)': 'onTouchStart()',
     '(document:keydown.escape)': 'onEscape()',
   },
 })
@@ -68,17 +71,34 @@ export class TooltipDirective implements OnDestroy {
   });
 
   // Protected methods
-  protected onMouseEnter(event: MouseEvent) {
+  protected onPointerEnter(event: PointerEvent) {
+    // A touch "enter" is a tap, not a hover — toggle instead. The default is
+    // not prevented, so the tap still activates an interactive host.
+    if (event.pointerType === 'touch') {
+      if (this._visible()) {
+        this._hide();
+      } else {
+        this._show();
+      }
+      return;
+    }
+
     this._show({ x: event.clientX, y: event.clientY });
   }
 
-  protected onMouseMove(event: MouseEvent) {
+  protected onPointerMove(event: PointerEvent) {
+    if (event.pointerType === 'touch') return;
+
     if (this.tooltipOrigin() === 'cursor') {
       this._tooltipService.move({ x: event.clientX, y: event.clientY }, this._positions());
     }
   }
 
-  protected onMouseLeave() {
+  protected onPointerLeave(event: PointerEvent) {
+    // A tap retires its pointer immediately, firing `pointerleave` within the
+    // same gesture; hiding here would undo the toggle the tap just made.
+    if (event.pointerType === 'touch') return;
+
     this._hide();
   }
 
@@ -89,16 +109,6 @@ export class TooltipDirective implements OnDestroy {
 
   protected onBlur() {
     this._hide();
-  }
-
-  // The default is not prevented, so a tap still activates an interactive host
-  // (a button keeps its click); the tooltip just toggles alongside it.
-  protected onTouchStart() {
-    if (this._visible()) {
-      this._hide();
-    } else {
-      this._show();
-    }
   }
 
   /** Dismisses the tooltip without moving the pointer or focus (WCAG 1.4.13). */

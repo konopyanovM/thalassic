@@ -67,7 +67,7 @@
           [attr.aria-selected]="isSelected(option)"
           [attr.aria-disabled]="option.disabled"
           (click)="toggleOption(option)"
-          (mouseenter)="onOptionHover(index, option.disabled)"
+          (pointerenter)="onOptionHover($event, index, option.disabled)"
         >
           <span class="tls-multi-select__option-label">{{ option.label }}</span>
           @if (isSelected(option)) {

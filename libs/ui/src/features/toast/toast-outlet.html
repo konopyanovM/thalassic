@@ -3,8 +3,8 @@
   role="region"
   [attr.aria-label]="regionLabel()"
   [style.height.px]="regionHeight()"
-  (mouseenter)="onPointerEnter()"
-  (mouseleave)="onPointerLeave()"
+  (pointerenter)="onPointerEnter()"
+  (pointerleave)="onPointerLeave($event)"
   (focusin)="onFocusIn()"
   (focusout)="onFocusOut()"
 >

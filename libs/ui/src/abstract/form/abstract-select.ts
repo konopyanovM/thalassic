@@ -152,7 +152,10 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
     }
   }
 
-  protected onOptionHover(index: number, disabled?: boolean): void {
+  protected onOptionHover(event: PointerEvent, index: number, disabled?: boolean): void {
+    // A touch "enter" is a tap in progress, not a hover; the click that follows
+    // commits the option, so the active index has nothing to track.
+    if (event.pointerType === 'touch') return;
     if (!disabled) this.activeIndex.set(index);
   }
 
