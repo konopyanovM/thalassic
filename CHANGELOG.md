@@ -1,3 +1,17 @@
+## 22.14.2 (2026-08-02)
+
+### 🚀 Features
+
+- **ui/tabs:** added header align and items align inputs ([fc712d8](https://github.com/konopyanovM/thalassic/commit/fc712d8))
+
+### 🩹 Fixes
+
+- **ui/tabs:** tabs style fixes ([ea6f03e](https://github.com/konopyanovM/thalassic/commit/ea6f03e))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.14.1 (2026-08-02)
 
 ### 🩹 Fixes
