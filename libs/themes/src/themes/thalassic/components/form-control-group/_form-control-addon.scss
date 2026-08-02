@@ -1,6 +1,9 @@
 @use '../../mixins' as mixins;
 
 .tls-form-control-addon {
+  display: inline-flex;
+  align-items: center;
+
   // Addons are secondary to the control's value (icons, unit labels, toggles).
   color: var(--color-on-surface-variant);
 

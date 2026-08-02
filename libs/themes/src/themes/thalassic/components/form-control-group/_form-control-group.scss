@@ -20,7 +20,10 @@
   }
 
   &:has(input.tls-form-control:focus),
-  &:has(.tls-select__trigger:focus) {
+  &:has(.tls-select__trigger:focus),
+  &:has(.tls-multi-select__trigger:focus),
+  &:has(.tls-autocomplete__trigger:focus),
+  &:has(.tls-date-time-picker__trigger:focus) {
     border: 1px solid var(--color-primary);
     box-shadow: 0 0 3px -1px var(--color-primary);
   }
@@ -44,10 +47,13 @@
   }
 
   // The group border is the single focus indicator — suppress each control's own
-  // focus border/shadow (base input :focus, select :focus-within) so it never doubles up.
+  // focus border/shadow (base input :focus, trigger controls :focus-within) so it never doubles up.
   input.tls-form-control:focus,
   textarea.tls-form-control:focus,
-  .tls-select.tls-form-control:focus-within {
+  .tls-select.tls-form-control:focus-within,
+  .tls-multi-select.tls-form-control:focus-within,
+  .tls-autocomplete.tls-form-control:focus-within,
+  .tls-date-time-picker.tls-form-control:focus-within {
     border: none;
     box-shadow: none;
   }
@@ -55,11 +61,15 @@
   // Inline padding lives on the element that actually renders the value, so the padded
   // area is interactive (no dead zone) and never stacks with a neighbour:
   //  - leaf controls: the <input>/<textarea> itself
-  //  - tls-select: its inner trigger button (the host only wraps it)
+  //  - trigger controls (select, multi-select, autocomplete, date-time-picker):
+  //    the inner trigger button/input (the host only wraps it)
   // Pad the inline-start only; the trailing outer edge is added on the last child below.
   input.tls-form-control,
   textarea.tls-form-control,
   .tls-select__trigger,
+  .tls-multi-select__trigger,
+  .tls-autocomplete__trigger,
+  .tls-date-time-picker__trigger,
   .tls-form-control-addon {
     padding-block: 0;
     padding-inline-start: var(--tls-form-control-group-padding-inline);
@@ -70,6 +80,9 @@
   > :last-child input.tls-form-control,
   > :last-child textarea.tls-form-control,
   > :last-child .tls-select__trigger,
+  > :last-child .tls-multi-select__trigger,
+  > :last-child .tls-autocomplete__trigger,
+  > :last-child .tls-date-time-picker__trigger,
   > .tls-form-control-addon:last-child {
     padding-inline-end: var(--tls-form-control-group-padding-inline);
   }
