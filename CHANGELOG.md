@@ -1,3 +1,13 @@
+## 22.14.1 (2026-08-02)
+
+### 🩹 Fixes
+
+- **ui/breadcrumbs:** added custom item template to breadcrumbs component ([400ba8a](https://github.com/konopyanovM/thalassic/commit/400ba8a))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.14.0 (2026-08-02)
 
 ### 🚀 Features
