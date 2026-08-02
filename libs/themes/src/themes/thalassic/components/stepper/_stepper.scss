@@ -78,6 +78,15 @@
         transition: color var(--motion-fast),
         background-color var(--motion-fast);
 
+        // The header is a tablist: it resolves the clicked step from
+        // `event.target` and ignores any target that is not an `HTMLElement`,
+        // so a click landing on an SVG child (a consumer-supplied step icon)
+        // never selects the step. Making SVG content transparent to pointer
+        // events keeps the control itself the target.
+        svg {
+          pointer-events: none;
+        }
+
         &__index {
           width: var(--tls-stepper-index-size);
           height: var(--tls-stepper-index-size);

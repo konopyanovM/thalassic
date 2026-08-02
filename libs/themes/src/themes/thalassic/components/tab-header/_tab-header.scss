@@ -87,6 +87,16 @@
 
       transition: background-color var(--motion-fast);
 
+      // The tablist resolves the clicked tab from `event.target` and ignores
+      // any target that is not an `HTMLElement`, so a click landing on an SVG
+      // child (an icon rendered into the tab label) never selects the tab.
+      // Making SVG content transparent to pointer events keeps the control
+      // itself the target. Targeted by element name deliberately: the content
+      // is consumer-provided, so no class is available to hook.
+      svg {
+        pointer-events: none;
+      }
+
       // Focus is distinct from selection here: the strip is a roving-tabindex
       // widget, so arrowing moves focus onto tabs that are not selected and
       // the active-indicator color alone cannot stand in for a focus
