@@ -1,8 +1,8 @@
 import { argsToTemplate, Meta, moduleMetadata, StoryObj } from '@storybook/angular';
 import {
+  STORY_CHIP_SIZE_OPTIONS,
   STORY_CHIP_VARIANT_OPTIONS,
   STORY_COLOR_OPTIONS,
-  STORY_SIZE_OPTIONS,
 } from '../../../.storybook/constants';
 import { Chip as ChipComponent } from './chip';
 import { ChipControl } from './chip.directive';
@@ -30,7 +30,7 @@ const meta: Meta<ChipComponent> = {
     },
     size: {
       control: { type: 'select' },
-      options: STORY_SIZE_OPTIONS,
+      options: STORY_CHIP_SIZE_OPTIONS,
     },
   },
   render: args => ({

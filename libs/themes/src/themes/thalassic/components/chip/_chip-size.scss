@@ -3,7 +3,7 @@
   padding-inline: var(--tls-chip-padding-inline);
 
   font-size: var(--tls-chip-font-size);
-  font-weight: var(--tls-chip-font-weight);
+  font-weight: var(--font-weight-regular);
   line-height: var(--tls-chip-line-height);
   letter-spacing: var(--tls-chip-letter-spacing);
 
@@ -17,12 +17,24 @@
     }
   }
 
-  &.tls-chip--sm {
-    --tls-chip-height: var(--control-height-sm);
+  &.tls-chip--xs {
+    --tls-chip-height: 24px;
     --tls-chip-padding-inline: var(--spacing-2);
 
+    --tls-chip-font-size: 0.75rem;
+    --tls-chip-line-height: 1rem;
+    --tls-chip-letter-spacing: var(--letter-spacing-wider);
+
+    &.tls-chip--rounded {
+      --tls-chip-border-radius: var(--radius-lg);
+    }
+  }
+
+  &.tls-chip--sm {
+    --tls-chip-height: var(--control-height-sm);
+    --tls-chip-padding-inline: var(--spacing-3);
+
     --tls-chip-font-size: var(--font-label-small-size);
-    --tls-chip-font-weight: var(--font-label-small-weight);
     --tls-chip-line-height: var(--font-label-small-line-height);
     --tls-chip-letter-spacing: var(--font-label-small-letter-spacing);
 
@@ -33,10 +45,9 @@
 
   &.tls-chip--md {
     --tls-chip-height: var(--control-height-md);
-    --tls-chip-padding-inline: var(--spacing-3);
+    --tls-chip-padding-inline: var(--spacing-4);
 
     --tls-chip-font-size: var(--font-label-medium-size);
-    --tls-chip-font-weight: var(--font-label-medium-weight);
     --tls-chip-line-height: var(--font-label-medium-line-height);
     --tls-chip-letter-spacing: var(--font-label-medium-letter-spacing);
 
@@ -47,10 +58,9 @@
 
   &.tls-chip--lg {
     --tls-chip-height: var(--control-height-lg);
-    --tls-chip-padding-inline: var(--spacing-4);
+    --tls-chip-padding-inline: var(--spacing-5);
 
     --tls-chip-font-size: var(--font-label-large-size);
-    --tls-chip-font-weight: var(--font-label-large-weight);
     --tls-chip-line-height: var(--font-label-large-line-height);
     --tls-chip-letter-spacing: var(--font-label-large-letter-spacing);
 

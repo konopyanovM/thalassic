@@ -10,9 +10,8 @@ import {
   signal,
   TemplateRef,
 } from '@angular/core';
-import { controlSize } from '../../types';
 import { CHIP_CONFIG } from './chip.token';
-import { ChipContext, chipColor, chipTemplateContext, chipVariant } from './chip.types';
+import { ChipContext, chipColor, chipSize, chipTemplateContext, chipVariant } from './chip.types';
 
 @Component({
   selector: 'tls-chip',
@@ -28,7 +27,7 @@ export class Chip {
   public readonly label = input<string>();
   public readonly color: InputSignal<chipColor> = input<chipColor>(this._config.color);
   public readonly variant: InputSignal<chipVariant> = input<chipVariant>(this._config.variant);
-  public readonly size: InputSignal<controlSize> = input<controlSize>(this._config.size);
+  public readonly size: InputSignal<chipSize> = input<chipSize>(this._config.size);
   public readonly rounded = input(false, { transform: booleanAttribute });
   public readonly icon = input(false, { transform: booleanAttribute });
   public readonly fluid = input(false, { transform: booleanAttribute });

@@ -1,8 +1,8 @@
-import { controlSize, orientation } from '../../../types';
-import { chipColor, chipVariant } from '../../chip';
+import { orientation } from '../../../types';
+import { chipColor, chipSize, chipVariant } from '../../chip';
 
 export interface ChipGroupConfig {
-  size: controlSize;
+  size: chipSize;
   color: chipColor;
   checkedColor: chipColor | undefined;
   variant: chipVariant;

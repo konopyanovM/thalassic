@@ -62,12 +62,12 @@
 
   --font-title-medium-size: 1.125rem;
   --font-title-medium-weight: var(--font-weight-medium);
-  --font-title-medium-line-height: 1.6875rem;
+  --font-title-medium-line-height: 1.4375rem;
   --font-title-medium-letter-spacing: var(--letter-spacing-wide);
 
   --font-title-small-size: 1rem;
   --font-title-small-weight: var(--font-weight-medium);
-  --font-title-small-line-height: 1.4375rem;
+  --font-title-small-line-height: 1.3125rem;
   --font-title-small-letter-spacing: var(--letter-spacing-wide);
 
   // Body styles (main content)
@@ -89,7 +89,7 @@
   // Label styles (buttons, tabs, form labels)
   --font-label-large-size: 1rem;
   --font-label-large-weight: var(--font-weight-medium);
-  --font-label-large-line-height: 1.4375rem;
+  --font-label-large-line-height: 1.25rem;
   --font-label-large-letter-spacing: var(--letter-spacing-wide);
 
   --font-label-medium-size: 0.875rem;
@@ -99,6 +99,6 @@
 
   --font-label-small-size: 0.8125rem;
   --font-label-small-weight: var(--font-weight-medium);
-  --font-label-small-line-height: 1.125rem;
+  --font-label-small-line-height: 1rem;
   --font-label-small-letter-spacing: var(--letter-spacing-wider);
 }

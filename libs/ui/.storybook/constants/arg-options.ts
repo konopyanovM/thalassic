@@ -1,6 +1,6 @@
 import { badgeVariant } from '../../src/features/badge/badge.types';
 import { buttonVariant } from '../../src/features/button/button.types';
-import { chipVariant } from '../../src/features/chip/chip.types';
+import { chipSize, chipVariant } from '../../src/features/chip/chip.types';
 import { toggleButtonVariant } from '../../src/features/form/toggle-button/toggle-button.types';
 import { toggleGroupVariant } from '../../src/features/form/toggle-group/toggle-group.types';
 import { fileInputVariant } from '../../src/features/form/file-input/file-input.types';
@@ -29,6 +29,8 @@ export const STORY_VARIANT_OPTIONS: buttonVariant[] = [
 export const STORY_ORIENTATION_OPTIONS: orientation[] = ['horizontal', 'vertical'] as const;
 
 export const STORY_SIZE_OPTIONS: controlSize[] = ['sm', 'md', 'lg'] as const;
+
+export const STORY_CHIP_SIZE_OPTIONS: chipSize[] = ['xs', 'sm', 'md', 'lg'] as const;
 
 export const STORY_BADGE_VARIANT_OPTIONS: badgeVariant[] = ['filled', 'tonal'] as const;
 

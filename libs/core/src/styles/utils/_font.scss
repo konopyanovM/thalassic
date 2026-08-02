@@ -18,23 +18,23 @@
 }
 
 .--f-weight-light {
-  font-weight: 300;
+  font-weight: var(--font-weight-light);
 }
 
 .--f-weight-normal {
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
 }
 
 .--f-weight-medium {
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }
 
 .--f-weight-semibold {
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
 }
 
 .--f-weight-bold {
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
 }
 
 .--f-weight-extrabold {

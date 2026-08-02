@@ -2,6 +2,7 @@ import { color } from '../../types';
 
 export type chipColor = color;
 export type chipVariant = 'filled' | 'tonal' | 'outlined' | 'text';
+export type chipSize = 'xs' | 'sm' | 'md' | 'lg';
 
 export interface ChipContext {
   checked: boolean;

@@ -1,10 +1,10 @@
 import { argsToTemplate, Meta, StoryObj } from '@storybook/angular';
 import {
+  STORY_CHIP_SIZE_OPTIONS,
   STORY_CHIP_VARIANT_OPTIONS,
   STORY_COLOR_OPTIONS,
   STORY_FORM_CONTROL_ARGS,
-  STORY_ORIENTATION_OPTIONS,
-  STORY_SIZE_OPTIONS
+  STORY_ORIENTATION_OPTIONS
 } from '../../../../.storybook/constants';
 import { ChipGroup } from './chip-group';
 
@@ -31,7 +31,7 @@ const meta: Meta<ChipGroup<StoryOption, string>> = {
   argTypes: {
     size: {
       control: { type: 'select' },
-      options: STORY_SIZE_OPTIONS,
+      options: STORY_CHIP_SIZE_OPTIONS,
     },
     color: {
       control: { type: 'select' },

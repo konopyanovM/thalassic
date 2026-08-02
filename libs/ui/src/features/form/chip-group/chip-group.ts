@@ -13,8 +13,8 @@ import {
   TemplateRef
 } from '@angular/core';
 import { FORM_CONTROL, Option, SelectionGroup, selectionGroupTemplateContext } from '../../../abstract/form';
-import { controlSize, orientation } from '../../../types';
-import { Chip, chipColor, chipVariant } from '../../chip';
+import { orientation } from '../../../types';
+import { Chip, chipColor, chipSize, chipVariant } from '../../chip';
 import { CHIP_GROUP_CONFIG } from './chip-group.token';
 
 @Component({
@@ -48,7 +48,7 @@ export class ChipGroup<T, V = unknown> extends SelectionGroup<T, V> {
     boolean,
     unknown
   >(this._config.unselectable, { transform: booleanAttribute });
-  public readonly size: InputSignal<controlSize> = input<controlSize>(this._config.size);
+  public readonly size: InputSignal<chipSize> = input<chipSize>(this._config.size);
   public readonly color: InputSignal<chipColor> = input<chipColor>(this._config.color);
   public readonly checkedColor = input<chipColor | undefined>(this._config.checkedColor);
   public readonly variant: InputSignal<chipVariant> = input<chipVariant>(this._config.variant);
