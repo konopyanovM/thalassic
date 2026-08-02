@@ -16,6 +16,17 @@ import { TabNavDirective } from './tab-nav.directive';
 })
 class TestHost {}
 
+@Component({
+  imports: [TabNavDirective, TabLinkDirective, RouterLink, RouterLinkActive],
+  template: `
+    <nav tlsTabNav divider aria-label="Divided sections">
+      <a tlsTabLink routerLink="/first" routerLinkActive>First</a>
+      <a tlsTabLink routerLink="/second" routerLinkActive>Second</a>
+    </nav>
+  `,
+})
+class DividedTestHost {}
+
 describe('TabNavDirective', () => {
   let fixture: ComponentFixture<TestHost>;
   let navigation: HTMLElement;
@@ -69,5 +80,18 @@ describe('TabNavDirective', () => {
     links[2].dispatchEvent(clickEvent);
 
     expect(clickEvent.defaultPrevented).toBe(true);
+  });
+
+  it('omits the divided modifier by default', () => {
+    expect(navigation.classList).not.toContain('tls-tab-header--divided');
+  });
+
+  it('reflects the divider option as a strip-level modifier class', async () => {
+    const dividedFixture = TestBed.createComponent(DividedTestHost);
+    await dividedFixture.whenStable();
+
+    const dividedNavigation: HTMLElement = dividedFixture.nativeElement.querySelector('nav');
+
+    expect(dividedNavigation.classList).toContain('tls-tab-header--divided');
   });
 });

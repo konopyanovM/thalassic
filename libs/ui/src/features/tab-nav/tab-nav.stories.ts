@@ -30,6 +30,7 @@ const meta: Meta<TabNavDirective> = {
   args: {
     variant: 'flat',
     orientation: 'horizontal',
+    divider: false,
   },
   argTypes: {
     variant: {
@@ -39,6 +40,9 @@ const meta: Meta<TabNavDirective> = {
     orientation: {
       control: { type: 'select' },
       options: STORY_ORIENTATION_OPTIONS,
+    },
+    divider: {
+      control: { type: 'boolean' },
     },
   },
   render: args => ({

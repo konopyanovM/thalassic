@@ -1,0 +1,85 @@
+// Separators between the strip's items, drawn when the strip carries the
+// `--divided` modifier (e.g. a `tls-tab-nav` grouping its links visually).
+// Rendered as non-interactive lines so they never affect an item's box or the
+// active-indicator border, and inset along the cross axis so they read as short
+// dividers rather than full edges. Orientation picks the axis; the segmented
+// variant nudges the line into the middle of its inter-item gap.
+//
+// A separator belongs to the *boundary* between two items, not to either item,
+// so a disabled item must not fade the line beside it. The boundary before an
+// item is normally its leading `::before`; when that item is disabled its
+// opacity would fade the line, so the boundary is drawn on the preceding
+// item's trailing `::after` — an element that is not faded — keeping it at full
+// strength. Each boundary is therefore drawn exactly once.
+.tls-tab-header--divided {
+  .tls-tab-header__item {
+    position: relative;
+  }
+
+  .tls-tab-header__item:not(:first-child):not(.tls-tab-header__item--disabled)::before,
+  .tls-tab-header__item:has(+ .tls-tab-header__item--disabled)::after {
+    content: '';
+
+    position: absolute;
+
+    background-color: var(--tls-tab-header-border-color);
+
+    pointer-events: none;
+  }
+
+  &.tls-tab-header--horizontal {
+    .tls-tab-header__item:not(:first-child):not(.tls-tab-header__item--disabled)::before,
+    .tls-tab-header__item:has(+ .tls-tab-header__item--disabled)::after {
+      inset-block: var(--spacing-2);
+
+      width: var(--tls-tab-header-border-width);
+    }
+
+    .tls-tab-header__item:not(:first-child):not(.tls-tab-header__item--disabled)::before {
+      inset-inline-start: 0;
+    }
+
+    .tls-tab-header__item:has(+ .tls-tab-header__item--disabled)::after {
+      inset-inline-end: 0;
+    }
+  }
+
+  &.tls-tab-header--vertical {
+    .tls-tab-header__item:not(:first-child):not(.tls-tab-header__item--disabled)::before,
+    .tls-tab-header__item:has(+ .tls-tab-header__item--disabled)::after {
+      inset-inline: var(--spacing-4);
+
+      height: var(--tls-tab-header-border-width);
+    }
+
+    .tls-tab-header__item:not(:first-child):not(.tls-tab-header__item--disabled)::before {
+      inset-block-start: 0;
+    }
+
+    .tls-tab-header__item:has(+ .tls-tab-header__item--disabled)::after {
+      inset-block-end: 0;
+    }
+  }
+
+  &.tls-tab-header--segmented {
+    &.tls-tab-header--horizontal {
+      .tls-tab-header__item:not(:first-child):not(.tls-tab-header__item--disabled)::before {
+        inset-inline-start: calc(var(--tls-tab-header-padding) / -2);
+      }
+
+      .tls-tab-header__item:has(+ .tls-tab-header__item--disabled)::after {
+        inset-inline-end: calc(var(--tls-tab-header-padding) / -2);
+      }
+    }
+
+    &.tls-tab-header--vertical {
+      .tls-tab-header__item:not(:first-child):not(.tls-tab-header__item--disabled)::before {
+        inset-block-start: calc(var(--tls-tab-header-padding) / -2);
+      }
+
+      .tls-tab-header__item:has(+ .tls-tab-header__item--disabled)::after {
+        inset-block-end: calc(var(--tls-tab-header-padding) / -2);
+      }
+    }
+  }
+}

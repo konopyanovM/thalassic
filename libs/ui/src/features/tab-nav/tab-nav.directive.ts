@@ -1,4 +1,13 @@
-import { computed, Directive, inject, input, InputSignal, Signal } from '@angular/core';
+import {
+  booleanAttribute,
+  computed,
+  Directive,
+  inject,
+  input,
+  InputSignal,
+  InputSignalWithTransform,
+  Signal,
+} from '@angular/core';
 import { tabsOrientation, tabsVariant } from '../tabs';
 import { TabNavConfig } from './tab-nav.config';
 import { TAB_NAV_CONFIG } from './tab-nav.token';
@@ -19,6 +28,10 @@ import { TAB_NAV_CONFIG } from './tab-nav.token';
  *   <a tlsTabLink routerLink="security" routerLinkActive>Security</a>
  * </nav>
  * ```
+ *
+ * Set `divider` to draw a separator between every pair of links. The
+ * separators are presentational only — they carry no semantics and are not
+ * announced to assistive technology.
  */
 @Directive({
   selector: 'nav[tlsTabNav]',
@@ -35,6 +48,10 @@ export class TabNavDirective {
   public readonly orientation: InputSignal<tabsOrientation> = input<tabsOrientation>(
     this._config.orientation,
   );
+  public readonly divider: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    this._config.divider,
+    { transform: booleanAttribute },
+  );
 
   // Computed
   protected hostClasses: Signal<string[]> = computed(() => {
@@ -44,6 +61,8 @@ export class TabNavDirective {
 
     array.push(`${className}--${this.variant()}`);
     array.push(`${className}--${this.orientation()}`);
+
+    if (this.divider()) array.push(`${className}--divided`);
 
     return array;
   });
