@@ -58,24 +58,32 @@
   } @else if $treatment == outlined {
     border-color: var(--#{$block}-color);
 
+    // Transparent at rest so the control sits on any backdrop (a tinted card,
+    // a striped row); interaction paints a translucent state layer over it.
+    background-color: transparent;
+
     color: var(--#{$block}-color);
 
     @include _hover-focus-state($block) {
-      background-color: color-mix(in srgb, var(--#{$block}-color) 7.5%, var(--color-surface));
+      background-color: color-mix(in srgb, var(--#{$block}-color) 7.5%, transparent);
     }
 
     @include _active-state($block) {
-      background-color: color-mix(in srgb, var(--#{$block}-color) 15%, var(--color-surface));
+      background-color: color-mix(in srgb, var(--#{$block}-color) 15%, transparent);
     }
   } @else if $treatment == text {
+    // Transparent at rest so the control sits on any backdrop (a tinted card,
+    // a striped row); interaction paints a translucent state layer over it.
+    background-color: transparent;
+
     color: var(--#{$block}-color);
 
     @include _hover-focus-state($block) {
-      background-color: color-mix(in srgb, var(--#{$block}-color) 7.5%, var(--color-surface));
+      background-color: color-mix(in srgb, var(--#{$block}-color) 7.5%, transparent);
     }
 
     @include _active-state($block) {
-      background-color: color-mix(in srgb, var(--#{$block}-color) 15%, var(--color-surface));
+      background-color: color-mix(in srgb, var(--#{$block}-color) 15%, transparent);
     }
   } @else if $treatment == elevated {
     box-shadow: var(--shadow-sm);
