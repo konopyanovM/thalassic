@@ -42,4 +42,21 @@
     --tls-form-control-group-line-height: var(--font-label-large-line-height);
     --tls-form-control-group-letter-spacing: var(--font-label-large-letter-spacing);
   }
+
+  // The group is the single source of size: each inner control renders its own
+  // size class, so map the group's resolved size onto the control's own vars.
+  // This lets a consumer set size once on the group instead of on every child.
+  &.tls-form-control-group--sm,
+  &.tls-form-control-group--md,
+  &.tls-form-control-group--lg {
+    .tls-form-control {
+      --tls-form-control-height: var(--tls-form-control-group-height);
+      --tls-form-control-padding-inline: var(--tls-form-control-group-padding-inline);
+
+      --tls-form-control-font-size: var(--tls-form-control-group-font-size);
+      --tls-form-control-font-weight: var(--tls-form-control-group-font-weight);
+      --tls-form-control-line-height: var(--tls-form-control-group-line-height);
+      --tls-form-control-letter-spacing: var(--tls-form-control-group-letter-spacing);
+    }
+  }
 }
