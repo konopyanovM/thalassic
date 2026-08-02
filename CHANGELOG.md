@@ -1,3 +1,20 @@
+## 22.13.0 (2026-08-02)
+
+### 🚀 Features
+
+- **ui:** added locale support ([cb69789](https://github.com/konopyanovM/thalassic/commit/cb69789))
+- **ui/form-control-group:** support leading-icon addons on trigger controls ([2a86fac](https://github.com/konopyanovM/thalassic/commit/2a86fac))
+- **ui/tab-nav:** added divider input to tab nav directive ([dc98e81](https://github.com/konopyanovM/thalassic/commit/dc98e81))
+
+### 🩹 Fixes
+
+- typography line height fixes, chip added xs size, chip design improvement ([8f0a9f2](https://github.com/konopyanovM/thalassic/commit/8f0a9f2))
+- **themes/form-control-group:** fixed form control group sizes ([3c1de81](https://github.com/konopyanovM/thalassic/commit/3c1de81))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.12.0 (2026-08-01)
 
 ### 🚀 Features
