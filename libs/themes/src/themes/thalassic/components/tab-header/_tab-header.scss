@@ -1,3 +1,5 @@
+@use '../../mixins' as mixins;
+
 // Shared tab-strip visuals used by two components: the header row inside
 // `tls-tabs` (buttons driving tabpanels) and the standalone `tls-tab-nav`
 // (router links styled as tabs). The block carries its own variant /
@@ -84,6 +86,19 @@
       cursor: pointer;
 
       transition: background-color var(--motion-fast);
+
+      // Focus is distinct from selection here: the strip is a roving-tabindex
+      // widget, so arrowing moves focus onto tabs that are not selected and
+      // the active-indicator color alone cannot stand in for a focus
+      // indicator. The ring is drawn inside the control's box — the strip
+      // clips on its cross axis (see the orientation overflow rules) and items
+      // sit flush against their neighbours, so an outset ring would be cut off
+      // on one edge and overlap the adjacent tab on the other.
+      &:focus-visible {
+        @include mixins.focus-ring;
+
+        outline-offset: calc(var(--control-focus-ring-offset) * -1);
+      }
     }
   }
 }

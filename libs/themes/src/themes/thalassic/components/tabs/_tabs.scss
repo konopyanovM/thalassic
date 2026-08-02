@@ -1,20 +1,20 @@
-// Container-level styles for `tls-tabs` (background, layout, content panel).
-// The header strip itself is the shared `.tls-tab-header` block
-// (components/tab-header), which `tls-tabs` renders as its tablist and
-// `tls-tab-nav` renders as router links.
+// Container-level styles for `tls-tabs` (layout, content panel). The header
+// strip itself is the shared `.tls-tab-header` block (components/tab-header),
+// which `tls-tabs` renders as its tablist and `tls-tab-nav` renders as router
+// links.
+//
+// The container is a transparent layout primitive: it paints no surface of its
+// own and pads no content, so a panel holding its own card, table or list sits
+// flush and owns its spacing. The header and the content panel are separated by
+// `--tls-tabs-gap` alone. The `outlined` variant is the exception — it is a card
+// and reinstates both the surface and the content padding.
 .tls-tabs {
-  --tls-tabs-background-color: var(--color-surface);
-  --tls-tabs-content-padding: var(--spacing-4);
+  --tls-tabs-gap: var(--spacing-4);
+  --tls-tabs-content-padding: 0;
 
   display: flex;
   flex-direction: column;
-
-  background: var(--tls-tabs-background-color);
-
-  overflow: clip;
-
-  transition: border-color var(--motion-theme),
-  background-color var(--motion-theme);
+  gap: var(--tls-tabs-gap);
 
   .tls-tabs-content {
     padding: var(--tls-tabs-content-padding);

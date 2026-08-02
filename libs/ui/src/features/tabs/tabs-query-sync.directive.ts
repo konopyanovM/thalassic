@@ -35,9 +35,10 @@ export class TabsQuerySyncDirective extends QuerySyncDirective {
   constructor() {
     super();
 
-    // Restore the selection from the URL. Tab values may be numbers, so the
-    // param is matched against each tab's serialized value; projected tabs
-    // resolve after init, so this retries until a match appears.
+    // Restore the selection from the URL. The param is matched against the
+    // declared tabs so a stale or hand-edited value is ignored rather than
+    // selecting nothing; projected tabs resolve after init, so this retries
+    // until a match appears.
     effect(() => {
       if (!this._restoreRead) {
         this._restoreRead = true;

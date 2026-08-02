@@ -1,13 +1,27 @@
 // Variant styles that concern the tabs container itself; the header strip's
 // variant styles live in the shared tab-header block.
 .tls-tabs {
-  // Outlined
+  // Outlined — the one variant that is a container rather than a transparent
+  // layout primitive: the header sits flush against the card's edge (no gap)
+  // and the panel is padded away from the border. Its surface is also what the
+  // header's active item is filled with, so the item reads as a folder tab
+  // merging into the panel.
   &.tls-tabs--outlined {
     --tls-tabs-border-color: var(--color-outline-variant);
     --tls-tabs-border-width: 1px;
     --tls-tabs-border-radius: var(--radius-sm);
+    --tls-tabs-background-color: var(--color-surface);
+    --tls-tabs-gap: 0;
+    --tls-tabs-content-padding: var(--spacing-4);
 
     border: var(--tls-tabs-border-width) solid var(--tls-tabs-border-color);
     border-radius: var(--tls-tabs-border-radius);
+
+    background: var(--tls-tabs-background-color);
+
+    overflow: clip;
+
+    transition: border-color var(--motion-theme),
+    background-color var(--motion-theme);
   }
 }

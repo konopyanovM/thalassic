@@ -33,10 +33,10 @@ import { tabsHeaderPosition, tabsOrientation, tabsVariant, tabValue } from './ta
   },
 })
 export class Tabs {
-  private _config: TabsConfig = inject(TABS_CONFIG);
+  // Injections
+  private readonly _config: TabsConfig = inject(TABS_CONFIG);
 
-  protected tabs: Signal<readonly Tab[]> = contentChildren(Tab);
-
+  // Inputs
   public readonly variant: InputSignal<tabsVariant> = input<tabsVariant>(this._config.variant);
   public readonly orientation: InputSignal<tabsOrientation> = input<tabsOrientation>(
     this._config.orientation,
@@ -52,6 +52,10 @@ export class Tabs {
   public readonly ariaLabel = input<string | undefined>(undefined);
   public readonly ariaLabelledby = input<string | undefined>(undefined);
 
+  // State
+  protected tabs: Signal<readonly Tab[]> = contentChildren(Tab);
+
+  // Computed
   protected hostClasses = computed(() => {
     const className = 'tls-tabs';
 
@@ -78,6 +82,7 @@ export class Tabs {
     return array;
   });
 
+  // Constructor
   constructor() {
     effect(() => {
       if (this.selected() !== undefined) return;
@@ -89,14 +94,14 @@ export class Tabs {
 
   // Public methods
   /**
-   * Resolves serialized text (e.g. a URL query param) back to the matching
-   * tab's actual value, so a numeric tab value round-trips with its own type
-   * instead of a string that would never match. Returns `undefined` when no tab
-   * matches — including while the projected tabs have not resolved yet, so a
-   * reactive caller can retry once they have.
+   * Resolves arbitrary text (e.g. a URL query param) to the value of the tab it
+   * names, so a caller can tell an actual tab from a stale or hand-edited
+   * value. Returns `undefined` when no tab matches — including while the
+   * projected tabs have not resolved yet, so a reactive caller can retry once
+   * they have.
    */
   public findTabValue(text: string): tabValue | undefined {
-    const match = this.tabs().find(tab => String(tab.value()) === text);
+    const match = this.tabs().find(tab => tab.value() === text);
     if (!match) return undefined;
     return match.value();
   }
