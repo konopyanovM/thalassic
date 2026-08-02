@@ -10,7 +10,7 @@ import {
   Signal,
   signal,
 } from '@angular/core';
-import { DIRECTION_ATTRIBUTE } from './constants';
+import { DIRECTION_ATTRIBUTE, DIRECTIONS } from './constants';
 import { DirectionConfig } from './direction.config';
 import { DIRECTION_CONFIG } from './direction.token';
 import { direction } from './types';
@@ -91,7 +91,10 @@ export class DirectionService {
   private _initDirection(): void {
     if (!this._isBrowser) return;
 
+    // The stored value is untrusted; anything but a valid direction falls back
+    // to the default rather than landing on the document as-is.
     const stored = localStorage.getItem(this.LS_DIRECTION) as direction | null;
-    this.setDirection(stored ?? this._config.defaultDirection);
+    const valid = stored !== null && DIRECTIONS.includes(stored);
+    this.setDirection(valid ? stored : this._config.defaultDirection);
   }
 }

@@ -10,7 +10,7 @@ import {
   Signal,
   signal,
 } from '@angular/core';
-import { MOTION_ATTRIBUTE } from './constants';
+import { MOTION_ATTRIBUTE, MOTION_PREFERENCES } from './constants';
 import { MotionConfig } from './motion.config';
 import { MOTION_CONFIG } from './motion.token';
 import { motionLevel, motionPreference } from './types';
@@ -117,8 +117,11 @@ export class MotionService {
   private _initMotion(): void {
     if (!this._isBrowser) return;
 
+    // The stored value is untrusted; anything but a valid preference falls back
+    // to the default rather than landing on the document as-is.
     const stored = localStorage.getItem(this.LS_MOTION) as motionPreference | null;
-    this.setMotion(stored ?? this._config.defaultMotion);
+    const valid = stored !== null && MOTION_PREFERENCES.includes(stored);
+    this.setMotion(valid ? stored : this._config.defaultMotion);
 
     window.matchMedia(REDUCED_MOTION_QUERY).addEventListener('change', event => {
       if (this._currentPreference() === 'system') {

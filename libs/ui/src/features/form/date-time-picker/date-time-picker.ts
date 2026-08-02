@@ -18,6 +18,7 @@ import {
 } from '@angular/core';
 import { Day, format } from 'date-fns';
 import { FORM_CONTROL, ValueFormControl } from '../../../abstract/form';
+import { localeFormatOptions, LOCALE_CONFIG } from '../../../abstract/locale';
 import { controlSize } from '../../../types';
 import { Loader } from '../../loader';
 import { Popover } from '../../popover';
@@ -48,6 +49,9 @@ type ActiveView = 'calendar' | 'month-picker' | 'year-picker' | 'time-picker' | 
 export class DateTimePicker extends ValueFormControl<Date | null> {
   // Injections
   private readonly config = inject(DATE_TIME_PICKER_CONFIG);
+  private readonly _locale = inject(LOCALE_CONFIG);
+
+  private readonly _dateOptions = localeFormatOptions(this._locale);
 
   // View children
   private readonly popoverComponent: Signal<Popover | undefined> = viewChild<Popover>('popoverRef');
@@ -92,11 +96,11 @@ export class DateTimePicker extends ValueFormControl<Date | null> {
     const value = this.value();
     if (!value) return this.placeholder();
     const mode = this.mode();
-    if (mode === 'calendar') return format(value, 'MMM d, yyyy');
-    if (mode === 'month-picker') return format(value, 'MMMM yyyy');
-    if (mode === 'year-picker') return format(value, 'yyyy');
-    if (mode === 'time-picker') return format(value, 'HH:mm');
-    return format(value, 'MMM d, yyyy HH:mm');
+    if (mode === 'calendar') return format(value, 'MMM d, yyyy', this._dateOptions);
+    if (mode === 'month-picker') return format(value, 'MMMM yyyy', this._dateOptions);
+    if (mode === 'year-picker') return format(value, 'yyyy', this._dateOptions);
+    if (mode === 'time-picker') return format(value, 'HH:mm', this._dateOptions);
+    return format(value, 'MMM d, yyyy HH:mm', this._dateOptions);
   });
 
   constructor() {

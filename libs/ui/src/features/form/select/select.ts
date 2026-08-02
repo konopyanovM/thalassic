@@ -73,7 +73,16 @@ export class Select<T, V = unknown> extends AbstractSelect<T, V, V | null> {
   }
 
   protected override getInitialActiveIndex(): number {
-    return this.visibleOptions().findIndex(option => option.value === this.value());
+    const options = this.visibleOptions();
+
+    const selectedIndex = options.findIndex(
+      option => !option.disabled && option.value === this.value(),
+    );
+    if (selectedIndex !== -1) return selectedIndex;
+
+    // No selection: start on the first enabled option, matching the other
+    // listbox controls, so the panel opens with a visible active option.
+    return options.findIndex(option => !option.disabled);
   }
 
   protected override commitActiveOption(option: Option<V>): void {

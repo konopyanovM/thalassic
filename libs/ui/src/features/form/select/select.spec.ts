@@ -215,8 +215,7 @@ describe('Select', () => {
     });
 
     it('should move active down skipping disabled options', () => {
-      keydown('ArrowDown'); // opens
-      keydown('ArrowDown'); // -> index 0 (One)
+      keydown('ArrowDown'); // opens; active starts on the first enabled option (One)
       expect(queryActiveOption()?.textContent?.trim()).toBe('One');
 
       keydown('ArrowDown'); // skips disabled "Two" -> index 2 (Three)
@@ -237,8 +236,7 @@ describe('Select', () => {
     });
 
     it('should select the active option on Enter', () => {
-      keydown('ArrowDown'); // opens
-      keydown('ArrowDown'); // active "One"
+      keydown('ArrowDown'); // opens; active starts on the first enabled option (One)
       keydown('Enter');
 
       expect(selectedValue()).toBe(1);

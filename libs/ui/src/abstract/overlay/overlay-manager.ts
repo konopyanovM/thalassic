@@ -9,13 +9,9 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { DestroyRef, inject, signal, TemplateRef, ViewContainerRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
+import { disposeAfterLeaveAnimation } from './dispose-after-leave-animation';
 
 const TRANSPARENT_BACKDROP_CLASS = 'cdk-overlay-transparent-backdrop';
-
-// Upper bound for how long to keep a non-reused pane alive after detach so the
-// panel's `animate.leave` can finish. Disposes on `animationend`; this only
-// fires when no exit animation runs (e.g. the `none` motion level).
-const LEAVE_ANIMATION_FALLBACK_MS = 500;
 
 export interface ConnectedOverlayConfig {
   /** Template projected into the overlay. */
@@ -146,7 +142,7 @@ export class OverlayManager {
       const reuse = Boolean(config && config.reuse);
       if (!reuse) {
         this._overlayRef = null;
-        this._disposeAfterAnimation(overlayRef);
+        disposeAfterLeaveAnimation(overlayRef);
       }
     }
 
@@ -205,31 +201,6 @@ export class OverlayManager {
         )
         .subscribe(() => this.close());
     }
-  }
-
-  /**
-   * Disposes a detached overlay once the panel's exit animation has finished, so
-   * the pane is not torn down while `animate.leave` is still playing. Falls back
-   * to a timeout when no animation runs (e.g. the `none` motion level).
-   */
-  private _disposeAfterAnimation(overlayRef: OverlayRef): void {
-    const paneElement = overlayRef.overlayElement;
-    if (!paneElement) {
-      overlayRef.dispose();
-      return;
-    }
-
-    let settled = false;
-    const finalize = (): void => {
-      if (settled) return;
-      settled = true;
-      window.clearTimeout(timeoutId);
-      paneElement.removeEventListener('animationend', finalize);
-      overlayRef.dispose();
-    };
-
-    paneElement.addEventListener('animationend', finalize);
-    const timeoutId = window.setTimeout(finalize, LEAVE_ANIMATION_FALLBACK_MS);
   }
 
   private _dispose(): void {

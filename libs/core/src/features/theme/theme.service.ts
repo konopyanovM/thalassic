@@ -10,7 +10,7 @@ import {
   Signal,
   signal
 } from '@angular/core';
-import { DARK_THEME_CLASS, LIGHT_THEME_CLASS } from './constants';
+import { DARK_THEME_CLASS, LIGHT_THEME_CLASS, THEME_PREFERENCES } from './constants';
 import { ThemeConfig } from './theme.config';
 import { THEME_CONFIG } from './theme.token';
 import { themePreference, themeType } from './types';
@@ -122,8 +122,11 @@ export class ThemeService {
   private _initTheme(): void {
     if (!this._isBrowser) return;
 
+    // The stored value is untrusted; anything but a valid preference falls back
+    // to the default rather than being applied as-is.
     const stored = localStorage.getItem(this.LS_THEME) as themePreference | null;
-    this.setTheme(stored ?? this._config.defaultTheme);
+    const valid = stored !== null && THEME_PREFERENCES.includes(stored);
+    this.setTheme(valid ? stored : this._config.defaultTheme);
 
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
       if (this._currentThemePreference() === 'system') {

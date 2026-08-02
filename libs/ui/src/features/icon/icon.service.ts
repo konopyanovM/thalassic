@@ -3,6 +3,14 @@ import { inject, Injectable } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { map, Observable, shareReplay, throwError } from 'rxjs';
 
+// Elements removed from fetched SVG markup: script execution, nested browsing
+// contexts, and foreignObject (which can embed arbitrary HTML).
+const DISALLOWED_ELEMENTS = ['script', 'foreignobject', 'iframe', 'object', 'embed', 'link', 'meta'];
+
+// Attribute URLs must be same-document references (`#id`); anything else —
+// external resources, `javascript:`, `data:` — is stripped.
+const URL_ATTRIBUTES = ['href', 'xlink:href', 'src'];
+
 @Injectable({ providedIn: 'root' })
 export class IconService {
   private readonly _http: HttpClient = inject(HttpClient);
@@ -43,24 +51,63 @@ export class IconService {
     return this._sanitizer.bypassSecurityTrustHtml(safeSvg);
   }
 
+  /**
+   * Sanitizes SVG markup by parsing it into a DOM tree and stripping dangerous
+   * nodes and attributes, so obfuscated markup (unquoted attributes, entity
+   * tricks) cannot slip through the way it could with pattern matching on the
+   * raw text. The cleaned tree is serialized back to markup.
+   *
+   * Without a DOM parser (server-side rendering), the markup is dropped rather
+   * than passed through unsanitized; the icon renders once the browser takes
+   * over.
+   */
   private _makeSafe(svg: string): string {
-    return (
-      svg
-        // Remove script tags
-        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-        // Remove event handlers (onclick, onload, onmouseover, etc.)
-        .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '')
-        // Remove external xlink:href (keep internal references starting with #)
-        .replace(/xlink:href\s*=\s*["'](?!#)[^"']*["']/gi, '')
-        // Remove external href in <use>, <image>, <a> tags (keep internal #refs)
-        .replace(/href\s*=\s*["'](?!#)[^"']*["']/gi, '')
-        // Remove data URIs with HTML content
-        .replace(/href\s*=\s*["']data:text\/html[^"']*["']/gi, '')
-        .replace(/src\s*=\s*["']data:text\/html[^"']*["']/gi, '')
-        // Remove javascript: protocol
-        .replace(/javascript:/gi, '')
-        // Remove import statements in style
-        .replace(/@import/gi, '')
-    );
+    if (typeof DOMParser === 'undefined') return '';
+
+    const parsed = new DOMParser().parseFromString(svg, 'image/svg+xml');
+    if (parsed.querySelector('parsererror')) return '';
+
+    const root = parsed.documentElement;
+    this._sanitizeElement(root);
+    return new XMLSerializer().serializeToString(root);
+  }
+
+  private _sanitizeElement(element: Element): void {
+    // Snapshot: children are removed while iterating.
+    for (const child of Array.from(element.children)) {
+      if (DISALLOWED_ELEMENTS.includes(child.localName.toLowerCase())) {
+        child.remove();
+        continue;
+      }
+      this._sanitizeElement(child);
+    }
+
+    for (const attribute of Array.from(element.attributes)) {
+      if (this._isAttributeDisallowed(attribute.name, attribute.value)) {
+        element.removeAttribute(attribute.name);
+      }
+    }
+
+    // `<style>` text can pull external resources; keep local rules only.
+    if (element.localName.toLowerCase() === 'style' && element.textContent) {
+      element.textContent = element.textContent
+        .replace(/@import[^;]*;?/gi, '')
+        .replace(/url\s*\(\s*(?!\s*["']?#)[^)]*\)/gi, 'none');
+    }
+  }
+
+  private _isAttributeDisallowed(name: string, value: string): boolean {
+    const attributeName = name.toLowerCase();
+
+    // Event handlers (onclick, onload, …) regardless of quoting or casing.
+    if (attributeName.startsWith('on')) return true;
+
+    // URL-bearing attributes may only reference into the same document.
+    if (URL_ATTRIBUTES.includes(attributeName)) return !value.trim().startsWith('#');
+
+    // Inline style may not pull external resources.
+    if (attributeName === 'style') return /url\s*\(\s*(?!\s*["']?#)/i.test(value) || /@import/i.test(value);
+
+    return false;
   }
 }

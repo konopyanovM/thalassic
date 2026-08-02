@@ -105,25 +105,30 @@ export class PinInput extends ValueFormControl<string> {
 
   protected onPaste(event: ClipboardEvent, index: number): void {
     event.preventDefault();
+    if (this.notInteractive()) return;
 
     const clipboardData = event.clipboardData;
     if (!clipboardData) return;
 
-    const text = clipboardData.getData('text');
+    // Keep only the characters the input accepts, so text copied with
+    // separators ("123 456", "123-456") pastes as its usable digits.
     const allowedRegExp = this._getAllowedRegularExpression();
-    if (!allowedRegExp.test(text)) return;
-
-    const chars = text.slice(0, this.length() - this.value().length).split('');
+    const chars = clipboardData
+      .getData('text')
+      .split('')
+      .filter(char => allowedRegExp.test(char))
+      .slice(0, this.length() - index);
 
     if (!chars.length) return;
 
+    // Overwrite from the focused cell onward.
     const array = this._getValueArray();
-    for (let i = 0; i < chars.length; i++) {
-      array[index + i] = chars[i];
+    for (let offset = 0; offset < chars.length; offset++) {
+      array[index + offset] = chars[offset];
     }
 
     this._commitArray(array);
-    this._focusCell(Math.min(this.value().length, this.length()));
+    this._focusCell(index + chars.length);
   }
 
   protected onFocus(event: FocusEvent): void {

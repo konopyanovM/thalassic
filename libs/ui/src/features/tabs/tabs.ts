@@ -86,4 +86,18 @@ export class Tabs {
       if (firstEnabledTab) this.selected.set(firstEnabledTab.value());
     });
   }
+
+  // Public methods
+  /**
+   * Resolves serialized text (e.g. a URL query param) back to the matching
+   * tab's actual value, so a numeric tab value round-trips with its own type
+   * instead of a string that would never match. Returns `undefined` when no tab
+   * matches — including while the projected tabs have not resolved yet, so a
+   * reactive caller can retry once they have.
+   */
+  public findTabValue(text: string): tabValue | undefined {
+    const match = this.tabs().find(tab => String(tab.value()) === text);
+    if (!match) return undefined;
+    return match.value();
+  }
 }

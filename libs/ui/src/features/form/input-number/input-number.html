@@ -17,6 +17,7 @@
   [attr.max]="max() ?? null"
   [step]="step()"
   (input)="onInput($event)"
+  (change)="onChange($event)"
   (blur)="touched.set(true)"
 />
 @if (pending()) {

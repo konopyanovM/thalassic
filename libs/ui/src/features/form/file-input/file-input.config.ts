@@ -8,6 +8,14 @@ export interface FileInputConfig {
   accept: acceptInput;
   fluid: boolean;
   hideFileList: boolean;
+  /** Trigger label in single-file mode, overridable for localization. */
+  chooseFileLabel: string;
+  /** Trigger label in multiple-file mode, overridable for localization. */
+  chooseFilesLabel: string;
+  /** Fallback accessible name for the drop zone in single-file mode, overridable for localization. */
+  dropZoneFileLabel: string;
+  /** Fallback accessible name for the drop zone in multiple-file mode, overridable for localization. */
+  dropZoneFilesLabel: string;
 }
 
 export const DEFAULT_FILE_INPUT_CONFIG: FileInputConfig = {
@@ -17,4 +25,8 @@ export const DEFAULT_FILE_INPUT_CONFIG: FileInputConfig = {
   accept: '',
   fluid: false,
   hideFileList: false,
+  chooseFileLabel: 'Choose file',
+  chooseFilesLabel: 'Choose files',
+  dropZoneFileLabel: 'Upload file',
+  dropZoneFilesLabel: 'Upload files',
 };

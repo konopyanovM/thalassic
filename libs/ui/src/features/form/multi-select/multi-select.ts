@@ -60,7 +60,7 @@ export class MultiSelect<T, V = unknown> extends AbstractSelect<T, V, V[]> {
     if (selected.length === 0) return '';
 
     const max = this.maxLabels();
-    if (selected.length > max) return `${selected.length} selected`;
+    if (selected.length > max) return this._config.selectedCountLabel(selected.length);
 
     const optionMap = new Map(this.normalizedOptions().map(option => [option.value, option.label]));
     return selected.map(value => optionMap.get(value) ?? String(value)).join(', ');

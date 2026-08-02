@@ -1,6 +1,7 @@
 import {
   Component,
   computed,
+  inject,
   input,
   InputSignal,
   output,
@@ -8,6 +9,7 @@ import {
   Signal,
 } from '@angular/core';
 import { addMonths, Day, format, isSameDay, isSameMonth, isToday, subMonths } from 'date-fns';
+import { LOCALE_CONFIG, localeFormatOptions } from '../../../../abstract/locale';
 import { buildMonthDays, rotateWeekDays } from '../../../../utils';
 import { Icon } from '../../../icon';
 
@@ -18,6 +20,11 @@ import { Icon } from '../../../icon';
   host: { class: 'tls-date-picker-calendar' },
 })
 export class DatePickerCalendar {
+  // Injections
+  private readonly _locale = inject(LOCALE_CONFIG);
+
+  private readonly _dateOptions = localeFormatOptions(this._locale);
+
   // Inputs
   public readonly viewDate: InputSignal<Date> = input.required<Date>();
   public readonly selectedDate: InputSignal<Date | null> = input.required<Date | null>();
@@ -35,7 +42,7 @@ export class DatePickerCalendar {
   );
 
   protected readonly headerLabel: Signal<string> = computed(() =>
-    format(this.viewDate(), 'MMMM yyyy'),
+    format(this.viewDate(), 'MMMM yyyy', this._dateOptions),
   );
 
   protected readonly days: Signal<Date[]> = computed(() =>
@@ -52,7 +59,7 @@ export class DatePickerCalendar {
   }
 
   protected getDayLabel(day: Date): string {
-    return format(day, 'd');
+    return format(day, 'd', this._dateOptions);
   }
 
   protected isSelectedDay(day: Date): boolean {

@@ -15,9 +15,3 @@ export const TOAST_COLLAPSED_VISIBLE_DEPTH = 3;
 // in sync with `--spacing-3` in `_toast.scss`; it is a transform offset computed
 // in TypeScript, so it lives here as a number rather than a spacing token.
 export const TOAST_EXPANDED_GAP = 12;
-
-// Upper bound for how long to keep the outlet overlay's pane alive after a toast
-// starts leaving, so Angular's `animate.leave` can finish. Disposal happens on
-// `animationend`; this only fires when no exit animation runs (e.g. the `none`
-// motion level).
-export const TOAST_LEAVE_ANIMATION_FALLBACK_MS = 500;

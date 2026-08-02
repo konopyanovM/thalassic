@@ -8,6 +8,8 @@ export interface MultiSelectConfig {
   maxLabels: number;
   /** Accessible name for the clear button, overridable for localization. */
   clearLabel: string;
+  /** Trigger label when more than `maxLabels` options are selected, overridable for localization. */
+  selectedCountLabel: (count: number) => string;
 }
 
 export const DEFAULT_MULTI_SELECT_CONFIG: MultiSelectConfig = {
@@ -17,4 +19,5 @@ export const DEFAULT_MULTI_SELECT_CONFIG: MultiSelectConfig = {
   clearable: false,
   maxLabels: 2,
   clearLabel: 'Clear',
+  selectedCountLabel: count => `${count} selected`,
 };

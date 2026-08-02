@@ -1,6 +1,7 @@
 import {
   Component,
   computed,
+  inject,
   input,
   InputSignal,
   output,
@@ -8,6 +9,7 @@ import {
   Signal,
 } from '@angular/core';
 import { addYears, format, getMonth, getYear, isSameMonth, setMonth, subYears } from 'date-fns';
+import { localeFormatOptions, LOCALE_CONFIG } from '../../../../abstract/locale';
 import { Icon } from '../../../icon';
 
 const MONTH_INDEXES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
@@ -19,6 +21,11 @@ const MONTH_INDEXES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
   host: { class: 'tls-month-picker' },
 })
 export class MonthPicker {
+  // Injections
+  private readonly _locale = inject(LOCALE_CONFIG);
+
+  private readonly _dateOptions = localeFormatOptions(this._locale);
+
   // Inputs
   public readonly viewDate: InputSignal<Date> = input.required<Date>();
   public readonly selectedDate: InputSignal<Date | null> = input.required<Date | null>();
@@ -31,11 +38,13 @@ export class MonthPicker {
   // Computed
   protected readonly months = MONTH_INDEXES;
 
-  protected readonly yearLabel: Signal<string> = computed(() => format(this.viewDate(), 'yyyy'));
+  protected readonly yearLabel: Signal<string> = computed(() =>
+    format(this.viewDate(), 'yyyy', this._dateOptions),
+  );
 
   // Protected methods
   protected getMonthLabel(monthIndex: number): string {
-    return format(setMonth(new Date(2000, 0, 1), monthIndex), 'MMM');
+    return format(setMonth(new Date(2000, 0, 1), monthIndex), 'MMM', this._dateOptions);
   }
 
   protected prevYear(): void {

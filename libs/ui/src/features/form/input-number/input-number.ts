@@ -66,4 +66,25 @@ export class InputNumber extends ValueFormControl<number | null> {
     const parsed = target.valueAsNumber;
     this.value.set(isNaN(parsed) ? null : parsed);
   }
+
+  /**
+   * Clamps a typed value into `[min, max]` once editing is committed (`change`
+   * fires on blur/Enter). The spinner arrows already honor the bounds natively;
+   * clamping only here keeps mid-typing values ("1" on the way to "10") intact.
+   */
+  protected onChange(event: Event): void {
+    const current = this.value();
+    if (current === null) return;
+
+    const min = this.min();
+    const max = this.max();
+
+    let clamped = current;
+    if (min !== undefined && clamped < min) clamped = min;
+    if (max !== undefined && clamped > max) clamped = max;
+    if (clamped === current) return;
+
+    this.value.set(clamped);
+    (event.target as HTMLInputElement).value = String(clamped);
+  }
 }

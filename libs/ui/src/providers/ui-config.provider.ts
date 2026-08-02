@@ -83,8 +83,8 @@ import {
   MENU_CONFIG,
   MULTI_SELECT_CONFIG,
   PAGINATION_CONFIG,
-  PaginationConfig,
   PAGINATION_QUERY_SYNC_CONFIG,
+  PaginationConfig,
   PASSWORD_CONFIG,
   PIN_INPUT_CONFIG,
   POPOVER_CONFIG,
@@ -106,11 +106,15 @@ import {
 } from '../features';
 import { tlsUiConfigProvider } from '../types';
 
-export const provideThalassicUIConfig = (config: tlsUiConfigProvider): EnvironmentProviders => {
+export const provideThalassicUIConfig = (
+  config: tlsUiConfigProvider = {},
+): EnvironmentProviders => {
+  const components = config.components ?? {};
+
   // Query-sync configs nest under their parent feature in the public API but resolve to their own
   // separate DI tokens, so split the nested `querySync` off from the component's own config.
-  const { querySync: paginationQuerySync, ...pagination } = config.components.pagination ?? {};
-  const { querySync: tabsQuerySync, ...tabs } = config.components.tabs ?? {};
+  const { querySync: paginationQuerySync, ...pagination } = components.pagination ?? {};
+  const { querySync: tabsQuerySync, ...tabs } = components.tabs ?? {};
 
   const accessibility: AccessibilityConfig = deepMerge(
     DEFAULT_ACCESSIBILITY_CONFIG,
@@ -141,85 +145,82 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
     // Components
     {
       provide: ALERT_CONFIG,
-      useValue: deepMerge(DEFAULT_ALERT_CONFIG, config.components.alert),
+      useValue: deepMerge(DEFAULT_ALERT_CONFIG, components.alert),
     },
     {
       provide: AUTOCOMPLETE_CONFIG,
-      useValue: deepMerge(DEFAULT_AUTOCOMPLETE_CONFIG, config.components.autocomplete),
+      useValue: deepMerge(DEFAULT_AUTOCOMPLETE_CONFIG, components.autocomplete),
     },
     {
       provide: BUTTON_CONFIG,
-      useValue: deepMerge(DEFAULT_BUTTON_CONFIG, config.components.button),
+      useValue: deepMerge(DEFAULT_BUTTON_CONFIG, components.button),
     },
     {
       provide: CALENDAR_CONFIG,
       // `labels` is a deep-partial override; deepMerge merges it recursively, but its
       // `Partial<T>` signature only models a shallow partial, so cast to it.
-      useValue: deepMerge(
-        DEFAULT_CALENDAR_CONFIG,
-        config.components.calendar as Partial<CalendarConfig>,
-      ),
+      useValue: deepMerge(DEFAULT_CALENDAR_CONFIG, components.calendar as Partial<CalendarConfig>),
     },
     {
       provide: CHECKBOX_CONFIG,
-      useValue: deepMerge(DEFAULT_CHECKBOX_CONFIG, config.components.checkbox),
+      useValue: deepMerge(DEFAULT_CHECKBOX_CONFIG, components.checkbox),
     },
-    { provide: CHIP_CONFIG, useValue: deepMerge(DEFAULT_CHIP_CONFIG, config.components.chip) },
+    { provide: CHIP_CONFIG, useValue: deepMerge(DEFAULT_CHIP_CONFIG, components.chip) },
     {
       provide: CHIP_CONTROL_CONFIG,
-      useValue: deepMerge(DEFAULT_CHIP_CONTROL_CONFIG, config.components.chipControl),
+      useValue: deepMerge(DEFAULT_CHIP_CONTROL_CONFIG, components.chipControl),
     },
     {
       provide: CHIP_GROUP_CONFIG,
-      useValue: deepMerge(DEFAULT_CHIP_GROUP_CONFIG, config.components.chipGroup),
+      useValue: deepMerge(DEFAULT_CHIP_GROUP_CONFIG, components.chipGroup),
     },
     {
       provide: CHIP_INPUT_CONFIG,
-      useValue: deepMerge(DEFAULT_CHIP_INPUT_CONFIG, config.components.chipInput),
+      useValue: deepMerge(DEFAULT_CHIP_INPUT_CONFIG, components.chipInput),
     },
     {
       provide: DATE_TIME_PICKER_CONFIG,
-      useValue: deepMerge(DEFAULT_DATE_TIME_PICKER_CONFIG, config.components.dateTimePicker),
+      useValue: deepMerge(DEFAULT_DATE_TIME_PICKER_CONFIG, components.dateTimePicker),
     },
     {
       provide: DIALOG_CONFIG,
-      useValue: deepMerge(DEFAULT_DIALOG_CONFIG, config.components.dialog),
+      useValue: deepMerge(DEFAULT_DIALOG_CONFIG, components.dialog),
     },
     {
       provide: DIVIDER_CONFIG,
-      useValue: deepMerge(DEFAULT_DIVIDER_CONFIG, config.components.divider),
+      useValue: deepMerge(DEFAULT_DIVIDER_CONFIG, components.divider),
     },
     {
       provide: FILE_INPUT_CONFIG,
-      useValue: deepMerge(DEFAULT_FILE_INPUT_CONFIG, config.components.fileInput),
+      useValue: deepMerge(DEFAULT_FILE_INPUT_CONFIG, components.fileInput),
     },
     {
       provide: FORM_CONTROL_GROUP_CONFIG,
-      useValue: deepMerge(DEFAULT_FORM_CONTROL_GROUP_CONFIG, config.components.formControlGroup),
+      useValue: deepMerge(DEFAULT_FORM_CONTROL_GROUP_CONFIG, components.formControlGroup),
     },
     {
       provide: FORM_ITEM_CONFIG,
-      useValue: deepMerge(DEFAULT_FORM_ITEM_CONFIG, config.components.formItem),
+      useValue: deepMerge(DEFAULT_FORM_ITEM_CONFIG, components.formItem),
     },
     {
       provide: HIGHLIGHT_CONFIG,
-      useValue: deepMerge(DEFAULT_HIGHLIGHT_CONFIG, config.components.highlight),
+      useValue: deepMerge(DEFAULT_HIGHLIGHT_CONFIG, components.highlight),
     },
-    { provide: ICON_CONFIG, useValue: deepMerge(DEFAULT_ICON_CONFIG, config.components.icon) },
+    { provide: ICON_CONFIG, useValue: deepMerge(DEFAULT_ICON_CONFIG, components.icon) },
     {
       provide: IMAGE_COMPARE_CONFIG,
-      useValue: deepMerge(DEFAULT_IMAGE_COMPARE_CONFIG, config.components.imageCompare),
+      useValue: deepMerge(DEFAULT_IMAGE_COMPARE_CONFIG, components.imageCompare),
     },
-    { provide: INPUT_CONFIG, useValue: deepMerge(DEFAULT_INPUT_CONFIG, config.components.input) },
+    { provide: INPUT_CONFIG, useValue: deepMerge(DEFAULT_INPUT_CONFIG, components.input) },
     {
       provide: LOADER_CONFIG,
-      useValue: deepMerge(DEFAULT_LOADER_CONFIG, config.components.loader),
+      useValue: deepMerge(DEFAULT_LOADER_CONFIG, components.loader),
     },
-    { provide: MARK_CONFIG, useValue: deepMerge(DEFAULT_MARK_CONFIG, config.components.mark) },
-    { provide: MENU_CONFIG, useValue: deepMerge(DEFAULT_MENU_CONFIG, config.components.menu) },
+    { provide: MARK_CONFIG, useValue: deepMerge(DEFAULT_MARK_CONFIG, components.mark) },
+    { provide: MENU_CONFIG, useValue: deepMerge(DEFAULT_MENU_CONFIG, components.menu) },
     {
       provide: MULTI_SELECT_CONFIG,
-      useValue: deepMerge(DEFAULT_MULTI_SELECT_CONFIG, config.components.multiSelect),
+      useValue: deepMerge(DEFAULT_MULTI_SELECT_CONFIG, components.multiSelect),
     },
     {
       provide: PAGINATION_CONFIG,
@@ -233,44 +234,44 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
     },
     {
       provide: PASSWORD_CONFIG,
-      useValue: deepMerge(DEFAULT_PASSWORD_CONFIG, config.components.password),
+      useValue: deepMerge(DEFAULT_PASSWORD_CONFIG, components.password),
     },
     {
       provide: PIN_INPUT_CONFIG,
-      useValue: deepMerge(DEFAULT_PIN_INPUT_CONFIG, config.components.pinInput),
+      useValue: deepMerge(DEFAULT_PIN_INPUT_CONFIG, components.pinInput),
     },
     {
       provide: POPOVER_CONFIG,
-      useValue: deepMerge(DEFAULT_POPOVER_CONFIG, config.components.popover),
+      useValue: deepMerge(DEFAULT_POPOVER_CONFIG, components.popover),
     },
     {
       provide: RADIO_BUTTON_CONFIG,
-      useValue: deepMerge(DEFAULT_RADIO_BUTTON_CONFIG, config.components.radioButton),
+      useValue: deepMerge(DEFAULT_RADIO_BUTTON_CONFIG, components.radioButton),
     },
     {
       provide: SELECT_CONFIG,
-      useValue: deepMerge(DEFAULT_SELECT_CONFIG, config.components.select),
+      useValue: deepMerge(DEFAULT_SELECT_CONFIG, components.select),
     },
     {
       provide: SKELETON_CONFIG,
-      useValue: deepMerge(DEFAULT_SKELETON_CONFIG, config.components.skeleton),
+      useValue: deepMerge(DEFAULT_SKELETON_CONFIG, components.skeleton),
     },
     {
       provide: SPLITTER_CONFIG,
-      useValue: deepMerge(DEFAULT_SPLITTER_CONFIG, config.components.splitter),
+      useValue: deepMerge(DEFAULT_SPLITTER_CONFIG, components.splitter),
     },
     {
       provide: STEPPER_CONFIG,
-      useValue: deepMerge(DEFAULT_STEPPER_CONFIG, config.components.stepper),
+      useValue: deepMerge(DEFAULT_STEPPER_CONFIG, components.stepper),
     },
     {
       provide: SWITCH_CONFIG,
-      useValue: deepMerge(DEFAULT_SWITCH_CONFIG, config.components.switch),
+      useValue: deepMerge(DEFAULT_SWITCH_CONFIG, components.switch),
     },
-    { provide: TABLE_CONFIG, useValue: deepMerge(DEFAULT_TABLE_CONFIG, config.components.table) },
+    { provide: TABLE_CONFIG, useValue: deepMerge(DEFAULT_TABLE_CONFIG, components.table) },
     {
       provide: TAB_NAV_CONFIG,
-      useValue: deepMerge(DEFAULT_TAB_NAV_CONFIG, config.components.tabNav),
+      useValue: deepMerge(DEFAULT_TAB_NAV_CONFIG, components.tabNav),
     },
     { provide: TABS_CONFIG, useValue: deepMerge(DEFAULT_TABS_CONFIG, tabs) },
     {
@@ -279,21 +280,21 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
     },
     {
       provide: TEXTAREA_CONFIG,
-      useValue: deepMerge(DEFAULT_TEXTAREA_CONFIG, config.components.textarea),
+      useValue: deepMerge(DEFAULT_TEXTAREA_CONFIG, components.textarea),
     },
     {
       provide: TOAST_CONFIG,
       // `severityColors` is a deep-partial override; deepMerge merges it recursively,
       // but its `Partial<T>` signature only models a shallow partial, so cast to it.
-      useValue: deepMerge(DEFAULT_TOAST_CONFIG, config.components.toast as Partial<ToastConfig>),
+      useValue: deepMerge(DEFAULT_TOAST_CONFIG, components.toast as Partial<ToastConfig>),
     },
     {
       provide: TOGGLE_GROUP_CONFIG,
-      useValue: deepMerge(DEFAULT_TOGGLE_GROUP_CONFIG, config.components.toggleGroup),
+      useValue: deepMerge(DEFAULT_TOGGLE_GROUP_CONFIG, components.toggleGroup),
     },
     {
       provide: TOOLTIP_CONFIG,
-      useValue: deepMerge(DEFAULT_TOOLTIP_CONFIG, config.components.tooltip),
+      useValue: deepMerge(DEFAULT_TOOLTIP_CONFIG, components.tooltip),
     },
   ]);
 };

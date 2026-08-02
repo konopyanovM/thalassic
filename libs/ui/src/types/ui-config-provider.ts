@@ -58,7 +58,7 @@ export interface tlsUiConfigProvider {
   locale?: Partial<LocaleConfig>;
   /** Cross-cutting defaults inherited by every form control (not tied to a single component). */
   formControl?: Partial<FormControlConfig>;
-  components: {
+  components?: {
     alert?: Partial<AlertConfig>;
     autocomplete?: Partial<AutocompleteConfig>;
     button?: Partial<ButtonConfig>;

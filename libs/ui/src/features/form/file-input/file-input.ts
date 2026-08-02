@@ -73,6 +73,9 @@ export class FileInput extends ValueFormControl<File[]> {
   protected readonly nativeInput = viewChild.required<ElementRef<HTMLInputElement>>('nativeInput');
   protected readonly dragState = signal<fileInputDragState>('idle');
 
+  /** Nesting depth of the active drag: dragenter/dragleave pairs fired by the drop zone's children. */
+  private _dragDepth = 0;
+
   protected readonly dropZoneTemplate =
     contentChild<TemplateRef<FileInputDropZoneContext>>('dropZone');
   protected readonly fileTemplate = contentChild<TemplateRef<FileInputFileContext>>('file');
@@ -86,8 +89,15 @@ export class FileInput extends ValueFormControl<File[]> {
   });
 
   protected readonly triggerLabel: Signal<string> = computed(() =>
-    this.multiple() ? 'Choose files' : 'Choose file',
+    this.multiple() ? this._config.chooseFilesLabel : this._config.chooseFileLabel,
   );
+
+  /** Accessible name for the drop zone: the consumer's, or the configured fallback. */
+  protected readonly dropZoneLabel: Signal<string> = computed(() => {
+    const consumerLabel = this.ariaLabel();
+    if (consumerLabel) return consumerLabel;
+    return this.multiple() ? this._config.dropZoneFilesLabel : this._config.dropZoneFileLabel;
+  });
 
   protected readonly acceptHint: Signal<string> = computed(() => {
     const accept = this.accept().trim();
@@ -121,6 +131,10 @@ export class FileInput extends ValueFormControl<File[]> {
     this.openFilePicker();
   }
 
+  protected onDragEnter(): void {
+    this._dragDepth++;
+  }
+
   protected onDragOver(event: DragEvent): void {
     event.preventDefault();
     if (this.notInteractive() || !event.dataTransfer) return;
@@ -132,12 +146,16 @@ export class FileInput extends ValueFormControl<File[]> {
     this.dragState.set(rejected ? 'invalid' : 'valid');
   }
 
+  // `dragleave` also fires when the pointer crosses onto a child of the drop
+  // zone; only a leave that balances every enter means the drag actually left.
   protected onDragLeave(): void {
-    this.dragState.set('idle');
+    this._dragDepth = Math.max(0, this._dragDepth - 1);
+    if (this._dragDepth === 0) this.dragState.set('idle');
   }
 
   protected onDrop(event: DragEvent): void {
     event.preventDefault();
+    this._dragDepth = 0;
     this.dragState.set('idle');
     if (this.notInteractive() || !event.dataTransfer) return;
     this._addFiles(Array.from(event.dataTransfer.files));

@@ -1,4 +1,4 @@
-import { booleanAttribute, Component, computed, inject, input, model } from '@angular/core';
+import { booleanAttribute, Component, computed, effect, inject, input, model } from '@angular/core';
 import { controlSize } from '../../types';
 import { Icon } from '../icon';
 import { PaginationLabels } from './pagination.config';
@@ -41,15 +41,31 @@ export class Pagination {
 
   protected readonly pageCount = computed(() => Math.ceil(this.total() / this.pageSize()));
 
+  /** Last valid page; at least 1 so the current page never leaves the 1-based range. */
+  protected readonly lastValidPage = computed(() => Math.max(1, this.pageCount()));
+
   protected readonly visiblePages = computed(() =>
     this._buildPages(this.pageCount(), this.value(), this.siblings(), this.boundaries()),
   );
 
   protected readonly classes = computed(() => ['tls-pagination', `tls-pagination--${this.size()}`]);
 
+  constructor() {
+    // Normalize an out-of-range page — a shrinking `total`, or an external set
+    // (e.g. a query-param restore) beyond the last page — back into range. While
+    // `total` is 0 the range is unknown (it usually arrives async), so a
+    // restored page is left alone rather than clamped against nothing.
+    effect(() => {
+      if (this.pageCount() < 1) return;
+
+      const clamped = this._clamp(this.value());
+      if (clamped !== this.value()) this.value.set(clamped);
+    });
+  }
+
   // Protected methods
   protected setPage(page: number): void {
-    this.value.set(page);
+    this.value.set(this._clamp(page));
   }
 
   protected firstPage(): void {
@@ -61,14 +77,18 @@ export class Pagination {
   }
 
   protected nextPage(): void {
-    this.value.update(page => Math.min(this.pageCount(), page + 1));
+    this.value.update(page => Math.min(this.lastValidPage(), page + 1));
   }
 
   protected lastPage(): void {
-    this.value.set(this.pageCount());
+    this.value.set(this.lastValidPage());
   }
 
   // Private methods
+  private _clamp(page: number): number {
+    return Math.min(Math.max(1, page), this.lastValidPage());
+  }
+
   /** Returns an inclusive array of integers from start to end. Returns [] if end < start. */
   private _range(start: number, end: number): number[] {
     const length = end - start + 1;

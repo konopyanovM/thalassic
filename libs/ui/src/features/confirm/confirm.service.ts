@@ -13,7 +13,8 @@ import { filter } from 'rxjs/operators';
 import { overlayPosition } from '../../types';
 import { buildOverlayPositions } from '../../utils';
 import { ConfirmPanel } from './confirm-panel';
-import { LEAVE_ANIMATION_FALLBACK_MS, MODAL_BACKDROP_CLASS } from './confirm.constants';
+import { disposeAfterLeaveAnimation } from '../../abstract/overlay';
+import { MODAL_BACKDROP_CLASS } from './confirm.constants';
 import { CONFIRM_CONFIG } from './confirm.token';
 import { confirmActionsAlign, confirmButton } from './confirm.types';
 
@@ -168,23 +169,6 @@ export class ConfirmService {
   // then disposes the pane once that animation finishes.
   private _dismiss(overlayRef: OverlayRef): void {
     overlayRef.detach();
-
-    const paneElement = overlayRef.overlayElement;
-    if (!paneElement) {
-      overlayRef.dispose();
-      return;
-    }
-
-    let settled = false;
-    const finalize = (): void => {
-      if (settled) return;
-      settled = true;
-      window.clearTimeout(timeoutId);
-      paneElement.removeEventListener('animationend', finalize);
-      overlayRef.dispose();
-    };
-
-    paneElement.addEventListener('animationend', finalize);
-    const timeoutId = window.setTimeout(finalize, LEAVE_ANIMATION_FALLBACK_MS);
+    disposeAfterLeaveAnimation(overlayRef);
   }
 }
