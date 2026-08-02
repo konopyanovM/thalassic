@@ -13,3 +13,4 @@ export * from './options';
 export * from './selection-group';
 export * from './selection-group.types';
 export * from './abstract-select';
+export * from './abstract-select.types';

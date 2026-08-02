@@ -67,7 +67,12 @@
           [attr.aria-disabled]="option.disabled"
           (click)="select(option)"
           (pointerenter)="onOptionHover($event, index, option.disabled)"
-        >{{ option.label }}
+        >
+          @if (optionTemplate(); as template) {
+            <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="optionContext(option, index)" />
+          } @else {
+            {{ option.label }}
+          }
         </button>
       </li>
     }

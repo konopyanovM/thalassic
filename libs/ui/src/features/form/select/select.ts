@@ -11,6 +11,7 @@ import {
   ModelSignal,
   Signal,
 } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import { AbstractSelect, FORM_CONTROL, Option } from '../../../abstract/form';
 import { controlSize } from '../../../types';
 import { Icon } from '../../icon';
@@ -20,7 +21,7 @@ import { SELECT_CONFIG } from './select.token';
 @Component({
   selector: 'tls-select',
   templateUrl: './select.html',
-  imports: [Loader, Icon],
+  imports: [Loader, Icon, NgTemplateOutlet],
   host: {
     '[class]': 'hostClasses()',
   },
@@ -66,6 +67,10 @@ export class Select<T, V = unknown> extends AbstractSelect<T, V, V | null> {
     if (option.disabled) return;
     this.value.set(option.value);
     this.close();
+  }
+
+  protected isOptionSelected(option: Option<V>): boolean {
+    return option.value === this.value();
   }
 
   protected override clear(): void {

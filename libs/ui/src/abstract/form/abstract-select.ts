@@ -1,5 +1,6 @@
 import {
   computed,
+  contentChild,
   Directive,
   ElementRef,
   input,
@@ -12,6 +13,7 @@ import {
   WritableSignal,
 } from '@angular/core';
 import { createOverlayManager } from '../overlay';
+import { selectTemplateContext } from './abstract-select.types';
 import { normalizeOptions, Option, optionInput } from './options';
 import { ValueFormControl } from './value-form-control';
 import { controlSize } from '../../types';
@@ -30,6 +32,15 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
 
   private readonly triggerElement = viewChild<ElementRef<HTMLElement>>('trigger');
   private readonly panelTemplate = viewChild<TemplateRef<void>>('panel');
+
+  /**
+   * Consumer template rendered inside each option button in place of the plain
+   * label (`<ng-template #option let-context>`). The button itself — and with it
+   * the option's ARIA, activation, and hover behavior — stays owned by the
+   * control; the template only customizes the visual content.
+   */
+  protected readonly optionTemplate =
+    contentChild<TemplateRef<selectTemplateContext<T, V>>>('option');
 
   // Shared inputs (config-independent)
   public readonly options: InputSignal<optionInput<T>[]> = input<optionInput<T>[]>([]);
@@ -89,6 +100,8 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
   protected abstract readonly hostClassBase: string;
   protected abstract readonly panelClass: string;
   protected abstract readonly hasValue: Signal<boolean>;
+  /** Whether `option` is part of the current selection (scalar or array, per control). */
+  protected abstract isOptionSelected(option: Option<V>): boolean;
   /** Index the active option starts on when the panel opens. */
   protected abstract getInitialActiveIndex(): number;
   /** Apply the active option's selection when committed via mouse or keyboard. */
@@ -207,6 +220,21 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
 
   protected optionId(index: number): string {
     return `${this.uniqueId}-option-${index}`;
+  }
+
+  /** Context handed to the consumer's option template for the option at `index`. */
+  protected optionContext(option: Option<V>, index: number): selectTemplateContext<T, V> {
+    return {
+      $implicit: {
+        option: option.source as T,
+        value: option.value,
+        label: option.label,
+        index,
+        selected: this.isOptionSelected(option),
+        active: index === this.activeIndex(),
+        disabled: option.disabled,
+      },
+    };
   }
 
   protected moveActive(direction: 1 | -1): void {

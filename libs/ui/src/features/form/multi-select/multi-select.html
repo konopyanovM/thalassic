@@ -69,7 +69,13 @@
           (click)="toggleOption(option)"
           (pointerenter)="onOptionHover($event, index, option.disabled)"
         >
-          <span class="tls-multi-select__option-label">{{ option.label }}</span>
+          <span class="tls-multi-select__option-label">
+            @if (optionTemplate(); as template) {
+              <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="optionContext(option, index)" />
+            } @else {
+              {{ option.label }}
+            }
+          </span>
           @if (isSelected(option)) {
             <tls-icon class="tls-multi-select__option-check" name="check" aria-hidden="true" />
           }

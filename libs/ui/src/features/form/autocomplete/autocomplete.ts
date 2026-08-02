@@ -13,6 +13,7 @@ import {
   Signal,
   WritableSignal,
 } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import { AbstractSelect, FORM_CONTROL, Option } from '../../../abstract/form';
 import { controlSize } from '../../../types';
 import { Icon } from '../../icon';
@@ -23,7 +24,7 @@ import { AUTOCOMPLETE_CONFIG } from './autocomplete.token';
 @Component({
   selector: 'tls-autocomplete',
   templateUrl: './autocomplete.html',
-  imports: [Loader, Icon],
+  imports: [Loader, Icon, NgTemplateOutlet],
   host: {
     '[class]': 'hostClasses()',
   },
@@ -78,6 +79,10 @@ export class Autocomplete<T, V = unknown> extends AbstractSelect<T, V, V | null>
     if (option.disabled) return;
     this.value.set(option.value);
     this.close();
+  }
+
+  protected isOptionSelected(option: Option<V>): boolean {
+    return option.value === this.value();
   }
 
   protected onInput(event: Event): void {

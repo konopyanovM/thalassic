@@ -11,6 +11,7 @@ import {
   ModelSignal,
   Signal,
 } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import { AbstractSelect, FORM_CONTROL, Option } from '../../../abstract/form';
 import { controlSize } from '../../../types';
 import { Icon } from '../../icon';
@@ -20,7 +21,7 @@ import { MULTI_SELECT_CONFIG } from './multi-select.token';
 @Component({
   selector: 'tls-multi-select',
   templateUrl: './multi-select.html',
-  imports: [Loader, Icon],
+  imports: [Loader, Icon, NgTemplateOutlet],
   host: {
     '[class]': 'hostClasses()',
   },
@@ -68,6 +69,10 @@ export class MultiSelect<T, V = unknown> extends AbstractSelect<T, V, V[]> {
 
   protected isSelected(option: Option<V>): boolean {
     return this.selectedValues().has(option.value);
+  }
+
+  protected isOptionSelected(option: Option<V>): boolean {
+    return this.isSelected(option);
   }
 
   protected toggleOption(option: Option<V>): void {

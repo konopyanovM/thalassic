@@ -36,3 +36,28 @@ export default meta;
 type Story = StoryObj<SelectComponent<unknown>>;
 
 export const Select: Story = {};
+
+export const CustomOptionTemplate: Story = {
+  render: args => ({
+    props: args,
+    template: `
+      <tls-select
+        [options]="options"
+        optionLabel="label"
+        optionValue="value"
+        optionDisabled="disabled"
+        placeholder="Select an option"
+      >
+        <ng-template #option let-context>
+          <span style="display: inline-flex; align-items: center; gap: 8px;">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--color-primary);"></span>
+            {{ context.label }}
+            @if (context.selected) {
+              <em>(selected)</em>
+            }
+          </span>
+        </ng-template>
+      </tls-select>
+    `,
+  }),
+};
