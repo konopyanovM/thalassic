@@ -6,6 +6,8 @@ export interface MultiSelectConfig {
   fluid: boolean;
   clearable: boolean;
   maxLabels: number;
+  /** Accessible name for the clear button, overridable for localization. */
+  clearLabel: string;
 }
 
 export const DEFAULT_MULTI_SELECT_CONFIG: MultiSelectConfig = {
@@ -14,4 +16,5 @@ export const DEFAULT_MULTI_SELECT_CONFIG: MultiSelectConfig = {
   fluid: false,
   clearable: false,
   maxLabels: 2,
+  clearLabel: 'Clear',
 };

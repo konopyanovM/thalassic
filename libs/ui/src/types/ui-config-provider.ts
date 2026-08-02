@@ -3,6 +3,8 @@ import {
   AutocompleteConfig,
   ButtonConfig,
   CalendarConfig,
+  CalendarLabels,
+  calendarView,
   CheckboxConfig,
   ChipConfig,
   ChipControlConfig,
@@ -23,6 +25,7 @@ import {
   MenuConfig,
   MultiSelectConfig,
   PaginationConfig,
+  PaginationLabels,
   PaginationQuerySyncConfig,
   PasswordConfig,
   PinInputConfig,
@@ -46,17 +49,24 @@ import {
 } from '../features';
 import { AccessibilityConfig } from '../abstract/accessibility';
 import { FormControlConfig } from '../abstract/form';
+import { LocaleConfig } from '../abstract/locale';
 
 export interface tlsUiConfigProvider {
   /** Cross-cutting accessibility policy applied across every component (not tied to a single one). */
   accessibility?: Partial<AccessibilityConfig>;
+  /** Cross-cutting locale used by every component that formats dates (not tied to a single one). */
+  locale?: Partial<LocaleConfig>;
   /** Cross-cutting defaults inherited by every form control (not tied to a single component). */
   formControl?: Partial<FormControlConfig>;
   components: {
     alert?: Partial<AlertConfig>;
     autocomplete?: Partial<AutocompleteConfig>;
     button?: Partial<ButtonConfig>;
-    calendar?: Partial<CalendarConfig>;
+    calendar?: Partial<Omit<CalendarConfig, 'labels'>> & {
+      labels?: Partial<Omit<CalendarLabels, 'views'>> & {
+        views?: Partial<Record<calendarView, string>>;
+      };
+    };
     checkbox?: Partial<CheckboxConfig>;
     chip?: Partial<ChipConfig>;
     chipControl?: Partial<ChipControlConfig>;
@@ -76,7 +86,10 @@ export interface tlsUiConfigProvider {
     mark?: Partial<MarkConfig>;
     menu?: Partial<MenuConfig>;
     multiSelect?: Partial<MultiSelectConfig>;
-    pagination?: Partial<PaginationConfig> & { querySync?: Partial<PaginationQuerySyncConfig> };
+    pagination?: Partial<Omit<PaginationConfig, 'labels'>> & {
+      labels?: Partial<PaginationLabels>;
+      querySync?: Partial<PaginationQuerySyncConfig>;
+    };
     password?: Partial<PasswordConfig>;
     pinInput?: Partial<PinInputConfig>;
     popover?: Partial<PopoverConfig>;

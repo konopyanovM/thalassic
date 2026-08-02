@@ -17,6 +17,8 @@ export interface DrawerOpenConfig<D = unknown> {
   closeable?: boolean;
   backdropClose?: boolean;
   rounded?: boolean;
+  /** Accessible name for the close button. */
+  closeLabel?: string;
   role?: DialogRole;
   ariaLabel?: string | null;
   ariaLabelledBy?: string | null;
@@ -44,6 +46,7 @@ export class DrawerService {
       closeable: config?.closeable ?? this._config.closeable,
       backdropClose: config?.backdropClose ?? this._config.backdropClose,
       rounded: config?.rounded ?? this._config.rounded,
+      closeLabel: config?.closeLabel ?? this._config.closeLabel,
     };
 
     let drawerRef!: DrawerRef<R, C>;

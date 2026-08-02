@@ -28,7 +28,7 @@
           <span class="tls-calendar-month-view__day-number">{{ cell.dayNumber }}</span>
 
           @if (cell.hiddenCount > 0) {
-            <span class="tls-calendar-month-view__more">+{{ cell.hiddenCount }} more</span>
+            <span class="tls-calendar-month-view__more">{{ moreLabel(cell.hiddenCount) }}</span>
           }
         </div>
       }

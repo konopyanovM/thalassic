@@ -46,6 +46,8 @@ export class Toast {
   public readonly paused = input<boolean>(false);
   public readonly action = input<toastAction | undefined>(undefined);
   public readonly ariaLabel = input<string | undefined>(undefined);
+  /** Accessible name for the close button. */
+  public readonly dismissLabel = input<string>('Dismiss');
 
   // Outputs
   public readonly dismissed = output<void>();

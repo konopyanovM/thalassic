@@ -53,6 +53,7 @@ export class Autocomplete<T, V = unknown> extends AbstractSelect<T, V, V | null>
   );
   public readonly filterMode = input<autocompleteFilterMode>(this._config.filterMode);
   public readonly emptyMessage = input<string>(this._config.emptyMessage);
+  public readonly clearLabel = input<string>(this._config.clearLabel);
 
   protected readonly hasValue: Signal<boolean> = computed(() => {
     const value = this.value();

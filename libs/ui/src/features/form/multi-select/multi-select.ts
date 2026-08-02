@@ -49,6 +49,7 @@ export class MultiSelect<T, V = unknown> extends AbstractSelect<T, V, V[]> {
     { transform: booleanAttribute },
   );
   public readonly maxLabels = input<number>(this._config.maxLabels);
+  public readonly clearLabel = input<string>(this._config.clearLabel);
 
   protected readonly hasValue: Signal<boolean> = computed(() => this.value().length > 0);
 

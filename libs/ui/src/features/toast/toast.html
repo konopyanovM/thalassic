@@ -28,7 +28,7 @@
   }
 
   @if (closable()) {
-    <button type="button" class="tls-toast__close" aria-label="Dismiss" (click)="onClose()">
+    <button type="button" class="tls-toast__close" [attr.aria-label]="dismissLabel()" (click)="onClose()">
       <tls-icon class="tls-toast__close-icon" name="close" aria-hidden="true" />
     </button>
   }

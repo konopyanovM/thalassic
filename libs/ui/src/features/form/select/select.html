@@ -33,7 +33,7 @@
     type="button"
     class="tls-select__clear"
     tabindex="-1"
-    aria-label="Clear"
+    [attr.aria-label]="clearLabel()"
     (click)="clear()"
   >
     <tls-icon class="tls-select__clear-icon" name="close" aria-hidden="true" />

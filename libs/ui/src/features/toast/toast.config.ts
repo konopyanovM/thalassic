@@ -21,6 +21,10 @@ export interface ToastConfig {
   showProgress: boolean;
   /** Whether hovering / focusing the stack pauses every toast's auto-dismiss timer. */
   pauseOnHover: boolean;
+  /** Accessible name for the toast region landmark, overridable for localization. */
+  regionLabel: string;
+  /** Accessible name for a toast's close button, overridable for localization. */
+  dismissLabel: string;
 }
 
 export const DEFAULT_TOAST_CONFIG: ToastConfig = {
@@ -39,4 +43,6 @@ export const DEFAULT_TOAST_CONFIG: ToastConfig = {
   showIcon: true,
   showProgress: true,
   pauseOnHover: true,
+  regionLabel: 'Notifications',
+  dismissLabel: 'Dismiss',
 };

@@ -3,7 +3,7 @@
     <tls-button
       variant="text"
       size="sm"
-      ariaLabel="Previous"
+      [ariaLabel]="labels.previous"
       class="tls-calendar__nav-button"
       (click)="previous()"
     >
@@ -11,13 +11,13 @@
     </tls-button>
 
     <tls-button variant="outlined" size="sm" [disabled]="isViewingToday()" (click)="today()">
-      Today
+      {{ labels.today }}
     </tls-button>
 
     <tls-button
       variant="text"
       size="sm"
-      ariaLabel="Next"
+      [ariaLabel]="labels.next"
       class="tls-calendar__nav-button"
       (click)="next()"
     >

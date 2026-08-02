@@ -1,6 +1,7 @@
 import {
   Component,
   computed,
+  inject,
   input,
   InputSignal,
   output,
@@ -9,6 +10,7 @@ import {
   TemplateRef,
 } from '@angular/core';
 import { addHours, differenceInMinutes, format, isSameDay, isToday, startOfDay } from 'date-fns';
+import { localeFormatOptions, LOCALE_CONFIG } from '../../abstract/locale';
 import { assignEventLanes } from './assign-event-lanes';
 import { CalendarEventItem } from './calendar-event';
 import {
@@ -18,6 +20,7 @@ import {
   PX_PER_MINUTE,
   TIME_GRID_HEADING_FORMAT,
 } from './calendar.constants';
+import { CALENDAR_CONFIG } from './calendar.token';
 import { CalendarEvent, CalendarEventContext, calendarView } from './calendar.types';
 import { eventCoversDay } from './event-covers-day';
 
@@ -57,6 +60,10 @@ interface TimeGridColumn {
   },
 })
 export class CalendarTimeGrid {
+  // Injections
+  private readonly _locale = inject(LOCALE_CONFIG);
+  private readonly _config = inject(CALENDAR_CONFIG);
+
   // Inputs
   public readonly days: InputSignal<Date[]> = input.required<Date[]>();
   public readonly events: InputSignal<CalendarEvent[]> = input.required<CalendarEvent[]>();
@@ -74,6 +81,8 @@ export class CalendarTimeGrid {
 
   // State
   protected readonly hourHeight = HOUR_HEIGHT;
+  protected readonly allDayLabel: string = this._config.labels.allDay;
+  private readonly _dateOptions = localeFormatOptions(this._locale);
 
   // Computed
   protected readonly hours: Signal<number[]> = computed(() => {
@@ -108,7 +117,7 @@ export class CalendarTimeGrid {
         };
       });
 
-      return { date: day, isToday: isToday(day), heading: format(day, TIME_GRID_HEADING_FORMAT), allDayEvents, timedEvents };
+      return { date: day, isToday: isToday(day), heading: format(day, TIME_GRID_HEADING_FORMAT, this._dateOptions), allDayEvents, timedEvents };
     });
   });
 
@@ -127,7 +136,7 @@ export class CalendarTimeGrid {
 
   // Protected methods
   protected hourLabel(hour: number): string {
-    return format(addHours(startOfDay(new Date()), hour), HOUR_LABEL_FORMAT);
+    return format(addHours(startOfDay(new Date()), hour), HOUR_LABEL_FORMAT, this._dateOptions);
   }
 
   protected laneOffset(layout: TimedEventLayout): number {

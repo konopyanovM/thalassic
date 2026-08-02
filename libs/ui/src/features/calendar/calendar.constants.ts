@@ -42,10 +42,5 @@ export const AGENDA_DATE_FORMAT = 'MMM d';
 /** Views that prefix an event chip with its start time; the month grid shows the title alone. */
 export const TIME_AWARE_VIEWS: calendarView[] = ['week', 'day', 'agenda'];
 
-/** View switcher options. */
-export const CALENDAR_VIEW_OPTIONS: { label: string; value: calendarView }[] = [
-  { label: 'Month', value: 'month' },
-  { label: 'Week', value: 'week' },
-  { label: 'Day', value: 'day' },
-  { label: 'Agenda', value: 'agenda' },
-];
+/** View switcher order; labels are resolved from the calendar config for localization. */
+export const CALENDAR_VIEW_ORDER: calendarView[] = ['month', 'week', 'day', 'agenda'];

@@ -14,11 +14,13 @@ import {
   DEFAULT_ACCESSIBILITY_CONFIG,
 } from '../abstract/accessibility';
 import { DEFAULT_FORM_CONTROL_CONFIG, FORM_CONTROL_CONFIG } from '../abstract/form';
+import { DEFAULT_LOCALE_CONFIG, LOCALE_CONFIG } from '../abstract/locale';
 import {
   ALERT_CONFIG,
   AUTOCOMPLETE_CONFIG,
   BUTTON_CONFIG,
   CALENDAR_CONFIG,
+  CalendarConfig,
   CHECKBOX_CONFIG,
   CHIP_CONFIG,
   CHIP_CONTROL_CONFIG,
@@ -81,6 +83,7 @@ import {
   MENU_CONFIG,
   MULTI_SELECT_CONFIG,
   PAGINATION_CONFIG,
+  PaginationConfig,
   PAGINATION_QUERY_SYNC_CONFIG,
   PASSWORD_CONFIG,
   PIN_INPUT_CONFIG,
@@ -117,6 +120,11 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
   return makeEnvironmentProviders([
     // Cross-cutting accessibility policy
     { provide: ACCESSIBILITY_CONFIG, useValue: accessibility },
+    // Cross-cutting locale for date formatting
+    {
+      provide: LOCALE_CONFIG,
+      useValue: deepMerge(DEFAULT_LOCALE_CONFIG, config.locale),
+    },
     // Reflect the touch-target opt-out onto the document root. Absent the attribute the
     // expansion is active (accessible by default); this only disables it. The overflow is
     // transparent, so a late (browser-only) reflection causes no visual flash.
@@ -145,7 +153,12 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
     },
     {
       provide: CALENDAR_CONFIG,
-      useValue: deepMerge(DEFAULT_CALENDAR_CONFIG, config.components.calendar),
+      // `labels` is a deep-partial override; deepMerge merges it recursively, but its
+      // `Partial<T>` signature only models a shallow partial, so cast to it.
+      useValue: deepMerge(
+        DEFAULT_CALENDAR_CONFIG,
+        config.components.calendar as Partial<CalendarConfig>,
+      ),
     },
     {
       provide: CHECKBOX_CONFIG,
@@ -210,7 +223,9 @@ export const provideThalassicUIConfig = (config: tlsUiConfigProvider): Environme
     },
     {
       provide: PAGINATION_CONFIG,
-      useValue: deepMerge(DEFAULT_PAGINATION_CONFIG, pagination),
+      // `labels` is a deep-partial override; deepMerge merges it recursively, but its
+      // `Partial<T>` signature only models a shallow partial, so cast to it.
+      useValue: deepMerge(DEFAULT_PAGINATION_CONFIG, pagination as Partial<PaginationConfig>),
     },
     {
       provide: PAGINATION_QUERY_SYNC_CONFIG,

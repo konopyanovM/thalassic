@@ -14,7 +14,7 @@
 
 @if (showAllDayRow()) {
   <div class="tls-calendar-time-grid__all-day">
-    <div class="tls-calendar-time-grid__gutter-label">All day</div>
+    <div class="tls-calendar-time-grid__gutter-label">{{ allDayLabel }}</div>
     @for (column of columns(); track column.date.getTime()) {
       <div class="tls-calendar-time-grid__all-day-cell">
         @for (event of column.allDayEvents; track event.id) {

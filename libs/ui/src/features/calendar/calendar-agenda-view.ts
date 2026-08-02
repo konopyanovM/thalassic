@@ -1,6 +1,7 @@
 import {
   Component,
   computed,
+  inject,
   input,
   InputSignal,
   output,
@@ -9,8 +10,10 @@ import {
   TemplateRef,
 } from '@angular/core';
 import { eachDayOfInterval, endOfMonth, format, isToday, startOfMonth } from 'date-fns';
+import { localeFormatOptions, LOCALE_CONFIG } from '../../abstract/locale';
 import { CalendarEventItem } from './calendar-event';
 import { AGENDA_DATE_FORMAT, AGENDA_WEEKDAY_FORMAT } from './calendar.constants';
+import { CALENDAR_CONFIG } from './calendar.token';
 import { CalendarEvent, CalendarEventContext } from './calendar.types';
 import { eventsForDay } from './events-for-day';
 
@@ -38,6 +41,10 @@ interface AgendaDay {
   },
 })
 export class CalendarAgendaView {
+  // Injections
+  private readonly _locale = inject(LOCALE_CONFIG);
+  private readonly _config = inject(CALENDAR_CONFIG);
+
   // Inputs
   public readonly activeDate: InputSignal<Date> = input.required<Date>();
   public readonly events: InputSignal<CalendarEvent[]> = input.required<CalendarEvent[]>();
@@ -49,6 +56,10 @@ export class CalendarAgendaView {
   public readonly dateSelect: OutputEmitterRef<Date> = output<Date>();
   public readonly eventSelect: OutputEmitterRef<CalendarEvent> = output<CalendarEvent>();
 
+  // State
+  protected readonly noEventsLabel: string = this._config.labels.noEvents;
+  private readonly _dateOptions = localeFormatOptions(this._locale);
+
   // Computed
   protected readonly days: Signal<AgendaDay[]> = computed(() => {
     const activeDate = this.activeDate();
@@ -57,8 +68,8 @@ export class CalendarAgendaView {
     return eachDayOfInterval({ start: startOfMonth(activeDate), end: endOfMonth(activeDate) })
       .map(date => ({
         date,
-        weekday: format(date, AGENDA_WEEKDAY_FORMAT),
-        dateLabel: format(date, AGENDA_DATE_FORMAT),
+        weekday: format(date, AGENDA_WEEKDAY_FORMAT, this._dateOptions),
+        dateLabel: format(date, AGENDA_DATE_FORMAT, this._dateOptions),
         isToday: isToday(date),
         events: eventsForDay(date, events),
       }))

@@ -48,6 +48,7 @@ export class Select<T, V = unknown> extends AbstractSelect<T, V, V | null> {
     this._config.clearable,
     { transform: booleanAttribute },
   );
+  public readonly clearLabel = input<string>(this._config.clearLabel);
 
   protected readonly hasValue: Signal<boolean> = computed(() => {
     const value = this.value();

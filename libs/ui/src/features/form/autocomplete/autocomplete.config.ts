@@ -8,6 +8,8 @@ export interface AutocompleteConfig {
   clearable: boolean;
   filterMode: autocompleteFilterMode;
   emptyMessage: string;
+  /** Accessible name for the clear button, overridable for localization. */
+  clearLabel: string;
 }
 
 export const DEFAULT_AUTOCOMPLETE_CONFIG: AutocompleteConfig = {
@@ -17,4 +19,5 @@ export const DEFAULT_AUTOCOMPLETE_CONFIG: AutocompleteConfig = {
   clearable: false,
   filterMode: 'contains',
   emptyMessage: 'No results',
+  clearLabel: 'Clear',
 };

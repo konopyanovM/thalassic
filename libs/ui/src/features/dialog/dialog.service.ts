@@ -11,6 +11,8 @@ export interface DialogOpenConfig<D = unknown> {
   size?: dialogSize;
   closeable?: boolean;
   backdropClose?: boolean;
+  /** Accessible name for the close button. */
+  closeLabel?: string;
   role?: DialogRole;
   ariaLabel?: string | null;
   ariaLabelledBy?: string | null;
@@ -30,6 +32,7 @@ export class DialogService {
       size: config?.size ?? this._config.size,
       closeable: config?.closeable ?? this._config.closeable,
       backdropClose: config?.backdropClose ?? this._config.backdropClose,
+      closeLabel: config?.closeLabel ?? this._config.closeLabel,
     };
 
     return this._dialog.open<R, D, C>(component, {

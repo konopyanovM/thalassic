@@ -29,6 +29,7 @@ import {
   startOfMonth,
   startOfWeek,
 } from 'date-fns';
+import { localeFormatOptions, LOCALE_CONFIG } from '../../abstract/locale';
 import { Button } from '../button';
 import { ToggleGroup } from '../form/toggle-group';
 import { Icon } from '../icon';
@@ -36,8 +37,9 @@ import { buildMonthDays } from '../../utils';
 import { CalendarAgendaView } from './calendar-agenda-view';
 import { CalendarMonthView } from './calendar-month-view';
 import { CalendarTimeGrid } from './calendar-time-grid';
+import { CalendarLabels } from './calendar.config';
 import {
-  CALENDAR_VIEW_OPTIONS,
+  CALENDAR_VIEW_ORDER,
   DAY_TITLE_FORMAT,
   MONTH_GRID_ROWS,
   MONTH_TITLE_FORMAT,
@@ -56,6 +58,7 @@ import { CalendarEvent, CalendarEventContext, CalendarRange, calendarView } from
 export class Calendar {
   // Injections
   private readonly _config = inject(CALENDAR_CONFIG);
+  private readonly _locale = inject(LOCALE_CONFIG);
 
   // Inputs
   public readonly events: InputSignal<CalendarEvent[]> = input<CalendarEvent[]>([]);
@@ -79,9 +82,15 @@ export class Calendar {
   /** Anchor date driving the visible range; navigation shifts it by the view's unit. */
   public readonly activeDate: ModelSignal<Date> = model<Date>(new Date());
 
-  protected readonly viewOptions = CALENDAR_VIEW_OPTIONS;
+  protected readonly labels: CalendarLabels = this._config.labels;
+
+  protected readonly viewOptions: { label: string; value: calendarView }[] = CALENDAR_VIEW_ORDER.map(
+    value => ({ label: this._config.labels.views[value], value }),
+  );
 
   protected readonly eventTemplate = contentChild<TemplateRef<CalendarEventContext>>('eventTemplate');
+
+  private readonly _dateOptions = localeFormatOptions(this._locale);
 
   // Computed
   protected readonly hostClasses: Signal<string[]> = computed(() => [
@@ -109,9 +118,9 @@ export class Calendar {
       case 'week':
         return this._weekTitle(activeDate);
       case 'day':
-        return format(activeDate, DAY_TITLE_FORMAT);
+        return format(activeDate, DAY_TITLE_FORMAT, this._dateOptions);
       default:
-        return format(activeDate, MONTH_TITLE_FORMAT);
+        return format(activeDate, MONTH_TITLE_FORMAT, this._dateOptions);
     }
   });
 
@@ -199,6 +208,6 @@ export class Calendar {
 
   private _weekTitle(activeDate: Date): string {
     const { start, end } = this._weekBounds(activeDate);
-    return `${format(start, 'MMM d')} – ${format(end, 'MMM d, yyyy')}`;
+    return `${format(start, 'MMM d', this._dateOptions)} – ${format(end, 'MMM d, yyyy', this._dateOptions)}`;
   }
 }

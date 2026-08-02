@@ -1,7 +1,7 @@
 <div
   [class]="regionClasses()"
   role="region"
-  aria-label="Notifications"
+  [attr.aria-label]="regionLabel()"
   [style.height.px]="regionHeight()"
   (mouseenter)="onPointerEnter()"
   (mouseleave)="onPointerLeave()"
@@ -24,6 +24,7 @@
       [showProgress]="toast.showProgress"
       [action]="toast.action"
       [ariaLabel]="toast.ariaLabel"
+      [dismissLabel]="dismissLabel()"
       (dismissed)="onDismiss(toast.id)"
       (actionTriggered)="onAction(toast)"
     ></tls-toast>

@@ -2,6 +2,7 @@ import { NgTemplateOutlet } from '@angular/common';
 import {
   Component,
   computed,
+  inject,
   input,
   InputSignal,
   output,
@@ -10,6 +11,7 @@ import {
   TemplateRef,
 } from '@angular/core';
 import { format } from 'date-fns';
+import { localeFormatOptions, LOCALE_CONFIG } from '../../abstract/locale';
 import { TIME_AWARE_VIEWS } from './calendar.constants';
 import { CalendarEvent, CalendarEventContext, calendarView } from './calendar.types';
 
@@ -25,6 +27,9 @@ import { CalendarEvent, CalendarEventContext, calendarView } from './calendar.ty
   host: { class: 'tls-calendar-event' },
 })
 export class CalendarEventItem {
+  // Injections
+  private readonly _locale = inject(LOCALE_CONFIG);
+
   // Inputs
   public readonly event: InputSignal<CalendarEvent> = input.required<CalendarEvent>();
   public readonly view: InputSignal<calendarView> = input.required<calendarView>();
@@ -32,6 +37,9 @@ export class CalendarEventItem {
 
   // Outputs
   public readonly activate: OutputEmitterRef<CalendarEvent> = output<CalendarEvent>();
+
+  // State
+  private readonly _dateOptions = localeFormatOptions(this._locale);
 
   // Computed
   protected readonly classes: Signal<string[]> = computed(() => {
@@ -51,7 +59,7 @@ export class CalendarEventItem {
     const event = this.event();
     const view = this.view();
     if (TIME_AWARE_VIEWS.includes(view) && event.allDay !== true) {
-      return `${format(event.start, 'p')} ${event.title}`;
+      return `${format(event.start, 'p', this._dateOptions)} ${event.title}`;
     }
     return event.title;
   });

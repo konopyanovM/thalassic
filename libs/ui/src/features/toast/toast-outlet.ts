@@ -64,6 +64,10 @@ export class ToastOutlet {
   // Computed
   protected readonly position = computed(() => this._service.config.position);
 
+  protected readonly regionLabel = computed(() => this._service.config.regionLabel);
+
+  protected readonly dismissLabel = computed(() => this._service.config.dismissLabel);
+
   protected readonly expanded = computed<boolean>(
     () => this._service.config.stacking === 'expanded' || this._interacting(),
   );

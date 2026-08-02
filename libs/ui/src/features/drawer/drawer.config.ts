@@ -6,6 +6,8 @@ export interface DrawerConfig {
   closeable: boolean;
   backdropClose: boolean;
   rounded: boolean;
+  /** Accessible name for the close button, overridable for localization. */
+  closeLabel: string;
 }
 
 export const DEFAULT_DRAWER_CONFIG: DrawerConfig = {
@@ -14,4 +16,5 @@ export const DEFAULT_DRAWER_CONFIG: DrawerConfig = {
   closeable: true,
   backdropClose: true,
   rounded: false,
+  closeLabel: 'Close drawer',
 };

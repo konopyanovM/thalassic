@@ -32,7 +32,7 @@
     type="button"
     class="tls-autocomplete__clear"
     tabindex="-1"
-    aria-label="Clear"
+    [attr.aria-label]="clearLabel()"
     (click)="clear()"
   >
     <tls-icon class="tls-autocomplete__clear-icon" name="close" aria-hidden="true" />

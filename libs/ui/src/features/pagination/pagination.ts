@@ -1,6 +1,7 @@
 import { booleanAttribute, Component, computed, inject, input, model } from '@angular/core';
 import { controlSize } from '../../types';
 import { Icon } from '../icon';
+import { PaginationLabels } from './pagination.config';
 import { PAGINATION_CONFIG } from './pagination.token';
 import { paginationItem } from './pagination.types';
 
@@ -35,6 +36,8 @@ export class Pagination {
   public readonly showLastButton = input<boolean, unknown>(this._config.showLastButton, {
     transform: booleanAttribute,
   });
+
+  protected readonly labels: PaginationLabels = this._config.labels;
 
   protected readonly pageCount = computed(() => Math.ceil(this.total() / this.pageSize()));
 

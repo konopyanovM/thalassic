@@ -46,7 +46,16 @@ export class Password extends ValueFormControl<string> {
   protected readonly showIconTemplate = contentChild<TemplateRef<unknown>>('showIcon');
   protected readonly hideIconTemplate = contentChild<TemplateRef<unknown>>('hideIcon');
 
+  // State
+  protected readonly showLabel: string = this._config.showLabel;
+  protected readonly hideLabel: string = this._config.hideLabel;
+
+  // Computed
   protected type = computed(() => (this.visible() ? 'text' : 'password'));
+
+  protected readonly toggleAriaLabel = computed(() =>
+    this.visible() ? this._config.hideAriaLabel : this._config.showAriaLabel,
+  );
 
   // Protected methods
   protected onInput(event: Event) {
