@@ -1,5 +1,6 @@
 <input
   type="checkbox"
+  role="switch"
   class="tls-switch-input"
   [attr.id]="effectiveInputId()"
   [name]="name()"
@@ -8,8 +9,11 @@
   [attr.aria-invalid]="invalid() ? 'true' : null"
   [attr.aria-required]="required() ? 'true' : null"
   [attr.aria-describedby]="describedBy()"
+  [tabindex]="tabindex()"
   [disabled]="disabled()"
   [readonly]="readonly()"
   [checked]="checked()"
+  (blur)="touched.set(true)"
+  (keydown.enter)="onKeyboardToggle($event)"
 />
 <div class="tls-switch-handle"></div>

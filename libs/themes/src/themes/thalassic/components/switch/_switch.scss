@@ -36,14 +36,29 @@
     box-shadow var(--motion-fast) var(--motion-ease-in-out),
     filter var(--motion-fast) var(--motion-ease-in-out);
 
-  &:focus-visible {
+  // The invisible native input carries focus; the ring renders on the track.
+  &:has(.tls-switch-input:focus-visible) {
     @include mixins.focus-ring;
   }
 
   @include mixins.touch-target(var(--tls-switch-height));
 
+  // The real control: stretched invisibly over the track so it stays focusable
+  // and clickable while the styled track/handle underneath provide the visuals.
   .tls-switch-input {
-    display: none;
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    margin: 0;
+
+    appearance: none;
+
+    opacity: 0;
+
+    cursor: inherit;
   }
 
   .tls-switch-handle {
@@ -57,6 +72,9 @@
     background-color: var(--tls-switch-handle-color);
 
     box-shadow: var(--shadow-xs);
+
+    // Clicks fall through to the stretched native input underneath.
+    pointer-events: none;
 
     transition: transform var(--motion-fast) var(--motion-ease-in-out);
   }

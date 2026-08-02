@@ -16,17 +16,13 @@ import { switchColor } from './switch.types';
 @Component({
   selector: 'tls-switch',
   templateUrl: './switch.html',
+  // The native input in the template (stretched invisibly over the track) is the
+  // focusable `role="switch"` semantics carrier; the host stays role-less so
+  // assistive technology sees exactly one switch. The host click covers the
+  // touch-target overflow around the control.
   host: {
-    role: 'switch',
     '[class]': 'hostClasses()',
-    '[tabindex]': 'disabled() ? -1 : tabindex()',
-    '[attr.aria-checked]': 'checked()',
-    '[attr.aria-disabled]': 'disabled()',
-    '[attr.aria-readonly]': 'readonly()',
-    '(click)': 'toggle()',
-    '(blur)': 'touched.set(true)',
-    '(keydown.space)': 'onKeyboardToggle($event)',
-    '(keydown.enter)': 'onKeyboardToggle($event)',
+    '(click)': 'toggle($event)',
   },
   providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => Switch) }],
 })
@@ -52,8 +48,12 @@ export class Switch extends CheckboxFormControl {
   });
 
   // Protected methods
-  protected toggle() {
-    if (this.notInteractive()) return;
+  protected toggle(event?: Event) {
+    if (this.notInteractive()) {
+      // Keep the native input from flipping its own checked state.
+      if (event) event.preventDefault();
+      return;
+    }
 
     this.checked.update(prev => !prev);
   }

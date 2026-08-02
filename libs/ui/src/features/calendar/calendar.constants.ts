@@ -39,6 +39,9 @@ export const AGENDA_WEEKDAY_FORMAT = 'EEEE';
 /** `date-fns` format token for an agenda day's date, e.g. "Jul 22". */
 export const AGENDA_DATE_FORMAT = 'MMM d';
 
+/** How often the calendar's notion of "now" refreshes (current-time line, today highlight). */
+export const NOW_REFRESH_INTERVAL_MS = 60_000;
+
 /** Views that prefix an event chip with its start time; the month grid shows the title alone. */
 export const TIME_AWARE_VIEWS: calendarView[] = ['week', 'day', 'agenda'];
 

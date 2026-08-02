@@ -17,10 +17,11 @@ import { CHECKBOX_CONFIG } from './checkbox.token';
   selector: 'tls-checkbox',
   imports: [Icon],
   templateUrl: './checkbox.html',
+  // The native `<input type="checkbox">` in the template is the semantics
+  // carrier; the host stays role-less so assistive technology sees exactly one
+  // checkbox.
   host: {
-    role: 'checkbox',
     '[class]': 'hostClasses()',
-    '[tabindex]': '-1',
   },
   providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => Checkbox) }],
 })
@@ -47,8 +48,19 @@ export class Checkbox extends CheckboxFormControl {
   });
 
   // Protected methods
-  protected toggle() {
-    if (this.notInteractive()) return;
+  protected toggle(event?: Event) {
+    if (this.notInteractive()) {
+      // Keep the native input from flipping its own checked state.
+      if (event) event.preventDefault();
+      return;
+    }
+
+    // Activating an indeterminate checkbox resolves it to checked.
+    if (this.indeterminate()) {
+      this.indeterminate.set(false);
+      this.checked.set(true);
+      return;
+    }
 
     this.checked.update(prev => !prev);
   }

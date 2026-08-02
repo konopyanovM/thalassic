@@ -25,3 +25,10 @@ export const DEFAULT_FORM_ITEM_ERROR_MESSAGES: ErrorMessageMap = {
   },
   pattern: () => 'Invalid format',
 };
+
+/**
+ * Message rendered for a validation error whose `kind` has no entry in the
+ * configured {@link ErrorMessageMap} and that carries no `message` of its own
+ * (e.g. a custom validator).
+ */
+export const DEFAULT_FORM_ITEM_UNKNOWN_ERROR_MESSAGE: ErrorMessageFn = () => 'Invalid value';

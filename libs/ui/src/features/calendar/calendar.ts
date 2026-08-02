@@ -33,7 +33,7 @@ import { localeFormatOptions, LOCALE_CONFIG } from '../../abstract/locale';
 import { Button } from '../button';
 import { ToggleGroup } from '../form/toggle-group';
 import { Icon } from '../icon';
-import { buildMonthDays } from '../../utils';
+import { buildMonthDays, createNowSignal } from '../../utils';
 import { CalendarAgendaView } from './calendar-agenda-view';
 import { CalendarMonthView } from './calendar-month-view';
 import { CalendarTimeGrid } from './calendar-time-grid';
@@ -43,6 +43,7 @@ import {
   DAY_TITLE_FORMAT,
   MONTH_GRID_ROWS,
   MONTH_TITLE_FORMAT,
+  NOW_REFRESH_INTERVAL_MS,
 } from './calendar.constants';
 import { CALENDAR_CONFIG } from './calendar.token';
 import { CalendarEvent, CalendarEventContext, CalendarRange, calendarView } from './calendar.types';
@@ -91,6 +92,8 @@ export class Calendar {
   protected readonly eventTemplate = contentChild<TemplateRef<CalendarEventContext>>('eventTemplate');
 
   private readonly _dateOptions = localeFormatOptions(this._locale);
+  /** Ticking current time, so the "Today" affordance stays correct across midnight. */
+  private readonly _now = createNowSignal(NOW_REFRESH_INTERVAL_MS);
 
   // Computed
   protected readonly hostClasses: Signal<string[]> = computed(() => [
@@ -101,7 +104,7 @@ export class Calendar {
   /** Whether the active period already includes today, so "Today" would be a no-op. */
   protected readonly isViewingToday: Signal<boolean> = computed(() => {
     const activeDate = this.activeDate();
-    const now = new Date();
+    const now = this._now();
     switch (this.view()) {
       case 'week':
         return isSameWeek(activeDate, now, { weekStartsOn: this.weekStartsOn() });

@@ -9,14 +9,16 @@ import {
   Signal,
   TemplateRef,
 } from '@angular/core';
-import { addHours, differenceInMinutes, format, isSameDay, isToday, startOfDay } from 'date-fns';
+import { addHours, differenceInMinutes, format, isSameDay, startOfDay } from 'date-fns';
 import { localeFormatOptions, LOCALE_CONFIG } from '../../abstract/locale';
+import { createNowSignal } from '../../utils';
 import { assignEventLanes } from './assign-event-lanes';
 import { CalendarEventItem } from './calendar-event';
 import {
   HOUR_HEIGHT,
   HOUR_LABEL_FORMAT,
   MIN_EVENT_HEIGHT,
+  NOW_REFRESH_INTERVAL_MS,
   PX_PER_MINUTE,
   TIME_GRID_HEADING_FORMAT,
 } from './calendar.constants';
@@ -83,6 +85,8 @@ export class CalendarTimeGrid {
   protected readonly hourHeight = HOUR_HEIGHT;
   protected readonly allDayLabel: string = this._config.labels.allDay;
   private readonly _dateOptions = localeFormatOptions(this._locale);
+  /** Ticking current time, so the now line and today highlight track the clock. */
+  private readonly _now = createNowSignal(NOW_REFRESH_INTERVAL_MS);
 
   // Computed
   protected readonly hours: Signal<number[]> = computed(() => {
@@ -95,6 +99,7 @@ export class CalendarTimeGrid {
     const events = this.events();
     const hourStart = this.hourStart();
     const hourEnd = this.hourEnd();
+    const now = this._now();
 
     return this.days().map(day => {
       const dayStart = startOfDay(day);
@@ -103,7 +108,9 @@ export class CalendarTimeGrid {
 
       const dayEvents = events.filter(event => eventCoversDay(event, dayStart));
       const allDayEvents = dayEvents.filter(event => this._isAllDay(event));
-      const timed = dayEvents.filter(event => !this._isAllDay(event));
+      const timed = dayEvents.filter(
+        event => !this._isAllDay(event) && this._overlapsWindow(event, windowStart, windowEnd),
+      );
 
       const timedEvents: TimedEventLayout[] = assignEventLanes(timed).map(laid => {
         const start = this._clamp(laid.event.start, windowStart, windowEnd);
@@ -117,15 +124,15 @@ export class CalendarTimeGrid {
         };
       });
 
-      return { date: day, isToday: isToday(day), heading: format(day, TIME_GRID_HEADING_FORMAT, this._dateOptions), allDayEvents, timedEvents };
+      return { date: day, isToday: isSameDay(day, now), heading: format(day, TIME_GRID_HEADING_FORMAT, this._dateOptions), allDayEvents, timedEvents };
     });
   });
 
   /** Vertical offset (px) of the current-time line, or null when now is off-screen. */
   protected readonly nowOffset: Signal<number | null> = computed(() => {
-    if (!this.days().some(day => isToday(day))) return null;
+    const now = this._now();
+    if (!this.days().some(day => isSameDay(day, now))) return null;
 
-    const now = new Date();
     const dayStart = startOfDay(now);
     const windowStart = addHours(dayStart, this.hourStart());
     const windowEnd = addHours(dayStart, this.hourEnd());
@@ -150,6 +157,19 @@ export class CalendarTimeGrid {
   // Private methods
   private _isAllDay(event: CalendarEvent): boolean {
     return event.allDay === true || !isSameDay(event.start, event.end ?? event.start);
+  }
+
+  /**
+   * Whether the event has any visible span inside the rendered hour window.
+   * Events entirely before `hourStart` or after `hourEnd` are excluded — clamping
+   * them would paint a zero-length sliver pinned to the window edge. An instant
+   * (zero-duration) event counts while its start sits inside the window.
+   */
+  private _overlapsWindow(event: CalendarEvent, windowStart: Date, windowEnd: Date): boolean {
+    const start = event.start;
+    const end = event.end ?? event.start;
+    if (end.getTime() === start.getTime()) return start >= windowStart && start < windowEnd;
+    return end > windowStart && start < windowEnd;
   }
 
   private _clamp(date: Date, min: Date, max: Date): Date {

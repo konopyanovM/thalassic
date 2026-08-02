@@ -1,11 +1,16 @@
 import { Component, computed, inject, input, InputSignal, output, OutputEmitterRef, Signal, TemplateRef } from '@angular/core';
 import { Grid, GridCell, GridRow } from '@angular/aria/grid';
-import { Day, format, isSameMonth, isToday } from 'date-fns';
+import { Day, format, isSameDay, isSameMonth } from 'date-fns';
 import { localeFormatOptions, LOCALE_CONFIG } from '../../abstract/locale';
-import { buildMonthDays, rotateWeekDays } from '../../utils';
+import { buildMonthDays, createNowSignal, rotateWeekDays } from '../../utils';
 import { assignWeekLanes } from './assign-week-lanes';
 import { CalendarEventItem } from './calendar-event';
-import { DAY_NUMBER_FORMAT, DAYS_PER_WEEK, MONTH_GRID_ROWS } from './calendar.constants';
+import {
+  DAY_NUMBER_FORMAT,
+  DAYS_PER_WEEK,
+  MONTH_GRID_ROWS,
+  NOW_REFRESH_INTERVAL_MS,
+} from './calendar.constants';
 import { CALENDAR_CONFIG } from './calendar.token';
 import { CalendarEvent, CalendarEventContext } from './calendar.types';
 
@@ -60,6 +65,8 @@ export class CalendarMonthView {
 
   // State
   private readonly _dateOptions = localeFormatOptions(this._locale);
+  /** Ticking current time, so the today highlight tracks the clock across midnight. */
+  private readonly _now = createNowSignal(NOW_REFRESH_INTERVAL_MS);
 
   // Computed
   protected readonly weekdayHeaders: Signal<string[]> = computed(() =>
@@ -70,6 +77,7 @@ export class CalendarMonthView {
     const activeDate = this.activeDate();
     const maxLanes = this.maxEventsPerDay();
     const events = this.events();
+    const now = this._now();
 
     // A fixed 6-week window keeps the grid height from reflowing between months.
     const days = buildMonthDays(activeDate, this.weekStartsOn(), MONTH_GRID_ROWS);
@@ -101,7 +109,7 @@ export class CalendarMonthView {
         date,
         dayNumber: format(date, DAY_NUMBER_FORMAT, this._dateOptions),
         inCurrentMonth: isSameMonth(date, activeDate),
-        isToday: isToday(date),
+        isToday: isSameDay(date, now),
         hiddenCount: hiddenPerColumn[column],
       }));
 

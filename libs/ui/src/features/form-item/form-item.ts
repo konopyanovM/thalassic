@@ -133,8 +133,16 @@ export class FormItem {
     const array: string[] = [];
 
     for (const error of errors) {
-      if (error.message) array.push(error.message);
-      else array.push(this._config.errorMessages[error.kind](error.fieldTree));
+      if (error.message) {
+        array.push(error.message);
+        continue;
+      }
+
+      // A custom validator's kind may have no configured message; fall back to
+      // the generic one rather than failing on the missing entry.
+      const messageFunction =
+        this._config.errorMessages[error.kind] ?? this._config.unknownErrorMessage;
+      array.push(messageFunction(error.fieldTree));
     }
 
     return array;

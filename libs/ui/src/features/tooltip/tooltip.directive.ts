@@ -20,6 +20,12 @@ import { TooltipService } from './tooltip.service';
 import { TOOLTIP_CONFIG } from './tooltip.token';
 import { tooltipColor, tooltipOrigin, tooltipPosition } from './tooltip.types';
 
+/**
+ * Attaches a tooltip to the host element. Shows on hover and on keyboard focus,
+ * toggles on touch, and dismisses on Escape without moving the pointer or focus
+ * (WCAG 1.4.13). The tooltip is linked to the host via `aria-describedby` while
+ * visible.
+ */
 @Directive({
   selector: '[tlsTooltip]',
   providers: [TooltipService],
@@ -27,7 +33,10 @@ import { tooltipColor, tooltipOrigin, tooltipPosition } from './tooltip.types';
     '(mouseenter)': 'onMouseEnter($event)',
     '(mousemove)': 'onMouseMove($event)',
     '(mouseleave)': 'onMouseLeave()',
-    '(touchstart)': 'onTouchStart($event)',
+    '(focus)': 'onFocus()',
+    '(blur)': 'onBlur()',
+    '(touchstart)': 'onTouchStart()',
+    '(document:keydown.escape)': 'onEscape()',
   },
 })
 export class TooltipDirective implements OnDestroy {
@@ -36,7 +45,7 @@ export class TooltipDirective implements OnDestroy {
   private _renderer = inject(Renderer2);
   private _config = inject(TOOLTIP_CONFIG);
 
-  public content = input<string | TemplateRef<unknown>>('Hello', { alias: 'tlsTooltip' });
+  public content = input<string | TemplateRef<unknown>>('', { alias: 'tlsTooltip' });
   public data: InputSignal<unknown> = input<unknown>(null);
   public tooltipDisabled: InputSignal<boolean> = input<boolean>(false);
   public tooltipOrigin: InputSignal<tooltipOrigin> = input<tooltipOrigin>(this._config.origin);
@@ -60,7 +69,7 @@ export class TooltipDirective implements OnDestroy {
 
   // Protected methods
   protected onMouseEnter(event: MouseEvent) {
-    this._show(event);
+    this._show({ x: event.clientX, y: event.clientY });
   }
 
   protected onMouseMove(event: MouseEvent) {
@@ -73,28 +82,46 @@ export class TooltipDirective implements OnDestroy {
     this._hide();
   }
 
-  protected onTouchStart(event: TouchEvent) {
-    event.preventDefault();
+  protected onFocus() {
+    // No cursor to anchor to; a focus-triggered tooltip always anchors to the element.
+    this._show();
+  }
+
+  protected onBlur() {
+    this._hide();
+  }
+
+  // The default is not prevented, so a tap still activates an interactive host
+  // (a button keeps its click); the tooltip just toggles alongside it.
+  protected onTouchStart() {
     if (this._visible()) {
       this._hide();
     } else {
-      this._show(event.touches[0]);
+      this._show();
     }
   }
 
+  /** Dismisses the tooltip without moving the pointer or focus (WCAG 1.4.13). */
+  protected onEscape() {
+    if (this._visible()) this._hide();
+  }
+
   // Private methods
-  private _show(event: MouseEvent | Touch) {
-    if (this.tooltipDisabled()) return;
+  private _show(point?: Point) {
+    if (this.tooltipDisabled() || this._visible()) return;
+
+    // Nothing to render — an empty string would show a bare bubble.
+    const content = this.content();
+    if (content === '') return;
+
     this._visible.set(true);
 
     const tooltipPortal = new ComponentPortal(Tooltip);
     const origin: FlexibleConnectedPositionStrategyOrigin =
-      this.tooltipOrigin() === 'cursor'
-        ? { x: event.clientX, y: event.clientY }
-        : this._elementRef.nativeElement;
+      this.tooltipOrigin() === 'cursor' && point ? point : this._elementRef.nativeElement;
     const tooltipRef = this._tooltipService.show(origin, this._positions(), tooltipPortal);
 
-    tooltipRef.instance.content.set(this.content());
+    tooltipRef.instance.content.set(content);
     tooltipRef.instance.templateData.set(this.data());
     tooltipRef.instance.color.set(this.tooltipColor());
 
@@ -106,6 +133,7 @@ export class TooltipDirective implements OnDestroy {
   }
 
   private _hide() {
+    if (!this._visible()) return;
     this._tooltipService.hide();
     this._visible.set(false);
     this._renderer.removeAttribute(this._elementRef.nativeElement, 'aria-describedby');
