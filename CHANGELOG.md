@@ -1,3 +1,14 @@
+## 22.15.3 (2026-08-03)
+
+### 🚀 Features
+
+- **ui/dialog:** structural header, body and footer components ([e20d044](https://github.com/konopyanovM/thalassic/commit/e20d044))
+- **ui/locale:** configurable 12/24-hour clock via hourCycle ([c5031eb](https://github.com/konopyanovM/thalassic/commit/c5031eb))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.15.2 (2026-08-03)
 
 ### 🚀 Features
