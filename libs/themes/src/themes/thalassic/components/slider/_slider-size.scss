@@ -1,0 +1,16 @@
+.tls-slider {
+  &.tls-slider--sm {
+    --tls-slider-track-height: 3px;
+    --tls-slider-thumb-size: 12px;
+  }
+
+  &.tls-slider--md {
+    --tls-slider-track-height: 4px;
+    --tls-slider-thumb-size: 16px;
+  }
+
+  &.tls-slider--lg {
+    --tls-slider-track-height: 6px;
+    --tls-slider-thumb-size: 20px;
+  }
+}

@@ -35,6 +35,7 @@ import {
   RadioButtonConfig,
   SelectConfig,
   SkeletonConfig,
+  SliderConfig,
   SplitterConfig,
   StepperConfig,
   SwitchConfig,
@@ -101,6 +102,7 @@ export interface tlsUiConfigProvider {
     radioButton?: Partial<RadioButtonConfig>;
     select?: Partial<SelectConfig>;
     skeleton?: Partial<SkeletonConfig>;
+    slider?: Partial<SliderConfig>;
     splitter?: Partial<SplitterConfig>;
     stepper?: Partial<StepperConfig>;
     switch?: Partial<SwitchConfig>;
