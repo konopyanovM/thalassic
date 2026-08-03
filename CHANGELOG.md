@@ -1,3 +1,24 @@
+## 22.15.0 (2026-08-03)
+
+### 🚀 Features
+
+- rich text editor component added ([3bbf45c](https://github.com/konopyanovM/thalassic/commit/3bbf45c))
+- **core:** pan and swipe gesture directives ([1b90960](https://github.com/konopyanovM/thalassic/commit/1b90960))
+- **ui:** added activity heatmap component ([d28aced](https://github.com/konopyanovM/thalassic/commit/d28aced))
+
+### 🩹 Fixes
+
+- **ui:** rich editor styles improvements ([6fbb2be](https://github.com/konopyanovM/thalassic/commit/6fbb2be))
+
+### 🔥 Performance
+
+- **ui:** activity heatmap tooltip optimization ([a7ec04a](https://github.com/konopyanovM/thalassic/commit/a7ec04a))
+
+### ❤️ Thank You
+
+- Claude Opus 5
+- konopyanov
+
 ## 22.14.3 (2026-08-02)
 
 ### 🩹 Fixes
