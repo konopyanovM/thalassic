@@ -1,0 +1,16 @@
+.tls-activity-heatmap {
+  &.tls-activity-heatmap--sm {
+    --tls-activity-heatmap-cell-size: 10px;
+    --tls-activity-heatmap-font-size: var(--font-label-small-size);
+  }
+
+  &.tls-activity-heatmap--md {
+    --tls-activity-heatmap-cell-size: 14px;
+    --tls-activity-heatmap-font-size: var(--font-label-small-size);
+  }
+
+  &.tls-activity-heatmap--lg {
+    --tls-activity-heatmap-cell-size: 18px;
+    --tls-activity-heatmap-font-size: var(--font-label-medium-size);
+  }
+}

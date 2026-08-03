@@ -1,4 +1,6 @@
 import {
+  ActivityHeatmapConfig,
+  ActivityHeatmapLabels,
   AlertConfig,
   AutocompleteConfig,
   ButtonConfig,
@@ -59,6 +61,9 @@ export interface tlsUiConfigProvider {
   /** Cross-cutting defaults inherited by every form control (not tied to a single component). */
   formControl?: Partial<FormControlConfig>;
   components?: {
+    activityHeatmap?: Partial<Omit<ActivityHeatmapConfig, 'labels'>> & {
+      labels?: Partial<ActivityHeatmapLabels>;
+    };
     alert?: Partial<AlertConfig>;
     autocomplete?: Partial<AutocompleteConfig>;
     button?: Partial<ButtonConfig>;

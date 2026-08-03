@@ -1,0 +1,75 @@
+<div class="tls-activity-heatmap__viewport">
+  <div class="tls-activity-heatmap__chart" [style.--tls-activity-heatmap-weeks]="weekCount()">
+    @if (showMonthLabels()) {
+      <!-- Month headings repeat the dates already announced on every cell, so they stay decorative. -->
+      <div class="tls-activity-heatmap__months" aria-hidden="true">
+        @for (month of months(); track month.column) {
+          <span
+            class="tls-activity-heatmap__month"
+            [style.grid-column]="month.column + ' / span ' + month.span"
+          >
+            {{ month.label }}
+          </span>
+        }
+      </div>
+    }
+
+    @if (showWeekdayLabels()) {
+      <div class="tls-activity-heatmap__weekdays" aria-hidden="true">
+        @for (row of rows(); track $index) {
+          <span class="tls-activity-heatmap__weekday">{{ row.label }}</span>
+        }
+      </div>
+    }
+
+    <div
+      ngGrid
+      class="tls-activity-heatmap__grid"
+      rowWrap="nowrap"
+      colWrap="nowrap"
+      [attr.aria-label]="gridLabel() ?? null"
+      [attr.aria-labelledby]="ariaLabelledby() ?? null"
+    >
+      @for (row of rows(); track $index) {
+        <div ngGridRow class="tls-activity-heatmap__row">
+          @for (day of row.days; track day.date.getTime()) {
+            <!-- Padding days stay navigable so arrow keys never dead-end on the grid's corners;
+                 they are only unselectable and announce themselves as outside the range. -->
+            <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -- ngGridCell manages role and roving tabindex -->
+            <div
+              ngGridCell
+              class="tls-activity-heatmap__day"
+              [class.tls-activity-heatmap__day--outside]="!day.inRange"
+              [class.tls-activity-heatmap__day--today]="day.isToday"
+              [selectable]="day.inRange"
+              [style.--tls-activity-heatmap-intensity]="intensity(day.level)"
+              [attr.aria-label]="day.label"
+              [tlsTooltip]="day.label"
+              [tooltipDisabled]="!showTooltip() || !day.inRange"
+              (click)="onDaySelect(day)"
+              (keydown.enter)="onDaySelect(day)"
+              (keydown.space)="onDaySpace($event, day)"
+            ></div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+@if (showLegend()) {
+  <div class="tls-activity-heatmap__legend">
+    <span class="tls-activity-heatmap__legend-label">{{ legendLess }}</span>
+
+    <!-- Sample swatches carry no information the "less … more" captions don't already give. -->
+    @for (level of legendLevels(); track level) {
+      <span
+        class="tls-activity-heatmap__legend-swatch"
+        aria-hidden="true"
+        [style.--tls-activity-heatmap-intensity]="intensity(level)"
+      ></span>
+    }
+
+    <span class="tls-activity-heatmap__legend-label">{{ legendMore }}</span>
+  </div>
+}

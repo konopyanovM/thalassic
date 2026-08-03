@@ -1,0 +1,150 @@
+@use '../../mixins' as mixins;
+@use '../../functions' as functions;
+
+.tls-activity-heatmap {
+  // Fill of a day with no activity, and the base every shaded cell is mixed against.
+  --tls-activity-heatmap-empty: var(--color-surface-container-high);
+  // Hairline that keeps a faint cell readable against the surface behind it.
+  --tls-activity-heatmap-outline: #{functions.tint(var(--color-on-surface), 12%)};
+  // Gap between cells, shared by the grid and the labels aligned to it.
+  --tls-activity-heatmap-gap: var(--spacing-1);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+
+  &__viewport {
+    // A year of weeks rarely fits a narrow container; scroll rather than shrink the cells.
+    overflow-x: auto;
+  }
+
+  &__chart {
+    width: max-content;
+
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: var(--tls-activity-heatmap-gap);
+  }
+
+  &__months {
+    grid-column: 2;
+
+    display: grid;
+    grid-template-columns: repeat(
+      var(--tls-activity-heatmap-weeks, 0),
+      var(--tls-activity-heatmap-cell-size)
+    );
+    column-gap: var(--tls-activity-heatmap-gap);
+  }
+
+  &__month {
+    font-size: var(--tls-activity-heatmap-font-size);
+    line-height: 1;
+    color: var(--color-on-surface-variant);
+  }
+
+  &__weekdays {
+    grid-column: 1;
+
+    display: grid;
+    grid-auto-rows: var(--tls-activity-heatmap-cell-size);
+    align-items: center;
+    row-gap: var(--tls-activity-heatmap-gap);
+  }
+
+  &__weekday {
+    font-size: var(--tls-activity-heatmap-font-size);
+    line-height: 1;
+    color: var(--color-on-surface-variant);
+  }
+
+  &__grid {
+    grid-column: 2;
+
+    display: grid;
+    grid-auto-rows: var(--tls-activity-heatmap-cell-size);
+    row-gap: var(--tls-activity-heatmap-gap);
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: repeat(
+      var(--tls-activity-heatmap-weeks, 0),
+      var(--tls-activity-heatmap-cell-size)
+    );
+    column-gap: var(--tls-activity-heatmap-gap);
+  }
+
+  &__day {
+    position: relative;
+
+    height: var(--tls-activity-heatmap-cell-size);
+
+    border: 1px solid var(--tls-activity-heatmap-outline);
+    border-radius: var(--radius-sm);
+
+    // The fill reads as a share of the theme color laid over the empty surface, so any
+    // level count maps onto one continuous scale.
+    background-color: color-mix(
+      in oklab,
+      var(--tls-activity-heatmap-color) calc(var(--tls-activity-heatmap-intensity, 0) * 100%),
+      var(--tls-activity-heatmap-empty)
+    );
+
+    cursor: pointer;
+
+    @include mixins.motion(essential) {
+      transition: border-color var(--motion-fast) var(--motion-ease-in-out);
+    }
+
+    &:hover {
+      border-color: var(--color-on-surface);
+    }
+
+    &:focus-visible {
+      // The ring overflows onto the neighbouring cells; lift the focused one above them.
+      z-index: 1;
+
+      @include mixins.focus-ring;
+    }
+
+    // Padding days only complete the first and last week, so they leave no visual trace.
+    &--outside {
+      border-color: transparent;
+
+      background-color: transparent;
+
+      cursor: default;
+    }
+
+    &--today {
+      border-color: var(--color-on-surface);
+    }
+  }
+
+  &__legend {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--tls-activity-heatmap-gap);
+  }
+
+  &__legend-label {
+    font-size: var(--tls-activity-heatmap-font-size);
+    color: var(--color-on-surface-variant);
+  }
+
+  &__legend-swatch {
+    width: var(--tls-activity-heatmap-cell-size);
+    height: var(--tls-activity-heatmap-cell-size);
+
+    border: 1px solid var(--tls-activity-heatmap-outline);
+    border-radius: var(--radius-sm);
+
+    background-color: color-mix(
+      in oklab,
+      var(--tls-activity-heatmap-color) calc(var(--tls-activity-heatmap-intensity, 0) * 100%),
+      var(--tls-activity-heatmap-empty)
+    );
+  }
+}

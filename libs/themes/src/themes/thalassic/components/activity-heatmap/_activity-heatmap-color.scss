@@ -1,0 +1,5 @@
+@use '../../mixins' as mixins;
+
+.tls-activity-heatmap {
+  @include mixins.color-variants('tls-activity-heatmap');
+}

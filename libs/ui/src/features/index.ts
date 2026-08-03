@@ -1,4 +1,5 @@
 // Features
+export * from './activity-heatmap';
 export * from './alert';
 export * from './badge';
 export * from './breadcrumbs';
