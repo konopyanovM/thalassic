@@ -4,7 +4,7 @@ import { inject, Injectable } from '@angular/core';
 import { Dialog } from './dialog';
 import { DialogConfig } from './dialog.config';
 import { DIALOG_CONFIG } from './dialog.token';
-import { dialogSize } from './dialog.types';
+import { dialogFooterAlign, dialogSize } from './dialog.types';
 
 export interface DialogOpenConfig<D = unknown> {
   data?: D | null;
@@ -13,6 +13,8 @@ export interface DialogOpenConfig<D = unknown> {
   backdropClose?: boolean;
   /** Accessible name for the close button. */
   closeLabel?: string;
+  /** Alignment for this dialog's `tls-dialog-footer` when it sets none itself. */
+  footerAlign?: dialogFooterAlign;
   role?: DialogRole;
   ariaLabel?: string | null;
   ariaLabelledBy?: string | null;
@@ -33,6 +35,7 @@ export class DialogService {
       closeable: config?.closeable ?? this._config.closeable,
       backdropClose: config?.backdropClose ?? this._config.backdropClose,
       closeLabel: config?.closeLabel ?? this._config.closeLabel,
+      footerAlign: config?.footerAlign ?? this._config.footerAlign,
     };
 
     return this._dialog.open<R, D, C>(component, {

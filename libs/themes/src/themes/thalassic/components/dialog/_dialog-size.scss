@@ -16,8 +16,8 @@
   }
 
   &.tls-dialog--wide {
+    // The height cap comes from the base `.tls-dialog` rule.
     --tls-dialog-width: calc(100svw - var(--spacing-12));
-    max-height: calc(100dvh - var(--spacing-12));
   }
 
   &.tls-dialog--full {

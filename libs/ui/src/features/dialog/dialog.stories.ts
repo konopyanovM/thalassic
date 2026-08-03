@@ -2,8 +2,12 @@ import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Component, inject, input } from '@angular/core';
 import { Meta, moduleMetadata, StoryObj } from '@storybook/angular';
 import { Button } from '../button';
+import { DialogBody } from './dialog-body';
+import { DialogFooter } from './dialog-footer';
+import { DialogHeader } from './dialog-header';
+import { DialogTitleDirective } from './dialog-title.directive';
 import { DialogService } from './dialog.service';
-import { dialogSize } from './dialog.types';
+import { dialogFooterAlign, dialogSize } from './dialog.types';
 
 interface DialogData {
   title: string;
@@ -13,18 +17,18 @@ interface DialogData {
 @Component({
   selector: 'tls-story-dialog-content',
   template: `
-    <div class="tls-dialog__header">
-      <span class="tls-dialog__title">{{ data.title }}</span>
-    </div>
-    <div class="tls-dialog__body">
+    <tls-dialog-header>
+      <h2 tlsDialogTitle>{{ data.title }}</h2>
+    </tls-dialog-header>
+    <tls-dialog-body>
       <p>{{ data.message }}</p>
-    </div>
-    <div class="tls-dialog__footer">
+    </tls-dialog-body>
+    <tls-dialog-footer>
       <tls-button variant="outlined" (click)="dialogRef.close(false)">Cancel</tls-button>
       <tls-button (click)="dialogRef.close(true)">Confirm</tls-button>
-    </div>
+    </tls-dialog-footer>
   `,
-  imports: [Button],
+  imports: [Button, DialogHeader, DialogBody, DialogFooter, DialogTitleDirective],
 })
 class DialogContentComponent {
   protected readonly dialogRef = inject<DialogRef<boolean>>(DialogRef);
@@ -42,13 +46,16 @@ class DialogTriggerComponent {
   readonly size = input<dialogSize>('md');
   readonly closeable = input(true);
   readonly backdropClose = input(true);
+  readonly footerAlign = input<dialogFooterAlign>('end');
+  readonly message = input('Are you sure you want to proceed?');
 
   openDialog(): void {
     this.dialogService.open<boolean, DialogData>(DialogContentComponent, {
       size: this.size(),
       closeable: this.closeable(),
       backdropClose: this.backdropClose(),
-      data: { title: 'Confirm action', message: 'Are you sure you want to proceed?' },
+      footerAlign: this.footerAlign(),
+      data: { title: 'Confirm action', message: this.message() },
     });
   }
 }
@@ -65,11 +72,22 @@ const meta: Meta<DialogTriggerComponent> = {
     size: 'md',
     closeable: true,
     backdropClose: true,
+    footerAlign: 'end',
+    message: 'Are you sure you want to proceed?',
   },
   argTypes: {
     size: {
       control: { type: 'select' },
       options: ['sm', 'md', 'lg', 'xl', 'wide', 'full'] satisfies dialogSize[],
+    },
+    footerAlign: {
+      control: { type: 'select' },
+      options: [
+        'start',
+        'center',
+        'end',
+        'space-between',
+      ] satisfies dialogFooterAlign[],
     },
   },
   render: args => ({
@@ -78,6 +96,8 @@ const meta: Meta<DialogTriggerComponent> = {
       <div style="display: flex; justify-content: center; align-items: center; height: 200px;">
         <tls-story-dialog-trigger
           [size]="size"
+          [footerAlign]="footerAlign"
+          [message]="message"
           [closeable]="closeable"
           [backdropClose]="backdropClose"
         />
@@ -90,3 +110,16 @@ export default meta;
 type Story = StoryObj<DialogTriggerComponent>;
 
 export const Dialog: Story = {};
+
+/**
+ * Content taller than the viewport: the header and footer stay put while the
+ * body scrolls between them.
+ */
+export const ScrollingBody: Story = {
+  args: {
+    message: Array.from(
+      { length: 40 },
+      (_, index) => `Line ${index + 1} of a message long enough to overflow.`,
+    ).join(' '),
+  },
+};

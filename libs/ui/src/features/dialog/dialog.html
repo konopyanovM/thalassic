@@ -1,6 +1,13 @@
 <ng-template cdkPortalOutlet />
 @if (config.closeable) {
-  <button class="tls-dialog__close" type="button" [attr.aria-label]="config.closeLabel" (click)="close()">
+  <tls-button
+    class="tls-dialog__close"
+    icon
+    variant="text"
+    size="sm"
+    [ariaLabel]="config.closeLabel"
+    (click)="close()"
+  >
     <tls-icon name="close" aria-hidden="true" />
-  </button>
+  </tls-button>
 }

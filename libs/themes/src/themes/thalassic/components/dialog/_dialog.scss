@@ -10,12 +10,18 @@
   --tls-dialog-border-radius: var(--radius-xl);
   --tls-dialog-shadow: var(--shadow-lg);
   --tls-dialog-padding: var(--spacing-6);
+  // Glyph size, distinct from the button's hit area below.
   --tls-dialog-close-size: 16px;
+  --tls-dialog-close-button-size: var(--control-height-sm);
   --tls-dialog-close-padding: var(--spacing-4);
 
   position: relative;
 
   width: var(--tls-dialog-width);
+  // Never taller than the visible viewport, so a long dialog scrolls in its
+  // body rather than running off screen. `dvh` tracks mobile browser chrome as
+  // it collapses, which is what an overlay pinned to the visible area wants.
+  max-height: calc(100dvh - var(--spacing-12));
 
   display: flex;
   flex-direction: column;
@@ -27,41 +33,65 @@
   color: var(--tls-dialog-color);
   box-shadow: var(--tls-dialog-shadow);
 
+  // The portal inserts the consumer's content component as the dialog's only
+  // content child, so that host — not the header/body/footer inside it — is
+  // this flex column's item. Make it a flex column in turn, or the body cannot
+  // claim the leftover height and never scrolls. A type selector is unavoidable
+  // here: the element belongs to the consumer, so it carries no class of ours.
+  > *:not(.tls-dialog__close) {
+    min-height: 0;
+
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
   &__close {
     position: absolute;
     top: var(--tls-dialog-close-padding);
     inset-inline-end: var(--tls-dialog-close-padding);
     z-index: 1;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    // Closing is a neutral affordance, not a themed action, so it must not
+    // inherit whatever default color an app configures for buttons. The text
+    // variant derives its rest, hover and active treatment from this one
+    // property, so overriding it recolors all three.
+    //
+    // It is set on the inner control rather than the host because that is
+    // where `.tls-button--<color>` lands; matching that selector's specificity
+    // is enough only because `dialog` is forwarded after `button` in
+    // `components/index.scss` — keep that order.
+    .tls-button {
+      --tls-button-color: var(--color-outline);
+    }
 
-    width: var(--tls-dialog-close-size);
-    height: var(--tls-dialog-close-size);
-
-    color: var(--color-outline);
-    background: transparent;
-    border: none;
-    cursor: pointer;
-
-    transition: color var(--motion-fast) var(--motion-ease-in-out);
-
-    &:hover {
-      color: var(--color-on-surface);
+    &:hover .tls-button {
+      --tls-button-color: var(--color-on-surface);
     }
 
     .tls-icon {
-      width: 100%;
-      height: 100%;
+      width: var(--tls-dialog-close-size);
+      height: var(--tls-dialog-close-size);
     }
   }
 
   &__header {
-    padding: var(--tls-dialog-padding) var(--tls-dialog-padding) 0;
+    // The close button is absolutely positioned over this corner, so the
+    // header reserves its inset plus its width plus a gutter, keeping a long
+    // title clear of it.
+    padding: var(--tls-dialog-padding)
+      calc(
+        var(--tls-dialog-close-padding) + var(--tls-dialog-close-button-size) +
+          var(--spacing-2)
+      )
+      0 var(--tls-dialog-padding);
+
+    display: block;
   }
 
   &__title {
+    display: block;
+
     font-size: var(--font-title-large-size);
     font-weight: var(--font-weight-medium);
     line-height: var(--font-title-large-line-height);
@@ -69,8 +99,16 @@
   }
 
   &__body {
-    flex: 1;
+    // `min-height: 0` lets the body shrink below its content so `overflow-y`
+    // actually engages; without it a flex item floors at its content height
+    // and the dialog grows past the viewport instead of scrolling.
+    min-height: 0;
+
     padding: var(--spacing-4) var(--tls-dialog-padding);
+
+    display: block;
+    flex: 1;
+
     overflow-y: auto;
   }
 
@@ -79,7 +117,22 @@
 
     display: flex;
     align-items: center;
-    justify-content: flex-end;
     gap: var(--spacing-3);
+
+    &--start {
+      justify-content: flex-start;
+    }
+
+    &--center {
+      justify-content: center;
+    }
+
+    &--end {
+      justify-content: flex-end;
+    }
+
+    &--space-between {
+      justify-content: space-between;
+    }
   }
 }

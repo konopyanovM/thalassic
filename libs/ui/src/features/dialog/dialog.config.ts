@@ -1,4 +1,4 @@
-import { dialogSize } from './dialog.types';
+import { dialogFooterAlign, dialogSize } from './dialog.types';
 
 export interface DialogConfig {
   size: dialogSize;
@@ -6,6 +6,8 @@ export interface DialogConfig {
   backdropClose: boolean;
   /** Accessible name for the close button, overridable for localization. */
   closeLabel: string;
+  /** Alignment `tls-dialog-footer` falls back to when it sets none itself. */
+  footerAlign: dialogFooterAlign;
 }
 
 export const DEFAULT_DIALOG_CONFIG: DialogConfig = {
@@ -13,4 +15,5 @@ export const DEFAULT_DIALOG_CONFIG: DialogConfig = {
   closeable: true,
   backdropClose: true,
   closeLabel: 'Close dialog',
+  footerAlign: 'end',
 };
