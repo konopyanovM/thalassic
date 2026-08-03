@@ -5,6 +5,11 @@ export const PAN_DEFAULT_THRESHOLD = 10;
 // Width in px of the start zone when `edge` is set.
 export const PAN_DEFAULT_EDGE_SIZE = 24;
 
+// How far one axis must outweigh the other before the gesture locks onto it. At
+// 1 the larger component always wins, so a 46° drag counts as horizontal; above
+// 1 an ambiguous diagonal stays undecided and the browser keeps the pointer.
+export const PAN_DEFAULT_LOCK_RATIO = 1;
+
 // Duration in ms of the rolling sample window velocity is computed over. A short
 // window makes a slow drag that ends in a fast flick report the flick's velocity
 // rather than averaging it away over the whole gesture.

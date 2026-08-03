@@ -44,6 +44,7 @@ function createPointerEvent(type: string, options: PointerOptions): PointerEvent
       [tlsPan]="enabled()"
       [axis]="axis()"
       [edge]="edge()"
+      [lockRatio]="lockRatio()"
       (panStart)="starts.push($event)"
       (panMove)="moves.push($event)"
       (panEnd)="ends.push($event)"
@@ -59,6 +60,7 @@ class HostComponent {
   readonly enabled = signal(true);
   readonly axis = signal<panAxis>('both');
   readonly edge = signal<panEdge | null>(null);
+  readonly lockRatio = signal(1);
 
   readonly starts: PanEvent[] = [];
   readonly moves: PanEvent[] = [];
@@ -115,6 +117,14 @@ describe('PanDirective', () => {
     hostElement.dispatchEvent(createPointerEvent(type, options));
   }
 
+  // The directive reads only `cancelable` and calls `preventDefault`, so a plain
+  // cancelable Event stands in for a TouchEvent jsdom cannot construct.
+  function dispatchTouchMove(): Event {
+    const event = new Event('touchmove', { bubbles: true, cancelable: true });
+    document.dispatchEvent(event);
+    return event;
+  }
+
   it('locks after the threshold and reports start, moves and end', async () => {
     await setup();
 
@@ -136,6 +146,44 @@ describe('PanDirective', () => {
     expect(host.ends.length).toBe(1);
     expect(host.ends[0].direction).toBe('right');
     expect(host.ends[0].logicalDirection).toBe('right');
+  });
+
+  it('suppresses the touch default only while locked, so the browser cannot steal the gesture', async () => {
+    await setup();
+
+    dispatch('pointerdown', { x: 50, y: 50, timeStamp: 0 });
+
+    // Still undecided: the browser must keep its scrolling fast path.
+    expect(dispatchTouchMove().defaultPrevented).toBe(false);
+
+    dispatch('pointermove', { x: 90, y: 50, timeStamp: 10 });
+    expect(host.starts.length).toBe(1);
+
+    // Locked: the default is suppressed so a perpendicular drift cannot trip
+    // the browser's scroll heuristic and cancel the drag.
+    expect(dispatchTouchMove().defaultPrevented).toBe(true);
+
+    dispatch('pointerup', { x: 90, y: 50, timeStamp: 20 });
+    expect(dispatchTouchMove().defaultPrevented).toBe(false);
+  });
+
+  it('leaves an ambiguous diagonal undecided until it resolves when lockRatio demands it', async () => {
+    await setup();
+    host.axis.set('x');
+    host.lockRatio.set(1.5);
+    fixture.detectChanges();
+
+    dispatch('pointerdown', { x: 50, y: 50, timeStamp: 0 });
+
+    // 40px across, 35px down: past the slop and horizontally dominant, but not
+    // by 1.5x, so the gesture stays undecided instead of peeking.
+    dispatch('pointermove', { x: 90, y: 85, timeStamp: 10 });
+    expect(host.starts.length).toBe(0);
+
+    // Resolves once the horizontal component clearly wins.
+    dispatch('pointermove', { x: 150, y: 85, timeStamp: 20 });
+    expect(host.starts.length).toBe(1);
+    expect(host.starts[0].direction).toBe('right');
   });
 
   it('abandons a gesture whose dominant axis is not permitted', async () => {

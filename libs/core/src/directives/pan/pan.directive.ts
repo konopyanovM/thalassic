@@ -15,7 +15,12 @@ import {
   PLATFORM_ID,
   Signal,
 } from '@angular/core';
-import { PAN_DEFAULT_EDGE_SIZE, PAN_DEFAULT_THRESHOLD, PAN_VELOCITY_WINDOW } from './pan.constants';
+import {
+  PAN_DEFAULT_EDGE_SIZE,
+  PAN_DEFAULT_LOCK_RATIO,
+  PAN_DEFAULT_THRESHOLD,
+  PAN_VELOCITY_WINDOW,
+} from './pan.constants';
 import { panAxis, panDirection, panEdge, PanEvent } from './pan.types';
 
 interface PanSample {
@@ -37,7 +42,11 @@ interface PanSample {
  * - The gesture stays undecided until the pointer travels `threshold` px, then
  *   axis-locks onto the dominant axis; a disallowed axis, or a scrollable
  *   ancestor with room to scroll in the locked direction, abandons the gesture
- *   and leaves the browser in control.
+ *   and leaves the browser in control. `lockRatio` raises how decisively one
+ *   axis must win, keeping ambiguous diagonals with the browser.
+ * - A locked gesture holds the pointer for its whole life: the touch default is
+ *   suppressed so the browser cannot start scrolling the cross axis partway
+ *   through and cancel the drag.
  * - `pointermove` is handled outside the Angular zone; only `panStart`,
  *   `panEnd` and `panCancel` re-enter it.
  * - Velocity comes from a rolling sample window, so a slow drag ending in a
@@ -69,6 +78,13 @@ export class PanDirective {
   public readonly axis: InputSignal<panAxis> = input<panAxis>('both');
   /** Slop in px the pointer must travel before the gesture axis-locks. */
   public readonly threshold: InputSignal<number> = input<number>(PAN_DEFAULT_THRESHOLD);
+  /**
+   * How far the dominant axis must outweigh the other before the gesture locks
+   * onto it. `1` locks on whichever component is larger; raise it (`1.5`, `2`)
+   * to demand deliberate single-axis intent so an ambiguous diagonal is left to
+   * the browser to scroll. Values below `1` have no effect beyond `1`.
+   */
+  public readonly lockRatio: InputSignal<number> = input<number>(PAN_DEFAULT_LOCK_RATIO);
   /** When set, the gesture may only start within this edge zone of the host. */
   public readonly edge: InputSignal<panEdge | null> = input<panEdge | null>(null);
   /** Width in px of the `edge` start zone. */
@@ -112,6 +128,7 @@ export class PanDirective {
   private readonly _pointerUpListener = (event: Event) => this._onPointerUp(event as PointerEvent);
   private readonly _pointerCancelListener = (event: Event) =>
     this._onPointerCancel(event as PointerEvent);
+  private readonly _touchMoveListener = (event: Event) => this._onTouchMove(event as TouchEvent);
 
   // Computed
   /**
@@ -174,6 +191,10 @@ export class PanDirective {
       documentReference.addEventListener('pointercancel', this._pointerCancelListener, {
         passive: true,
       });
+      // The only non-passive listener, and attached for the gesture's lifetime
+      // rather than permanently, so the document keeps its fast-path scrolling
+      // whenever no gesture is in flight.
+      documentReference.addEventListener('touchmove', this._touchMoveListener, { passive: false });
     });
     this._documentListenersAttached = true;
   }
@@ -185,6 +206,7 @@ export class PanDirective {
     documentReference.removeEventListener('pointermove', this._pointerMoveListener);
     documentReference.removeEventListener('pointerup', this._pointerUpListener);
     documentReference.removeEventListener('pointercancel', this._pointerCancelListener);
+    documentReference.removeEventListener('touchmove', this._touchMoveListener);
     this._documentListenersAttached = false;
   }
 
@@ -210,7 +232,12 @@ export class PanDirective {
 
     if (Math.hypot(deltaX, deltaY) < this.threshold()) return;
 
-    const dominantAxis: 'x' | 'y' = Math.abs(deltaX) >= Math.abs(deltaY) ? 'x' : 'y';
+    const dominantAxis = this._resolveDominantAxis(deltaX, deltaY);
+    // Travel too diagonal to call stays undecided rather than abandoning the
+    // gesture: a drag that begins ambiguously may still resolve to a clear axis
+    // as it continues, and until it does the browser keeps the pointer.
+    if (dominantAxis === null) return;
+
     const allowedAxis = this.axis();
     if (allowedAxis !== 'both' && dominantAxis !== allowedAxis) {
       this._reset();
@@ -247,6 +274,20 @@ export class PanDirective {
     this._releaseCapture(event);
     this._reset();
     this._zone.run(() => this.panEnd.emit(panEvent));
+  }
+
+  /**
+   * Keeps a locked gesture from being stolen mid-drag. `touch-action` is latched
+   * when the gesture starts and still grants the browser the cross axis (`pan-y`
+   * for a horizontal pan), so a drag with any perpendicular drift eventually
+   * trips the browser's scroll heuristic, which claims the pointer and cancels
+   * the gesture. Suppressing the touch default is the only way to decline that
+   * hand-off — `preventDefault` on `pointermove` has no effect on scrolling.
+   */
+  private _onTouchMove(event: TouchEvent): void {
+    // Uncancelable once the browser has already committed to scrolling; calling
+    // `preventDefault` then only earns a console warning.
+    if (this._locked && event.cancelable) event.preventDefault();
   }
 
   private _onPointerCancel(event: PointerEvent): void {
@@ -287,6 +328,23 @@ export class PanDirective {
     const body = this._elementRef.nativeElement.ownerDocument.body;
     body.style.userSelect = this._previousBodyUserSelect;
     this._previousBodyUserSelect = null;
+  }
+
+  /**
+   * The axis the travel so far commits to, or `null` while neither component
+   * outweighs the other by `lockRatio`. At the default ratio of 1 the larger
+   * component always wins and this never returns `null`.
+   */
+  private _resolveDominantAxis(deltaX: number, deltaY: number): 'x' | 'y' | null {
+    const absoluteX = Math.abs(deltaX);
+    const absoluteY = Math.abs(deltaY);
+    // Below 1 the two conditions overlap and the x check would win contests it
+    // should lose, so sub-1 values are clamped to the neutral ratio.
+    const lockRatio = Math.max(1, this.lockRatio());
+
+    if (absoluteX >= absoluteY * lockRatio) return 'x';
+    if (absoluteY >= absoluteX * lockRatio) return 'y';
+    return null;
   }
 
   private _releaseCapture(event: PointerEvent): void {
