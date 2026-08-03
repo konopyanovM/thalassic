@@ -1,3 +1,14 @@
+## 22.16.0 (2026-08-03)
+
+### 🚀 Features
+
+- **ui:** added slider component ([7caaed2](https://github.com/konopyanovM/thalassic/commit/7caaed2))
+- **ui/slider:** added tooltip to slider ([9532c1d](https://github.com/konopyanovM/thalassic/commit/9532c1d))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.15.3 (2026-08-03)
 
 ### 🚀 Features
