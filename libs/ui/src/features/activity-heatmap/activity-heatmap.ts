@@ -26,7 +26,7 @@ import {
 import { LOCALE_CONFIG, localeFormatOptions } from '../../abstract/locale';
 import { color, controlSize } from '../../types';
 import { createNowSignal, rotateWeekDays } from '../../utils';
-import { TooltipDirective } from '../tooltip';
+import { TooltipDelegateDirective } from '../tooltip';
 import {
   DAY_LABEL_FORMAT,
   DAYS_PER_WEEK,
@@ -59,7 +59,7 @@ import { resolveActivityLevel } from './resolve-activity-level';
 @Component({
   selector: 'tls-activity-heatmap',
   templateUrl: './activity-heatmap.html',
-  imports: [Grid, GridRow, GridCell, TooltipDirective],
+  imports: [Grid, GridRow, GridCell, TooltipDelegateDirective],
   host: {
     '[class]': 'hostClasses()',
   },

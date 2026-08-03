@@ -22,11 +22,15 @@
       </div>
     }
 
+    <!-- One delegated tooltip serves every cell, so a year of days costs a single directive
+         and overlay service instead of one per cell. -->
     <div
       ngGrid
+      tlsTooltipDelegate
       class="tls-activity-heatmap__grid"
       rowWrap="nowrap"
       colWrap="nowrap"
+      [tooltipDisabled]="!showTooltip()"
       [attr.aria-label]="gridLabel() ?? null"
       [attr.aria-labelledby]="ariaLabelledby() ?? null"
     >
@@ -44,8 +48,7 @@
               [selectable]="day.inRange"
               [style.--tls-activity-heatmap-intensity]="intensity(day.level)"
               [attr.aria-label]="day.label"
-              [tlsTooltip]="day.label"
-              [tooltipDisabled]="!showTooltip() || !day.inRange"
+              [attr.data-tooltip]="day.inRange ? day.label : null"
               (click)="onDaySelect(day)"
               (keydown.enter)="onDaySelect(day)"
               (keydown.space)="onDaySpace($event, day)"
