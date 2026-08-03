@@ -17,4 +17,13 @@ export type systemIcon =
   | 'success'
   | 'warning'
   | 'error'
-  | 'info';
+  | 'info'
+  | 'bold'
+  | 'italic'
+  | 'strikethrough'
+  | 'inline-code'
+  | 'bullet-list'
+  | 'ordered-list'
+  | 'blockquote'
+  | 'link'
+  | 'code-block';

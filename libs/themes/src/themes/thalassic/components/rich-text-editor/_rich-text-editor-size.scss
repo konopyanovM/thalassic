@@ -1,0 +1,22 @@
+.tls-rich-text-editor {
+  --tls-rich-text-editor-padding-inline: var(--spacing-3);
+
+  // Toolbar controls and the link-bar actions keep a fixed box across every control
+  // size, so the toolbar's rhythm stays stable while the editable area scales.
+  --tls-rich-text-editor-button-size: 32px;
+
+  // Typography comes from the shared form-control size classes
+  // (`form-control/_form-control-size.scss`), which the component emits on its
+  // host; only the editable area's block padding is size-specific here.
+  &.tls-form-control--sm {
+    --tls-rich-text-editor-padding-block: var(--spacing-1);
+  }
+
+  &.tls-form-control--md {
+    --tls-rich-text-editor-padding-block: var(--spacing-2);
+  }
+
+  &.tls-form-control--lg {
+    --tls-rich-text-editor-padding-block: var(--spacing-3);
+  }
+}

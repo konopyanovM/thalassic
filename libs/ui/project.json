@@ -34,7 +34,13 @@
     },
     "test": {
       "executor": "@nx/angular:unit-test",
-      "options": {}
+      "options": {
+        "include": [
+          "**/*.spec.ts",
+          "../charts/src/**/*.spec.ts",
+          "../rich-text-editor/src/**/*.spec.ts"
+        ]
+      }
     },
     "lint": {
       "executor": "@nx/eslint:lint"

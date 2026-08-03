@@ -1,0 +1,121 @@
+@use '../../mixins' as mixins;
+
+.tls-rich-text-editor {
+  &.tls-form-control {
+    padding-inline: 0;
+
+    overflow: hidden;
+
+    &:not(.tls-form-control--disabled):not(.tls-form-control--show-error):hover {
+      --tls-form-control-border-color: var(--color-outline-variant);
+    }
+  }
+
+  &__toolbar {
+    padding: var(--spacing-1);
+
+    border-block-end: var(--tls-form-control-border-width, 1px) solid var(--color-outline-variant);
+
+    background-color: var(--color-surface-container-low);
+  }
+
+  &__separator {
+    background-color: var(--color-outline-variant);
+  }
+
+  &__button {
+    border: none;
+    border-radius: var(--radius-sm);
+
+    background-color: transparent;
+
+    color: var(--color-on-surface-variant);
+
+    transition:
+      color var(--motion-fast) var(--motion-ease-in-out),
+      background-color var(--motion-fast) var(--motion-ease-in-out);
+
+    @include mixins.touch-target(var(--tls-rich-text-editor-button-size));
+
+    // The neutral hover excludes the active control so its pressed tint stays
+    // readable under the cursor; the active control hovers within its own hue below.
+    &:not(:disabled):hover:not(.tls-rich-text-editor__button--active) {
+      background-color: var(--color-surface-container-highest);
+
+      color: var(--color-on-surface);
+    }
+
+    &:focus-visible {
+      @include mixins.focus-ring;
+    }
+
+    &--active {
+      background-color: var(--color-primary-container);
+
+      color: var(--color-primary);
+
+      &:not(:disabled):hover {
+        background-color: color-mix(
+          in srgb,
+          var(--color-primary-container) 85%,
+          var(--color-surface)
+        );
+      }
+    }
+
+    &:disabled {
+      color: var(--color-outline);
+    }
+  }
+
+  &__link-bar {
+    padding: var(--spacing-2);
+
+    border-block-start: var(--tls-form-control-border-width, 1px) solid var(--color-outline-variant);
+
+    background-color: var(--color-surface-container-low);
+  }
+
+  &__link-input {
+    padding: var(--spacing-1) var(--spacing-2);
+
+    border: 1px solid var(--color-outline-variant);
+    border-radius: var(--radius-sm);
+
+    background-color: var(--color-surface-container-lowest);
+
+    color: var(--color-on-surface);
+
+    &:focus-visible {
+      outline: none;
+
+      border-color: var(--color-primary);
+    }
+  }
+
+  &__link-action {
+    height: var(--tls-rich-text-editor-button-size);
+
+    padding-inline: var(--spacing-3);
+
+    display: inline-flex;
+    align-items: center;
+
+    border: none;
+    border-radius: var(--radius-sm);
+
+    background-color: var(--color-primary);
+
+    color: var(--color-on-primary);
+
+    cursor: pointer;
+
+    @include mixins.touch-target(var(--tls-rich-text-editor-button-size));
+
+    &--ghost {
+      background-color: transparent;
+
+      color: var(--color-on-surface-variant);
+    }
+  }
+}

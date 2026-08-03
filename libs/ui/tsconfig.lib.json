@@ -7,11 +7,11 @@
     "inlineSources": true,
     "types": []
   },
-  "include": ["src/**/*.ts", "charts/src/**/*.ts", "fontawesome/src/**/*.ts"],
-  "exclude": [
-    "**/*.spec.ts",
-    "**/*.test.ts",
-    "**/*.stories.ts",
-    "**/*.stories.js"
-  ]
+  "include": [
+    "src/**/*.ts",
+    "charts/src/**/*.ts",
+    "fontawesome/src/**/*.ts",
+    "rich-text-editor/src/**/*.ts"
+  ],
+  "exclude": ["**/*.spec.ts", "**/*.test.ts", "**/*.stories.ts", "**/*.stories.js"]
 }

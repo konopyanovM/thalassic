@@ -1,0 +1,78 @@
+:host {
+  --tls-rich-text-editor-width: 320px;
+
+  position: relative;
+
+  width: var(--tls-rich-text-editor-width);
+
+  display: flex;
+  flex-direction: column;
+
+  &.tls-form-control--fluid {
+    --tls-rich-text-editor-width: 100%;
+  }
+
+  .tls-rich-text-editor {
+    &__toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      // The gap keeps adjacent expanded touch targets (6px per-edge overflow at the 32px
+      // control size) from overlapping and stealing each other's edge taps.
+      gap: var(--spacing-2);
+    }
+
+    &__separator {
+      width: 1px;
+      height: 16px;
+
+      margin-inline: var(--spacing-1);
+    }
+
+    &__button {
+      position: relative;
+
+      width: var(--tls-rich-text-editor-button-size, 32px);
+      height: var(--tls-rich-text-editor-button-size, 32px);
+
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+
+      cursor: pointer;
+
+      &:disabled {
+        cursor: not-allowed;
+      }
+
+      &--text {
+        font-weight: 600;
+      }
+    }
+
+    &__icon {
+      width: 16px;
+      height: 16px;
+    }
+
+    &__editor {
+      display: flex;
+      flex-direction: column;
+    }
+
+    &__link-bar {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-2);
+    }
+
+    &__link-input {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    &__link-action {
+      position: relative;
+    }
+  }
+}

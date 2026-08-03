@@ -1,0 +1,61 @@
+<div class="tls-rich-text-editor__toolbar" ngToolbar [attr.aria-label]="labels.toolbar">
+  @for (entry of entries(); track $index) {
+    @if (entry.separator) {
+      <span class="tls-rich-text-editor__separator" aria-hidden="true"></span>
+    } @else if (entry.button) {
+      <button
+        class="tls-rich-text-editor__button"
+        [class.tls-rich-text-editor__button--active]="isActive(entry.button)"
+        [class.tls-rich-text-editor__button--text]="entry.button.text"
+        type="button"
+        ngToolbarWidget
+        [value]="entry.button.id"
+        [disabled]="notInteractive()"
+        [attr.aria-label]="entry.button.label"
+        [attr.aria-pressed]="isActive(entry.button)"
+        [attr.title]="entry.button.shortcut ? entry.button.label + ' (' + entry.button.shortcut + ')' : entry.button.label"
+        (mousedown)="$event.preventDefault()"
+        (click)="runCommand(entry.button)"
+      >
+        @if (entry.button.text) {
+          <span aria-hidden="true">{{ entry.button.text }}</span>
+        } @else if (entry.button.icon) {
+          <tls-icon class="tls-rich-text-editor__icon" [name]="entry.button.icon" aria-hidden="true" />
+        }
+      </button>
+    }
+  }
+</div>
+
+<div #editorHost class="tls-rich-text-editor__editor"></div>
+
+@if (linkEditing()) {
+  <div class="tls-rich-text-editor__link-bar">
+    <input
+      #linkInput
+      class="tls-rich-text-editor__link-input"
+      type="url"
+      inputmode="url"
+      [placeholder]="labels.linkPlaceholder"
+      [attr.aria-label]="labels.linkUrl"
+      [value]="linkUrl()"
+      (input)="onLinkInput($event)"
+      (keydown.enter)="applyLink($event)"
+      (keydown.escape)="cancelLink($event)"
+    />
+    <button
+      class="tls-rich-text-editor__link-action"
+      type="button"
+      (click)="applyLink()"
+    >
+      {{ labels.linkApply }}
+    </button>
+    <button
+      class="tls-rich-text-editor__link-action tls-rich-text-editor__link-action--ghost"
+      type="button"
+      (click)="cancelLink()"
+    >
+      {{ labels.linkCancel }}
+    </button>
+  </div>
+}
