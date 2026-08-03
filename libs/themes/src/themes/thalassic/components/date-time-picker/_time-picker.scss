@@ -31,6 +31,36 @@
     padding-bottom: var(--spacing-2);
   }
 
+  &__day-period {
+    position: relative;
+
+    min-width: var(--spacing-11);
+
+    margin-inline-start: var(--spacing-2);
+    padding: var(--spacing-1) var(--spacing-2);
+
+    border: none;
+    border-radius: var(--radius-2xl);
+
+    background-color: var(--color-surface-container-high);
+
+    font-size: var(--font-label-large-size);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-on-surface);
+
+    cursor: pointer;
+
+    @include mixins.touch-target(var(--spacing-7));
+
+    &:hover {
+      background-color: var(--color-surface-container-highest);
+    }
+
+    &:focus-visible {
+      @include mixins.focus-ring;
+    }
+  }
+
   &__arrow {
     display: flex;
     align-items: center;

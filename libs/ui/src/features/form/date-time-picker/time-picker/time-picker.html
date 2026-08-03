@@ -19,3 +19,9 @@
     <tls-icon name="chevron-down" aria-hidden="true" />
   </button>
 </div>
+
+@if (hour12) {
+  <button type="button" class="tls-time-picker__day-period" (click)="toggleDayPeriod()">
+    {{ dayPeriodLabel() }}
+  </button>
+}

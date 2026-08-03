@@ -1,12 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { addDays, setHours, startOfWeek } from 'date-fns';
+import { LOCALE_CONFIG } from '../../abstract/locale';
 import { CalendarTimeGrid } from './calendar-time-grid';
 import { CalendarEvent } from './calendar.types';
 
 const anchor = new Date(2026, 6, 20);
 const weekStart = startOfWeek(anchor, { weekStartsOn: 0 });
 
-const timed = (id: string, dayOffset: number, startHour: number, endHour: number): CalendarEvent => ({
+const timed = (
+  id: string,
+  dayOffset: number,
+  startHour: number,
+  endHour: number,
+): CalendarEvent => ({
   id,
   title: id,
   start: setHours(addDays(weekStart, dayOffset), startHour),
@@ -34,10 +40,7 @@ describe('CalendarTimeGrid', () => {
   });
 
   it('renders one column per day', async () => {
-    setInputs(
-      [addDays(weekStart, 0), addDays(weekStart, 1), addDays(weekStart, 2)],
-      [],
-    );
+    setInputs([addDays(weekStart, 0), addDays(weekStart, 1), addDays(weekStart, 2)], []);
     await fixture.whenStable();
     expect(query('.tls-calendar-time-grid__column').length).toBe(3);
   });
@@ -60,6 +63,35 @@ describe('CalendarTimeGrid', () => {
     const chips = query('.tls-calendar-time-grid__event');
     expect(chips.length).toBe(2);
     expect(chips.every(chip => chip.style.width === '50%')).toBe(true);
+  });
+
+  it('labels the gutter on a 24-hour clock when configured', async () => {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      imports: [CalendarTimeGrid],
+      providers: [{ provide: LOCALE_CONFIG, useValue: { hourCycle: 24 } }],
+    }).compileComponents();
+    fixture = TestBed.createComponent(CalendarTimeGrid);
+
+    setInputs([addDays(weekStart, 1)], []);
+    await fixture.whenStable();
+
+    const labels = query('.tls-calendar-time-grid__hour-label').map(label =>
+      label.textContent?.trim(),
+    );
+    expect(labels[0]).toBe('00:00');
+    expect(labels[13]).toBe('13:00');
+  });
+
+  it('labels the gutter on a 12-hour clock by default', async () => {
+    setInputs([addDays(weekStart, 1)], []);
+    await fixture.whenStable();
+
+    const labels = query('.tls-calendar-time-grid__hour-label').map(label =>
+      label.textContent?.trim(),
+    );
+    expect(labels[0]).toBe('12 AM');
+    expect(labels[13]).toBe('1 PM');
   });
 
   it('routes all-day events to the all-day row', async () => {

@@ -18,11 +18,18 @@ import {
 } from '@angular/core';
 import { Day, format } from 'date-fns';
 import { FORM_CONTROL, ValueFormControl } from '../../../abstract/form';
-import { localeFormatOptions, LOCALE_CONFIG } from '../../../abstract/locale';
+import { isHour12, localeFormatOptions, LOCALE_CONFIG } from '../../../abstract/locale';
 import { controlSize } from '../../../types';
 import { Loader } from '../../loader';
 import { Popover } from '../../popover';
 import { DatePickerCalendar } from './calendar';
+import {
+  DATE_LABEL_FORMAT,
+  MONTH_LABEL_FORMAT,
+  TIME_LABEL_FORMAT_12,
+  TIME_LABEL_FORMAT_24,
+  YEAR_LABEL_FORMAT,
+} from './date-time-picker.constants';
 import { DATE_TIME_PICKER_CONFIG } from './date-time-picker.token';
 import { dateTimePickerMode } from './date-time-picker.types';
 import { MonthPicker } from './month-picker';
@@ -52,6 +59,9 @@ export class DateTimePicker extends ValueFormControl<Date | null> {
   private readonly _locale = inject(LOCALE_CONFIG);
 
   private readonly _dateOptions = localeFormatOptions(this._locale);
+  private readonly _timeFormat = isHour12(this._locale)
+    ? TIME_LABEL_FORMAT_12
+    : TIME_LABEL_FORMAT_24;
 
   // View children
   private readonly popoverComponent: Signal<Popover | undefined> = viewChild<Popover>('popoverRef');
@@ -96,11 +106,11 @@ export class DateTimePicker extends ValueFormControl<Date | null> {
     const value = this.value();
     if (!value) return this.placeholder();
     const mode = this.mode();
-    if (mode === 'calendar') return format(value, 'MMM d, yyyy', this._dateOptions);
-    if (mode === 'month-picker') return format(value, 'MMMM yyyy', this._dateOptions);
-    if (mode === 'year-picker') return format(value, 'yyyy', this._dateOptions);
-    if (mode === 'time-picker') return format(value, 'HH:mm', this._dateOptions);
-    return format(value, 'MMM d, yyyy HH:mm', this._dateOptions);
+    if (mode === 'calendar') return format(value, DATE_LABEL_FORMAT, this._dateOptions);
+    if (mode === 'month-picker') return format(value, MONTH_LABEL_FORMAT, this._dateOptions);
+    if (mode === 'year-picker') return format(value, YEAR_LABEL_FORMAT, this._dateOptions);
+    if (mode === 'time-picker') return format(value, this._timeFormat, this._dateOptions);
+    return format(value, `${DATE_LABEL_FORMAT} ${this._timeFormat}`, this._dateOptions);
   });
 
   constructor() {

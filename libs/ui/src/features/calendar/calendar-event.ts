@@ -8,11 +8,11 @@ import {
   output,
   OutputEmitterRef,
   Signal,
-  TemplateRef,
+  TemplateRef
 } from '@angular/core';
 import { format } from 'date-fns';
-import { localeFormatOptions, LOCALE_CONFIG } from '../../abstract/locale';
-import { TIME_AWARE_VIEWS } from './calendar.constants';
+import { isHour12, LOCALE_CONFIG, localeFormatOptions } from '../../abstract/locale';
+import { EVENT_TIME_FORMAT_12, EVENT_TIME_FORMAT_24, TIME_AWARE_VIEWS } from './calendar.constants';
 import { CalendarEvent, CalendarEventContext, calendarView } from './calendar.types';
 
 /**
@@ -40,6 +40,9 @@ export class CalendarEventItem {
 
   // State
   private readonly _dateOptions = localeFormatOptions(this._locale);
+  private readonly _timeFormat = isHour12(this._locale)
+    ? EVENT_TIME_FORMAT_12
+    : EVENT_TIME_FORMAT_24;
 
   // Computed
   protected readonly classes: Signal<string[]> = computed(() => {
@@ -59,7 +62,7 @@ export class CalendarEventItem {
     const event = this.event();
     const view = this.view();
     if (TIME_AWARE_VIEWS.includes(view) && event.allDay !== true) {
-      return `${format(event.start, 'p', this._dateOptions)} ${event.title}`;
+      return `${format(event.start, this._timeFormat, this._dateOptions)} ${event.title}`;
     }
     return event.title;
   });

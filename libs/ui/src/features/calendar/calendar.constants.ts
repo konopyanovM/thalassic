@@ -30,8 +30,17 @@ export const PX_PER_MINUTE = HOUR_HEIGHT / 60;
 /** `date-fns` format token for a time-grid column heading, e.g. "Mon 20". */
 export const TIME_GRID_HEADING_FORMAT = 'EEE d';
 
-/** `date-fns` format token for an hour label in the time gutter, e.g. "9 AM". */
-export const HOUR_LABEL_FORMAT = 'h a';
+/** `date-fns` format token for a 12-hour gutter label, e.g. "9 AM". */
+export const HOUR_LABEL_FORMAT_12 = 'h a';
+
+/** `date-fns` format token for a 24-hour gutter label, e.g. "09:00". */
+export const HOUR_LABEL_FORMAT_24 = 'HH:mm';
+
+/** `date-fns` format token for a 12-hour event start time, e.g. "9:30 AM". */
+export const EVENT_TIME_FORMAT_12 = 'h:mm a';
+
+/** `date-fns` format token for a 24-hour event start time, e.g. "09:30". */
+export const EVENT_TIME_FORMAT_24 = 'HH:mm';
 
 /** `date-fns` format token for an agenda day's weekday, e.g. "Wednesday". */
 export const AGENDA_WEEKDAY_FORMAT = 'EEEE';

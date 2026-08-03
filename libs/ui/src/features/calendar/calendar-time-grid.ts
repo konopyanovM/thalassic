@@ -10,13 +10,14 @@ import {
   TemplateRef,
 } from '@angular/core';
 import { addHours, differenceInMinutes, format, isSameDay, startOfDay } from 'date-fns';
-import { localeFormatOptions, LOCALE_CONFIG } from '../../abstract/locale';
+import { isHour12, localeFormatOptions, LOCALE_CONFIG } from '../../abstract/locale';
 import { createNowSignal } from '../../utils';
 import { assignEventLanes } from './assign-event-lanes';
 import { CalendarEventItem } from './calendar-event';
 import {
   HOUR_HEIGHT,
-  HOUR_LABEL_FORMAT,
+  HOUR_LABEL_FORMAT_12,
+  HOUR_LABEL_FORMAT_24,
   MIN_EVENT_HEIGHT,
   NOW_REFRESH_INTERVAL_MS,
   PX_PER_MINUTE,
@@ -85,6 +86,9 @@ export class CalendarTimeGrid {
   protected readonly hourHeight = HOUR_HEIGHT;
   protected readonly allDayLabel: string = this._config.labels.allDay;
   private readonly _dateOptions = localeFormatOptions(this._locale);
+  private readonly _hourLabelFormat = isHour12(this._locale)
+    ? HOUR_LABEL_FORMAT_12
+    : HOUR_LABEL_FORMAT_24;
   /** Ticking current time, so the now line and today highlight track the clock. */
   private readonly _now = createNowSignal(NOW_REFRESH_INTERVAL_MS);
 
@@ -124,7 +128,13 @@ export class CalendarTimeGrid {
         };
       });
 
-      return { date: day, isToday: isSameDay(day, now), heading: format(day, TIME_GRID_HEADING_FORMAT, this._dateOptions), allDayEvents, timedEvents };
+      return {
+        date: day,
+        isToday: isSameDay(day, now),
+        heading: format(day, TIME_GRID_HEADING_FORMAT, this._dateOptions),
+        allDayEvents,
+        timedEvents,
+      };
     });
   });
 
@@ -143,7 +153,7 @@ export class CalendarTimeGrid {
 
   // Protected methods
   protected hourLabel(hour: number): string {
-    return format(addHours(startOfDay(new Date()), hour), HOUR_LABEL_FORMAT, this._dateOptions);
+    return format(addHours(startOfDay(new Date()), hour), this._hourLabelFormat, this._dateOptions);
   }
 
   protected laneOffset(layout: TimedEventLayout): number {
