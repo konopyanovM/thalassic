@@ -245,6 +245,33 @@ describe('PanDirective', () => {
     expect(host.ends.length).toBe(1);
   });
 
+  it('suspends text selection while locked and restores it on release', async () => {
+    await setup();
+
+    dispatch('pointerdown', { x: 50, y: 50, timeStamp: 0 });
+    dispatch('pointermove', { x: 90, y: 50, timeStamp: 10 });
+    expect(document.body.style.userSelect).toBe('none');
+
+    dispatch('pointerup', { x: 90, y: 50, timeStamp: 20 });
+    expect(document.body.style.userSelect).toBe('');
+  });
+
+  it('cancels an active gesture when disabled mid-drag', async () => {
+    await setup();
+
+    dispatch('pointerdown', { x: 50, y: 50, timeStamp: 0 });
+    dispatch('pointermove', { x: 90, y: 50, timeStamp: 10 });
+    expect(host.starts.length).toBe(1);
+
+    host.enabled.set(false);
+    fixture.detectChanges();
+
+    dispatch('pointermove', { x: 120, y: 50, timeStamp: 20 });
+    expect(host.cancelCount).toBe(1);
+    expect(host.moves.length).toBe(0);
+    expect(document.body.style.userSelect).toBe('');
+  });
+
   it('does nothing while disabled', async () => {
     await setup();
     host.enabled.set(false);

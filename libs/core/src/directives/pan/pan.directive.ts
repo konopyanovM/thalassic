@@ -99,7 +99,19 @@ export class PanDirective {
   private _locked = false;
   private _lockedAxis: 'x' | 'y' | null = null;
   private _samples: PanSample[] = [];
-  private _removeDocumentListeners: (() => void) | null = null;
+  private _documentListenersAttached = false;
+  // Body `user-select` value to restore after a locked gesture; `null` while no
+  // suppression is active.
+  private _previousBodyUserSelect: string | null = null;
+
+  // Document-level listeners live for one gesture at a time; pre-bound once so
+  // attach and detach always reference the same functions and allocate nothing
+  // per gesture.
+  private readonly _pointerMoveListener = (event: Event) =>
+    this._onPointerMove(event as PointerEvent);
+  private readonly _pointerUpListener = (event: Event) => this._onPointerUp(event as PointerEvent);
+  private readonly _pointerCancelListener = (event: Event) =>
+    this._onPointerCancel(event as PointerEvent);
 
   // Computed
   /**
@@ -117,7 +129,9 @@ export class PanDirective {
   });
 
   constructor() {
-    this._destroyRef.onDestroy(() => this._detachDocumentListeners());
+    // Full reset rather than just detaching: a destroy mid-gesture must also
+    // restore the suspended text selection.
+    this._destroyRef.onDestroy(() => this._reset());
   }
 
   // Protected methods
@@ -149,32 +163,39 @@ export class PanDirective {
    * leaves the host and the gesture state would never reset.
    */
   private _attachDocumentListeners(): void {
+    if (this._documentListenersAttached) return;
+
     this._zone.runOutsideAngular(() => {
       const documentReference = this._elementRef.nativeElement.ownerDocument;
-      const onMove = (event: Event) => this._onPointerMove(event as PointerEvent);
-      const onUp = (event: Event) => this._onPointerUp(event as PointerEvent);
-      const onCancel = (event: Event) => this._onPointerCancel(event as PointerEvent);
-
-      documentReference.addEventListener('pointermove', onMove, { passive: true });
-      documentReference.addEventListener('pointerup', onUp, { passive: true });
-      documentReference.addEventListener('pointercancel', onCancel, { passive: true });
-
-      this._removeDocumentListeners = () => {
-        documentReference.removeEventListener('pointermove', onMove);
-        documentReference.removeEventListener('pointerup', onUp);
-        documentReference.removeEventListener('pointercancel', onCancel);
-      };
+      documentReference.addEventListener('pointermove', this._pointerMoveListener, {
+        passive: true,
+      });
+      documentReference.addEventListener('pointerup', this._pointerUpListener, { passive: true });
+      documentReference.addEventListener('pointercancel', this._pointerCancelListener, {
+        passive: true,
+      });
     });
+    this._documentListenersAttached = true;
   }
 
   private _detachDocumentListeners(): void {
-    if (!this._removeDocumentListeners) return;
-    this._removeDocumentListeners();
-    this._removeDocumentListeners = null;
+    if (!this._documentListenersAttached) return;
+
+    const documentReference = this._elementRef.nativeElement.ownerDocument;
+    documentReference.removeEventListener('pointermove', this._pointerMoveListener);
+    documentReference.removeEventListener('pointerup', this._pointerUpListener);
+    documentReference.removeEventListener('pointercancel', this._pointerCancelListener);
+    this._documentListenersAttached = false;
   }
 
   private _onPointerMove(event: PointerEvent): void {
     if (event.pointerId !== this._pointerId) return;
+    // Disabling mid-gesture cancels it, rather than leaving the consumer with
+    // a gesture that silently stops reporting.
+    if (!this.tlsPan()) {
+      this._cancelGesture(event);
+      return;
+    }
 
     const deltaX = event.clientX - this._startX;
     const deltaY = event.clientY - this._startY;
@@ -203,6 +224,7 @@ export class PanDirective {
     this._locked = true;
     this._lockedAxis = dominantAxis;
     this._elementRef.nativeElement.setPointerCapture(event.pointerId);
+    this._suppressTextSelection();
 
     const panEvent = this._createEvent(event, deltaX, deltaY);
     this._zone.run(() => this.panStart.emit(panEvent));
@@ -229,7 +251,10 @@ export class PanDirective {
 
   private _onPointerCancel(event: PointerEvent): void {
     if (event.pointerId !== this._pointerId) return;
+    this._cancelGesture(event);
+  }
 
+  private _cancelGesture(event: PointerEvent): void {
     const wasLocked = this._locked;
     if (wasLocked) this._releaseCapture(event);
     this._reset();
@@ -241,7 +266,27 @@ export class PanDirective {
     this._locked = false;
     this._lockedAxis = null;
     this._samples = [];
+    this._restoreTextSelection();
     this._detachDocumentListeners();
+  }
+
+  /**
+   * Pointer capture does not stop the browser from sweeping a text selection
+   * under a mouse/pen drag, so selection is suspended for the locked gesture
+   * by clearing `user-select` on the body and restored on reset.
+   */
+  private _suppressTextSelection(): void {
+    const body = this._elementRef.nativeElement.ownerDocument.body;
+    this._previousBodyUserSelect = body.style.userSelect;
+    body.style.userSelect = 'none';
+  }
+
+  private _restoreTextSelection(): void {
+    if (this._previousBodyUserSelect === null) return;
+
+    const body = this._elementRef.nativeElement.ownerDocument.body;
+    body.style.userSelect = this._previousBodyUserSelect;
+    this._previousBodyUserSelect = null;
   }
 
   private _releaseCapture(event: PointerEvent): void {
@@ -297,8 +342,8 @@ export class PanDirective {
   }
 
   private _canScrollHorizontally(element: Element, deltaX: number): boolean {
-    const { overflowX } = getComputedStyle(element);
-    if (overflowX !== 'auto' && overflowX !== 'scroll') return false;
+    const style = getComputedStyle(element);
+    if (style.overflowX !== 'auto' && style.overflowX !== 'scroll') return false;
 
     const maxScroll = element.scrollWidth - element.clientWidth;
     if (maxScroll <= 0) return false;
@@ -306,7 +351,9 @@ export class PanDirective {
     // `scrollLeft` runs negative in RTL; the absolute value is the distance
     // scrolled from the inline-start edge in either direction.
     const scrolledFromStart = Math.abs(element.scrollLeft);
-    const isRtl = this._directionality.value === 'rtl';
+    // Resolved from the element's own computed style rather than the app-level
+    // direction: a scroll container may set its own `direction`.
+    const isRtl = style.direction === 'rtl';
     // Finger travelling toward inline-start reveals content past the current
     // scroll position (scrolls toward inline-end), and vice versa.
     const towardEnd = isRtl ? deltaX > 0 : deltaX < 0;
@@ -326,8 +373,12 @@ export class PanDirective {
 
   private _recordSample(event: PointerEvent): void {
     const cutoff = event.timeStamp - PAN_VELOCITY_WINDOW;
-    this._samples = this._samples.filter(sample => sample.timeStamp >= cutoff);
-    this._samples.push({ x: event.clientX, y: event.clientY, timeStamp: event.timeStamp });
+    const samples = this._samples;
+
+    // Pruned in place: this runs on every pointermove, so no fresh array per
+    // sample. The window holds only a handful of entries, so `shift` is cheap.
+    while (samples.length > 0 && samples[0].timeStamp < cutoff) samples.shift();
+    samples.push({ x: event.clientX, y: event.clientY, timeStamp: event.timeStamp });
   }
 
   private _velocity(): { velocityX: number; velocityY: number } {
