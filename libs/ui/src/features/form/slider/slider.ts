@@ -22,6 +22,12 @@ import { sliderColor } from './slider.types';
   templateUrl: './slider.html',
   styleUrl: './slider.scss',
   providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => Slider) }],
+  // The block lives on the host so the value bubble, a sibling of the native
+  // input, resolves the same track/thumb custom properties the input does.
+  host: {
+    '[class]': 'hostClasses()',
+    '[style.--tls-slider-fill]': 'fillRatio()',
+  },
 })
 export class Slider extends ValueFormControl<number> {
   // Injections
@@ -54,13 +60,23 @@ export class Slider extends ValueFormControl<number> {
   public readonly tabindex: InputSignal<string | number> = input<string | number>(0);
 
   /**
-   * Human-readable value announced instead of the raw number, for a scale whose
-   * bare number means nothing on its own ("2.5×", "Medium").
+   * Floats the current value in a small bubble above the thumb while the slider
+   * is hovered, focused, or being dragged.
+   */
+  public readonly showTooltip: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    this._config.showTooltip,
+    { transform: booleanAttribute },
+  );
+
+  /**
+   * Human-readable value announced instead of the raw number, and shown in the
+   * tooltip, for a scale whose bare number means nothing on its own ("2.5×",
+   * "Medium").
    */
   public readonly valueText = input<string | undefined>(undefined);
 
   // Computed
-  protected readonly classes: Signal<string[]> = computed<string[]>(() => {
+  protected readonly hostClasses: Signal<string[]> = computed<string[]>(() => {
     const className = this.CLASS_NAME;
 
     const array: string[] = [`${className}--${this.size()}`, `${className}--${this.color()}`];
@@ -69,6 +85,11 @@ export class Slider extends ValueFormControl<number> {
 
     return array.concat(this.controlClasses());
   });
+
+  /** Bubble content: the spelled-out value when there is one, the raw number otherwise. */
+  protected readonly tooltipLabel: Signal<string> = computed<string>(
+    () => this.valueText() ?? String(this.value()),
+  );
 
   /**
    * Filled share of the track as a unitless 0–1 ratio. Unitless so the theme can

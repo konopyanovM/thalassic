@@ -13,7 +13,7 @@
   // The thumb's centre travels only across `track − thumb`, inset by half a thumb
   // at each end, so the fill has to stop on that travel line rather than at a raw
   // share of the track — otherwise the colour edge drifts off the thumb by up to
-  // half a thumb width toward the extremes.
+  // half a thumb width toward the extremes. The value bubble rides the same line.
   --tls-slider-fill-position: calc(
     var(--tls-slider-fill) * (100% - var(--tls-slider-thumb-size)) +
       (var(--tls-slider-thumb-size) / 2)
@@ -23,6 +23,11 @@
   --tls-slider-fill-color: var(--color-primary);
   --tls-slider-thumb-color: var(--color-primary);
   --tls-slider-thumb-border-color: var(--color-surface);
+  --tls-slider-tooltip-color: var(--color-primary);
+  --tls-slider-tooltip-on-color: var(--color-on-primary);
+  --tls-slider-tooltip-offset: var(--spacing-2);
+  // Centers the bubble on the thumb; RTL anchors from the opposite edge.
+  --tls-slider-tooltip-translate: -50%;
 
   // The filled portion is painted as a hard-stop gradient on the track itself,
   // so no extra element is needed and the fill never lags the native thumb.
@@ -32,131 +37,180 @@
     var(--tls-slider-track-color) var(--tls-slider-fill-position)
   );
 
-  position: relative;
+  .tls-slider-input {
+    // Positioning context for the touch-target expansion below.
+    position: relative;
 
-  // The host box is the thumb's height; the track is centered inside it.
-  height: var(--tls-slider-thumb-size);
-
-  margin: 0;
-
-  appearance: none;
-
-  background-color: transparent;
-
-  cursor: pointer;
-
-  @include mixins.touch-target(var(--tls-slider-thumb-size));
-
-  // The ring belongs on the thumb, not the full-width host box.
-  &:focus {
-    outline: none;
-  }
-
-  &:focus-visible::-webkit-slider-thumb {
-    @include mixins.focus-ring;
-  }
-
-  &:focus-visible::-moz-range-thumb {
-    @include mixins.focus-ring;
-  }
-
-  &::-webkit-slider-runnable-track {
-    height: var(--tls-slider-track-height);
-
-    border-radius: var(--radius-sm);
-
-    background-image: var(--tls-slider-track-image);
-  }
-
-  &::-moz-range-track {
-    height: var(--tls-slider-track-height);
-
-    border-radius: var(--radius-sm);
-
-    background-image: var(--tls-slider-track-image);
-  }
-
-  &::-webkit-slider-thumb {
-    width: var(--tls-slider-thumb-size);
+    // The input box is the thumb's height; the track is centered inside it.
     height: var(--tls-slider-thumb-size);
 
-    // WebKit lays the thumb out from the track's top edge, so it has to be
-    // pulled back up by half their size difference to sit centered on it.
-    margin-block-start: calc(
-      (var(--tls-slider-track-height) - var(--tls-slider-thumb-size)) / 2
-    );
+    margin: 0;
 
     appearance: none;
 
-    border: var(--tls-slider-thumb-border-width) solid var(--tls-slider-thumb-border-color);
-    border-radius: 50%;
+    background-color: transparent;
 
-    background-color: var(--tls-slider-thumb-color);
-    box-shadow: var(--shadow-xs);
+    cursor: pointer;
 
-    cursor: inherit;
+    // Grows the grabbable band vertically to the accessible minimum without
+    // thickening the track. Taps in the expansion still reach the input, so the
+    // value follows the finger from anywhere in the band.
+    @include mixins.touch-target(var(--tls-slider-thumb-size));
 
-    @include mixins.motion {
-      transition: transform var(--motion-fast) var(--motion-ease-spring);
+    // The ring belongs on the thumb, not the full-width input box.
+    &:focus {
+      outline: none;
+    }
+
+    &:focus-visible::-webkit-slider-thumb {
+      @include mixins.focus-ring;
+    }
+
+    &:focus-visible::-moz-range-thumb {
+      @include mixins.focus-ring;
+    }
+
+    &::-webkit-slider-runnable-track {
+      height: var(--tls-slider-track-height);
+
+      border-radius: var(--radius-sm);
+
+      background-image: var(--tls-slider-track-image);
+    }
+
+    &::-moz-range-track {
+      height: var(--tls-slider-track-height);
+
+      border-radius: var(--radius-sm);
+
+      background-image: var(--tls-slider-track-image);
+    }
+
+    &::-webkit-slider-thumb {
+      width: var(--tls-slider-thumb-size);
+      height: var(--tls-slider-thumb-size);
+
+      // WebKit lays the thumb out from the track's top edge, so it has to be
+      // pulled back up by half their size difference to sit centered on it.
+      margin-block-start: calc(
+        (var(--tls-slider-track-height) - var(--tls-slider-thumb-size)) / 2
+      );
+
+      appearance: none;
+
+      border: var(--tls-slider-thumb-border-width) solid var(--tls-slider-thumb-border-color);
+      border-radius: 50%;
+
+      background-color: var(--tls-slider-thumb-color);
+      box-shadow: var(--shadow-xs);
+
+      cursor: inherit;
+
+      @include mixins.motion {
+        transition: transform var(--motion-fast) var(--motion-ease-spring);
+      }
+    }
+
+    &::-moz-range-thumb {
+      width: var(--tls-slider-thumb-size);
+      height: var(--tls-slider-thumb-size);
+
+      box-sizing: border-box;
+
+      border: var(--tls-slider-thumb-border-width) solid var(--tls-slider-thumb-border-color);
+      border-radius: 50%;
+
+      background-color: var(--tls-slider-thumb-color);
+      box-shadow: var(--shadow-xs);
+
+      cursor: inherit;
+
+      @include mixins.motion {
+        transition: transform var(--motion-fast) var(--motion-ease-spring);
+      }
     }
   }
 
-  &::-moz-range-thumb {
-    width: var(--tls-slider-thumb-size);
-    height: var(--tls-slider-thumb-size);
+  // A bare label rather than the `tls-tooltip` overlay: it tracks the thumb
+  // continuously during a drag, which an anchored overlay would lag behind.
+  .tls-slider-tooltip {
+    position: absolute;
+    inset-inline-start: var(--tls-slider-fill-position);
+    inset-block-end: calc(100% + var(--tls-slider-tooltip-offset));
 
-    box-sizing: border-box;
+    padding: var(--spacing-1) var(--spacing-2);
 
-    border: var(--tls-slider-thumb-border-width) solid var(--tls-slider-thumb-border-color);
-    border-radius: 50%;
+    border-radius: var(--radius-sm);
 
-    background-color: var(--tls-slider-thumb-color);
-    box-shadow: var(--shadow-xs);
+    background-color: var(--tls-slider-tooltip-color);
 
-    cursor: inherit;
+    font-size: var(--font-label-small-size);
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    color: var(--tls-slider-tooltip-on-color);
+
+    opacity: 0;
+    // Never intercepts a drag that starts on the thumb underneath it.
+    pointer-events: none;
+    transform: translateX(var(--tls-slider-tooltip-translate)) scale(0.9);
 
     @include mixins.motion {
-      transition: transform var(--motion-fast) var(--motion-ease-spring);
+      transition:
+        opacity var(--motion-fast) var(--motion-ease-out),
+        transform var(--motion-fast) var(--motion-ease-spring);
     }
   }
 
-  &:not(.tls-slider--disabled):hover::-webkit-slider-thumb {
+  &:hover .tls-slider-tooltip,
+  &:active .tls-slider-tooltip,
+  &:focus-within .tls-slider-tooltip {
+    opacity: 1;
+    transform: translateX(var(--tls-slider-tooltip-translate)) scale(1);
+  }
+
+  &:not(.tls-slider--disabled) .tls-slider-input:hover::-webkit-slider-thumb {
     box-shadow: var(--shadow-sm);
   }
 
-  &:not(.tls-slider--disabled):hover::-moz-range-thumb {
+  &:not(.tls-slider--disabled) .tls-slider-input:hover::-moz-range-thumb {
     box-shadow: var(--shadow-sm);
   }
 
   // Grows the thumb under the finger/cursor while the value is being dragged.
   // The scale itself is ungated so the state still reads at every motion level;
   // only the easing into it is (see the thumb rules above).
-  &:not(.tls-slider--disabled):not(.tls-slider--readonly):active::-webkit-slider-thumb {
+  &:not(.tls-slider--disabled):not(.tls-slider--readonly)
+    .tls-slider-input:active::-webkit-slider-thumb {
     transform: scale(var(--tls-slider-thumb-active-scale));
   }
 
-  &:not(.tls-slider--disabled):not(.tls-slider--readonly):active::-moz-range-thumb {
+  &:not(.tls-slider--disabled):not(.tls-slider--readonly)
+    .tls-slider-input:active::-moz-range-thumb {
     transform: scale(var(--tls-slider-thumb-active-scale));
   }
 
   // The browser mirrors the thumb's travel under `dir="rtl"`, but a gradient
-  // direction is physical and has to be flipped explicitly.
+  // direction and a centering translate are physical and have to be flipped.
   :root[dir='rtl'] & {
     --tls-slider-fill-direction: to left;
+    --tls-slider-tooltip-translate: 50%;
   }
 
   // Form control
-  &.tls-slider--disabled {
+  &.tls-slider--disabled .tls-slider-input {
     cursor: not-allowed;
     filter: brightness(0.9);
   }
 
-  &.tls-slider--readonly {
+  &.tls-slider--readonly .tls-slider-input {
     cursor: default;
   }
 
   &:not(.tls-slider--disabled).tls-slider--show-error {
     --tls-slider-fill-color: var(--color-danger);
     --tls-slider-thumb-color: var(--color-danger);
+    --tls-slider-tooltip-color: var(--color-danger);
+    --tls-slider-tooltip-on-color: var(--color-on-danger);
   }
 }

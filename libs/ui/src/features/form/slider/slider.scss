@@ -1,15 +1,19 @@
 :host {
   --tls-slider-width: 200px;
 
-  display: inline-flex;
-  align-items: center;
+  // Anchors the absolutely-positioned value bubble.
+  position: relative;
+
   width: var(--tls-slider-width);
 
-  .tls-slider {
+  display: inline-flex;
+  align-items: center;
+
+  .tls-slider-input {
     width: 100%;
   }
+}
 
-  &:has(.tls-slider--fluid) {
-    --tls-slider-width: 100%;
-  }
+:host(.tls-slider--fluid) {
+  --tls-slider-width: 100%;
 }

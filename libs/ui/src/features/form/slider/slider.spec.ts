@@ -14,6 +14,8 @@ import { Slider } from './slider';
       [step]="step()"
       [readonly]="readonly()"
       [disabled]="disabled()"
+      [showTooltip]="showTooltip()"
+      [valueText]="valueText()"
       ariaLabel="Zoom"
     />
   `,
@@ -25,11 +27,13 @@ class HostComponent {
   readonly step = signal(1);
   readonly readonly = signal(false);
   readonly disabled = signal(false);
+  readonly showTooltip = signal(false);
+  readonly valueText = signal<string | undefined>(undefined);
 }
 
 describe('Slider', () => {
   let fixture: ComponentFixture<HostComponent>;
-  let host: HostComponent;
+  let component: HostComponent;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -37,21 +41,33 @@ describe('Slider', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(HostComponent);
-    host = fixture.componentInstance;
+    component = fixture.componentInstance;
     fixture.detectChanges();
     await fixture.whenStable();
   });
 
+  function host(): HTMLElement {
+    return fixture.nativeElement.querySelector('tls-slider') as HTMLElement;
+  }
+
   function input(): HTMLInputElement {
     return fixture.nativeElement.querySelector('input[type="range"]') as HTMLInputElement;
+  }
+
+  function tooltip(): HTMLElement | null {
+    return fixture.nativeElement.querySelector('.tls-slider-tooltip') as HTMLElement | null;
+  }
+
+  async function settle(): Promise<void> {
+    fixture.detectChanges();
+    await fixture.whenStable();
   }
 
   async function drag(to: string): Promise<void> {
     const element = input();
     element.value = to;
     element.dispatchEvent(new Event('input'));
-    fixture.detectChanges();
-    await fixture.whenStable();
+    await settle();
   }
 
   it('renders a native range input carrying the bounds and the accessible name', () => {
@@ -65,47 +81,43 @@ describe('Slider', () => {
   });
 
   it('reflects the value as the track fill ratio', async () => {
-    expect(input().style.getPropertyValue('--tls-slider-fill')).toBe('0.5');
+    expect(host().style.getPropertyValue('--tls-slider-fill')).toBe('0.5');
 
-    host.value.set(75);
-    fixture.detectChanges();
-    await fixture.whenStable();
+    component.value.set(75);
+    await settle();
 
-    expect(input().style.getPropertyValue('--tls-slider-fill')).toBe('0.75');
+    expect(host().style.getPropertyValue('--tls-slider-fill')).toBe('0.75');
   });
 
   it('measures the fill against the bounds, not against 0–100', async () => {
-    host.min.set(1);
-    host.max.set(5);
-    host.value.set(2);
-    fixture.detectChanges();
-    await fixture.whenStable();
+    component.min.set(1);
+    component.max.set(5);
+    component.value.set(2);
+    await settle();
 
-    expect(input().style.getPropertyValue('--tls-slider-fill')).toBe('0.25');
+    expect(host().style.getPropertyValue('--tls-slider-fill')).toBe('0.25');
   });
 
   it('commits a drag to the value model', async () => {
     await drag('80');
 
-    expect(host.value()).toBe(80);
+    expect(component.value()).toBe(80);
   });
 
   it('reverts a drag while readonly, since a range input has no native readonly', async () => {
-    host.readonly.set(true);
-    fixture.detectChanges();
-    await fixture.whenStable();
+    component.readonly.set(true);
+    await settle();
 
     await drag('80');
 
-    expect(host.value()).toBe(50);
+    expect(component.value()).toBe(50);
     expect(input().value).toBe('50');
   });
 
   it('marks itself readonly and disabled for assistive technology', async () => {
-    host.readonly.set(true);
-    host.disabled.set(true);
-    fixture.detectChanges();
-    await fixture.whenStable();
+    component.readonly.set(true);
+    component.disabled.set(true);
+    await settle();
 
     expect(input().getAttribute('aria-readonly')).toBe('true');
     expect(input().disabled).toBe(true);
@@ -113,9 +125,38 @@ describe('Slider', () => {
 
   it('marks the control touched on blur', async () => {
     input().dispatchEvent(new Event('blur'));
-    fixture.detectChanges();
-    await fixture.whenStable();
+    await settle();
 
-    expect(input().classList).toContain('tls-slider--touched');
+    expect(host().classList).toContain('tls-slider--touched');
+  });
+
+  it('renders no value tooltip unless asked for one', () => {
+    expect(tooltip()).toBeNull();
+  });
+
+  it('shows the current value in the tooltip and follows the value', async () => {
+    component.showTooltip.set(true);
+    await settle();
+
+    expect(tooltip()?.textContent?.trim()).toBe('50');
+
+    await drag('80');
+
+    expect(tooltip()?.textContent?.trim()).toBe('80');
+  });
+
+  it('prefers the spelled-out value in the tooltip', async () => {
+    component.showTooltip.set(true);
+    component.valueText.set('2.5×');
+    await settle();
+
+    expect(tooltip()?.textContent?.trim()).toBe('2.5×');
+  });
+
+  it('hides the tooltip from assistive technology, since the input announces the value', async () => {
+    component.showTooltip.set(true);
+    await settle();
+
+    expect(tooltip()?.getAttribute('aria-hidden')).toBe('true');
   });
 });

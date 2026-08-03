@@ -17,6 +17,7 @@ const meta: Meta<Slider> = {
     color: 'primary',
     size: 'md',
     fluid: false,
+    showTooltip: false,
     ...STORY_FORM_CONTROL_ARGS,
   },
   argTypes: {

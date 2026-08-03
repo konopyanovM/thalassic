@@ -1,6 +1,6 @@
 <input
   type="range"
-  [class]="classes()"
+  class="tls-slider-input"
   [attr.id]="effectiveInputId()"
   [name]="name()"
   [attr.aria-label]="ariaLabel() ?? null"
@@ -17,7 +17,11 @@
   [max]="max()"
   [step]="step()"
   [value]="value()"
-  [style.--tls-slider-fill]="fillRatio()"
   (input)="onInput($event)"
   (blur)="touched.set(true)"
 />
+@if (showTooltip()) {
+  <!-- Purely visual: the range input already announces the value (and `valueText`),
+       so voicing the bubble too would read it twice. -->
+  <span class="tls-slider-tooltip" aria-hidden="true">{{ tooltipLabel() }}</span>
+}

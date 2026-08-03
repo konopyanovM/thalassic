@@ -8,6 +8,7 @@ export interface SliderConfig {
   min: number;
   max: number;
   step: number;
+  showTooltip: boolean;
 }
 
 export const DEFAULT_SLIDER_CONFIG: SliderConfig = {
@@ -17,4 +18,5 @@ export const DEFAULT_SLIDER_CONFIG: SliderConfig = {
   min: 0,
   max: 100,
   step: 1,
+  showTooltip: false,
 };
