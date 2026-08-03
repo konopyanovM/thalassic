@@ -1,3 +1,17 @@
+## 22.15.2 (2026-08-03)
+
+### 🚀 Features
+
+- **ui/tooltip:** added arrow to tooltip ([9d2b5af](https://github.com/konopyanovM/thalassic/commit/9d2b5af))
+
+### 🩹 Fixes
+
+- **core:** pan lock ratio added ([a35ca08](https://github.com/konopyanovM/thalassic/commit/a35ca08))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.15.1 (2026-08-03)
 
 ### 🩹 Fixes
