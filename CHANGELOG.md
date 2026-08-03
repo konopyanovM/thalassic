@@ -1,3 +1,13 @@
+## 22.15.1 (2026-08-03)
+
+### 🩹 Fixes
+
+- **core:** pan gesture robustness and hot-path cleanups ([66ad9b0](https://github.com/konopyanovM/thalassic/commit/66ad9b0))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.15.0 (2026-08-03)
 
 ### 🚀 Features
