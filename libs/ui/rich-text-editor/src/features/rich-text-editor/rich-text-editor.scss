@@ -17,9 +17,10 @@
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      // The gap keeps adjacent expanded touch targets (6px per-edge overflow at the 32px
-      // control size) from overlapping and stealing each other's edge taps.
-      gap: var(--spacing-2);
+      // At least the combined per-edge overflow of two expanded touch targets — 6px each,
+      // growing the 32px control to 44px — so neighbouring hit areas meet without
+      // overlapping and stealing each other's edge taps.
+      gap: var(--spacing-3);
     }
 
     &__separator {

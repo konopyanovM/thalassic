@@ -212,7 +212,28 @@ export class RichTextEditor extends ValueFormControl<string> implements OnDestro
     }
 
     button.command(view.state, view.dispatch, view);
-    view.focus();
+  }
+
+  /**
+   * Returns focus to the editable surface after a pointer-driven toolbar click.
+   *
+   * Bound on the toolbar container rather than the controls themselves: the roving-tabindex
+   * behavior focuses the clicked control from that control's own `click` handler, so only a
+   * listener further up the bubble path is guaranteed to run afterwards. Restoring focus
+   * there keeps it inside the same event dispatch, so no frame ever paints with focus — and
+   * its ring — on the button.
+   *
+   * Keyboard-activated clicks report an empty `pointerType` and are left alone: there the
+   * toolbar is the user's position in the widget and must keep both focus and its ring.
+   */
+  protected restoreEditorFocus(event: MouseEvent): void {
+    if (!(event instanceof PointerEvent)) return;
+    if (event.pointerType === '') return;
+    // The URL editor legitimately owns focus once it opens.
+    if (this.linkEditing()) return;
+
+    const view = this._view;
+    if (view) view.focus();
   }
 
   protected applyLink(event?: Event): void {
@@ -341,6 +362,11 @@ export class RichTextEditor extends ValueFormControl<string> implements OnDestro
   // Lifecycle
   public ngOnDestroy(): void {
     const view = this._view;
-    if (view) view.destroy();
+    if (!view) return;
+
+    // Cleared so a deferred focus restore that outlives the component is a no-op
+    // rather than a call into a destroyed view.
+    this._view = null;
+    view.destroy();
   }
 }

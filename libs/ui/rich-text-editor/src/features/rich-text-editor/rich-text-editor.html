@@ -1,4 +1,9 @@
-<div class="tls-rich-text-editor__toolbar" ngToolbar [attr.aria-label]="labels.toolbar">
+<div
+  class="tls-rich-text-editor__toolbar"
+  ngToolbar
+  [attr.aria-label]="labels.toolbar"
+  (click)="restoreEditorFocus($event)"
+>
   @for (entry of entries(); track $index) {
     @if (entry.separator) {
       <span class="tls-rich-text-editor__separator" aria-hidden="true"></span>
