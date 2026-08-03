@@ -8,12 +8,15 @@ export interface TooltipConfig {
   offset: Point;
   origin: tooltipOrigin;
   color: tooltipColor;
+  arrow: boolean;
 }
 
 export const DEFAULT_TOOLTIP_CONFIG: TooltipConfig = {
   positions: undefined,
   position: 'top',
-  offset: { x: 4, y: 4 },
+  // Clears the arrow, which protrudes `--tls-tooltip-arrow-height` past the bubble.
+  offset: { x: 8, y: 8 },
   origin: 'element',
   color: 'secondary',
+  arrow: true,
 };

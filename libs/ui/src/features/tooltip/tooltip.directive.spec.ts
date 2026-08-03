@@ -12,6 +12,9 @@ import { TooltipDirective } from './tooltip.directive';
     <button type="button" class="labelled" aria-label="Labelled" tlsTooltip="Labelled">
       labelled
     </button>
+    <button type="button" class="arrowless" tlsTooltip="Arrowless" [tooltipArrow]="false">
+      arrowless
+    </button>
   `,
 })
 class TooltipHost {}
@@ -69,6 +72,23 @@ describe('TooltipDirective', () => {
 
     expect(queryTooltip()?.textContent?.trim()).toBe('Labelled');
     expect(host.hasAttribute('aria-describedby')).toBe(false);
+  });
+
+  it('points an arrow at the edge the tooltip settled on', async () => {
+    hover(queryElement('.plain'));
+    await fixture.whenStable();
+
+    const tooltip = queryTooltip();
+    expect(tooltip?.classList.contains('tls-tooltip--arrow')).toBe(true);
+    expect(tooltip?.classList.contains('tls-tooltip--arrow-bottom')).toBe(true);
+    expect(tooltip?.classList.contains('tls-tooltip--arrow-align-center')).toBe(true);
+  });
+
+  it('omits the arrow when it is turned off', async () => {
+    hover(queryElement('.arrowless'));
+    await fixture.whenStable();
+
+    expect(queryTooltip()?.className).not.toContain('tls-tooltip--arrow');
   });
 
   it('dismisses on Escape', async () => {

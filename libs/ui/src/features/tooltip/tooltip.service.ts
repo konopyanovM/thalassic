@@ -1,48 +1,55 @@
 import {
   ConnectedPosition,
+  FlexibleConnectedPositionStrategy,
   FlexibleConnectedPositionStrategyOrigin,
   Overlay,
   OverlayRef,
 } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { ComponentRef, inject, Injectable } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { disposeAfterLeaveAnimation } from '../../abstract/overlay';
+import { OverlayArrowPosition } from '../../types';
+import { resolveOverlayArrowPosition } from '../../utils';
+import { Tooltip } from './tooltip';
 
 @Injectable()
 export class TooltipService {
+  // Injections
   private _overlay: Overlay = inject(Overlay);
 
+  // State
   private _overlayRef: OverlayRef | null = null;
+  private _tooltipRef: ComponentRef<Tooltip> | null = null;
+  private _positionSubscription: Subscription | null = null;
+  /**
+   * Edge the visible tooltip settled on. The strategy applies its position while the portal is
+   * still attaching, so the first change arrives before there is a component to hand it to.
+   */
+  private _arrowPosition: OverlayArrowPosition | null = null;
 
   // Public methods
-  public show<T>(
+  public show(
     origin: FlexibleConnectedPositionStrategyOrigin,
     positions: ConnectedPosition[],
-    tooltipPortal: ComponentPortal<T>,
-  ): ComponentRef<T> {
+  ): ComponentRef<Tooltip> {
     this.dispose();
 
-    const positionStrategy = this._overlay
-      .position()
-      .flexibleConnectedTo(origin)
-      .withPositions(positions);
-
     this._overlayRef = this._overlay.create({
-      positionStrategy,
+      positionStrategy: this._createPositionStrategy(origin, positions),
       scrollStrategy: this._overlay.scrollStrategies.reposition(),
     });
 
-    return this._overlayRef.attach(tooltipPortal);
+    this._tooltipRef = this._overlayRef.attach(new ComponentPortal(Tooltip));
+    this._tooltipRef.instance.arrowPosition.set(this._arrowPosition);
+
+    return this._tooltipRef;
   }
 
   public move(origin: FlexibleConnectedPositionStrategyOrigin, positions: ConnectedPosition[]) {
-    if (this._overlayRef) {
-      const positionStrategy = this._overlay
-        .position()
-        .flexibleConnectedTo(origin)
-        .withPositions(positions);
-      this._overlayRef.updatePositionStrategy(positionStrategy);
-    }
+    if (!this._overlayRef) return;
+
+    this._overlayRef.updatePositionStrategy(this._createPositionStrategy(origin, positions));
   }
 
   // Detaches the tooltip so Angular's `animate.leave` plays the exit animation,
@@ -53,6 +60,7 @@ export class TooltipService {
 
     const overlayRef = this._overlayRef;
     this._overlayRef = null;
+    this._reset();
 
     overlayRef.detach();
     disposeAfterLeaveAnimation(overlayRef);
@@ -60,7 +68,48 @@ export class TooltipService {
 
   public dispose() {
     if (!this._overlayRef) return;
+
     this._overlayRef.dispose();
     this._overlayRef = null;
+    this._reset();
+  }
+
+  // Private methods
+  /**
+   * Builds a strategy that reports where it settled, so the tooltip points its arrow at the
+   * position actually used rather than the one asked for.
+   */
+  private _createPositionStrategy(
+    origin: FlexibleConnectedPositionStrategyOrigin,
+    positions: ConnectedPosition[],
+  ): FlexibleConnectedPositionStrategy {
+    const positionStrategy = this._overlay
+      .position()
+      .flexibleConnectedTo(origin)
+      .withPositions(positions);
+
+    if (this._positionSubscription) this._positionSubscription.unsubscribe();
+
+    this._positionSubscription = positionStrategy.positionChanges.subscribe(change => {
+      this._arrowPosition = resolveOverlayArrowPosition(change.connectionPair);
+
+      const tooltipRef = this._tooltipRef;
+      if (!tooltipRef) return;
+
+      tooltipRef.instance.arrowPosition.set(this._arrowPosition);
+    });
+
+    return positionStrategy;
+  }
+
+  /** Drops everything tied to the overlay that just went away. */
+  private _reset(): void {
+    this._tooltipRef = null;
+    this._arrowPosition = null;
+
+    if (!this._positionSubscription) return;
+
+    this._positionSubscription.unsubscribe();
+    this._positionSubscription = null;
   }
 }

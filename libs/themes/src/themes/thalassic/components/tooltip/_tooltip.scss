@@ -4,6 +4,10 @@
   --tls-tooltip-box-shadow: 0 2px 8px -1px var(--color-shade-30);
   --tls-tooltip-padding: var(--spacing-3);
   --tls-tooltip-border-radius: 8px;
+  --tls-tooltip-arrow-width: 12px;
+  --tls-tooltip-arrow-height: 6px;
+  // Keeps an edge-aligned arrow clear of the rounded corner it sits next to.
+  --tls-tooltip-arrow-inset: 8px;
 
   padding: var(--tls-tooltip-padding);
 
@@ -15,4 +19,93 @@
   box-shadow: var(--tls-tooltip-box-shadow);
 
   @include mixins.panel-open;
+
+  // The arrow protrudes past the bubble into the gap the tooltip offset leaves, so it never
+  // takes a pointer the anchor below it should get.
+  &--arrow {
+    position: relative;
+
+    &::before {
+      content: '';
+
+      position: absolute;
+
+      background-color: var(--tls-tooltip-color);
+
+      pointer-events: none;
+    }
+  }
+
+  &--arrow-top,
+  &--arrow-bottom {
+    &::before {
+      width: var(--tls-tooltip-arrow-width);
+      height: var(--tls-tooltip-arrow-height);
+    }
+
+    &.tls-tooltip--arrow-align-start::before {
+      inset-inline-start: var(--tls-tooltip-arrow-inset);
+    }
+
+    &.tls-tooltip--arrow-align-center::before {
+      inset-inline-start: calc(50% - var(--tls-tooltip-arrow-width) / 2);
+    }
+
+    &.tls-tooltip--arrow-align-end::before {
+      inset-inline-end: var(--tls-tooltip-arrow-inset);
+    }
+  }
+
+  &--arrow-start,
+  &--arrow-end {
+    &::before {
+      width: var(--tls-tooltip-arrow-height);
+      height: var(--tls-tooltip-arrow-width);
+    }
+
+    &.tls-tooltip--arrow-align-start::before {
+      inset-block-start: var(--tls-tooltip-arrow-inset);
+    }
+
+    &.tls-tooltip--arrow-align-center::before {
+      inset-block-start: calc(50% - var(--tls-tooltip-arrow-width) / 2);
+    }
+
+    &.tls-tooltip--arrow-align-end::before {
+      inset-block-end: var(--tls-tooltip-arrow-inset);
+    }
+  }
+
+  // `clip-path` has no logical form, so the two inline-axis arrows are mirrored by hand.
+  &--arrow-top::before {
+    inset-block-end: 100%;
+
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  }
+
+  &--arrow-bottom::before {
+    inset-block-start: 100%;
+
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+  }
+
+  &--arrow-start::before {
+    inset-inline-end: 100%;
+
+    clip-path: polygon(0 50%, 100% 0, 100% 100%);
+
+    :root[dir='rtl'] & {
+      clip-path: polygon(100% 50%, 0 0, 0 100%);
+    }
+  }
+
+  &--arrow-end::before {
+    inset-inline-start: 100%;
+
+    clip-path: polygon(100% 50%, 0 0, 0 100%);
+
+    :root[dir='rtl'] & {
+      clip-path: polygon(0 50%, 100% 0, 100% 100%);
+    }
+  }
 }

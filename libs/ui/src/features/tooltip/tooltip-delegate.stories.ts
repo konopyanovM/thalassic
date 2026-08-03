@@ -13,6 +13,7 @@ const meta: Meta<TooltipDelegateDirective> = {
     tooltipPosition: 'top',
     tooltipColor: 'secondary',
     tooltipOrigin: 'element',
+    tooltipArrow: true,
     tooltipDisabled: false,
   },
   argTypes: {
@@ -28,6 +29,7 @@ const meta: Meta<TooltipDelegateDirective> = {
       control: { type: 'select' },
       options: ['element', 'cursor'],
     },
+    tooltipArrow: { control: { type: 'boolean' } },
     tooltipDisabled: { control: { type: 'boolean' } },
     tooltipPositions: { table: { disable: true } },
     tooltipOffset: { table: { disable: true } },
@@ -46,6 +48,7 @@ const meta: Meta<TooltipDelegateDirective> = {
         [tooltipPosition]="tooltipPosition"
         [tooltipColor]="tooltipColor"
         [tooltipOrigin]="tooltipOrigin"
+        [tooltipArrow]="tooltipArrow"
         [tooltipDisabled]="tooltipDisabled"
       >
         @for (cell of cells; track cell) {

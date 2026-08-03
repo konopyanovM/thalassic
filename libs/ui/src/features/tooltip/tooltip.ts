@@ -1,5 +1,6 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { Component, computed, model, ModelSignal, Signal, TemplateRef } from '@angular/core';
+import { OverlayArrowPosition } from '../../types';
 import { tooltipColor } from './tooltip.types';
 
 @Component({
@@ -31,6 +32,13 @@ export class Tooltip {
   public content: ModelSignal<string | TemplateRef<unknown>> = model.required();
   public templateData: ModelSignal<unknown> = model<unknown>(null);
   public color: ModelSignal<tooltipColor> = model.required<tooltipColor>();
+  public arrow: ModelSignal<boolean> = model.required<boolean>();
+  /**
+   * Edge the arrow points from, resolved from the position the overlay settled on. It stays
+   * `null` until the overlay reports one, so the arrow never renders on a guessed edge.
+   */
+  public arrowPosition: ModelSignal<OverlayArrowPosition | null> =
+    model<OverlayArrowPosition | null>(null);
 
   protected isString: Signal<boolean> = computed(() => typeof this.content() === 'string');
   protected templateRef: Signal<TemplateRef<unknown> | null> = computed(() => {
@@ -44,6 +52,13 @@ export class Tooltip {
     const array: string[] = [className];
 
     array.push(`${className}--${this.color()}`);
+
+    const arrowPosition = this.arrowPosition();
+    if (this.arrow() && arrowPosition) {
+      array.push(`${className}--arrow`);
+      array.push(`${className}--arrow-${arrowPosition.side}`);
+      array.push(`${className}--arrow-align-${arrowPosition.alignment}`);
+    }
 
     return array;
   });

@@ -1,5 +1,4 @@
 import { ConnectedPosition, FlexibleConnectedPositionStrategyOrigin } from '@angular/cdk/overlay';
-import { ComponentPortal } from '@angular/cdk/portal';
 import {
   computed,
   Directive,
@@ -13,7 +12,6 @@ import {
 } from '@angular/core';
 import { Point } from '@thalassic/core';
 import { addDescribedBy, buildOverlayPositions, removeDescribedBy } from '../../utils';
-import { Tooltip } from './tooltip';
 import { TooltipService } from './tooltip.service';
 import { TOOLTIP_CONFIG } from './tooltip.token';
 import { tooltipColor, tooltipOrigin, tooltipPosition } from './tooltip.types';
@@ -52,6 +50,8 @@ export abstract class TooltipTrigger implements OnDestroy {
   );
   public readonly tooltipOffset: InputSignal<Point> = input<Point>(this._config.offset);
   public readonly tooltipColor: InputSignal<tooltipColor> = input<tooltipColor>(this._config.color);
+  /** Points a small arrow at the anchor. Disable it for a plain bubble. */
+  public readonly tooltipArrow: InputSignal<boolean> = input<boolean>(this._config.arrow);
 
   // State
   /** Element the visible tooltip is anchored to, `null` while nothing is shown. */
@@ -98,14 +98,14 @@ export abstract class TooltipTrigger implements OnDestroy {
     this._hide();
     this._anchor = anchor;
 
-    const tooltipPortal = new ComponentPortal(Tooltip);
     const origin: FlexibleConnectedPositionStrategyOrigin =
       this.tooltipOrigin() === 'cursor' && point ? point : anchor;
-    const tooltipRef = this._tooltipService.show(origin, this._positions(), tooltipPortal);
+    const tooltipRef = this._tooltipService.show(origin, this._positions());
 
     tooltipRef.instance.content.set(content);
     tooltipRef.instance.templateData.set(data);
     tooltipRef.instance.color.set(this.tooltipColor());
+    tooltipRef.instance.arrow.set(this.tooltipArrow());
 
     // A description identical to the accessible name would be announced twice; the tooltip is
     // purely visual then and the link is omitted.
