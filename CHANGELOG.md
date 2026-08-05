@@ -1,3 +1,13 @@
+## 22.16.1 (2026-08-05)
+
+### 🚀 Features
+
+- **ui/confirm:** added size to confirm ([dc3e4d7](https://github.com/konopyanovM/thalassic/commit/dc3e4d7))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.16.0 (2026-08-03)
 
 ### 🚀 Features
