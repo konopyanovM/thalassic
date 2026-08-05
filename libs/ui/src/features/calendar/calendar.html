@@ -1,44 +1,52 @@
-<div class="tls-calendar__header">
-  <div class="tls-calendar__nav">
-    <tls-button
-      variant="text"
-      size="sm"
-      [ariaLabel]="labels.previous"
-      class="tls-calendar__nav-button"
-      (click)="previous()"
-    >
-      <tls-icon name="chevron-left" aria-hidden="true" />
-    </tls-button>
+@if (showsHeader()) {
+  <div class="tls-calendar__header">
+    @if (showNavigation()) {
+      <div class="tls-calendar__nav">
+        <tls-button
+          variant="text"
+          size="sm"
+          [ariaLabel]="labels.previous"
+          class="tls-calendar__nav-button"
+          (click)="previous()"
+        >
+          <tls-icon name="chevron-left" aria-hidden="true" />
+        </tls-button>
 
-    <tls-button variant="outlined" size="sm" [disabled]="isViewingToday()" (click)="today()">
-      {{ labels.today }}
-    </tls-button>
+        <tls-button variant="outlined" size="sm" [disabled]="isViewingToday()" (click)="today()">
+          {{ labels.today }}
+        </tls-button>
 
-    <tls-button
-      variant="text"
-      size="sm"
-      [ariaLabel]="labels.next"
-      class="tls-calendar__nav-button"
-      (click)="next()"
-    >
-      <tls-icon name="chevron-right" aria-hidden="true" />
-    </tls-button>
+        <tls-button
+          variant="text"
+          size="sm"
+          [ariaLabel]="labels.next"
+          class="tls-calendar__nav-button"
+          (click)="next()"
+        >
+          <tls-icon name="chevron-right" aria-hidden="true" />
+        </tls-button>
+      </div>
+    }
+
+    @if (showTitle()) {
+      <h2 class="tls-calendar__title">{{ title() }}</h2>
+    }
+
+    @if (showsViewSwitcher()) {
+      <tls-toggle-group
+        class="tls-calendar__views"
+        size="sm"
+        [options]="viewOptions()"
+        [optionLabel]="'label'"
+        [optionValue]="'value'"
+        [multiple]="false"
+        [unselectable]="false"
+        [value]="[view()]"
+        (valueChange)="onViewChange($event)"
+      />
+    }
   </div>
-
-  <h2 class="tls-calendar__title">{{ title() }}</h2>
-
-  <tls-toggle-group
-    class="tls-calendar__views"
-    size="sm"
-    [options]="viewOptions"
-    [optionLabel]="'label'"
-    [optionValue]="'value'"
-    [multiple]="false"
-    [unselectable]="false"
-    [value]="[view()]"
-    (valueChange)="onViewChange($event)"
-  />
-</div>
+}
 
 @switch (view()) {
   @case ('month') {
@@ -48,7 +56,9 @@
       [weekStartsOn]="weekStartsOn()"
       [weekDays]="weekDays()"
       [maxEventsPerDay]="maxEventsPerDay()"
+      [squareCells]="squareCells()"
       [eventTemplate]="eventTemplate()"
+      [dayTemplate]="dayTemplate()"
       [label]="ariaLabel() ?? title()"
       (dateSelect)="dateSelect.emit($event)"
       (eventSelect)="eventSelect.emit($event)"

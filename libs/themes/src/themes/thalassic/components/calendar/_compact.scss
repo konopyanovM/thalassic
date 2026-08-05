@@ -1,0 +1,21 @@
+// Width at which the calendar switches to its dense layout: the `sm` breakpoint. The value is
+// restated rather than shared because this theme carries no Sass dependency on the library that
+// owns the scale, so it must stay in sync with `sm` in `libs/core/src/styles/tools/_breakpoint.scss`
+// — the same coupling `ViewportConfig` documents on the TypeScript side. A container query cannot
+// read a custom property in its condition either, so it has to be a Sass value regardless.
+$compact-width: 640px;
+
+// Emits its content for both routes into the dense layout: forced on by the modifier class, and
+// resolved automatically once the calendar's own width crosses the threshold. Rules inside must
+// target a descendant of the calendar root, because a query container cannot match its own size.
+@mixin compact {
+  .tls-calendar--compact & {
+    @content;
+  }
+
+  @container tls-calendar (max-width: #{$compact-width}) {
+    .tls-calendar--compact-auto & {
+      @content;
+    }
+  }
+}

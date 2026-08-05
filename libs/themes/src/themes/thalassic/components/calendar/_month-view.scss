@@ -1,4 +1,6 @@
 @use '../../mixins' as mixins;
+@use 'compact';
+@use 'lines';
 
 .tls-calendar-month-view {
   // Lane geometry shared by the cell height and the bar overlay. The day-number reservation
@@ -7,6 +9,10 @@
   --tls-calendar-bar-height: var(--spacing-6);
   --tls-calendar-bar-gap: var(--spacing-1);
   --tls-calendar-more-height: var(--spacing-5);
+
+  // Diameter of a dense-layout event dot, and the gap between two of them.
+  --tls-calendar-marker-size: 6px;
+  --tls-calendar-marker-gap: var(--spacing-1);
 
   display: flex;
   flex-direction: column;
@@ -39,10 +45,15 @@
       1fr
     );
 
-    // Collapsed borders: the grid draws the top/start edge, each cell the bottom/end edge,
-    // so shared borders never double up and there are no gaps between cells.
-    border-block-start: 1px solid var(--color-outline-variant);
-    border-inline-start: 1px solid var(--color-outline-variant);
+    // The grid owns the outer edge and each cell only its interior lines, so the two families
+    // stay independently controllable and never double up along the perimeter.
+    border: lines.outer();
+
+    // With no bars to make room for, a row only has to hold a number and its dots. The floor
+    // doubles as the day cell's touch target.
+    @include compact.compact {
+      grid-auto-rows: minmax(var(--spacing-11), 1fr);
+    }
   }
 
   &__week {
@@ -50,6 +61,11 @@
 
     display: grid;
     grid-template-columns: repeat(7, 1fr);
+
+    // The grid's own border already closes the bottom of the last week.
+    &:last-child .tls-calendar-month-view__day {
+      border-block-end: none;
+    }
   }
 
   &__day {
@@ -60,8 +76,8 @@
     display: flex;
     flex-direction: column;
 
-    border-block-end: 1px solid var(--color-outline-variant);
-    border-inline-end: 1px solid var(--color-outline-variant);
+    border-block-end: lines.horizontal();
+    border-inline-end: lines.vertical();
 
     background-color: var(--color-surface-container-lowest);
 
@@ -73,12 +89,31 @@
       transition: background-color var(--motion-fast) var(--motion-ease-in-out);
     }
 
+    @include compact.compact {
+      padding-inline: var(--spacing-1);
+
+      // A grid rather than the default column flex: the dot row is reserved whether or not the
+      // day has events, so day numbers sit on one line across a week instead of shifting up
+      // wherever dots appear. `align-content` then centres the pair as a block.
+      display: grid;
+      grid-template-rows: auto var(--tls-calendar-marker-size);
+      align-content: center;
+      justify-items: center;
+      gap: var(--spacing-1);
+    }
+
     &:hover {
       background-color: var(--color-surface-container-low);
     }
 
     &:focus-visible {
       @include mixins.focus-ring;
+    }
+
+    // Seven day cells precede the bar overlay in a week, so this is the last column — its line
+    // would otherwise land on top of the grid's own border.
+    &:nth-child(7) {
+      border-inline-end: none;
     }
 
     &--outside {
@@ -110,13 +145,81 @@
 
     font-size: var(--font-label-small-size);
     font-weight: var(--font-weight-medium);
+
+    @include compact.compact {
+      align-self: center;
+    }
+  }
+
+  // Dots summarising a day's events, shown only where the bars are suppressed.
+  &__markers {
+    display: none;
+    justify-content: center;
+    gap: var(--tls-calendar-marker-gap);
+
+    @include compact.compact {
+      display: flex;
+    }
+  }
+
+  &__markers-label {
+    @include mixins.visually-hidden;
+  }
+
+  &__marker {
+    width: var(--tls-calendar-marker-size);
+    height: var(--tls-calendar-marker-size);
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background-color: var(--tls-calendar-marker-color, var(--color-primary));
+
+    &--primary {
+      --tls-calendar-marker-color: var(--color-primary);
+    }
+
+    &--secondary {
+      --tls-calendar-marker-color: var(--color-secondary);
+    }
+
+    &--tertiary {
+      --tls-calendar-marker-color: var(--color-tertiary);
+    }
+
+    &--success {
+      --tls-calendar-marker-color: var(--color-success);
+    }
+
+    &--info {
+      --tls-calendar-marker-color: var(--color-info);
+    }
+
+    &--warning {
+      --tls-calendar-marker-color: var(--color-warning);
+    }
+
+    &--danger {
+      --tls-calendar-marker-color: var(--color-danger);
+    }
   }
 
   &__more {
     margin-block-start: auto;
 
     font-size: var(--font-label-small-size);
+    // The row height reserves a single line for this label, so it truncates rather than wraps
+    // into space the grid has not accounted for.
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     color: var(--color-on-surface-variant);
+
+    // The dots already stand for every event, counted ones included.
+    @include compact.compact {
+      display: none;
+    }
   }
 
   &__bars {
@@ -135,6 +238,12 @@
     padding-inline: var(--tls-calendar-bar-gap);
 
     pointer-events: none;
+
+    // The dense layout represents events as dots inside each cell instead. Selecting a single
+    // event is no longer reachable here, so a day cell's `dateSelect` is the way in.
+    @include compact.compact {
+      display: none;
+    }
   }
 
   &__bar {
@@ -150,6 +259,23 @@
     &--continues-after .tls-calendar-event__button {
       border-start-end-radius: 0;
       border-end-end-radius: 0;
+    }
+  }
+
+  // Square cells take their height from the column width, so the row can no longer carry a
+  // floor sized to the events it holds — a cell that overflows is clipped rather than growing.
+  // Declared after the dense layout's own row sizing so the ratio wins where both apply, which
+  // also means a square cell can fall under the dense layout's touch-target floor once the
+  // column is narrower than it.
+  &--square {
+    .tls-calendar-month-view__grid {
+      grid-auto-rows: auto;
+    }
+
+    .tls-calendar-month-view__day {
+      aspect-ratio: 1;
+
+      overflow: hidden;
     }
   }
 }

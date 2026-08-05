@@ -1,18 +1,38 @@
-import { Component, computed, inject, input, InputSignal, output, OutputEmitterRef, Signal, TemplateRef } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  InputSignal,
+  output,
+  OutputEmitterRef,
+  Signal,
+  TemplateRef
+} from '@angular/core';
 import { Grid, GridCell, GridRow } from '@angular/aria/grid';
 import { Day, format, isSameDay, isSameMonth } from 'date-fns';
-import { localeFormatOptions, LOCALE_CONFIG } from '../../abstract/locale';
+import { LOCALE_CONFIG, localeFormatOptions } from '../../abstract/locale';
+import { color } from '../../types';
 import { buildMonthDays, createNowSignal, rotateWeekDays } from '../../utils';
 import { assignWeekLanes } from './assign-week-lanes';
 import { CalendarEventItem } from './calendar-event';
 import {
   DAY_NUMBER_FORMAT,
   DAYS_PER_WEEK,
+  MAX_DAY_MARKERS,
   MONTH_GRID_ROWS,
-  NOW_REFRESH_INTERVAL_MS,
+  NOW_REFRESH_INTERVAL_MS
 } from './calendar.constants';
 import { CALENDAR_CONFIG } from './calendar.token';
-import { CalendarEvent, CalendarEventContext } from './calendar.types';
+import { CalendarDayContext, CalendarEvent, CalendarEventContext } from './calendar.types';
+
+/** A dot marking one of a day's events in the dense layout, tinted by that event's color. */
+interface MonthDayMarker {
+  id: string;
+  /** Resolved with the cell so the binding keeps one array rather than rebuilding per check. */
+  classes: string[];
+}
 
 /** A day cell in the month grid: its number and how many of its events are hidden. */
 interface MonthDay {
@@ -21,6 +41,11 @@ interface MonthDay {
   inCurrentMonth: boolean;
   isToday: boolean;
   hiddenCount: number;
+  /** How many events cover the day in total, however the layout chooses to present them. */
+  eventCount: number;
+  markers: MonthDayMarker[];
+  /** Built with the cell so a template slot is not handed a fresh object on every check. */
+  context: CalendarDayContext;
 }
 
 /** A visible event bar placed on the week's lane overlay. */
@@ -41,8 +66,11 @@ interface MonthWeek {
 @Component({
   selector: 'tls-calendar-month-view',
   templateUrl: './calendar-month-view.html',
-  imports: [Grid, GridRow, GridCell, CalendarEventItem],
-  host: { class: 'tls-calendar-month-view' },
+  imports: [Grid, GridRow, GridCell, CalendarEventItem, NgTemplateOutlet],
+  host: {
+    class: 'tls-calendar-month-view',
+    '[class.tls-calendar-month-view--square]': 'squareCells()',
+  },
 })
 export class CalendarMonthView {
   // Injections
@@ -55,7 +83,11 @@ export class CalendarMonthView {
   public readonly weekStartsOn: InputSignal<Day> = input.required<Day>();
   public readonly weekDays: InputSignal<string[]> = input.required<string[]>();
   public readonly maxEventsPerDay: InputSignal<number> = input.required<number>();
+  /** Whether day cells are held to a 1:1 ratio instead of sizing to the events they hold. */
+  public readonly squareCells: InputSignal<boolean> = input<boolean>(false);
   public readonly eventTemplate = input<TemplateRef<CalendarEventContext> | undefined>(undefined);
+  /** Replaces what a day cell renders, leaving the cell's own semantics and chrome in place. */
+  public readonly dayTemplate = input<TemplateRef<CalendarDayContext> | undefined>(undefined);
   /** Accessible name for the grid, announced when focus enters it. */
   public readonly label = input<string | undefined>(undefined);
 
@@ -88,9 +120,13 @@ export class CalendarMonthView {
       const segments = assignWeekLanes(weekDays, events);
 
       const hiddenPerColumn = new Array<number>(weekDays.length).fill(0);
+      // Segments already carry each event clipped to the columns it covers, so bucketing them
+      // here costs nothing beyond the walk — far cheaper than re-testing every event per day.
+      const eventsPerColumn: CalendarEvent[][] = weekDays.map(() => []);
       const bars: MonthEventBar[] = [];
       for (const segment of segments) {
-        if (segment.lane < maxLanes) {
+        const beyondLanes = segment.lane >= maxLanes;
+        if (!beyondLanes) {
           bars.push({
             event: segment.event,
             gridColumn: `${segment.startColumn + 1} / span ${segment.endColumn - segment.startColumn + 1}`,
@@ -98,20 +134,36 @@ export class CalendarMonthView {
             continuesBefore: segment.continuesBefore,
             continuesAfter: segment.continuesAfter,
           });
-        } else {
-          for (let column = segment.startColumn; column <= segment.endColumn; column++) {
-            hiddenPerColumn[column]++;
-          }
+        }
+
+        for (let column = segment.startColumn; column <= segment.endColumn; column++) {
+          eventsPerColumn[column].push(segment.event);
+          if (beyondLanes) hiddenPerColumn[column]++;
         }
       }
 
-      const cells: MonthDay[] = weekDays.map((date, column) => ({
-        date,
-        dayNumber: format(date, DAY_NUMBER_FORMAT, this._dateOptions),
-        inCurrentMonth: isSameMonth(date, activeDate),
-        isToday: isSameDay(date, now),
-        hiddenCount: hiddenPerColumn[column],
-      }));
+      const cells: MonthDay[] = weekDays.map((date, column) => {
+        // Lane packing orders segments by column and span; a day's own events read chronologically.
+        const dayEvents = eventsPerColumn[column].sort(
+          (first, second) => first.start.getTime() - second.start.getTime(),
+        );
+        const dayNumber = format(date, DAY_NUMBER_FORMAT, this._dateOptions);
+        const inCurrentMonth = isSameMonth(date, activeDate);
+        const isToday = isSameDay(date, now);
+        return {
+          date,
+          dayNumber,
+          inCurrentMonth,
+          isToday,
+          hiddenCount: hiddenPerColumn[column],
+          context: { $implicit: date, dayNumber, inCurrentMonth, isToday, events: dayEvents },
+          eventCount: dayEvents.length,
+          markers: dayEvents.slice(0, MAX_DAY_MARKERS).map(event => ({
+            id: event.id,
+            classes: this._markerClasses(event.color),
+          })),
+        };
+      });
 
       weeks.push({ days: cells, bars });
     }
@@ -124,9 +176,22 @@ export class CalendarMonthView {
     return this._config.labels.more(count);
   }
 
+  /** Localized event-count summary, the only textual form the dense layout's dots have. */
+  protected eventCountLabel(count: number): string {
+    return this._config.labels.eventCount(count);
+  }
+
   /** Space would scroll the page; consume it and select the focused day instead. */
   protected onDaySpace(event: Event, date: Date): void {
     event.preventDefault();
     this.dateSelect.emit(date);
+  }
+
+  // Private methods
+  private _markerClasses(eventColor: color | undefined): string[] {
+    const classes = ['tls-calendar-month-view__marker'];
+    if (eventColor) classes.push(`tls-calendar-month-view__marker--${eventColor}`);
+
+    return classes;
   }
 }

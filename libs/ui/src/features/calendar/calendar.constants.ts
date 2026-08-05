@@ -9,6 +9,13 @@ export const MONTH_GRID_ROWS = 6;
 /** Default cap on events shown in a month day cell before a "+N more" affordance appears. */
 export const DEFAULT_MAX_EVENTS_PER_DAY = 3;
 
+/**
+ * Dots a day cell shows beneath its number in the dense month layout. Past this many the dots
+ * stop conveying a count and only cost width, so further events go unmarked — the cell's
+ * accessible summary still reports the true total.
+ */
+export const MAX_DAY_MARKERS = 3;
+
 /** `date-fns` format token for the month/week/day title in the header. */
 export const MONTH_TITLE_FORMAT = 'MMMM yyyy';
 

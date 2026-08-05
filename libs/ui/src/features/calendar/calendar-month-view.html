@@ -25,10 +25,27 @@
           (keydown.enter)="dateSelect.emit(cell.date)"
           (keydown.space)="onDaySpace($event, cell.date)"
         >
-          <span class="tls-calendar-month-view__day-number">{{ cell.dayNumber }}</span>
+          @if (dayTemplate(); as template) {
+            <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="cell.context" />
+          } @else {
+            <span class="tls-calendar-month-view__day-number">{{ cell.dayNumber }}</span>
 
-          @if (cell.hiddenCount > 0) {
-            <span class="tls-calendar-month-view__more">{{ moreLabel(cell.hiddenCount) }}</span>
+            <!-- Dots stand in for the event bars in the dense layout, which hides those instead. -->
+            @if (cell.eventCount > 0) {
+              <span class="tls-calendar-month-view__markers">
+                <span class="tls-calendar-month-view__markers-label">
+                  {{ eventCountLabel(cell.eventCount) }}
+                </span>
+
+                @for (marker of cell.markers; track marker.id) {
+                  <span [class]="marker.classes" aria-hidden="true"></span>
+                }
+              </span>
+            }
+
+            @if (cell.hiddenCount > 0) {
+              <span class="tls-calendar-month-view__more">{{ moreLabel(cell.hiddenCount) }}</span>
+            }
           }
         </div>
       }

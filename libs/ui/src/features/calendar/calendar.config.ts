@@ -1,5 +1,5 @@
 import { Day } from 'date-fns';
-import { DEFAULT_MAX_EVENTS_PER_DAY } from './calendar.constants';
+import { CALENDAR_VIEW_ORDER, DEFAULT_MAX_EVENTS_PER_DAY } from './calendar.constants';
 import { calendarView } from './calendar.types';
 
 /** User-facing strings rendered by the calendar and its views, overridable for localization. */
@@ -16,6 +16,11 @@ export interface CalendarLabels {
   noEvents: string;
   /** Label for the "+N more" affordance on a month day cell with hidden events. */
   more: (count: number) => string;
+  /**
+   * Accessible summary of a day cell's event count, announced in place of the dense month
+   * layout's dots — which carry no text of their own.
+   */
+  eventCount: (count: number) => string;
   /** Labels for the view-switcher options, keyed by view. */
   views: Record<calendarView, string>;
 }
@@ -23,6 +28,8 @@ export interface CalendarLabels {
 export interface CalendarConfig {
   /** View shown on first render. */
   view: calendarView;
+  /** Views the switcher offers, in the order they appear; a single entry hides the switcher. */
+  views: calendarView[];
   /** First day of the week (`date-fns` convention: 0 = Sunday). */
   weekStartsOn: Day;
   /** Short weekday labels, Sunday-first; rotated to honour `weekStartsOn`. */
@@ -41,6 +48,7 @@ export interface CalendarConfig {
 
 export const DEFAULT_CALENDAR_CONFIG: CalendarConfig = {
   view: 'month',
+  views: CALENDAR_VIEW_ORDER,
   weekStartsOn: 0,
   weekDays: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
   hourStart: 0,
@@ -54,6 +62,7 @@ export const DEFAULT_CALENDAR_CONFIG: CalendarConfig = {
     allDay: 'All day',
     noEvents: 'No events',
     more: count => `+${count} more`,
+    eventCount: count => (count === 1 ? '1 event' : `${count} events`),
     views: {
       month: 'Month',
       week: 'Week',

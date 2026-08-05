@@ -1,0 +1,19 @@
+// Removes an element from the visual layout while leaving it in the accessibility tree, so the
+// text keeps naming its control for assistive technology. Use it instead of `display: none`
+// whenever hiding content would otherwise strip a control's accessible name.
+@mixin visually-hidden {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+
+  margin: -1px;
+  padding: 0;
+
+  border: 0;
+
+  white-space: nowrap;
+  overflow: hidden;
+
+  clip-path: inset(50%);
+}

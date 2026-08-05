@@ -1,4 +1,9 @@
+@use 'compact';
+
 .tls-calendar {
+  // Named container so the dense layout can resolve against the calendar's own width rather
+  // than the viewport's, keeping a calendar in a narrow column compact on a wide screen.
+  container: tls-calendar / inline-size;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-4);
@@ -9,6 +14,10 @@
     align-items: center;
     justify-content: space-between;
     gap: var(--spacing-4);
+
+    @include compact.compact {
+      gap: var(--spacing-3);
+    }
   }
 
   &__nav {
@@ -31,9 +40,27 @@
     font-weight: var(--font-weight-semibold);
     line-height: var(--font-title-large-line-height);
     color: var(--color-on-surface);
+
+    // A full-width basis ahead of its siblings puts the title on its own line, leaving the
+    // navigation and the switcher to share the one below.
+    @include compact.compact {
+      order: -1;
+      flex-basis: 100%;
+
+      font-size: var(--font-title-medium-size);
+      line-height: var(--font-title-medium-line-height);
+    }
   }
 
   &__views {
     flex-shrink: 0;
+
+    // The switcher scrolls rather than forcing a third row when its labels outgrow the space
+    // left by the navigation.
+    @include compact.compact {
+      min-width: 0;
+
+      overflow-x: auto;
+    }
   }
 }

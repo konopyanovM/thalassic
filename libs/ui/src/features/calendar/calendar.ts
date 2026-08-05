@@ -39,14 +39,20 @@ import { CalendarMonthView } from './calendar-month-view';
 import { CalendarTimeGrid } from './calendar-time-grid';
 import { CalendarLabels } from './calendar.config';
 import {
-  CALENDAR_VIEW_ORDER,
   DAY_TITLE_FORMAT,
   MONTH_GRID_ROWS,
   MONTH_TITLE_FORMAT,
   NOW_REFRESH_INTERVAL_MS,
 } from './calendar.constants';
 import { CALENDAR_CONFIG } from './calendar.token';
-import { CalendarEvent, CalendarEventContext, CalendarRange, calendarView } from './calendar.types';
+import {
+  calendarCompact,
+  CalendarDayContext,
+  CalendarEvent,
+  CalendarEventContext,
+  CalendarRange,
+  calendarView,
+} from './calendar.types';
 
 @Component({
   selector: 'tls-calendar',
@@ -69,6 +75,30 @@ export class Calendar {
   public readonly hourEnd: InputSignal<number> = input<number>(this._config.hourEnd);
   public readonly showAllDayRow: InputSignal<boolean> = input<boolean>(this._config.showAllDayRow);
   public readonly maxEventsPerDay: InputSignal<number> = input<number>(this._config.maxEventsPerDay);
+  /**
+   * Views the switcher offers, in the order they appear. Narrowing it to one entry hides the
+   * switcher, and the active view is pulled back into the set whenever it falls outside.
+   */
+  public readonly views: InputSignal<calendarView[]> = input<calendarView[]>(this._config.views);
+  /** Whether the header renders at all; when false, drive the calendar through its own API. */
+  public readonly showHeader: InputSignal<boolean> = input<boolean>(true);
+  /** Whether the header shows the period title. */
+  public readonly showTitle: InputSignal<boolean> = input<boolean>(true);
+  /** Whether the header shows the previous/today/next controls. */
+  public readonly showNavigation: InputSignal<boolean> = input<boolean>(true);
+  /** Whether the header shows the view switcher; it is hidden anyway with fewer than two views. */
+  public readonly showViewSwitcher: InputSignal<boolean> = input<boolean>(true);
+  /**
+   * Density of the layout: `'auto'` lets the rendered width decide, `true` pins the dense layout
+   * on and `false` pins it off. The dense month grid marks each day with a dot per event rather
+   * than laying out event bars, so only `dateSelect` fires there — `eventSelect` has no target.
+   */
+  public readonly compact: InputSignal<calendarCompact> = input<calendarCompact>('auto');
+  /**
+   * Whether the month grid holds its day cells to a 1:1 ratio. Off by default, where a cell is
+   * as tall as the events it has to show; on, the grid's height follows from its width alone.
+   */
+  public readonly squareCells: InputSignal<boolean> = input<boolean>(false);
   /** Accessible name forwarded to the active view's grid. */
   public readonly ariaLabel = input<string | undefined>(undefined);
 
@@ -85,21 +115,38 @@ export class Calendar {
 
   protected readonly labels: CalendarLabels = this._config.labels;
 
-  protected readonly viewOptions: { label: string; value: calendarView }[] = CALENDAR_VIEW_ORDER.map(
-    value => ({ label: this._config.labels.views[value], value }),
-  );
-
   protected readonly eventTemplate = contentChild<TemplateRef<CalendarEventContext>>('eventTemplate');
+  protected readonly dayTemplate = contentChild<TemplateRef<CalendarDayContext>>('dayTemplate');
 
   private readonly _dateOptions = localeFormatOptions(this._locale);
   /** Ticking current time, so the "Today" affordance stays correct across midnight. */
   private readonly _now = createNowSignal(NOW_REFRESH_INTERVAL_MS);
 
   // Computed
-  protected readonly hostClasses: Signal<string[]> = computed(() => [
-    'tls-calendar',
-    `tls-calendar--${this.view()}`,
-  ]);
+  protected readonly hostClasses: Signal<string[]> = computed(() => {
+    const classes = ['tls-calendar', `tls-calendar--${this.view()}`];
+    // Pinned off contributes no class at all, so neither dense rule can match.
+    const compact = this.compact();
+    if (compact === true) classes.push('tls-calendar--compact');
+    if (compact === 'auto') classes.push('tls-calendar--compact-auto');
+
+    return classes;
+  });
+
+  protected readonly viewOptions: Signal<{ label: string; value: calendarView }[]> = computed(() =>
+    this.views().map(value => ({ label: this.labels.views[value], value })),
+  );
+
+  /** A lone view has nothing to switch between, so the group is suppressed regardless. */
+  protected readonly showsViewSwitcher: Signal<boolean> = computed(
+    () => this.showViewSwitcher() && this.views().length > 1,
+  );
+
+  /** Suppresses the header wrapper once every part it would hold is hidden. */
+  protected readonly showsHeader: Signal<boolean> = computed(
+    () =>
+      this.showHeader() && (this.showNavigation() || this.showTitle() || this.showsViewSwitcher()),
+  );
 
   /** Whether the active period already includes today, so "Today" would be a no-op. */
   protected readonly isViewingToday: Signal<boolean> = computed(() => {
@@ -163,6 +210,15 @@ export class Calendar {
   constructor() {
     // Surface the visible window so consumers can fetch events for it (fires on first render too).
     effect(() => this.rangeChange.emit(this.visibleRange()));
+
+    // An active view outside the offered set would be unreachable once hidden from the
+    // switcher, so it snaps to the first view on offer.
+    effect(() => {
+      const views = this.views();
+      if (views.length === 0 || views.includes(this.view())) return;
+
+      this.view.set(views[0]);
+    });
   }
 
   // Public methods

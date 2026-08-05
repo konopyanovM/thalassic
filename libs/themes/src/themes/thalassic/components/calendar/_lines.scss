@@ -1,0 +1,23 @@
+// Every grid line in the calendar is read through these helpers rather than declared inline, so
+// one declaration retints or removes a whole family of them across all views — for example
+// `--tls-calendar-line-vertical: none` to drop every column separator.
+//
+// The tokens are deliberately left undeclared: each helper carries the default as a fallback, so
+// a view still draws its lines when rendered on its own, and a token set anywhere above a view
+// inherits down to it instead of being shadowed by a declaration on the view itself.
+$default: 1px solid var(--color-outline-variant);
+
+// Lines dividing rows: week rows in the month grid, hour rows in the time grid, days in the agenda.
+@function horizontal() {
+  @return var(--tls-calendar-line-horizontal, #{$default});
+}
+
+// Lines dividing columns: day columns in the month grid and the time grid.
+@function vertical() {
+  @return var(--tls-calendar-line-vertical, #{$default});
+}
+
+// The border enclosing a view's grid.
+@function outer() {
+  @return var(--tls-calendar-line-outer, #{$default});
+}

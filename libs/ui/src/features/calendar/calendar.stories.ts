@@ -40,11 +40,28 @@ const meta: Meta<Calendar> = {
     hourEnd: 24,
     showAllDayRow: true,
     maxEventsPerDay: 3,
+    views: ['month', 'week', 'day', 'agenda'],
+    showHeader: true,
+    showTitle: true,
+    showNavigation: true,
+    showViewSwitcher: true,
+    compact: 'auto',
+    squareCells: false,
     ariaLabel: 'Calendar',
     events: SAMPLE_EVENTS,
   },
   argTypes: {
     view: { control: { type: 'select' }, options: ['month', 'week', 'day', 'agenda'] },
+    views: {
+      control: { type: 'check' },
+      options: ['month', 'week', 'day', 'agenda'],
+    },
+    showHeader: { control: { type: 'boolean' } },
+    showTitle: { control: { type: 'boolean' } },
+    showNavigation: { control: { type: 'boolean' } },
+    showViewSwitcher: { control: { type: 'boolean' } },
+    compact: { control: { type: 'select' }, options: [true, false, 'auto'] },
+    squareCells: { control: { type: 'boolean' } },
     weekStartsOn: { control: { type: 'select' }, options: [0, 1, 2, 3, 4, 5, 6] },
     hourStart: { control: { type: 'number', min: 0, max: 24 } },
     hourEnd: { control: { type: 'number', min: 0, max: 24 } },
@@ -79,6 +96,92 @@ export const Day: Story = {
 /** Agenda view: the month's events as a chronological list, empty days omitted. */
 export const Agenda: Story = {
   args: { view: 'agenda' },
+};
+
+/**
+ * The dense layout resolving on its own: at 380px the header reflows to two rows and the month
+ * grid trades its event bars for a dot per event under each day number, all from the calendar's
+ * own width. Selecting a single event is not reachable here — days emit `dateSelect` instead.
+ */
+export const Compact: Story = {
+  render: args => ({
+    props: args,
+    template: `<div style="max-width: 380px"><tls-calendar ${argsToTemplate(args)} /></div>`,
+  }),
+};
+
+/**
+ * Square day cells: the grid's height follows from its width, so the month keeps one shape at
+ * every size instead of growing with the events a day holds.
+ */
+export const SquareCells: Story = {
+  args: { squareCells: true },
+};
+
+/** The dense layout pinned on, regardless of how much room the calendar actually has. */
+export const CompactForced: Story = {
+  args: { compact: true },
+};
+
+/**
+ * A narrow-layout setup that sidesteps the month grid altogether, offering only the two views
+ * that read well in a single column.
+ */
+export const NarrowViews: Story = {
+  args: { view: 'agenda', views: ['day', 'agenda'], maxEventsPerDay: 2 },
+  render: args => ({
+    props: args,
+    template: `<div style="max-width: 380px"><tls-calendar ${argsToTemplate(args)} /></div>`,
+  }),
+};
+
+/**
+ * Grid lines are custom properties rather than inputs, so a family can be retinted, rethickened
+ * or dropped from a single declaration, and the change reaches every view at once:
+ * `--tls-calendar-line-horizontal`, `--tls-calendar-line-vertical` and `--tls-calendar-line-outer`.
+ */
+export const GridLines: Story = {
+  render: args => ({
+    props: args,
+    template: `
+      <tls-calendar
+        ${argsToTemplate(args)}
+        style="--tls-calendar-line-vertical: none; --tls-calendar-line-outer: none"
+      />
+    `,
+  }),
+};
+
+/** Header suppressed entirely, leaving the surrounding page to own the calendar's chrome. */
+export const HeadlessHeader: Story = {
+  args: { showHeader: false },
+};
+
+/**
+ * A consumer `#dayTemplate` replaces what a month day cell renders — its number, event dots and
+ * "+N more" — while the cell keeps its grid semantics, selection and borders. The context carries
+ * the day, its formatted number, `inCurrentMonth`, `isToday` and every event covering it.
+ *
+ * Event bars are laid out by the week row, above the cells, so they survive a custom cell.
+ * Pair with `maxEventsPerDay: 0` to suppress them and own the day's presentation entirely.
+ */
+export const CustomDayTemplate: Story = {
+  args: { maxEventsPerDay: 0 },
+  render: args => ({
+    props: args,
+    template: `
+      <tls-calendar ${argsToTemplate(args)}>
+        <ng-template #dayTemplate let-day let-events="events" let-inCurrentMonth="inCurrentMonth">
+          <div style="display: flex; flex-direction: column; gap: 4px; padding: 4px">
+            <strong [style.opacity]="inCurrentMonth ? 1 : 0.4">{{ day.getDate() }}</strong>
+            @for (event of events; track event.id) {
+              <small>{{ event.title }}</small>
+            }
+          </div>
+        </ng-template>
+      </tls-calendar>
+    `,
+  }),
 };
 
 /** A consumer `#eventTemplate` fully overrides the default event chip. */
