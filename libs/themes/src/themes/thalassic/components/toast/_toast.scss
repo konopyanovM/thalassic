@@ -138,15 +138,16 @@
   &__title {
     margin: 0;
 
-    font-size: var(--font-size-sm);
+    font-size: var(--font-body-small-size);
     font-weight: var(--font-weight-semibold);
+    line-height: var(--font-body-small-line-height);
   }
 
   &__message {
     margin: 0;
 
-    font-size: var(--font-size-sm);
-    line-height: 1.4;
+    font-size: var(--font-body-small-size);
+    line-height: var(--font-body-small-line-height);
     overflow-wrap: anywhere;
   }
 

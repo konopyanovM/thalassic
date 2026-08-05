@@ -6,7 +6,7 @@
 
   &__day {
     display: grid;
-    grid-template-columns: var(--spacing-24) 1fr;
+    grid-template-columns: 96px 1fr;
     gap: var(--spacing-4);
 
     padding-block: var(--spacing-3);
