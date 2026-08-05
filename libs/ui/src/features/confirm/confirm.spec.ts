@@ -5,7 +5,7 @@ import { Event as RouterEvent, NavigationStart, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { Confirm } from './confirm';
 import { ConfirmService } from './confirm.service';
-import { confirmActionsAlign, confirmButton } from './confirm.types';
+import { confirmActionsAlign, confirmButton, confirmSize } from './confirm.types';
 
 @Component({
   imports: [Confirm],
@@ -17,6 +17,7 @@ import { confirmActionsAlign, confirmButton } from './confirm.types';
       [confirm]="confirm()"
       [cancel]="cancel()"
       [actionsAlign]="actionsAlign()"
+      [size]="size()"
       (confirmed)="onConfirmed()"
       (cancelled)="onCancelled()"
     ></tls-confirm>
@@ -28,6 +29,7 @@ class HostComponent {
   public readonly confirm = signal<confirmButton | undefined>(undefined);
   public readonly cancel = signal<confirmButton | undefined>(undefined);
   public readonly actionsAlign = signal<confirmActionsAlign>('end');
+  public readonly size = signal<confirmSize>('md');
   public readonly dialog = viewChild.required(Confirm);
 
   public confirmedCount = 0;
@@ -129,6 +131,19 @@ describe('Confirm', () => {
     const actions = overlayContainerElement.querySelector<HTMLElement>('.tls-confirm__actions');
     expect(actions?.classList).toContain('tls-confirm__actions--space-between');
     expect(actions?.classList).not.toContain('tls-confirm__actions--end');
+  });
+
+  it('should reflect size as a modifier class on the panel', () => {
+    host.size.set('lg');
+    fixture.detectChanges();
+
+    getDialog().open(trigger);
+    fixture.detectChanges();
+
+    const panel = queryPanel();
+    expect(panel?.classList).toContain('tls-confirm');
+    expect(panel?.classList).toContain('tls-confirm--lg');
+    expect(panel?.classList).not.toContain('tls-confirm--md');
   });
 
   it('should emit confirmed and close when the confirm button is clicked', () => {

@@ -16,7 +16,7 @@ import { ConfirmPanel } from './confirm-panel';
 import { disposeAfterLeaveAnimation } from '../../abstract/overlay';
 import { MODAL_BACKDROP_CLASS } from './confirm.constants';
 import { CONFIRM_CONFIG } from './confirm.token';
-import { confirmActionsAlign, confirmButton } from './confirm.types';
+import { confirmActionsAlign, confirmButton, confirmSize } from './confirm.types';
 
 export interface ConfirmOptions {
   /**
@@ -30,6 +30,7 @@ export interface ConfirmOptions {
   confirm?: confirmButton;
   cancel?: confirmButton;
   actionsAlign?: confirmActionsAlign;
+  size?: confirmSize;
   position?: overlayPosition;
   offset?: Point;
   ariaLabel?: string;
@@ -115,6 +116,7 @@ export class ConfirmService {
     panelRef.setInput('confirm', options.confirm);
     panelRef.setInput('cancel', options.cancel);
     panelRef.setInput('actionsAlign', options.actionsAlign ?? this._config.actionsAlign);
+    panelRef.setInput('size', options.size ?? this._config.size);
     panelRef.setInput('ariaLabel', options.ariaLabel);
     panelRef.setInput('modal', modal);
   }

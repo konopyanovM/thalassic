@@ -1,7 +1,12 @@
 import { afterNextRender, Component, computed, ElementRef, inject, input, output } from '@angular/core';
 import { Button, BUTTON_CONFIG } from '../button';
 import { CONFIRM_CONFIG } from './confirm.token';
-import { confirmActionsAlign, confirmButton, resolvedConfirmButton } from './confirm.types';
+import {
+  confirmActionsAlign,
+  confirmButton,
+  confirmSize,
+  resolvedConfirmButton,
+} from './confirm.types';
 
 /**
  * Presentational contents of a confirm dialog: an optional title, a message,
@@ -47,6 +52,7 @@ import { confirmActionsAlign, confirmButton, resolvedConfirmButton } from './con
   `,
   host: {
     class: 'tls-confirm',
+    '[class]': 'sizeClass()',
     role: 'alertdialog',
     '[attr.aria-modal]': 'modal() ? "true" : "false"',
     '[id]': 'id',
@@ -77,6 +83,8 @@ export class ConfirmPanel {
 
   public readonly actionsAlign = input<confirmActionsAlign>(this._config.actionsAlign);
 
+  public readonly size = input<confirmSize>(this._config.size);
+
   // Outputs
   public readonly confirmed = output<void>();
   public readonly cancelled = output<void>();
@@ -94,6 +102,8 @@ export class ConfirmPanel {
   protected readonly resolvedCancel = computed<resolvedConfirmButton>(() =>
     this._resolve(this.cancel(), this._config.cancelButton),
   );
+
+  protected readonly sizeClass = computed<string>(() => `tls-confirm--${this.size()}`);
 
   protected readonly actionsClasses = computed<string[]>(() => [
     'tls-confirm__actions',

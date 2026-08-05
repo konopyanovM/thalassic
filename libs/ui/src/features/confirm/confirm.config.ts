@@ -1,6 +1,6 @@
 import { Point } from '@thalassic/core';
 import { overlayPosition } from '../../types';
-import { confirmActionsAlign, confirmButton } from './confirm.types';
+import { confirmActionsAlign, confirmButton, confirmSize } from './confirm.types';
 
 export interface ConfirmConfig {
   position: overlayPosition;
@@ -8,6 +8,7 @@ export interface ConfirmConfig {
   confirmButton: confirmButton;
   cancelButton: confirmButton;
   actionsAlign: confirmActionsAlign;
+  size: confirmSize;
 }
 
 export const DEFAULT_CONFIRM_CONFIG: ConfirmConfig = {
@@ -16,4 +17,5 @@ export const DEFAULT_CONFIRM_CONFIG: ConfirmConfig = {
   confirmButton: { label: 'Confirm' },
   cancelButton: { label: 'Cancel', variant: 'text' },
   actionsAlign: 'end',
+  size: 'md',
 };

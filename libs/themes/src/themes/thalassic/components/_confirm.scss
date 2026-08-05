@@ -18,7 +18,9 @@
 
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-4);
+  // The question and its consequence are one block, so they sit close together;
+  // the actions are set apart by their own margin below.
+  gap: var(--spacing-2);
 
   border: var(--tls-confirm-border-width) solid var(--tls-confirm-border-color);
   border-radius: var(--tls-confirm-border-radius);
@@ -33,18 +35,25 @@
   &__title {
     margin: 0;
 
-    font-size: var(--font-size-md);
+    font-size: var(--font-title-medium-size);
+    line-height: var(--font-title-medium-line-height);
     font-weight: var(--font-weight-semibold);
   }
 
   &__message {
     margin: 0;
 
-    font-size: var(--font-size-sm);
+    font-size: var(--font-body-small-size);
+    line-height: var(--font-body-small-line-height);
     color: var(--color-on-surface-variant);
   }
 
   &__actions {
+    // Stands apart from the text: acting is a distinct step from reading, and
+    // the room guards against a mis-click on a destructive action. Adds to the
+    // column gap, so the clearance above the actions totals `--spacing-4`.
+    margin-top: var(--spacing-2);
+
     display: flex;
     gap: var(--spacing-2);
 
@@ -63,5 +72,21 @@
     &--space-between {
       justify-content: space-between;
     }
+  }
+
+  // Width steps, centered on `md` so a confirm can be narrowed as readily as it
+  // is widened. `md` restates the base width, keeping every size stated in one
+  // place. The width is a cap, so a small screen still shrinks the panel below
+  // its step.
+  &--sm {
+    --tls-confirm-max-width: 280px;
+  }
+
+  &--md {
+    --tls-confirm-max-width: 320px;
+  }
+
+  &--lg {
+    --tls-confirm-max-width: 400px;
   }
 }

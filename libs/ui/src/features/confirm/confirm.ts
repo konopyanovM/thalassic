@@ -9,7 +9,7 @@ import { overlayPosition } from '../../types';
 import { buildOverlayPositions } from '../../utils';
 import { ConfirmPanel } from './confirm-panel';
 import { CONFIRM_CONFIG } from './confirm.token';
-import { confirmActionsAlign, confirmButton } from './confirm.types';
+import { confirmActionsAlign, confirmButton, confirmSize } from './confirm.types';
 
 /**
  * Declarative confirm dialog anchored to a trigger. Sits in the template
@@ -29,6 +29,7 @@ import { confirmActionsAlign, confirmButton } from './confirm.types';
         [confirm]="confirm()"
         [cancel]="cancel()"
         [actionsAlign]="actionsAlign()"
+        [size]="size()"
         [ariaLabel]="ariaLabel()"
         (confirmed)="onConfirm()"
         (cancelled)="onCancel()"
@@ -49,6 +50,7 @@ export class Confirm {
   public readonly confirm = input<confirmButton | undefined>(undefined);
   public readonly cancel = input<confirmButton | undefined>(undefined);
   public readonly actionsAlign = input<confirmActionsAlign>(this._config.actionsAlign);
+  public readonly size = input<confirmSize>(this._config.size);
   public readonly ariaLabel = input<string | undefined>(undefined);
   public readonly position = input<overlayPosition>(this._config.position);
   public readonly offset = input<Point>(this._config.offset);

@@ -23,6 +23,14 @@ export type confirmButton = {
 export type resolvedConfirmButton = Required<confirmButton>;
 
 /**
+ * Width step of a confirm dialog, mapped onto its max-width. `md` is the
+ * default, so the scale opens in both directions rather than only upward. It
+ * runs narrower than `dialogSize` throughout and stops at `lg`: a confirmation
+ * is a question and two buttons, and anything wider is a dialog.
+ */
+export type confirmSize = 'sm' | 'md' | 'lg';
+
+/**
  * Horizontal alignment of the cancel / confirm action buttons within the dialog,
  * mapped onto `justify-content` (direction-aware: `start`/`end` follow the
  * layout direction).

@@ -4,6 +4,7 @@ import { STORY_OVERLAY_POSITION_OPTIONS } from '../../../.storybook/constants';
 import { Button } from '../button';
 import { Confirm as ConfirmComponent } from './confirm';
 import { ConfirmService } from './confirm.service';
+import { confirmSize } from './confirm.types';
 
 @Component({
   selector: 'tls-confirm-service-demo',
@@ -12,6 +13,7 @@ import { ConfirmService } from './confirm.service';
     <div style="display: flex; gap: 16px;">
       <tls-button color="danger" (click)="deleteAnchored($event)">Anchored</tls-button>
       <tls-button color="danger" (click)="deleteModal()">Modal</tls-button>
+      <tls-button color="danger" (click)="deleteWideModal()">Modal (lg)</tls-button>
     </div>
     <p>Result: {{ result }}</p>
   `,
@@ -31,9 +33,14 @@ class ConfirmServiceDemo {
     this._ask({});
   }
 
-  private async _ask(anchor: { trigger?: MouseEvent }): Promise<void> {
+  // A longer consequence reads better with more measure to run on.
+  protected deleteWideModal(): void {
+    this._ask({ size: 'lg' });
+  }
+
+  private async _ask(options: { trigger?: MouseEvent; size?: confirmSize }): Promise<void> {
     const confirmed = await this._confirm.confirm({
-      ...anchor,
+      ...options,
       title: 'Delete program',
       message: 'This permanently removes the program and all of its exercises.',
       confirm: { label: 'Delete', color: 'danger' },
@@ -55,6 +62,7 @@ const meta: Meta<ConfirmComponent> = {
   args: {
     position: 'bottom',
     actionsAlign: 'end',
+    size: 'md',
     title: 'Delete program',
     message: 'This permanently removes the program and all of its exercises.',
     confirm: { label: 'Delete', color: 'danger' },
@@ -68,6 +76,10 @@ const meta: Meta<ConfirmComponent> = {
     actionsAlign: {
       control: { type: 'inline-radio' },
       options: ['start', 'center', 'end', 'space-between'],
+    },
+    size: {
+      control: { type: 'inline-radio' },
+      options: ['sm', 'md', 'lg'] satisfies confirmSize[],
     },
     offset: { table: { disable: true } },
   },
@@ -87,6 +99,7 @@ export const Declarative: Story = {
           #confirmDialog
           [position]="position"
           [actionsAlign]="actionsAlign"
+          [size]="size"
           [title]="title"
           [message]="message"
           [confirm]="confirm"
