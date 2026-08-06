@@ -1,0 +1,26 @@
+@use 'motion';
+
+// A quick grow-and-settle acknowledging a just-committed selection: the element
+// scales up to `--tls-pop-scale` and springs back. Only the peak is keyframed —
+// the edges fill in from the element's underlying transform, so the pop rides
+// on top of whatever scale the element already has (e.g. a hover grow) instead
+// of snapping it back to 1 first.
+@keyframes tls-pop {
+  50% {
+    transform: scale(var(--tls-pop-scale, 1.3));
+  }
+}
+
+@mixin pop(
+  $scale: 1.3,
+  $duration: var(--motion-default),
+  $easing: var(--motion-ease-spring)
+) {
+  // Selection feedback is expressive — the committed state already reads
+  // without it — so the pop belongs to the `full` tier only.
+  @include motion.motion(full) {
+    --tls-pop-scale: #{$scale};
+
+    animation: tls-pop $duration $easing;
+  }
+}

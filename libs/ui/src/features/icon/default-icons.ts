@@ -19,6 +19,14 @@ export const DEFAULT_ICONS: Record<systemIcon, string> = {
     '<polyline points="13 17 18 12 13 7" /><polyline points="6 17 11 12 6 7" />',
   ),
   close: svg('<line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />'),
+  star: svg(
+    '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />',
+  ),
+  // The same star, solid. Stroked like the outline version so the two glyphs
+  // share an identical footprint and can be layered over one another.
+  'star-filled': svg(
+    '<polygon fill="currentColor" points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />',
+  ),
   success: svg('<circle cx="12" cy="12" r="10" /><polyline points="8 12 11 15 16 9" />'),
   warning: svg(
     '<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />' +

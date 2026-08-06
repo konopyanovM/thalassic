@@ -1,0 +1,13 @@
+.tls-rating {
+  &.tls-rating--sm {
+    --tls-rating-star-size: 16px;
+  }
+
+  &.tls-rating--md {
+    --tls-rating-star-size: 20px;
+  }
+
+  &.tls-rating--lg {
+    --tls-rating-star-size: 24px;
+  }
+}

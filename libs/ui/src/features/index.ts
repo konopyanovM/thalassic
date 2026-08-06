@@ -24,6 +24,7 @@ export * from './form/mask';
 export * from './form/password';
 export * from './form/pin-input';
 export * from './form/radio-button';
+export * from './form/rating';
 export * from './form/multi-select';
 export * from './form/select';
 export * from './form/slider';

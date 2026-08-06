@@ -1,0 +1,9 @@
+:host {
+  // Read by the theme to extend each radio's hit area across half the gap, so
+  // the row is one continuous target with no dead zones between stars.
+  --tls-rating-gap: var(--spacing-1);
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tls-rating-gap);
+}

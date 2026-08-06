@@ -1,0 +1,144 @@
+@use '../../mixins' as mixins;
+
+.tls-rating {
+  --tls-rating-star-size: 20px;
+  --tls-rating-hover-scale: 1.15;
+  --tls-rating-pop-scale: 1.25;
+
+  // Fallback only — the component always emits a `--<color>` modifier, and the
+  // default `golden` value lives in the color partial alongside the others.
+  --tls-rating-fill-color: var(--color-primary);
+  --tls-rating-empty-color: var(--color-surface-variant);
+  // Ghost rendering of the hover preview's delta: the fill color, mostly transparent.
+  --tls-rating-preview-color: color-mix(in srgb, var(--tls-rating-fill-color) 45%, transparent);
+
+  .tls-rating-star {
+    position: relative;
+
+    display: inline-flex;
+  }
+
+  .tls-rating-icons {
+    position: relative;
+
+    display: inline-flex;
+
+    border-radius: var(--radius-sm);
+
+    color: var(--tls-rating-empty-color);
+
+    @include mixins.motion {
+      transition: transform var(--motion-fast) var(--motion-ease-spring);
+    }
+  }
+
+  // The star box: a fixed square holding either the built-in icon or a
+  // consumer template, whose content is centered and sized to the star.
+  .tls-rating-icon {
+    width: var(--tls-rating-star-size);
+    height: var(--tls-rating-star-size);
+
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+
+    font-size: var(--tls-rating-star-size);
+    line-height: 1;
+
+    .tls-icon {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  // The filled layer sits over the outline star, clipped to the displayed
+  // value's share of the box. Anchored to inline-start so the visible part is
+  // the leading side and the clipped part the trailing side in both layout
+  // directions; the inner icon keeps the star's full size so clipping narrows
+  // the window, not the drawing.
+  .tls-rating-fill {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+
+    overflow: hidden;
+    color: var(--tls-rating-fill-color);
+
+    &--ghost {
+      color: var(--tls-rating-preview-color);
+    }
+  }
+
+  // The radios are the real targets: invisible, laid over their slice of the
+  // star and stretched across half the surrounding gap on each side, so the row
+  // is one continuous hit surface with no dead zones between stars.
+  .tls-rating-input {
+    position: absolute;
+    inset-block: 0;
+    inset-inline: calc(var(--tls-rating-gap) / -2);
+
+    margin: 0;
+
+    appearance: none;
+
+    opacity: 0;
+
+    cursor: pointer;
+
+    &--start {
+      inset-inline-end: 50%;
+    }
+
+    &--end {
+      inset-inline-start: 50%;
+    }
+
+    // Tap-target expansion on the block axis only, mirroring the touch-target
+    // mixin's gating. The mixin's symmetric overflow cannot apply here: growing
+    // the inline axis would overlap the adjacent option's hit area and steal its
+    // edge taps, so the inline extent stays the option's own slice.
+    @media (pointer: coarse) {
+      :root:not([data-touch-targets='off']) & {
+        inset-block: min(
+          0px,
+          calc((var(--tls-rating-star-size) - var(--control-touch-target)) / 2)
+        );
+      }
+    }
+  }
+
+  .tls-rating-star:has(.tls-rating-input:focus-visible) .tls-rating-icons {
+    @include mixins.focus-ring;
+  }
+
+  .tls-rating-star--pop .tls-rating-icons {
+    @include mixins.pop(var(--tls-rating-pop-scale));
+  }
+
+  // Grows the star under the pointer. The scale itself is ungated so the state
+  // still reads at every motion level; only the easing into it is (see the
+  // icons rule above).
+  &:not(.tls-rating--disabled):not(.tls-rating--readonly) .tls-rating-star:hover .tls-rating-icons {
+    transform: scale(var(--tls-rating-hover-scale));
+  }
+
+  // Form control
+  &.tls-rating--disabled {
+    .tls-rating-input {
+      cursor: not-allowed;
+    }
+
+    .tls-rating-icons {
+      filter: brightness(0.9);
+    }
+  }
+
+  &.tls-rating--readonly .tls-rating-input {
+    cursor: default;
+  }
+
+  &:not(.tls-rating--disabled).tls-rating--show-error {
+    --tls-rating-fill-color: var(--color-danger);
+  }
+}

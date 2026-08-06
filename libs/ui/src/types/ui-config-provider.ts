@@ -33,6 +33,8 @@ import {
   PinInputConfig,
   PopoverConfig,
   RadioButtonConfig,
+  RatingConfig,
+  RatingLabels,
   SelectConfig,
   SkeletonConfig,
   SliderConfig,
@@ -100,6 +102,7 @@ export interface tlsUiConfigProvider {
     pinInput?: Partial<PinInputConfig>;
     popover?: Partial<PopoverConfig>;
     radioButton?: Partial<RadioButtonConfig>;
+    rating?: Partial<Omit<RatingConfig, 'labels'>> & { labels?: Partial<RatingLabels> };
     select?: Partial<SelectConfig>;
     skeleton?: Partial<SkeletonConfig>;
     slider?: Partial<SliderConfig>;

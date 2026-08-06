@@ -1,0 +1,43 @@
+@use 'sass:map';
+
+@use '../../../../palettes' as common-palettes;
+
+.tls-rating {
+  &.tls-rating--primary {
+    --tls-rating-fill-color: var(--color-primary);
+  }
+
+  &.tls-rating--secondary {
+    --tls-rating-fill-color: var(--color-secondary);
+  }
+
+  &.tls-rating--tertiary {
+    --tls-rating-fill-color: var(--color-tertiary);
+  }
+
+  &.tls-rating--success {
+    --tls-rating-fill-color: var(--color-success);
+  }
+
+  &.tls-rating--info {
+    --tls-rating-fill-color: var(--color-info);
+  }
+
+  &.tls-rating--warning {
+    --tls-rating-fill-color: var(--color-warning);
+  }
+
+  &.tls-rating--danger {
+    --tls-rating-fill-color: var(--color-danger);
+  }
+
+  // Classic star gold, straight from the yellow palette rather than the
+  // `warning` semantic (whose light-mode value is a dark olive, not gold).
+  &.tls-rating--golden {
+    --tls-rating-fill-color: #{map.get(common-palettes.$yellow, 70)};
+
+    :root.tls-dark & {
+      --tls-rating-fill-color: #{map.get(common-palettes.$yellow, 80)};
+    }
+  }
+}

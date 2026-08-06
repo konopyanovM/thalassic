@@ -59,6 +59,7 @@ import {
   DEFAULT_PIN_INPUT_CONFIG,
   DEFAULT_POPOVER_CONFIG,
   DEFAULT_RADIO_BUTTON_CONFIG,
+  DEFAULT_RATING_CONFIG,
   DEFAULT_SELECT_CONFIG,
   DEFAULT_SKELETON_CONFIG,
   DEFAULT_SLIDER_CONFIG,
@@ -93,6 +94,8 @@ import {
   PIN_INPUT_CONFIG,
   POPOVER_CONFIG,
   RADIO_BUTTON_CONFIG,
+  RATING_CONFIG,
+  RatingConfig,
   SELECT_CONFIG,
   SKELETON_CONFIG,
   SLIDER_CONFIG,
@@ -261,6 +264,12 @@ export const provideThalassicUIConfig = (
     {
       provide: RADIO_BUTTON_CONFIG,
       useValue: deepMerge(DEFAULT_RADIO_BUTTON_CONFIG, components.radioButton),
+    },
+    {
+      provide: RATING_CONFIG,
+      // `labels` is a deep-partial override; deepMerge merges it recursively, but its
+      // `Partial<T>` signature only models a shallow partial, so cast to it.
+      useValue: deepMerge(DEFAULT_RATING_CONFIG, components.rating as Partial<RatingConfig>),
     },
     {
       provide: SELECT_CONFIG,

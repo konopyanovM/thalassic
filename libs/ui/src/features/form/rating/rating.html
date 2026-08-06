@@ -1,0 +1,100 @@
+@for (star of stars(); track star) {
+  <span
+    class="tls-rating-star"
+    [class.tls-rating-star--pop]="isPopped(star)"
+    (animationend)="onPopAnimationEnd(star)"
+  >
+    <!-- Purely visual: the radios carry the accessible names and state. -->
+    <span class="tls-rating-icons" aria-hidden="true">
+      <ng-container
+        [ngTemplateOutlet]="starContent"
+        [ngTemplateOutletContext]="{ $implicit: star, filled: false, preview: false }"
+      />
+      @if (preview()) {
+        <!-- Sits under the solid fill, so only the delta between the committed
+             and hovered values peeks out as a ghost. -->
+        <span class="tls-rating-fill tls-rating-fill--ghost" [style.width.%]="ghostPercent(star)">
+          <ng-container
+            [ngTemplateOutlet]="starContent"
+            [ngTemplateOutletContext]="{ $implicit: star, filled: true, preview: true }"
+          />
+        </span>
+      }
+      <span class="tls-rating-fill" [style.width.%]="fillPercent(star)">
+        <ng-container
+          [ngTemplateOutlet]="starContent"
+          [ngTemplateOutletContext]="{ $implicit: star, filled: true, preview: false }"
+        />
+      </span>
+    </span>
+    @if (allowHalf()) {
+      <input
+        #radio
+        type="radio"
+        class="tls-rating-input tls-rating-input--start"
+        [name]="radioName()"
+        [value]="star - 0.5"
+        [checked]="value() === star - 0.5"
+        [disabled]="disabled()"
+        [attr.aria-label]="starLabel(star - 0.5)"
+        (pointerdown)="onPointerDown()"
+        (pointerenter)="onPointerEnter(star - 0.5)"
+        (change)="onChange(star - 0.5)"
+        (click)="onClick(star - 0.5)"
+        (blur)="touched.set(true)"
+      />
+      <input
+        #radio
+        type="radio"
+        class="tls-rating-input tls-rating-input--end"
+        [name]="radioName()"
+        [value]="star"
+        [checked]="value() === star"
+        [disabled]="disabled()"
+        [attr.aria-label]="starLabel(star)"
+        (pointerdown)="onPointerDown()"
+        (pointerenter)="onPointerEnter(star)"
+        (change)="onChange(star)"
+        (click)="onClick(star)"
+        (blur)="touched.set(true)"
+      />
+    } @else {
+      <input
+        #radio
+        type="radio"
+        class="tls-rating-input tls-rating-input--whole"
+        [name]="radioName()"
+        [value]="star"
+        [checked]="value() === star"
+        [disabled]="disabled()"
+        [attr.aria-label]="starLabel(star)"
+        (pointerdown)="onPointerDown()"
+        (pointerenter)="onPointerEnter(star)"
+        (change)="onChange(star)"
+        (click)="onClick(star)"
+        (blur)="touched.set(true)"
+      />
+    }
+  </span>
+}
+
+<!-- One star layer's content: the consumer-provided star slot when present, the
+     built-in star icon otherwise. Every layer (empty, ghost, solid fill) renders
+     through this fragment so a custom star applies to all of them. -->
+<ng-template #starContent let-star let-filled="filled" let-preview="preview">
+  <span class="tls-rating-icon">
+    @if (starTemplate(); as template) {
+      <ng-container
+        [ngTemplateOutlet]="template"
+        [ngTemplateOutletContext]="{
+          $implicit: star,
+          filled: filled,
+          preview: preview,
+          half: isHalf(star),
+        }"
+      />
+    } @else {
+      <tls-icon [name]="filled ? 'star-filled' : 'star'" />
+    }
+  </span>
+</ng-template>
