@@ -1,11 +1,13 @@
 import { TabPanel } from '@angular/aria/tabs';
 import {
+  booleanAttribute,
   Component,
   computed,
   contentChild,
   inject,
   input,
   InputSignal,
+  InputSignalWithTransform,
   Signal,
   TemplateRef,
 } from '@angular/core';
@@ -38,6 +40,16 @@ export class Step {
   public readonly description: InputSignal<string | undefined> = input<string | undefined>();
   public readonly color: InputSignal<stepperColor> = input<stepperColor>(this._config.step.color);
   public readonly disabled: InputSignal<boolean> = input<boolean>(false);
+
+  /**
+   * Marks the step's content as invalid: its header takes the danger hue and
+   * assistive technology hears the invalid state. Drive it from the step's
+   * form validity to surface errors in the navigation.
+   */
+  public readonly invalid: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    false,
+    { transform: booleanAttribute },
+  );
 
   protected hostClasses = computed(() => {
     const className = 'tls-step';

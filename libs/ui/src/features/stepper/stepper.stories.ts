@@ -15,6 +15,7 @@ const meta: Meta<StepperComponent> = {
   args: {
     active: 'step1',
     orientation: 'horizontal',
+    labelPosition: 'end',
     completed: false,
     linear: false,
   },
@@ -22,6 +23,10 @@ const meta: Meta<StepperComponent> = {
     orientation: {
       control: { type: 'select' },
       options: STORY_ORIENTATION_OPTIONS,
+    },
+    labelPosition: {
+      control: { type: 'select' },
+      options: ['end', 'bottom'],
     },
   },
   render: args => ({
@@ -42,6 +47,30 @@ export default meta;
 type Story = StoryObj<StepperComponent>;
 
 export const Stepper: Story = {};
+
+export const LabelBottom: Story = {
+  args: {
+    active: 'step2',
+    labelPosition: 'bottom',
+  },
+};
+
+export const WithInvalidStep: Story = {
+  args: {
+    active: 'step3',
+  },
+  render: args => ({
+    props: args,
+    template: `
+      <tls-stepper ${argsToTemplate(args)}>
+        <tls-step value="step1" label="Account" description="Create your account">Step 1 content</tls-step>
+        <tls-step value="step2" label="Profile" description="Personal details" invalid>Step 2 content</tls-step>
+        <tls-step value="step3" label="Payment" description="Billing information">Step 3 content</tls-step>
+        <tls-step value="step4" label="Review" description="Confirm & submit">Step 4 content</tls-step>
+      </tls-stepper>
+    `,
+  }),
+};
 
 export const WithCompletedIcon: Story = {
   render: args => ({

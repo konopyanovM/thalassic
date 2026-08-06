@@ -40,7 +40,9 @@ import {
   SkeletonConfig,
   SliderConfig,
   SplitterConfig,
+  StepConfig,
   StepperConfig,
+  StepperLabels,
   SwitchConfig,
   TableConfig,
   TabNavConfig,
@@ -109,7 +111,10 @@ export interface tlsUiConfigProvider {
     skeleton?: Partial<SkeletonConfig>;
     slider?: Partial<SliderConfig>;
     splitter?: Partial<SplitterConfig>;
-    stepper?: Partial<StepperConfig>;
+    stepper?: Partial<Omit<StepperConfig, 'labels' | 'step'>> & {
+      labels?: Partial<StepperLabels>;
+      step?: Partial<StepConfig>;
+    };
     switch?: Partial<SwitchConfig>;
     table?: Partial<TableConfig>;
     tabNav?: Partial<TabNavConfig>;

@@ -1,6 +1,7 @@
+@use '../../mixins' as mixins;
+
 .tls-stepper {
   --tls-stepper-label-color: var(--color-outline);
-  --tls-stepper-background-color: var(--color-surface);
 
   --tls-stepper-content-gap: var(--spacing-4);
 
@@ -8,6 +9,8 @@
   --tls-stepper-index-size: calc(32px - var(--tls-stepper-index-border-width) * 2);
 
   --tls-stepper-index-on-color: var(--color-on-surface);
+  // The index circle is opaque so the divider running behind it stays masked;
+  // it matches the surface the stepper sits on, which itself stays transparent.
   --tls-stepper-index-background-color: var(--color-surface);
   --tls-stepper-index-border-color: var(--color-outline-variant);
 
@@ -17,14 +20,9 @@
   --tls-stepper-divider-color: var(--color-outline-variant);
   --tls-stepper-divider-width: 2px;
 
-  background: var(--tls-stepper-background-color);
-
   display: flex;
   flex-direction: column;
   gap: var(--tls-stepper-content-gap);
-
-  transition: border-color var(--motion-theme),
-  background-color var(--motion-theme);
 
   &.tls-stepper--completed {
     .tls-stepper-content {
@@ -69,14 +67,33 @@
         position: relative;
         z-index: 1;
 
+        padding: 0;
+
         display: flex;
         flex-direction: column;
         gap: var(--spacing-2);
 
+        border: none;
+
+        background: none;
+
+        font: inherit;
+        text-align: start;
         color: var(--tls-stepper-label-color);
 
-        transition: color var(--motion-fast),
-        background-color var(--motion-fast);
+        cursor: pointer;
+
+        @include mixins.motion {
+          transition: color var(--motion-fast);
+        }
+
+        @include mixins.touch-target(var(--tls-stepper-index-size));
+
+        &:focus-visible {
+          @include mixins.focus-ring;
+
+          border-radius: var(--radius-sm);
+        }
 
         // The header is a tablist: it resolves the clicked step from
         // `event.target` and ignores any target that is not an `HTMLElement`,
@@ -101,13 +118,15 @@
           color: var(--tls-stepper-index-on-color);
           background-color: var(--tls-stepper-index-background-color);
 
-          transition: background-color var(--motion-fast);
+          @include mixins.motion {
+            transition: background-color var(--motion-fast), border-color var(--motion-fast);
+          }
         }
 
         &__text {
           display: flex;
           flex-direction: column;
-          gap: 0.25rem;
+          gap: var(--spacing-1);
 
           .tls-stepper-header-button__label {
             font-size: var(--font-label-large-size);
@@ -123,6 +142,11 @@
             letter-spacing: var(--font-label-medium-letter-spacing);
           }
         }
+
+        // State text (completed / invalid) for assistive technology only.
+        &__state {
+          @include mixins.visually-hidden;
+        }
       }
 
       .tls-stepper-header__divider {
@@ -130,7 +154,9 @@
 
         background-color: var(--tls-stepper-divider-color);
 
-        transition: background-color var(--motion-fast);
+        @include mixins.motion {
+          transition: background-color var(--motion-fast);
+        }
       }
     }
   }

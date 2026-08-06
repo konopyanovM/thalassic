@@ -1,0 +1,41 @@
+.tls-stepper {
+  // Bottom labels — a horizontal-only layout: every step takes an equal
+  // column with its index centered and text underneath, and each connector
+  // runs from a step's index to the next column's, so the rail reads
+  // symmetrically edge to edge. A vertical stepper keeps the end placement.
+  &.tls-stepper--horizontal.tls-stepper--label-bottom {
+    .tls-stepper-header {
+      &__item {
+        width: auto;
+
+        flex: 1 1 0;
+
+        &:last-child {
+          width: auto;
+
+          flex: 1 1 0;
+        }
+
+        .tls-stepper-header-button {
+          width: 100%;
+
+          align-items: center;
+
+          text-align: center;
+        }
+      }
+
+      &__divider {
+        // Runs from this column's index to the next one's: the inline insets
+        // resolve against the item's width, and the columns are equal, so
+        // half a width beyond the box lands exactly on the neighbouring
+        // column's center. The index radius plus a small gap keeps the run
+        // clear of both circles.
+        inset-inline-start: calc(50% + var(--tls-stepper-index-size) / 2 + var(--spacing-1));
+        inset-inline-end: calc(-50% + var(--tls-stepper-index-size) / 2 + var(--spacing-1));
+
+        width: auto;
+      }
+    }
+  }
+}

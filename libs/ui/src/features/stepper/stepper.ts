@@ -16,9 +16,14 @@ import {
   TemplateRef,
 } from '@angular/core';
 import { Step } from './step';
-import { StepperConfig } from './stepper.config';
+import { StepperConfig, StepperLabels } from './stepper.config';
 import { STEPPER_CONFIG } from './stepper.token';
-import { stepperOrientation, StepperSelectEvent, stepperValue } from './stepper.types';
+import {
+  stepperLabelPosition,
+  stepperOrientation,
+  StepperSelectEvent,
+  stepperValue,
+} from './stepper.types';
 
 @Component({
   selector: 'tls-stepper',
@@ -30,7 +35,10 @@ import { stepperOrientation, StepperSelectEvent, stepperValue } from './stepper.
   },
 })
 export class Stepper {
-  private _config: StepperConfig = inject(STEPPER_CONFIG);
+  private readonly _config: StepperConfig = inject(STEPPER_CONFIG);
+
+  /** Visually hidden state texts appended to a step's accessible name. */
+  protected readonly labels: StepperLabels = this._config.labels;
 
   protected steps: Signal<readonly Step[]> = contentChildren(Step);
   protected completedTemplateRef = contentChild<TemplateRef<unknown>>('completedTemplate');
@@ -39,6 +47,9 @@ export class Stepper {
   public readonly active: ModelSignal<stepperValue> = model.required<stepperValue>();
   public readonly orientation: InputSignal<stepperOrientation> = input<stepperOrientation>(
     this._config.orientation,
+  );
+  public readonly labelPosition: InputSignal<stepperLabelPosition> = input<stepperLabelPosition>(
+    this._config.labelPosition,
   );
   public readonly completed: InputSignal<boolean> = input<boolean>(false);
   public readonly linear: InputSignal<boolean> = input<boolean>(this._config.linear);
@@ -55,6 +66,7 @@ export class Stepper {
     const array: string[] = [className];
 
     array.push(`${className}--${this.orientation()}`);
+    array.push(`${className}--label-${this.labelPosition()}`);
     if (this.completed()) array.push(`${className}--completed`);
 
     return array;

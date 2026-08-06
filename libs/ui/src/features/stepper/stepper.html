@@ -10,13 +10,15 @@
   [attr.aria-labelledby]="ariaLabelledby() ?? null"
 >
   @for (step of steps(); track step.value(); let index = $index; let last = $last) {
+    @let isCompleted = activeIndex() > index || completed();
     <li role="presentation"
         class="tls-stepper-header__item"
-        [class]="`tls-stepper-header--${step.color()}`"
+        [class]="`tls-stepper-header__item--${step.color()}`"
         [class.tls-stepper-header__item--active]="ariaTab.selected()"
         [class.tls-stepper-header__item--disabled]="step.disabled()"
         [class.tls-stepper-header__item--unreachable]="linear() && index > activeIndex() + 1"
-        [class.tls-stepper-header__item--completed]="activeIndex() > index || completed()">
+        [class.tls-stepper-header__item--invalid]="step.invalid()"
+        [class.tls-stepper-header__item--completed]="isCompleted">
       <button
         #ariaTab="ngTab"
         ngTab
@@ -26,7 +28,6 @@
         [disabled]="step.disabled() || (linear() && index > activeIndex() + 1)"
       >
         <span class="tls-stepper-header-button__index">
-          @let isCompleted = activeIndex() > index || completed();
           @if (isCompleted && step.completedIconTemplateRef()) {
             <ng-container [ngTemplateOutlet]="step.completedIconTemplateRef() ?? null"
                           [ngTemplateOutletContext]="{ $implicit: index }"></ng-container>
@@ -49,6 +50,12 @@
             <span class="tls-stepper-header-button__description">{{ step.description() }}</span>
           }
         </span>
+
+        @if (step.invalid()) {
+          <span class="tls-stepper-header-button__state">{{ labels.invalid }}</span>
+        } @else if (isCompleted) {
+          <span class="tls-stepper-header-button__state">{{ labels.completed }}</span>
+        }
       </button>
       @if (!last) {
         <div class="tls-stepper-header__divider"></div>

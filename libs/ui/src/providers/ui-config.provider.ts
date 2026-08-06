@@ -103,6 +103,7 @@ import {
   SLIDER_CONFIG,
   SPLITTER_CONFIG,
   STEPPER_CONFIG,
+  StepperConfig,
   SWITCH_CONFIG,
   TAB_NAV_CONFIG,
   TABLE_CONFIG,
@@ -295,7 +296,10 @@ export const provideThalassicUIConfig = (
     },
     {
       provide: STEPPER_CONFIG,
-      useValue: deepMerge(DEFAULT_STEPPER_CONFIG, components.stepper),
+      // `labels` and `step` are deep-partial overrides; deepMerge merges them
+      // recursively, but its `Partial<T>` signature only models a shallow
+      // partial, so cast to it.
+      useValue: deepMerge(DEFAULT_STEPPER_CONFIG, components.stepper as Partial<StepperConfig>),
     },
     {
       provide: SWITCH_CONFIG,
