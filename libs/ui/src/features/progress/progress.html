@@ -1,0 +1,8 @@
+@for (segmentFill of segmentFills(); track $index) {
+  <div
+    class="tls-progress-segment"
+    [style.flex-grow]="$index === activeIndex() ? activeSegmentScale() : null"
+  >
+    <div class="tls-progress-fill" [style.inline-size.%]="segmentFill"></div>
+  </div>
+}

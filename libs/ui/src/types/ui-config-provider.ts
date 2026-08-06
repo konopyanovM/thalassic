@@ -32,6 +32,7 @@ import {
   PasswordConfig,
   PinInputConfig,
   PopoverConfig,
+  ProgressConfig,
   RadioButtonConfig,
   RatingConfig,
   RatingLabels,
@@ -101,6 +102,7 @@ export interface tlsUiConfigProvider {
     password?: Partial<PasswordConfig>;
     pinInput?: Partial<PinInputConfig>;
     popover?: Partial<PopoverConfig>;
+    progress?: Partial<ProgressConfig>;
     radioButton?: Partial<RadioButtonConfig>;
     rating?: Partial<Omit<RatingConfig, 'labels'>> & { labels?: Partial<RatingLabels> };
     select?: Partial<SelectConfig>;

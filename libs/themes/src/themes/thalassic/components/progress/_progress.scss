@@ -1,0 +1,38 @@
+@use '../../mixins' as mixins;
+
+.tls-progress {
+  --tls-progress-track-color: var(--color-surface-variant);
+
+  // A track piece: the single full-width bar in continuous mode, one pill per
+  // step in segmented mode. Fully rounded ends at every height.
+  .tls-progress-segment {
+    height: var(--tls-progress-height);
+
+    flex: 1 1 0;
+
+    border-radius: var(--radius-xl);
+
+    background-color: var(--tls-progress-track-color);
+
+    overflow: hidden;
+
+    @include mixins.motion {
+      transition: flex-grow var(--motion-fast) var(--motion-ease-out);
+    }
+  }
+
+  // The filled share of a segment, clipped by the segment's rounding. Anchored
+  // to inline-start so the bar grows from the leading edge in both layout
+  // directions.
+  .tls-progress-fill {
+    height: 100%;
+
+    border-radius: inherit;
+
+    background-color: var(--tls-progress-color);
+
+    @include mixins.motion {
+      transition: inline-size var(--motion-fast) var(--motion-ease-out);
+    }
+  }
+}

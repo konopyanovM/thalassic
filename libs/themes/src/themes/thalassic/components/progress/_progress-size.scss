@@ -1,0 +1,13 @@
+.tls-progress {
+  &.tls-progress--sm {
+    --tls-progress-height: 4px;
+  }
+
+  &.tls-progress--md {
+    --tls-progress-height: 8px;
+  }
+
+  &.tls-progress--lg {
+    --tls-progress-height: 12px;
+  }
+}

@@ -58,6 +58,7 @@ import {
   DEFAULT_PASSWORD_CONFIG,
   DEFAULT_PIN_INPUT_CONFIG,
   DEFAULT_POPOVER_CONFIG,
+  DEFAULT_PROGRESS_CONFIG,
   DEFAULT_RADIO_BUTTON_CONFIG,
   DEFAULT_RATING_CONFIG,
   DEFAULT_SELECT_CONFIG,
@@ -93,6 +94,7 @@ import {
   PASSWORD_CONFIG,
   PIN_INPUT_CONFIG,
   POPOVER_CONFIG,
+  PROGRESS_CONFIG,
   RADIO_BUTTON_CONFIG,
   RATING_CONFIG,
   RatingConfig,
@@ -260,6 +262,10 @@ export const provideThalassicUIConfig = (
     {
       provide: POPOVER_CONFIG,
       useValue: deepMerge(DEFAULT_POPOVER_CONFIG, components.popover),
+    },
+    {
+      provide: PROGRESS_CONFIG,
+      useValue: deepMerge(DEFAULT_PROGRESS_CONFIG, components.progress),
     },
     {
       provide: RADIO_BUTTON_CONFIG,

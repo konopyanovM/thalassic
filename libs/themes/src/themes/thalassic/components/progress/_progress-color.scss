@@ -1,0 +1,5 @@
+@use '../../mixins' as mixins;
+
+.tls-progress {
+  @include mixins.color-variants('tls-progress');
+}
