@@ -45,6 +45,7 @@ class DrawerTriggerComponent {
   readonly closeable = input(true);
   readonly backdropClose = input(true);
   readonly rounded = input(false);
+  readonly grabber = input(false);
 
   openDrawer(): void {
     this.drawerService.open<boolean, DrawerData>(DrawerContentComponent, {
@@ -53,6 +54,7 @@ class DrawerTriggerComponent {
       closeable: this.closeable(),
       backdropClose: this.backdropClose(),
       rounded: this.rounded(),
+      grabber: this.grabber(),
       data: { title: 'Drawer title', message: 'Content slides in from the chosen edge.' },
     });
   }
@@ -72,6 +74,7 @@ const meta: Meta<DrawerTriggerComponent> = {
     closeable: true,
     backdropClose: true,
     rounded: false,
+    grabber: false,
   },
   argTypes: {
     side: {
@@ -80,7 +83,7 @@ const meta: Meta<DrawerTriggerComponent> = {
     },
     size: {
       control: { type: 'select' },
-      options: ['sm', 'md', 'lg', 'full'] satisfies drawerSize[],
+      options: ['sm', 'md', 'lg', 'full', 'auto'] satisfies drawerSize[],
     },
   },
   render: args => ({
@@ -93,6 +96,7 @@ const meta: Meta<DrawerTriggerComponent> = {
           [closeable]="closeable"
           [backdropClose]="backdropClose"
           [rounded]="rounded"
+          [grabber]="grabber"
         />
       </div>
     `,
@@ -103,3 +107,13 @@ export default meta;
 type Story = StoryObj<DrawerTriggerComponent>;
 
 export const Drawer: Story = {};
+
+export const BottomSheet: Story = {
+  args: {
+    side: 'bottom',
+    size: 'auto',
+    rounded: true,
+    grabber: true,
+    closeable: false,
+  },
+};

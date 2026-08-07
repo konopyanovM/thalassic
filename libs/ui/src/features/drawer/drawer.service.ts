@@ -17,6 +17,8 @@ export interface DrawerOpenConfig<D = unknown> {
   closeable?: boolean;
   backdropClose?: boolean;
   rounded?: boolean;
+  /** Renders a grabber pill on the edge facing the viewport, the affordance for a sheet-style panel. */
+  grabber?: boolean;
   /** Accessible name for the close button. */
   closeLabel?: string;
   role?: DialogRole;
@@ -46,6 +48,7 @@ export class DrawerService {
       closeable: config?.closeable ?? this._config.closeable,
       backdropClose: config?.backdropClose ?? this._config.backdropClose,
       rounded: config?.rounded ?? this._config.rounded,
+      grabber: config?.grabber ?? this._config.grabber,
       closeLabel: config?.closeLabel ?? this._config.closeLabel,
     };
 

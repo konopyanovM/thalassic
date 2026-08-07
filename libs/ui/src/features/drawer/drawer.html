@@ -1,3 +1,6 @@
+@if (config.grabber) {
+  <div class="tls-drawer__grabber" aria-hidden="true"></div>
+}
 <ng-template cdkPortalOutlet />
 @if (config.closeable) {
   <button class="tls-drawer__close" type="button" [attr.aria-label]="config.closeLabel" (click)="close()">

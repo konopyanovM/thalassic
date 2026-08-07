@@ -34,6 +34,9 @@
   --tls-drawer-padding: var(--spacing-6);
   --tls-drawer-close-size: 16px;
   --tls-drawer-close-padding: var(--spacing-4);
+  --tls-drawer-grabber-length: 36px;
+  --tls-drawer-grabber-thickness: 5px;
+  --tls-drawer-grabber-inset: var(--spacing-2);
 
   position: relative;
 
@@ -93,6 +96,17 @@
     }
   }
 
+  // Grabber pill, the visual affordance of a sheet-style panel. Placement along the
+  // panel's inner edge is side-dependent and lives with the side modifiers.
+  &__grabber {
+    position: absolute;
+    z-index: 1;
+
+    border-radius: calc(var(--tls-drawer-grabber-thickness) / 2);
+
+    background-color: var(--color-outline-variant);
+  }
+
   &__header {
     padding: var(--tls-drawer-padding) var(--tls-drawer-padding) 0;
   }
@@ -108,6 +122,8 @@
     flex: 1;
     padding: var(--spacing-4) var(--tls-drawer-padding);
     overflow-y: auto;
+    // Scrolling the drawer's content must not chain into scrolling the page behind it.
+    overscroll-behavior: contain;
   }
 
   &__footer {
