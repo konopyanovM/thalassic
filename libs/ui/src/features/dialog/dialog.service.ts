@@ -1,8 +1,14 @@
-import { Dialog as CdkDialog, DialogRef, DialogRole } from '@angular/cdk/dialog';
+import {
+  Dialog as CdkDialog,
+  DialogRef as CdkDialogRef,
+  DialogRole,
+} from '@angular/cdk/dialog';
 import { ComponentType } from '@angular/cdk/portal';
 import { inject, Injectable } from '@angular/core';
+import { filter, takeUntil } from 'rxjs';
 import { Dialog } from './dialog';
 import { DialogConfig } from './dialog.config';
+import { DialogRef } from './dialog-ref';
 import { DIALOG_CONFIG } from './dialog.token';
 import { dialogFooterAlign, dialogSize } from './dialog.types';
 
@@ -26,6 +32,10 @@ export class DialogService {
   private readonly _dialog = inject(CdkDialog);
   private readonly _config = inject(DIALOG_CONFIG);
 
+  // Currently-open dialogs, tracked so `closeAll` can play each exit animation and
+  // so it closes dialogs only (the CDK `Dialog` is shared with `tls-drawer`).
+  private readonly _openDialogs = new Set<DialogRef>();
+
   public open<R = unknown, D = unknown, C = unknown>(
     component: ComponentType<C>,
     config?: DialogOpenConfig<D>,
@@ -38,14 +48,24 @@ export class DialogService {
       footerAlign: config?.footerAlign ?? this._config.footerAlign,
     };
 
-    return this._dialog.open<R, D, C>(component, {
+    let dialogRef!: DialogRef<R, C>;
+
+    const cdkRef = this._dialog.open<R, D, C>(component, {
       container: {
         type: Dialog,
         providers: () => [{ provide: DIALOG_CONFIG, useValue: resolvedConfig }],
       },
+      // Built against the content injector so the dialog's content can `inject(DialogRef)`
+      // to close itself. The same instance is returned to the caller below.
+      providers: (ref, _cdkConfig, container) => {
+        dialogRef = new DialogRef(ref as CdkDialogRef<R, C>, container as Dialog);
+        return [{ provide: DialogRef, useValue: dialogRef }];
+      },
       hasBackdrop: true,
       backdropClass: 'tls-dialog-backdrop',
-      disableClose: !resolvedConfig.backdropClose,
+      // Suppress CDK's synchronous auto-close so every dismissal routes through
+      // `DialogRef.close`, which plays the exit animation before disposal.
+      disableClose: true,
       role: config?.role ?? 'dialog',
       ariaLabel: config?.ariaLabel ?? null,
       ariaLabelledBy: config?.ariaLabelledBy ?? null,
@@ -53,9 +73,37 @@ export class DialogService {
 
       data: config?.data as D,
     });
+
+    const trackedRef = dialogRef as DialogRef;
+    this._openDialogs.add(trackedRef);
+    cdkRef.closed.subscribe(() => this._openDialogs.delete(trackedRef));
+
+    this._wireDismissal(cdkRef, dialogRef, resolvedConfig);
+
+    return dialogRef;
   }
 
   public closeAll(): void {
-    this._dialog.closeAll();
+    // Iterating a snapshot: `close` is animated, so removal happens later (on
+    // `closed`), but guard against any synchronous mutation regardless.
+    for (const dialogRef of [...this._openDialogs]) dialogRef.close();
+  }
+
+  // Private methods
+  private _wireDismissal<R, C>(
+    cdkRef: CdkDialogRef<R, C>,
+    dialogRef: DialogRef<R, C>,
+    config: DialogConfig,
+  ): void {
+    if (!config.backdropClose) return;
+
+    cdkRef.backdropClick.pipe(takeUntil(cdkRef.closed)).subscribe(() => dialogRef.close());
+
+    cdkRef.keydownEvents
+      .pipe(
+        takeUntil(cdkRef.closed),
+        filter(event => event.key === 'Escape'),
+      )
+      .subscribe(() => dialogRef.close());
   }
 }

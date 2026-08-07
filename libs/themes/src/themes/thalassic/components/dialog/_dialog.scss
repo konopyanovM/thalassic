@@ -1,3 +1,29 @@
+@use '../../mixins' as mixins;
+
+@keyframes tls-dialog-open {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes tls-dialog-close {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
 .tls-dialog-backdrop {
   --tls-dialog-backdrop: rgb(0 0 0 / 0.4);
 
@@ -32,6 +58,23 @@
   background-color: var(--tls-dialog-background);
   color: var(--tls-dialog-color);
   box-shadow: var(--tls-dialog-shadow);
+
+  // The fade-and-scale communicates the surface appearing and dismissing, so it
+  // is a functional cue on the `essential` tier and survives reduced motion
+  // (resolved by `MotionService`). Enter and leave use distinct keyframe names,
+  // not one shared keyframe with `reverse`: the container keeps its `--enter`
+  // class for the panel's whole lifetime, so swapping to `--leave` must change
+  // `animation-name` to force the browser to start a fresh animation (a mere
+  // `animation-direction` change does not restart an already-finished animation).
+  @include mixins.motion(essential) {
+    &--enter {
+      animation: tls-dialog-open var(--motion-instant) var(--motion-ease-out) both;
+    }
+
+    &--leave {
+      animation: tls-dialog-close var(--motion-instant) var(--motion-ease-in) both;
+    }
+  }
 
   // The portal inserts the consumer's content component as the dialog's only
   // content child, so that host — not the header/body/footer inside it — is

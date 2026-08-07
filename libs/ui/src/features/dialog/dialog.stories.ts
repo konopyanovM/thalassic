@@ -1,10 +1,11 @@
-import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { Component, inject, input } from '@angular/core';
 import { Meta, moduleMetadata, StoryObj } from '@storybook/angular';
 import { Button } from '../button';
 import { DialogBody } from './dialog-body';
 import { DialogFooter } from './dialog-footer';
 import { DialogHeader } from './dialog-header';
+import { DialogRef } from './dialog-ref';
 import { DialogTitleDirective } from './dialog-title.directive';
 import { DialogService } from './dialog.service';
 import { dialogFooterAlign, dialogSize } from './dialog.types';

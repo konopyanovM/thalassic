@@ -1,9 +1,10 @@
 import { CdkDialogContainer, DialogRef } from '@angular/cdk/dialog';
 import { CdkPortalOutlet } from '@angular/cdk/portal';
 import { Component, computed, inject, signal } from '@angular/core';
+import { afterLeaveAnimation } from '../../abstract/overlay';
 import { Icon } from '../icon';
 import { DrawerConfig } from './drawer.config';
-import { DRAWER_NAMED_SIZES, LEAVE_ANIMATION_FALLBACK_MS } from './drawer.constants';
+import { DRAWER_NAMED_SIZES } from './drawer.constants';
 import { DRAWER_CONFIG } from './drawer.token';
 import { drawerSize } from './drawer.types';
 
@@ -57,7 +58,9 @@ export class Drawer extends CdkDialogContainer {
     this._closing = true;
 
     this._state.set('leave');
-    this._afterLeaveAnimation(() => this._dialogRef.close(result));
+    afterLeaveAnimation(this._elementRef.nativeElement, () =>
+      this._dialogRef.close(result),
+    );
   }
 
   // Protected methods
@@ -73,39 +76,5 @@ export class Drawer extends CdkDialogContainer {
 
   private _isNamedSize(size: drawerSize | string): size is drawerSize {
     return DRAWER_NAMED_SIZES.includes(size as drawerSize);
-  }
-
-  // Invokes `onDone` when the leave animation ends, disposing immediately when no
-  // slide-out actually runs (e.g. the `none` motion level, where the motion mixin
-  // emits nothing) so reduced-motion users don't wait out the fallback timeout.
-  private _afterLeaveAnimation(onDone: () => void): void {
-    const element = this._elementRef.nativeElement;
-
-    let settled = false;
-    const finalize = (): void => {
-      if (settled) return;
-      settled = true;
-      window.clearTimeout(timeoutId);
-      element.removeEventListener('animationend', onAnimationEnd);
-      onDone();
-    };
-
-    // Only the host's own slide-out finalizes; ignore `animationend` bubbling up
-    // from animated content inside the drawer.
-    const onAnimationEnd = (event: AnimationEvent): void => {
-      if (event.target === element) finalize();
-    };
-
-    element.addEventListener('animationend', onAnimationEnd);
-
-    // Safety net if `animationend` never arrives (e.g. the pane is torn down early).
-    const timeoutId = window.setTimeout(finalize, LEAVE_ANIMATION_FALLBACK_MS);
-
-    // The `--leave` class applies on the next change detection; on the following
-    // frame, close at once if no animation is running. When motion is enabled the
-    // computed `animationName` is never `none`, so this cannot finalize early.
-    requestAnimationFrame(() => {
-      if (getComputedStyle(element).animationName === 'none') finalize();
-    });
   }
 }
