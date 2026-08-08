@@ -1,3 +1,13 @@
+## 22.17.1 (2026-08-08)
+
+### 🩹 Fixes
+
+- **ui/skeleton:** radius accepts theme scale tokens ([038cf1c](https://github.com/konopyanovM/thalassic/commit/038cf1c))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.17.0 (2026-08-08)
 
 ### 🚀 Features
