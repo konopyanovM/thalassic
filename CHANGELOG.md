@@ -1,3 +1,7 @@
+## 22.17.2 (2026-08-08)
+
+This was a version bump only, there were no code changes.
+
 ## 22.17.1 (2026-08-08)
 
 ### 🩹 Fixes
