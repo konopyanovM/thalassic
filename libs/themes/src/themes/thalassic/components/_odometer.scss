@@ -1,3 +1,4 @@
+@use '../../../../../core/src/styles' as core;
 @use '../mixins' as mixins;
 
 .tls-odometer {
@@ -13,7 +14,7 @@
   line-height: 1;
 
   &__value {
-    @include mixins.visually-hidden;
+    @include core.visually-hidden;
   }
 
   &__row {

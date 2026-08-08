@@ -1,4 +1,4 @@
-@use 'motion';
+@use '../../../../../core/src/styles' as core;
 
 // A quick grow-and-settle acknowledging a just-committed selection: the element
 // scales up to `--tls-pop-scale` and springs back. Only the peak is keyframed —
@@ -18,7 +18,7 @@
 ) {
   // Selection feedback is expressive — the committed state already reads
   // without it — so the pop belongs to the `full` tier only.
-  @include motion.motion(full) {
+  @include core.motion(full) {
     --tls-pop-scale: #{$scale};
 
     animation: tls-pop $duration $easing;

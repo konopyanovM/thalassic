@@ -1,7 +1,7 @@
 @use '../../mixins' as mixins;
 
 .tls-tooltip {
-  --tls-tooltip-box-shadow: 0 2px 8px -1px var(--color-shade-30);
+  --tls-tooltip-box-shadow: 0 2px 8px -1px rgb(var(--color-shadow) / 0.35);
   --tls-tooltip-padding: var(--spacing-3);
   --tls-tooltip-border-radius: 8px;
   --tls-tooltip-arrow-width: 12px;

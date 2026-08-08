@@ -1,10 +1,10 @@
-@use '../../functions' as functions;
+@use '../../../../../../core/src/styles' as core;
 
 .tls-tab-header {
   // Flat
   &.tls-tab-header--flat {
-    --tls-tab-header-active-background-color: #{functions.tint(var(--color-primary), 8%)};
-    --tls-tab-header-active-hover-background-color: #{functions.tint(var(--color-primary), 12%)};
+    --tls-tab-header-active-background-color: #{core.tint(var(--color-primary), 8%)};
+    --tls-tab-header-active-hover-background-color: #{core.tint(var(--color-primary), 12%)};
 
     border-bottom-width: var(--tls-tab-header-border-width);
     border-bottom-style: solid;

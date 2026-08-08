@@ -1,4 +1,4 @@
-@use 'motion';
+@use '../../../../../core/src/styles' as core;
 
 @keyframes tls-panel-open {
   from {
@@ -21,7 +21,7 @@
 
   // Panel motion is a functional origin cue, so it belongs to the `essential`
   // tier and survives reduced motion (resolved by `MotionService`).
-  @include motion.motion(essential) {
+  @include core.motion(essential) {
     &--enter {
       animation: tls-panel-open $duration $enter-easing both;
     }

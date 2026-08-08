@@ -1,11 +1,11 @@
+@use '../../../../../../core/src/styles' as core;
 @use '../../mixins' as mixins;
-@use '../../functions' as functions;
 
 .tls-activity-heatmap {
   // Fill of a day with no activity, and the base every shaded cell is mixed against.
   --tls-activity-heatmap-empty: var(--color-surface-container-high);
   // Hairline that keeps a faint cell readable against the surface behind it.
-  --tls-activity-heatmap-outline: #{functions.tint(var(--color-on-surface), 12%)};
+  --tls-activity-heatmap-outline: #{core.tint(var(--color-on-surface), 12%)};
   // Gap between cells, shared by the grid and the labels aligned to it.
   --tls-activity-heatmap-gap: var(--spacing-1);
 
