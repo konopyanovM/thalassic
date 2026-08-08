@@ -1,3 +1,53 @@
+@use '../../../../core/src/styles' as core;
+
+// The breakpoint names a table can collapse at — one host class is generated per name, with the
+// widths resolved by the scale's owner through the container-breakpoint mixin.
+$collapse-breakpoints: sm, md, lg, xl, 2xl;
+
+// Collapsed presentation, shared by every collapse width: the row stops being a line of columns and
+// becomes a stacked record. Table elements lose their implicit roles once `display` is changed,
+// which is why the markup carries explicit `role` attributes — the semantics have to survive this.
+@mixin collapsed {
+  .tls-table__header-row {
+    display: none;
+  }
+
+  .tls-table__row {
+    display: block;
+
+    padding-block: var(--spacing-2);
+  }
+
+  .tls-table__cell {
+    display: block;
+
+    width: auto;
+
+    border-bottom: none;
+  }
+
+  // Out of the column grid a value no longer sits under a heading, so it carries its own label
+  // instead of being left unexplained.
+  .tls-table__cell--fold {
+    display: flex;
+    gap: var(--spacing-2);
+
+    &::before {
+      content: attr(data-label);
+
+      color: var(--color-on-surface-variant);
+    }
+
+    &:not([data-label])::before {
+      content: none;
+    }
+  }
+
+  .tls-table__cell--hide {
+    display: none;
+  }
+}
+
 :host {
   display: block;
 
@@ -7,5 +57,19 @@
     // Rows scroll under a pinned header, so a scroll chain into an ancestor would move
     // the page while the reader is still inside the table; keep the gesture here.
     overscroll-behavior: contain;
+  }
+
+  // A collapsing table measures itself, not the viewport, so it responds to the width it was
+  // actually given inside whatever lays it out.
+  &[class*='tls-table-container--collapse-'] {
+    container: tls-table / inline-size;
+  }
+
+  @each $name in $collapse-breakpoints {
+    &.tls-table-container--collapse-#{$name} {
+      @include core.container-breakpoint($name, tls-table) {
+        @include collapsed;
+      }
+    }
   }
 }

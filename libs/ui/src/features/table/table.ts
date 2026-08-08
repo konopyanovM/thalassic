@@ -26,6 +26,7 @@ import {
   TrackByFunction,
 } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { breakpoint } from '@thalassic/core';
 import { resolveTrackBy } from '../../utils';
 import { TableColumn } from './table-column';
 import { TableConfig } from './table.config';
@@ -51,14 +52,19 @@ import { TableColumnDefinition, TableData, TableTrackBy } from './table.types';
   styleUrl: './table.scss',
   host: {
     class: 'tls-table-container',
-    '[class.tls-table-container--scrollable]': 'scrollable()',
+    '[class]': 'hostClasses()',
     '[style.max-height.px]': 'maxHeight() ?? null',
   },
 })
-export class Table {
+export class Table<TRow = TableData> {
   private readonly _config = inject<TableConfig>(TABLE_CONFIG);
 
-  public readonly data: InputSignal<TableData[]> = input.required();
+  /**
+   * Rows to render. The row type flows through from whatever array is bound, so
+   * a caller keeps its own model type here rather than widening to an index
+   * signature.
+   */
+  public readonly data: InputSignal<TRow[]> = input.required();
   public readonly columnDefinitions: InputSignal<TableColumnDefinition[]> = input<
     TableColumnDefinition[]
   >([]);
@@ -84,6 +90,17 @@ export class Table {
     transform: value =>
       value === undefined || value === null ? undefined : numberAttribute(value),
   });
+
+  /**
+   * Width below which the table stops being a column grid: `fold` columns move
+   * under the kept cells as labelled lines and `hide` columns drop out, so a
+   * record stays readable when there is no room to lay it out sideways.
+   *
+   * Measured against the table's own width, not the viewport — a table inside a
+   * sidebar or split pane collapses on its real width. Left unset the table
+   * never collapses.
+   */
+  public readonly collapseAt = input<breakpoint | undefined>(undefined);
 
   /** Accessible name for the table, forwarded to the inner `<table>` element. */
   public readonly ariaLabel = input<string | undefined>(undefined);
@@ -125,9 +142,20 @@ export class Table {
     ),
   );
 
-  protected readonly resolvedTrackBy = computed<TrackByFunction<TableData>>(() =>
-    resolveTrackBy(this.trackBy()),
+  protected readonly resolvedTrackBy = computed<TrackByFunction<TRow>>(() =>
+    resolveTrackBy(this.trackBy()) as TrackByFunction<TRow>,
   );
+
+  protected readonly hostClasses = computed(() => {
+    const classes: string[] = [];
+
+    if (this.scrollable()) classes.push('tls-table-container--scrollable');
+
+    const collapseAt = this.collapseAt();
+    if (collapseAt) classes.push(`tls-table-container--collapse-${collapseAt}`);
+
+    return classes.join(' ');
+  });
 
   protected readonly scrollable: Signal<boolean> = computed(() => this.maxHeight() !== undefined);
 
@@ -141,7 +169,7 @@ export class Table {
     return array;
   });
 
-  protected readonly dataSource: DataSource<TableData> = {
+  protected readonly dataSource: DataSource<TRow> = {
     connect: () => {
       return toObservable(this.data);
     },
@@ -149,6 +177,18 @@ export class Table {
       // no operation
     },
   };
+
+  // Protected methods
+  /**
+   * Reads a column's value off a row by key.
+   *
+   * Columns address their data by string key while the row type stays the
+   * caller's own, so the index has to be widened here — confined to this one
+   * place rather than pushed onto every consumer's cell template.
+   */
+  protected cellValue(row: TRow, key: string): unknown {
+    return (row as Record<string, unknown>)[key];
+  }
 
   // Private methods
   private _mapContentColumns(columns: readonly TableColumn[]): TableColumnDefinition[] {
@@ -166,6 +206,9 @@ export class Table {
 
     const width = column.width();
     if (width !== undefined) definition.width = width;
+
+    const collapse = column.collapse();
+    if (collapse !== undefined) definition.collapse = collapse;
 
     const template = column.template();
     if (template !== undefined) definition.template = template;

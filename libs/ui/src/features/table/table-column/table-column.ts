@@ -6,7 +6,7 @@ import {
   InputSignalWithTransform,
   TemplateRef,
 } from '@angular/core';
-import { tableColumnAlignment } from '../table.types';
+import { tableColumnAlignment, tableColumnCollapse } from '../table.types';
 
 @Component({
   selector: 'tls-table-column',
@@ -22,6 +22,7 @@ export class TableColumn {
   );
   public readonly alignment = input<tableColumnAlignment>();
   public readonly width = input<number>();
+  public readonly collapse = input<tableColumnCollapse>();
 
   public readonly template = contentChild(TemplateRef);
 }

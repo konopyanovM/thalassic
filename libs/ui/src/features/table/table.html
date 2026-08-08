@@ -1,5 +1,6 @@
 <table
   cdk-table
+  role="table"
   [class]="classes()"
   [dataSource]="dataSource"
   [trackBy]="resolvedTrackBy()"
@@ -9,7 +10,13 @@
   @for (column of effectiveColumnDefinitions(); track column.key) {
     <ng-container [cdkColumnDef]="column.key">
       <!-- Header cell -->
-      <th cdk-header-cell *cdkHeaderCellDef class="tls-table__header-cell" [style.width]="column.width + 'px'">
+      <th
+        cdk-header-cell
+        *cdkHeaderCellDef
+        role="columnheader"
+        class="tls-table__header-cell"
+        [style.width]="column.width + 'px'"
+      >
         {{ column.header }}
       </th>
 
@@ -17,14 +24,18 @@
       <td
         cdk-cell
         *cdkCellDef="let data; let index = index; let count = count; let first = first; let last = last; let even = even; let odd = odd"
+        role="cell"
         class="tls-table__cell"
+        [class.tls-table__cell--fold]="column.collapse === 'fold'"
+        [class.tls-table__cell--hide]="column.collapse === 'hide'"
         [style.text-align]="column.alignment"
+        [attr.data-label]="column.header ?? null"
       >
         @if (column.template) {
           <ng-container
             [ngTemplateOutlet]="column.template"
             [ngTemplateOutletContext]="{
-               $implicit: data[column.key],
+               $implicit: cellValue(data, column.key),
                data: data,
                index: index,
                count: count,
@@ -35,13 +46,18 @@
              }"
           />
         } @else {
-          {{ data[column.key] }}
+          {{ cellValue(data, column.key) }}
         }
       </td>
     </ng-container>
   }
 
-  <tr cdk-header-row *cdkHeaderRowDef="columns(); sticky: scrollable()" class="tls-table__header-row"></tr>
+  <tr
+    cdk-header-row
+    *cdkHeaderRowDef="columns(); sticky: scrollable()"
+    role="row"
+    class="tls-table__header-row"
+  ></tr>
 
-  <tr *cdkRowDef="let row; columns: columns()" cdk-row class="tls-table__row"></tr>
+  <tr *cdkRowDef="let row; columns: columns()" cdk-row role="row" class="tls-table__row"></tr>
 </table>

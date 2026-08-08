@@ -53,6 +53,28 @@ type Story = StoryObj<TableComponent>;
 
 export const Table: Story = {};
 
+/**
+ * Below `collapseAt` a row stops being a line of columns: `fold` columns move under the kept cells
+ * as labelled lines, `hide` columns drop out. The width measured is the table's own, so resize the
+ * preview pane rather than the browser to see it switch.
+ */
+export const Collapsing: Story = {
+  render: () => ({
+    props: {
+      rows: MOCK_ROWS,
+      columnList: [
+        { key: 'name', header: 'Name' },
+        { key: 'role', header: 'Role', collapse: 'fold' },
+        { key: 'status', header: 'Status', collapse: 'fold' },
+        { key: 'email', header: 'Email', collapse: 'hide' },
+      ] satisfies TableColumnDefinition[],
+    },
+    template: `
+      <tls-table [data]="rows" [columnDefinitions]="columnList" collapseAt="md" />
+    `,
+  }),
+};
+
 export const Scrollable: Story = {
   render: () => ({
     props: {
