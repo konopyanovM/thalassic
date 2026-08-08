@@ -41,7 +41,7 @@
     </ng-container>
   }
 
-  <tr cdk-header-row *cdkHeaderRowDef="columns()" class="tls-table__header-row"></tr>
+  <tr cdk-header-row *cdkHeaderRowDef="columns(); sticky: scrollable()" class="tls-table__header-row"></tr>
 
   <tr *cdkRowDef="let row; columns: columns()" cdk-row class="tls-table__row"></tr>
 </table>

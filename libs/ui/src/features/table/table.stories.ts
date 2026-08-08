@@ -35,9 +35,9 @@ const meta: Meta<TableComponent> = {
     striped: { control: { type: 'boolean' } },
   },
   render: args => ({
-    props: { ...args, rows: MOCK_ROWS, columns: COLUMNS },
+    props: { ...args, rows: MOCK_ROWS, columnList: COLUMNS },
     template: `
-      <tls-table [data]="rows" [columnDefinitions]="columns" ${argsToTemplate(args)}>
+      <tls-table [data]="rows" [columnDefinitions]="columnList" ${argsToTemplate(args)}>
         <tls-table-column key="status">
           <ng-template let-value let-even="even">
             <span [style.opacity]="even ? '1' : '0.6'">{{ value }}</span>
@@ -52,3 +52,20 @@ export default meta;
 type Story = StoryObj<TableComponent>;
 
 export const Table: Story = {};
+
+export const Scrollable: Story = {
+  render: () => ({
+    props: {
+      rows: Array.from({ length: 100 }, (_, index) => ({
+        name: `Person ${index + 1}`,
+        role: index % 3 === 0 ? 'Admin' : 'Editor',
+        status: index % 2 === 0 ? 'Active' : 'Inactive',
+        email: `person${index + 1}@example.com`,
+      })),
+      columnList: COLUMNS,
+    },
+    template: `
+      <tls-table [data]="rows" [columnDefinitions]="columnList" [maxHeight]="320" striped />
+    `,
+  }),
+};

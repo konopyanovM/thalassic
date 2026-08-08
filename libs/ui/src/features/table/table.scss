@@ -1,3 +1,11 @@
 :host {
   display: block;
+
+  // Scrollable mode: the host is the scroll container the sticky header row sticks to.
+  &.tls-table-container--scrollable {
+    overflow-y: auto;
+    // Rows scroll under a pinned header, so a scroll chain into an ancestor would move
+    // the page while the reader is still inside the table; keep the gesture here.
+    overscroll-behavior: contain;
+  }
 }

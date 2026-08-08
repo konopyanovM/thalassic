@@ -21,6 +21,8 @@ import {
   input,
   InputSignal,
   InputSignalWithTransform,
+  numberAttribute,
+  Signal,
   TrackByFunction,
 } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
@@ -47,7 +49,11 @@ import { TableColumnDefinition, TableData, TableTrackBy } from './table.types';
   ],
   templateUrl: './table.html',
   styleUrl: './table.scss',
-  host: {},
+  host: {
+    class: 'tls-table-container',
+    '[class.tls-table-container--scrollable]': 'scrollable()',
+    '[style.max-height.px]': 'maxHeight() ?? null',
+  },
 })
 export class Table {
   private readonly _config = inject<TableConfig>(TABLE_CONFIG);
@@ -65,6 +71,19 @@ export class Table {
     { transform: booleanAttribute },
   );
   public readonly trackBy = input<TableTrackBy>();
+
+  /**
+   * Bounds the table's height, in pixels. When set, the host becomes the scroll
+   * container for the rows and the header row sticks to its top edge while they
+   * scroll. Left unset the table grows with its content and nothing scrolls.
+   */
+  public readonly maxHeight: InputSignalWithTransform<number | undefined, unknown> = input<
+    number | undefined,
+    unknown
+  >(undefined, {
+    transform: value =>
+      value === undefined || value === null ? undefined : numberAttribute(value),
+  });
 
   /** Accessible name for the table, forwarded to the inner `<table>` element. */
   public readonly ariaLabel = input<string | undefined>(undefined);
@@ -109,6 +128,8 @@ export class Table {
   protected readonly resolvedTrackBy = computed<TrackByFunction<TableData>>(() =>
     resolveTrackBy(this.trackBy()),
   );
+
+  protected readonly scrollable: Signal<boolean> = computed(() => this.maxHeight() !== undefined);
 
   protected readonly classes = computed(() => {
     const className = 'tls-table';

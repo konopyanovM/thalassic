@@ -48,9 +48,13 @@
   &__header-cell {
     padding: var(--tls-table-cell-padding-y) var(--tls-table-cell-padding-x);
 
-    color: var(--tls-table-header-color);
-
     border-bottom: 1px solid var(--tls-table-border-color);
+
+    // On the cell, not only the row: a sticky header cell must stay opaque on its own,
+    // since the row element does not stick with it.
+    background: var(--tls-table-header-background);
+
+    color: var(--tls-table-header-color);
 
     text-align: start;
     font-size: var(--font-label-small-size);
@@ -74,5 +78,28 @@
   &__cell {
     padding: var(--tls-table-cell-padding-y) var(--tls-table-cell-padding-x);
     background-color: var(--tls-table-background);
+  }
+}
+
+// Scrollable table: the component host bounds the height and scrolls the rows while
+// the header row sticks to its top edge.
+.tls-table-container--scrollable {
+  border-radius: var(--radius-md);
+
+  // Collapsed borders belong to the table grid, which does not travel with sticky
+  // cells — a pinned header would shed its border while rows scroll beneath it.
+  // Separate borders belong to the cells and stick with them. And sticky positioning
+  // confines itself to the nearest ancestor that clips overflow, so the table must
+  // not clip here — the scrollable container clips the corners instead.
+  .tls-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: visible;
+  }
+
+  // Row borders move onto the cells: `tr` borders only paint under the collapsed
+  // model that sticky positioning rules out.
+  .tls-table__row:not(:last-child) .tls-table__cell {
+    border-bottom: 1px solid var(--tls-table-border-color);
   }
 }
