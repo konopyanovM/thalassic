@@ -1,3 +1,26 @@
+## 22.17.0 (2026-08-08)
+
+### 🚀 Features
+
+- **ui:** added rating component ([f96ef8d](https://github.com/konopyanovM/thalassic/commit/f96ef8d))
+- **ui:** added progress component ([47d16ac](https://github.com/konopyanovM/thalassic/commit/47d16ac))
+- **ui:** added dialog animations ([8c2afb6](https://github.com/konopyanovM/thalassic/commit/8c2afb6))
+- **ui:** added virtual-scroll component ([94882a2](https://github.com/konopyanovM/thalassic/commit/94882a2))
+- **ui:** added virtual scroll support to select, multi-select and autocomplete ([eb2daa4](https://github.com/konopyanovM/thalassic/commit/eb2daa4))
+- **ui/calendar:** view, header, density and grid-line customization ([5bb7d3b](https://github.com/konopyanovM/thalassic/commit/5bb7d3b))
+- **ui/drawer:** added grabber to drawer ([7b3ba4c](https://github.com/konopyanovM/thalassic/commit/7b3ba4c))
+- **ui/skeleton:** radius accepts theme scale tokens ([fff99cd](https://github.com/konopyanovM/thalassic/commit/fff99cd))
+- **ui/stepper:** added labelPosition and invalid step state, fixed vertical layout, last-item wrap and focus ring ([ff877d7](https://github.com/konopyanovM/thalassic/commit/ff877d7))
+- **ui/table:** added maxHeight scrollable mode with sticky header ([37a708a](https://github.com/konopyanovM/thalassic/commit/37a708a))
+
+### 🩹 Fixes
+
+- **themes:** replace undefined custom properties in toast, pagination and agenda ([d9f3347](https://github.com/konopyanovM/thalassic/commit/d9f3347))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.16.1 (2026-08-05)
 
 ### 🚀 Features
