@@ -4,4 +4,31 @@
   padding-block: var(--tls-textarea-padding-block);
 
   font-family: inherit;
+
+  resize: var(--tls-textarea-resize);
+
+  // Autosizing is driven by `field-sizing: content`, which sizes the control to
+  // its content and in doing so makes the `rows` attribute inert. Row bounds are
+  // therefore restated as heights: a row is one line box, plus the padding and
+  // border that `box-sizing: border-box` counts toward a declared height.
+  &--autosize {
+    --tls-textarea-block-frame: calc(
+      2 * var(--tls-textarea-padding-block) + 2 * var(--tls-form-control-border-width)
+    );
+
+    min-height: calc(var(--tls-textarea-rows) * 1lh + var(--tls-textarea-block-frame));
+    field-sizing: content;
+
+    resize: none;
+
+    // Where `field-sizing` is unsupported the height stays fixed at the `rows`
+    // attribute, leaving the manual handle as the only way to resize.
+    @supports not (field-sizing: content) {
+      resize: var(--tls-textarea-resize);
+    }
+  }
+
+  &--autosize-capped {
+    max-height: calc(var(--tls-textarea-max-rows) * 1lh + var(--tls-textarea-block-frame));
+  }
 }

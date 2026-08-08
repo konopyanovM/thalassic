@@ -1,4 +1,3 @@
-import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Textarea } from './textarea';
@@ -17,36 +16,42 @@ describe('Textarea', () => {
     await fixture.whenStable();
   });
 
-  const autosizeDirective = (): CdkTextareaAutosize =>
-    fixture.debugElement.query(By.directive(CdkTextareaAutosize)).injector.get(CdkTextareaAutosize);
+  const textarea = (): HTMLTextAreaElement =>
+    fixture.debugElement.query(By.css('textarea')).nativeElement;
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('keeps the autosize directive disabled by default', () => {
-    expect(autosizeDirective().enabled).toBe(false);
+  it('does not autosize by default', () => {
+    expect(textarea().classList).not.toContain('tls-form-control--autosize');
   });
 
-  it('enables the autosize directive and maps rows/maxRows onto it', async () => {
+  it('marks the control as autosizing and publishes the row bounds', async () => {
     fixture.componentRef.setInput('autosize', true);
     fixture.componentRef.setInput('rows', 4);
     fixture.componentRef.setInput('maxRows', 10);
     await fixture.whenStable();
 
-    const directive = autosizeDirective();
-    expect(directive.enabled).toBe(true);
-    expect(directive.minRows).toBe(4);
-    expect(directive.maxRows).toBe(10);
+    const element = textarea();
+    expect(element.classList).toContain('tls-form-control--autosize');
+    expect(element.classList).toContain('tls-form-control--autosize-capped');
+    expect(element.style.getPropertyValue('--tls-textarea-rows')).toBe('4');
+    expect(element.style.getPropertyValue('--tls-textarea-max-rows')).toBe('10');
   });
 
-  it('suppresses the manual resize handle while autosizing', async () => {
-    fixture.componentRef.setInput('resize', 'both');
-    await fixture.whenStable();
-    expect(component['effectiveResize']()).toBe('both');
-
+  it('leaves the height uncapped when maxRows is zero', async () => {
     fixture.componentRef.setInput('autosize', true);
     await fixture.whenStable();
-    expect(component['effectiveResize']()).toBe('none');
+
+    expect(textarea().classList).not.toContain('tls-form-control--autosize-capped');
+  });
+
+  it('exposes the requested resize mode to the stylesheet', async () => {
+    fixture.componentRef.setInput('resize', 'both');
+    fixture.componentRef.setInput('autosize', true);
+    await fixture.whenStable();
+
+    expect(textarea().style.getPropertyValue('--tls-textarea-resize')).toBe('both');
   });
 });

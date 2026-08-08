@@ -1,4 +1,3 @@
-import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import {
   booleanAttribute,
   Component,
@@ -21,7 +20,7 @@ import { TEXTAREA_CONFIG } from './textarea.token';
 
 @Component({
   selector: 'tls-textarea',
-  imports: [CdkTextareaAutosize, Loader],
+  imports: [Loader],
   templateUrl: './textarea.html',
   styleUrl: './textarea.scss',
   host: { class: 'tls-textarea' },
@@ -63,13 +62,13 @@ export class Textarea extends ValueFormControl<string> {
     array.push(`${this.CLASS_NAME}--${this.size()}`);
     if (this.fluid()) array.push(`${this.CLASS_NAME}--fluid`);
 
+    if (this.autosize()) {
+      array.push(`${this.CLASS_NAME}--autosize`);
+      if (this.maxRows() > 0) array.push(`${this.CLASS_NAME}--autosize-capped`);
+    }
+
     return array.concat(this.controlClasses());
   });
-
-  // Autosize owns the height, so the manual resize handle is suppressed.
-  protected readonly effectiveResize: Signal<textareaResize> = computed(() =>
-    this.autosize() ? 'none' : this.resize(),
-  );
 
   // Protected methods
   protected onInput(event: Event) {
