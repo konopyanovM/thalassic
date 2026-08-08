@@ -53,7 +53,8 @@ import {
   ToastConfig,
   toastSeverity,
   ToggleGroupConfig,
-  TooltipConfig
+  TooltipConfig,
+  VirtualScrollConfig
 } from '../features';
 import { AccessibilityConfig } from '../abstract/accessibility';
 import { FormControlConfig } from '../abstract/form';
@@ -125,5 +126,6 @@ export interface tlsUiConfigProvider {
     };
     toggleGroup?: Partial<ToggleGroupConfig>;
     tooltip?: Partial<TooltipConfig>;
+    virtualScroll?: Partial<VirtualScrollConfig>;
   };
 }

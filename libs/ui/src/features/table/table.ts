@@ -24,6 +24,7 @@ import {
   TrackByFunction,
 } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { resolveTrackBy } from '../../utils';
 import { TableColumn } from './table-column';
 import { TableConfig } from './table.config';
 import { TABLE_CONFIG } from './table.token';
@@ -105,12 +106,9 @@ export class Table {
     ),
   );
 
-  protected readonly resolvedTrackBy = computed<TrackByFunction<TableData>>(() => {
-    const trackBy = this.trackBy();
-    if (trackBy === undefined) return (_, row) => row;
-    if (typeof trackBy === 'string') return (_, row) => row[trackBy];
-    return trackBy;
-  });
+  protected readonly resolvedTrackBy = computed<TrackByFunction<TableData>>(() =>
+    resolveTrackBy(this.trackBy()),
+  );
 
   protected readonly classes = computed(() => {
     const className = 'tls-table';

@@ -75,6 +75,7 @@ import {
   DEFAULT_TOAST_CONFIG,
   DEFAULT_TOGGLE_GROUP_CONFIG,
   DEFAULT_TOOLTIP_CONFIG,
+  DEFAULT_VIRTUAL_SCROLL_CONFIG,
   DIALOG_CONFIG,
   DIVIDER_CONFIG,
   FILE_INPUT_CONFIG,
@@ -114,6 +115,7 @@ import {
   ToastConfig,
   TOGGLE_GROUP_CONFIG,
   TOOLTIP_CONFIG,
+  VIRTUAL_SCROLL_CONFIG,
 } from '../features';
 import { tlsUiConfigProvider } from '../types';
 
@@ -332,6 +334,10 @@ export const provideThalassicUIConfig = (
     {
       provide: TOOLTIP_CONFIG,
       useValue: deepMerge(DEFAULT_TOOLTIP_CONFIG, components.tooltip),
+    },
+    {
+      provide: VIRTUAL_SCROLL_CONFIG,
+      useValue: deepMerge(DEFAULT_VIRTUAL_SCROLL_CONFIG, components.virtualScroll),
     },
   ]);
 };

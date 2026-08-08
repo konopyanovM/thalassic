@@ -1,10 +1,11 @@
-import { TemplateRef, TrackByFunction } from '@angular/core';
+import { TemplateRef } from '@angular/core';
+import { TrackBy } from '../../types';
 
 export type tableColumnAlignment = 'start' | 'center' | 'end';
 
 export type TableData = Record<string, unknown>;
 
-export type TableTrackBy = string | TrackByFunction<TableData>;
+export type TableTrackBy = TrackBy<TableData>;
 
 export interface TableColumnDefinition {
   key: string;

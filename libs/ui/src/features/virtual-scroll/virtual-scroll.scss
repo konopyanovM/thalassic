@@ -1,0 +1,14 @@
+:host {
+  // Windowing needs a bounded scroll container, so the extent has to be resolved rather
+  // than derived from the content; filling the parent is the default a consumer overrides.
+  --tls-virtual-scroll-height: 100%;
+
+  height: var(--tls-virtual-scroll-height);
+
+  display: block;
+
+  .tls-virtual-scroll__viewport {
+    width: 100%;
+    height: 100%;
+  }
+}

@@ -1,0 +1,24 @@
+<cdk-virtual-scroll-viewport
+  class="tls-virtual-scroll__viewport"
+  [style.--tls-virtual-scroll-item-size.px]="itemSize()"
+  [itemSize]="itemSize()"
+  [minBufferPx]="minBufferPx()"
+  [maxBufferPx]="maxBufferPx()"
+  [orientation]="orientation()"
+  [appendOnly]="appendOnly()"
+  [attr.tabindex]="focusable() ? 0 : null"
+  [attr.role]="viewportRole() ?? null"
+  [attr.aria-label]="ariaLabel() ?? null"
+  [attr.aria-labelledby]="ariaLabelledby() ?? null"
+  [attr.aria-describedby]="ariaDescribedby() ?? null"
+  (scrolledIndexChange)="scrolledIndexChange.emit($event)"
+>
+  <ng-container
+    *cdkVirtualFor="
+      let item of items();
+      template: itemTemplate();
+      trackBy: resolvedTrackBy();
+      templateCacheSize: templateCacheSize()
+    "
+  />
+</cdk-virtual-scroll-viewport>

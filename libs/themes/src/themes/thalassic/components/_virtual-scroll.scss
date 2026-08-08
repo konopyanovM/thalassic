@@ -1,0 +1,11 @@
+@use '../mixins' as mixins;
+
+.tls-virtual-scroll__viewport {
+  // Items are swapped in and out mid-gesture, so a scroll chain into an ancestor would
+  // move the page under content the reader is still tracking; keep the gesture here.
+  overscroll-behavior: contain;
+
+  &:focus-visible {
+    @include mixins.focus-ring;
+  }
+}
