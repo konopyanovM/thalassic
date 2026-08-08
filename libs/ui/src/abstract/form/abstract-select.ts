@@ -1,17 +1,21 @@
 import {
+  afterRenderEffect,
   computed,
   contentChild,
   Directive,
+  DOCUMENT,
   ElementRef,
+  inject,
   input,
   InputSignal,
   InputSignalWithTransform,
+  linkedSignal,
   Signal,
-  signal,
   TemplateRef,
   viewChild,
   WritableSignal,
 } from '@angular/core';
+import { VirtualScroll } from '../../features/virtual-scroll';
 import { createOverlayManager } from '../overlay';
 import { selectTemplateContext } from './abstract-select.types';
 import { normalizeOptions, Option, optionInput } from './options';
@@ -30,8 +34,56 @@ import { controlSize } from '../../types';
 export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<ValueType> {
   protected readonly overlay = createOverlayManager();
 
+  private readonly _document: Document = inject(DOCUMENT);
+
   private readonly triggerElement = viewChild<ElementRef<HTMLElement>>('trigger');
   private readonly panelTemplate = viewChild<TemplateRef<void>>('panel');
+  private readonly virtualScrollRef = viewChild(VirtualScroll);
+
+  /**
+   * Whether the panel has already been rendered open, distinguishing the render that
+   * opens it from the ones that follow while it stays open.
+   */
+  private _panelWasOpen = false;
+
+  /**
+   * Keeps the active option visible inside the scrolling panel. Focus stays on the
+   * trigger and only `aria-activedescendant` moves, so the browser never scrolls the
+   * option list on its own — every write of `activeIndex` (keyboard navigation, the
+   * initial index on open, a filter narrowing the list) has to be followed by an
+   * explicit scroll. Running after render guarantees the option's element exists even
+   * when the same change re-rendered the list. `nearest` leaves an already-visible
+   * option where it is, so pointer-driven activation never causes a scroll.
+   */
+  private readonly _scrollActiveOptionIntoView = afterRenderEffect(() => {
+    const isOpen = this.isOpen();
+    const wasOpen = this._panelWasOpen;
+    this._panelWasOpen = isOpen;
+    if (!isOpen) return;
+
+    const virtualScroll = this.virtualScrollRef();
+    // The overlay pane is attached (and re-attached — it is reused across opens)
+    // after the panel's view is created, so the viewport's cached measurement is
+    // stale until it is re-measured in the first render of an open panel.
+    if (virtualScroll && !wasOpen) virtualScroll.checkViewportSize();
+
+    const index = this.activeIndex();
+    if (index < 0) return;
+    // The option elements are re-created when the visible list changes, so the scroll
+    // has to re-run then too, not only when the index moves.
+    this.visibleOptions();
+
+    if (virtualScroll) {
+      // `aria-activedescendant` may only reference a rendered element; scrolling the
+      // index into view keeps it inside the rendered window, and the viewport's render
+      // buffers cover the moment between the index moving and the window following.
+      virtualScroll.scrollIndexIntoView(index);
+      return;
+    }
+
+    const option = this._document.getElementById(this.optionId(index));
+    if (option) option.scrollIntoView({ block: 'nearest' });
+  });
 
   /**
    * Consumer template rendered inside each option button in place of the plain
@@ -54,9 +106,12 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
   public abstract readonly size: InputSignal<controlSize>;
   public abstract readonly fluid: InputSignalWithTransform<boolean, unknown>;
   public abstract readonly clearable: InputSignalWithTransform<boolean, unknown>;
+  /** Renders the panel through a virtual-scroll viewport, windowing the option list. */
+  public abstract readonly virtualScroll: InputSignalWithTransform<boolean, unknown>;
+  /** Fixed height of an option row, in pixels, when the panel is virtualized. */
+  public abstract readonly virtualScrollItemSize: InputSignalWithTransform<number, unknown>;
 
   protected readonly isOpen: Signal<boolean> = this.overlay.isOpen;
-  protected readonly activeIndex: WritableSignal<number> = signal(-1);
 
   protected readonly normalizedOptions: Signal<Option<V>[]> = computed(() =>
     normalizeOptions<T, V>(this.options(), {
@@ -75,10 +130,41 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
     this.filterVisibleOptions(this.normalizedOptions()),
   );
 
+  /**
+   * Index of the option keyboard navigation rests on, within `visibleOptions`; −1
+   * means none. When the visible list changes under it (the options swapped while the
+   * panel is open), an index that fell out of range snaps to the last enabled option,
+   * so `aria-activedescendant` never references an element that no longer exists.
+   */
+  protected readonly activeIndex: WritableSignal<number> = linkedSignal<Option<V>[], number>({
+    source: this.visibleOptions,
+    computation: (options, previous) => {
+      if (previous === undefined) return -1;
+      if (previous.value < options.length) return previous.value;
+
+      for (let index = options.length - 1; index >= 0; index--) {
+        if (!options[index].disabled) return index;
+      }
+      return -1;
+    },
+  });
+
   protected readonly activeDescendantId: Signal<string | null> = computed(() => {
     const index = this.activeIndex();
     if (index < 0) return null;
     return this.optionId(index);
+  });
+
+  /**
+   * Height of the virtualized option viewport: sized to the options, capped so the
+   * panel — viewport plus its block padding — never exceeds the panel's max-height.
+   * A short list therefore produces a short panel instead of an empty scroll area.
+   * Bound to the viewport's `--tls-virtual-scroll-height` custom property.
+   */
+  protected readonly virtualPanelHeight: Signal<string> = computed(() => {
+    const prefix = this.panelCssVariablePrefix;
+    const contentHeight = this.visibleOptions().length * this.virtualScrollItemSize();
+    return `min(${contentHeight}px, calc(var(${prefix}-max-height) - 2 * var(${prefix}-padding-block)))`;
   });
 
   protected readonly hostClasses: Signal<string[]> = computed(() => {
@@ -99,6 +185,11 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
   protected abstract readonly uniqueId: string;
   protected abstract readonly hostClassBase: string;
   protected abstract readonly panelClass: string;
+  /**
+   * Prefix of the control's panel custom properties; `<prefix>-max-height` and
+   * `<prefix>-padding-block` must exist under it, as they size the virtualized viewport.
+   */
+  protected abstract readonly panelCssVariablePrefix: string;
   protected abstract readonly hasValue: Signal<boolean>;
   /** Whether `option` is part of the current selection (scalar or array, per control). */
   protected abstract isOptionSelected(option: Option<V>): boolean;

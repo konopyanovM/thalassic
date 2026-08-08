@@ -9,6 +9,7 @@ import {
   InputSignalWithTransform,
   model,
   ModelSignal,
+  numberAttribute,
   Signal,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
@@ -16,12 +17,13 @@ import { AbstractSelect, FORM_CONTROL, Option } from '../../../abstract/form';
 import { controlSize } from '../../../types';
 import { Icon } from '../../icon';
 import { Loader } from '../../loader';
+import { VirtualScroll } from '../../virtual-scroll';
 import { SELECT_CONFIG } from './select.token';
 
 @Component({
   selector: 'tls-select',
   templateUrl: './select.html',
-  imports: [Loader, Icon, NgTemplateOutlet],
+  imports: [Loader, Icon, NgTemplateOutlet, VirtualScroll],
   host: {
     '[class]': 'hostClasses()',
   },
@@ -37,6 +39,7 @@ export class Select<T, V = unknown> extends AbstractSelect<T, V, V | null> {
   protected readonly uniqueId = `tls-select-${Select._nextUniqueId++}`;
   protected readonly hostClassBase = 'tls-select';
   protected readonly panelClass = 'tls-select-panel';
+  protected readonly panelCssVariablePrefix = '--tls-select-panel';
 
   public readonly value: ModelSignal<V | null> = model<V | null>(null);
   public readonly placeholder = input<string>(this._config.placeholder);
@@ -50,6 +53,14 @@ export class Select<T, V = unknown> extends AbstractSelect<T, V, V | null> {
     { transform: booleanAttribute },
   );
   public readonly clearLabel = input<string>(this._config.clearLabel);
+  public readonly virtualScroll: InputSignalWithTransform<boolean, unknown> = input<
+    boolean,
+    unknown
+  >(this._config.virtualScroll, { transform: booleanAttribute });
+  public readonly virtualScrollItemSize: InputSignalWithTransform<number, unknown> = input<
+    number,
+    unknown
+  >(this._config.virtualScrollItemSize, { transform: numberAttribute });
 
   protected readonly hasValue: Signal<boolean> = computed(() => {
     const value = this.value();

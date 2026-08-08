@@ -45,3 +45,13 @@ export default meta;
 type Story = StoryObj<AutocompleteComponent<unknown>>;
 
 export const Autocomplete: Story = {};
+
+export const VirtualScroll: Story = {
+  args: {
+    virtualScroll: true,
+    options: Array.from({ length: 10000 }, (_, index) => ({
+      label: `Option ${index + 1}`,
+      value: `option${index + 1}`,
+    })),
+  },
+};

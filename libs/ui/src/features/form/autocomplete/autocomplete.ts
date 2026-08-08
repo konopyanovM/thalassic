@@ -10,6 +10,7 @@ import {
   linkedSignal,
   model,
   ModelSignal,
+  numberAttribute,
   Signal,
   WritableSignal,
 } from '@angular/core';
@@ -18,13 +19,14 @@ import { AbstractSelect, FORM_CONTROL, Option } from '../../../abstract/form';
 import { controlSize } from '../../../types';
 import { Icon } from '../../icon';
 import { Loader } from '../../loader';
+import { VirtualScroll } from '../../virtual-scroll';
 import { autocompleteFilterMode } from './autocomplete-filter-mode';
 import { AUTOCOMPLETE_CONFIG } from './autocomplete.token';
 
 @Component({
   selector: 'tls-autocomplete',
   templateUrl: './autocomplete.html',
-  imports: [Loader, Icon, NgTemplateOutlet],
+  imports: [Loader, Icon, NgTemplateOutlet, VirtualScroll],
   host: {
     '[class]': 'hostClasses()',
   },
@@ -40,6 +42,7 @@ export class Autocomplete<T, V = unknown> extends AbstractSelect<T, V, V | null>
   protected readonly uniqueId = `tls-autocomplete-${Autocomplete._nextUniqueId++}`;
   protected readonly hostClassBase = 'tls-autocomplete';
   protected readonly panelClass = 'tls-autocomplete-panel';
+  protected readonly panelCssVariablePrefix = '--tls-autocomplete-panel';
 
   public readonly value: ModelSignal<V | null> = model<V | null>(null);
   public readonly placeholder = input<string>(this._config.placeholder);
@@ -55,6 +58,14 @@ export class Autocomplete<T, V = unknown> extends AbstractSelect<T, V, V | null>
   public readonly filterMode = input<autocompleteFilterMode>(this._config.filterMode);
   public readonly emptyMessage = input<string>(this._config.emptyMessage);
   public readonly clearLabel = input<string>(this._config.clearLabel);
+  public readonly virtualScroll: InputSignalWithTransform<boolean, unknown> = input<
+    boolean,
+    unknown
+  >(this._config.virtualScroll, { transform: booleanAttribute });
+  public readonly virtualScrollItemSize: InputSignalWithTransform<number, unknown> = input<
+    number,
+    unknown
+  >(this._config.virtualScrollItemSize, { transform: numberAttribute });
 
   protected readonly hasValue: Signal<boolean> = computed(() => {
     const value = this.value();

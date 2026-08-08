@@ -9,6 +9,16 @@ interface Option {
   disabled: boolean;
 }
 
+// jsdom does not implement Element.scrollTo, which the CDK virtual-scroll viewport
+// drives whenever the control keeps the active option in view.
+if (!Element.prototype.scrollTo) {
+  Element.prototype.scrollTo = function (this: Element, options?: ScrollToOptions | number): void {
+    if (typeof options !== 'object' || options === null) return;
+    if (options.left !== undefined) this.scrollLeft = options.left;
+    if (options.top !== undefined) this.scrollTop = options.top;
+  } as typeof Element.prototype.scrollTo;
+}
+
 @Component({
   imports: [MultiSelect],
   template: `
@@ -18,6 +28,7 @@ interface Option {
       [clearable]="clearable()"
       [disabled]="disabled()"
       [maxLabels]="maxLabels()"
+      [virtualScroll]="virtualScroll()"
       optionLabel="label"
       optionValue="value"
       optionDisabled="disabled"
@@ -34,6 +45,7 @@ class HostComponent {
   public readonly clearable = signal(false);
   public readonly disabled = signal(false);
   public readonly maxLabels = signal(2);
+  public readonly virtualScroll = signal(false);
   public readonly multiSelect = viewChild.required(MultiSelect);
 }
 
@@ -335,6 +347,58 @@ describe('MultiSelect', () => {
       expect(trigger.getAttribute('aria-activedescendant')).toBe(
         activeOption?.getAttribute('id') ?? null,
       );
+    });
+  });
+
+  describe('virtual scroll', () => {
+    const MANY_OPTIONS: Option[] = Array.from({ length: 1000 }, (_, index) => ({
+      label: `Option ${index}`,
+      value: index,
+      disabled: false,
+    }));
+
+    const queryViewport = () =>
+      overlayContainerElement.querySelector<HTMLElement>('.tls-virtual-scroll__viewport');
+
+    // The CDK viewport finishes initializing in a microtask scheduled outside Angular,
+    // so the rendered window only exists after a full event-loop turn.
+    const settle = async () => {
+      await fixture.whenStable();
+      await new Promise(resolve => setTimeout(resolve));
+      fixture.detectChanges();
+    };
+
+    beforeEach(() => {
+      host.virtualScroll.set(true);
+      host.options.set(MANY_OPTIONS);
+      fixture.detectChanges();
+    });
+
+    it('should mark the windowing viewport as a multiselectable listbox', async () => {
+      trigger.click();
+      fixture.detectChanges();
+      await settle();
+
+      const viewport = queryViewport();
+      expect(viewport?.getAttribute('role')).toBe('listbox');
+      expect(viewport?.getAttribute('aria-multiselectable')).toBe('true');
+      expect(trigger.getAttribute('aria-controls')).toBe(viewport?.getAttribute('id'));
+      expect(queryOptions().length).toBeLessThan(MANY_OPTIONS.length);
+    });
+
+    it('should toggle values and keep the panel open, showing the check on selected rows', async () => {
+      trigger.click();
+      fixture.detectChanges();
+      await settle();
+
+      queryOptions()[0].click();
+      fixture.detectChanges();
+
+      expect(selectedValue()).toEqual([0]);
+      expect(queryPanel()).not.toBeNull();
+      const selectedButton = queryOptions()[0];
+      expect(selectedButton.getAttribute('aria-selected')).toBe('true');
+      expect(selectedButton.querySelector('.tls-multi-select__option-check')).not.toBeNull();
     });
   });
 

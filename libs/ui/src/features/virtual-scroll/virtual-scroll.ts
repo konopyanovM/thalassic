@@ -137,6 +137,21 @@ export class VirtualScroll<T> {
   public readonly viewportRole = input<string | undefined>(undefined);
 
   /**
+   * Id applied to the scroll container rather than the host, for the same reason as
+   * `viewportRole`: a reference to the collection (`aria-controls`, `aria-owns`) has to
+   * resolve to the element that owns the items. Deliberately not named `id` — a static
+   * `id` attribute would land on the host and the container at once, duplicating the id.
+   */
+  public readonly viewportId = input<string | undefined>(undefined);
+
+  /**
+   * Reflected as `aria-multiselectable` on the scroll container, meaningful when
+   * `viewportRole` names a role that supports it (a listbox holding a multiple
+   * selection).
+   */
+  public readonly ariaMultiselectable = input<boolean | undefined>(undefined);
+
+  /**
    * Whether the scroll container is a tab stop. A region that scrolls has to be
    * operable from the keyboard, so it is one by default. Turn it off only when the
    * region already offers that operability another way — items that are themselves
@@ -180,6 +195,37 @@ export class VirtualScroll<T> {
   /** Scrolls the item at `index` to the leading edge of the container. */
   public scrollToIndex(index: number, behavior?: ScrollBehavior): void {
     this._viewport().scrollToIndex(index, behavior);
+  }
+
+  /**
+   * Scrolls the least amount that brings the item at `index` fully into view: an item
+   * beyond the trailing edge lands on that edge, one before the leading edge lands on
+   * it, and an item already fully visible does not move — the behavior of
+   * `scrollIntoView({ block: 'nearest' })`, which `scrollToIndex` (always pinning to
+   * the leading edge) does not provide.
+   */
+  public scrollIndexIntoView(index: number, behavior?: ScrollBehavior): void {
+    const viewport = this._viewport();
+    const itemSize = this.itemSize();
+    const itemStart = index * itemSize;
+    // `start`/`end` name the inline axis (flipping with the layout direction), so the
+    // block axis of a vertical container has to be addressed as `top`.
+    const horizontal = this.orientation() === 'horizontal';
+    const scrollOffset = viewport.measureScrollOffset(horizontal ? 'start' : 'top');
+    const viewportSize = viewport.getViewportSize();
+
+    let target: number;
+    if (itemStart < scrollOffset) {
+      target = itemStart;
+    } else if (itemStart + itemSize > scrollOffset + viewportSize) {
+      target = itemStart + itemSize - viewportSize;
+    } else {
+      return;
+    }
+
+    const options: ExtendedScrollToOptions = horizontal ? { start: target } : { top: target };
+    if (behavior !== undefined) options.behavior = behavior;
+    viewport.scrollTo(options);
   }
 
   /** Scrolls to an offset given from any edge of the container. */

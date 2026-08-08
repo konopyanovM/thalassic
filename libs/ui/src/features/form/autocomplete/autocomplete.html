@@ -43,39 +43,84 @@
 }
 
 <ng-template #panel>
-  <ul
-    class="tls-autocomplete__panel"
-    animate.enter="tls-autocomplete__panel--enter"
-    animate.leave="tls-autocomplete__panel--leave"
-    role="listbox"
-    [id]="listboxId"
-  >
-    @for (option of visibleOptions(); track option.value; let index = $index) {
-      <li
-        class="tls-autocomplete__option"
-        [class.tls-autocomplete__option--selected]="option.value === value()"
-        [class.tls-autocomplete__option--active]="index === activeIndex()"
-        [class.tls-autocomplete__option--disabled]="option.disabled"
+  <ng-template #optionButton let-option let-index="index" let-setsize="setsize">
+    <button
+      class="tls-autocomplete__option-button"
+      role="option"
+      [id]="optionId(index)"
+      [disabled]="option.disabled"
+      [attr.aria-selected]="option.value === value()"
+      [attr.aria-disabled]="option.disabled"
+      [attr.aria-posinset]="setsize !== null ? index + 1 : null"
+      [attr.aria-setsize]="setsize"
+      (click)="select(option)"
+      (pointerenter)="onOptionHover($event, index, option.disabled)"
+    >
+      @if (optionTemplate(); as template) {
+        <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="optionContext(option, index)" />
+      } @else {
+        {{ option.label }}
+      }
+    </button>
+  </ng-template>
+
+  @if (virtualScroll()) {
+    <div
+      class="tls-autocomplete__panel tls-autocomplete__panel--virtual"
+      animate.enter="tls-autocomplete__panel--enter"
+      animate.leave="tls-autocomplete__panel--leave"
+    >
+      <tls-virtual-scroll
+        [items]="visibleOptions()"
+        [itemSize]="virtualScrollItemSize()"
+        trackBy="value"
+        viewportRole="listbox"
+        [viewportId]="listboxId"
+        [focusable]="false"
+        [style.--tls-virtual-scroll-height]="virtualPanelHeight()"
       >
-        <button
-          class="tls-autocomplete__option-button"
-          role="option"
-          [id]="optionId(index)"
-          [disabled]="option.disabled"
-          [attr.aria-selected]="option.value === value()"
-          [attr.aria-disabled]="option.disabled"
-          (click)="select(option)"
-          (pointerenter)="onOptionHover($event, index, option.disabled)"
+        <ng-template #item let-option let-index="index" let-count="count">
+          <div
+            class="tls-autocomplete__option"
+            role="presentation"
+            [class.tls-autocomplete__option--selected]="option.value === value()"
+            [class.tls-autocomplete__option--active]="index === activeIndex()"
+            [class.tls-autocomplete__option--disabled]="option.disabled"
+          >
+            <ng-container
+              [ngTemplateOutlet]="optionButton"
+              [ngTemplateOutletContext]="{ $implicit: option, index: index, setsize: count }"
+            />
+          </div>
+        </ng-template>
+      </tls-virtual-scroll>
+      @if (visibleOptions().length === 0) {
+        <div class="tls-autocomplete__empty" role="presentation">{{ emptyMessage() }}</div>
+      }
+    </div>
+  } @else {
+    <ul
+      class="tls-autocomplete__panel"
+      animate.enter="tls-autocomplete__panel--enter"
+      animate.leave="tls-autocomplete__panel--leave"
+      role="listbox"
+      [id]="listboxId"
+    >
+      @for (option of visibleOptions(); track option.value; let index = $index) {
+        <li
+          class="tls-autocomplete__option"
+          [class.tls-autocomplete__option--selected]="option.value === value()"
+          [class.tls-autocomplete__option--active]="index === activeIndex()"
+          [class.tls-autocomplete__option--disabled]="option.disabled"
         >
-          @if (optionTemplate(); as template) {
-            <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="optionContext(option, index)" />
-          } @else {
-            {{ option.label }}
-          }
-        </button>
-      </li>
-    } @empty {
-      <li class="tls-autocomplete__empty" role="presentation">{{ emptyMessage() }}</li>
-    }
-  </ul>
+          <ng-container
+            [ngTemplateOutlet]="optionButton"
+            [ngTemplateOutletContext]="{ $implicit: option, index: index, setsize: null }"
+          />
+        </li>
+      } @empty {
+        <li class="tls-autocomplete__empty" role="presentation">{{ emptyMessage() }}</li>
+      }
+    </ul>
+  }
 </ng-template>

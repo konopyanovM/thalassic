@@ -44,43 +44,86 @@
 }
 
 <ng-template #panel>
-  <ul
-    class="tls-multi-select__panel"
-    animate.enter="tls-multi-select__panel--enter"
-    animate.leave="tls-multi-select__panel--leave"
-    role="listbox"
-    aria-multiselectable="true"
-    [id]="listboxId"
-  >
-    @for (option of visibleOptions(); track option.value; let index = $index) {
-      <li
-        class="tls-multi-select__option"
-        [class.tls-multi-select__option--selected]="isSelected(option)"
-        [class.tls-multi-select__option--active]="index === activeIndex()"
-        [class.tls-multi-select__option--disabled]="option.disabled"
+  <ng-template #optionButton let-option let-index="index" let-setsize="setsize">
+    <button
+      class="tls-multi-select__option-button"
+      role="option"
+      [id]="optionId(index)"
+      [disabled]="option.disabled"
+      [attr.aria-selected]="isSelected(option)"
+      [attr.aria-disabled]="option.disabled"
+      [attr.aria-posinset]="setsize !== null ? index + 1 : null"
+      [attr.aria-setsize]="setsize"
+      (click)="toggleOption(option)"
+      (pointerenter)="onOptionHover($event, index, option.disabled)"
+    >
+      <span class="tls-multi-select__option-label">
+        @if (optionTemplate(); as template) {
+          <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="optionContext(option, index)" />
+        } @else {
+          {{ option.label }}
+        }
+      </span>
+      @if (isSelected(option)) {
+        <tls-icon class="tls-multi-select__option-check" name="check" aria-hidden="true" />
+      }
+    </button>
+  </ng-template>
+
+  @if (virtualScroll()) {
+    <div
+      class="tls-multi-select__panel tls-multi-select__panel--virtual"
+      animate.enter="tls-multi-select__panel--enter"
+      animate.leave="tls-multi-select__panel--leave"
+    >
+      <tls-virtual-scroll
+        [items]="visibleOptions()"
+        [itemSize]="virtualScrollItemSize()"
+        trackBy="value"
+        viewportRole="listbox"
+        [viewportId]="listboxId"
+        [ariaMultiselectable]="true"
+        [focusable]="false"
+        [style.--tls-virtual-scroll-height]="virtualPanelHeight()"
       >
-        <button
-          class="tls-multi-select__option-button"
-          role="option"
-          [id]="optionId(index)"
-          [disabled]="option.disabled"
-          [attr.aria-selected]="isSelected(option)"
-          [attr.aria-disabled]="option.disabled"
-          (click)="toggleOption(option)"
-          (pointerenter)="onOptionHover($event, index, option.disabled)"
+        <ng-template #item let-option let-index="index" let-count="count">
+          <div
+            class="tls-multi-select__option"
+            role="presentation"
+            [class.tls-multi-select__option--selected]="isSelected(option)"
+            [class.tls-multi-select__option--active]="index === activeIndex()"
+            [class.tls-multi-select__option--disabled]="option.disabled"
+          >
+            <ng-container
+              [ngTemplateOutlet]="optionButton"
+              [ngTemplateOutletContext]="{ $implicit: option, index: index, setsize: count }"
+            />
+          </div>
+        </ng-template>
+      </tls-virtual-scroll>
+    </div>
+  } @else {
+    <ul
+      class="tls-multi-select__panel"
+      animate.enter="tls-multi-select__panel--enter"
+      animate.leave="tls-multi-select__panel--leave"
+      role="listbox"
+      aria-multiselectable="true"
+      [id]="listboxId"
+    >
+      @for (option of visibleOptions(); track option.value; let index = $index) {
+        <li
+          class="tls-multi-select__option"
+          [class.tls-multi-select__option--selected]="isSelected(option)"
+          [class.tls-multi-select__option--active]="index === activeIndex()"
+          [class.tls-multi-select__option--disabled]="option.disabled"
         >
-          <span class="tls-multi-select__option-label">
-            @if (optionTemplate(); as template) {
-              <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="optionContext(option, index)" />
-            } @else {
-              {{ option.label }}
-            }
-          </span>
-          @if (isSelected(option)) {
-            <tls-icon class="tls-multi-select__option-check" name="check" aria-hidden="true" />
-          }
-        </button>
-      </li>
-    }
-  </ul>
+          <ng-container
+            [ngTemplateOutlet]="optionButton"
+            [ngTemplateOutletContext]="{ $implicit: option, index: index, setsize: null }"
+          />
+        </li>
+      }
+    </ul>
+  }
 </ng-template>

@@ -37,6 +37,43 @@ type Story = StoryObj<SelectComponent<unknown>>;
 
 export const Select: Story = {};
 
+export const VirtualScroll: Story = {
+  args: {
+    virtualScroll: true,
+    options: Array.from({ length: 10000 }, (_, index) => ({
+      label: `Option ${index + 1}`,
+      value: `option${index + 1}`,
+    })),
+  },
+};
+
+export const VirtualScrollCustomOptionTemplate: Story = {
+  render: () => ({
+    props: {
+      options: Array.from({ length: 10000 }, (_, index) => ({
+        label: `Option ${index + 1}`,
+        value: `option${index + 1}`,
+      })),
+    },
+    template: `
+      <tls-select
+        [options]="options"
+        optionLabel="label"
+        optionValue="value"
+        virtualScroll="true"
+        placeholder="Select an option"
+      >
+        <ng-template #option let-context>
+          <span style="display: inline-flex; align-items: center; gap: 8px;">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--color-primary);"></span>
+            {{ context.label }}
+          </span>
+        </ng-template>
+      </tls-select>
+    `,
+  }),
+};
+
 export const CustomOptionTemplate: Story = {
   render: args => ({
     props: args,

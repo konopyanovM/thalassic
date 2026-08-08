@@ -9,6 +9,16 @@ interface Option {
   disabled: boolean;
 }
 
+// jsdom does not implement Element.scrollTo, which the CDK virtual-scroll viewport
+// drives whenever the control keeps the active option in view.
+if (!Element.prototype.scrollTo) {
+  Element.prototype.scrollTo = function (this: Element, options?: ScrollToOptions | number): void {
+    if (typeof options !== 'object' || options === null) return;
+    if (options.left !== undefined) this.scrollLeft = options.left;
+    if (options.top !== undefined) this.scrollTop = options.top;
+  } as typeof Element.prototype.scrollTo;
+}
+
 @Component({
   imports: [Select],
   template: `
@@ -17,6 +27,7 @@ interface Option {
       [value]="value()"
       [clearable]="clearable()"
       [disabled]="disabled()"
+      [virtualScroll]="virtualScroll()"
       optionLabel="label"
       optionValue="value"
       optionDisabled="disabled"
@@ -32,6 +43,7 @@ class HostComponent {
   public readonly value = signal<number | null>(null);
   public readonly clearable = signal(false);
   public readonly disabled = signal(false);
+  public readonly virtualScroll = signal(false);
   public readonly select = viewChild.required(Select);
 }
 
@@ -255,6 +267,19 @@ describe('Select', () => {
       expect(queryPanel()).toBeNull();
     });
 
+    it('should clamp the active option when the option list shrinks while open', () => {
+      keydown('ArrowDown'); // opens; active starts on the first enabled option (One)
+      keydown('End'); // -> Three (index 2)
+
+      host.options.set([{ label: 'One', value: 1, disabled: false }]);
+      fixture.detectChanges();
+
+      expect(queryActiveOption()?.textContent?.trim()).toBe('One');
+      const activeDescendantId = trigger.getAttribute('aria-activedescendant');
+      expect(activeDescendantId).toBeTruthy();
+      expect(document.getElementById(activeDescendantId ?? '')).not.toBeNull();
+    });
+
     it('should clear on Backspace when clearable with a value', () => {
       host.clearable.set(true);
       host.value.set(1);
@@ -292,6 +317,121 @@ describe('Select', () => {
       expect(trigger.getAttribute('aria-activedescendant')).toBe(
         activeOption?.getAttribute('id') ?? null,
       );
+    });
+  });
+
+  describe('active option scrolling', () => {
+    let scrollIntoView: ReturnType<typeof vi.fn<(options?: ScrollIntoViewOptions) => void>>;
+
+    beforeEach(() => {
+      // jsdom does not implement scrollIntoView; the assertion is that the control
+      // asks for the minimal scroll at all.
+      scrollIntoView = vi.fn<(options?: ScrollIntoViewOptions) => void>();
+      Element.prototype.scrollIntoView = scrollIntoView;
+    });
+
+    it('should scroll the active option into view on keyboard navigation', async () => {
+      keydown('ArrowDown'); // opens; active starts on the first enabled option
+      await fixture.whenStable();
+      scrollIntoView.mockClear();
+
+      keydown('ArrowDown');
+      await fixture.whenStable();
+
+      expect(scrollIntoView).toHaveBeenCalledWith({ block: 'nearest' });
+    });
+
+    it('should scroll the initially active option into view on open', async () => {
+      host.value.set(3);
+      fixture.detectChanges();
+
+      trigger.click(); // opens with "Three" active
+      await fixture.whenStable();
+
+      expect(scrollIntoView).toHaveBeenCalledWith({ block: 'nearest' });
+    });
+  });
+
+  describe('virtual scroll', () => {
+    const MANY_OPTIONS: Option[] = Array.from({ length: 1000 }, (_, index) => ({
+      label: `Option ${index}`,
+      value: index,
+      disabled: false,
+    }));
+
+    const queryViewport = () =>
+      overlayContainerElement.querySelector<HTMLElement>('.tls-virtual-scroll__viewport');
+
+    // The CDK viewport finishes initializing in a microtask scheduled outside Angular,
+    // so the rendered window only exists after a full event-loop turn.
+    const settle = async () => {
+      await fixture.whenStable();
+      await new Promise(resolve => setTimeout(resolve));
+      fixture.detectChanges();
+    };
+
+    beforeEach(() => {
+      host.virtualScroll.set(true);
+      host.options.set(MANY_OPTIONS);
+      fixture.detectChanges();
+    });
+
+    it('should render only a window of a large option list', async () => {
+      trigger.click();
+      fixture.detectChanges();
+      await settle();
+
+      const rendered = queryOptions().length;
+      expect(rendered).toBeGreaterThan(0);
+      expect(rendered).toBeLessThan(MANY_OPTIONS.length);
+    });
+
+    it('should make the viewport the listbox that aria-controls points at', async () => {
+      trigger.click();
+      fixture.detectChanges();
+      await settle();
+
+      const viewport = queryViewport();
+      expect(viewport?.getAttribute('role')).toBe('listbox');
+      expect(viewport?.getAttribute('id')).toBeTruthy();
+      expect(trigger.getAttribute('aria-controls')).toBe(viewport?.getAttribute('id'));
+    });
+
+    it('should report each option position within the whole collection', async () => {
+      trigger.click();
+      fixture.detectChanges();
+      await settle();
+
+      const first = queryOptions()[0];
+      expect(first.getAttribute('aria-posinset')).toBe('1');
+      expect(first.getAttribute('aria-setsize')).toBe(String(MANY_OPTIONS.length));
+    });
+
+    it('should keep the aria-activedescendant element rendered while navigating', async () => {
+      keydown('ArrowDown'); // opens
+      await settle();
+
+      keydown('ArrowDown');
+      keydown('ArrowDown');
+      await settle();
+
+      const activeDescendantId = trigger.getAttribute('aria-activedescendant');
+      expect(activeDescendantId).toBeTruthy();
+      const activeOption = document.getElementById(activeDescendantId ?? '');
+      expect(activeOption).not.toBeNull();
+      expect(activeOption?.getAttribute('role')).toBe('option');
+    });
+
+    it('should set the value and close when an option is clicked', async () => {
+      trigger.click();
+      fixture.detectChanges();
+      await settle();
+
+      queryOptions()[1].click();
+      fixture.detectChanges();
+
+      expect(selectedValue()).toBe(1);
+      expect(queryPanel()).toBeNull();
     });
   });
 

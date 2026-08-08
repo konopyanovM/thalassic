@@ -1,5 +1,7 @@
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { Component, signal, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { VirtualScroll } from './virtual-scroll';
 
 interface Row {
@@ -19,6 +21,8 @@ const ROWS: Row[] = Array.from({ length: 500 }, (_, index) => ({
       [items]="rows()"
       [itemSize]="20"
       [focusable]="focusable()"
+      [viewportId]="'rows-listbox'"
+      [ariaMultiselectable]="multiselectable()"
       trackBy="id"
       viewportRole="list"
       ariaLabel="Rows"
@@ -36,6 +40,7 @@ class TestHost {
   public readonly virtualScroll = viewChild.required(VirtualScroll<Row>);
   public readonly rows = signal<Row[]>(ROWS);
   public readonly focusable = signal(true);
+  public readonly multiselectable = signal<boolean | undefined>(undefined);
   public readonly scrolledIndex = signal(-1);
 }
 
@@ -76,6 +81,62 @@ describe('VirtualScroll', () => {
     expect(viewport?.getAttribute('role')).toBe('list');
     expect(viewport?.getAttribute('aria-label')).toBe('Rows');
     expect(componentHost?.hasAttribute('role')).toBe(false);
+  });
+
+  it('forwards the id to the scroll container so collection references resolve to it', () => {
+    const element: HTMLElement = fixture.nativeElement;
+    const viewport = element.querySelector('.tls-virtual-scroll__viewport');
+    const componentHost = element.querySelector('tls-virtual-scroll');
+
+    expect(viewport?.getAttribute('id')).toBe('rows-listbox');
+    expect(componentHost?.hasAttribute('id')).toBe(false);
+  });
+
+  it('reflects aria-multiselectable on the scroll container only when set', async () => {
+    const element: HTMLElement = fixture.nativeElement;
+    const viewport = element.querySelector('.tls-virtual-scroll__viewport');
+    expect(viewport?.hasAttribute('aria-multiselectable')).toBe(false);
+
+    host.multiselectable.set(true);
+    await fixture.whenStable();
+    expect(viewport?.getAttribute('aria-multiselectable')).toBe('true');
+  });
+
+  describe('scrollIndexIntoView', () => {
+    let viewport: CdkVirtualScrollViewport;
+
+    // The viewport cannot measure itself in a unit test, so the geometry is stubbed:
+    // a 100px viewport over 20px items shows five of them.
+    const stubGeometry = (scrollOffset: number) => {
+      vi.spyOn(viewport, 'getViewportSize').mockReturnValue(100);
+      vi.spyOn(viewport, 'measureScrollOffset').mockReturnValue(scrollOffset);
+      return vi.spyOn(viewport, 'scrollTo').mockImplementation(() => undefined);
+    };
+
+    beforeEach(() => {
+      viewport = fixture.debugElement
+        .query(By.directive(CdkVirtualScrollViewport))
+        .injector.get(CdkVirtualScrollViewport);
+    });
+
+    it('scrolls an item beyond the trailing edge onto that edge', () => {
+      const scrollTo = stubGeometry(0);
+      host.virtualScroll().scrollIndexIntoView(9);
+      // Item 9 spans 180–200px; the minimal scroll puts its end on the viewport's end.
+      expect(scrollTo).toHaveBeenCalledWith({ top: 100 });
+    });
+
+    it('scrolls an item before the leading edge onto that edge', () => {
+      const scrollTo = stubGeometry(200);
+      host.virtualScroll().scrollIndexIntoView(3);
+      expect(scrollTo).toHaveBeenCalledWith({ top: 60 });
+    });
+
+    it('does not move for an item already fully visible', () => {
+      const scrollTo = stubGeometry(0);
+      host.virtualScroll().scrollIndexIntoView(2);
+      expect(scrollTo).not.toHaveBeenCalled();
+    });
   });
 
   it('makes the scroll container a tab stop so it can be scrolled from the keyboard', async () => {

@@ -8,6 +8,8 @@
   [appendOnly]="appendOnly()"
   [attr.tabindex]="focusable() ? 0 : null"
   [attr.role]="viewportRole() ?? null"
+  [attr.id]="viewportId() ?? null"
+  [attr.aria-multiselectable]="ariaMultiselectable() ?? null"
   [attr.aria-label]="ariaLabel() ?? null"
   [attr.aria-labelledby]="ariaLabelledby() ?? null"
   [attr.aria-describedby]="ariaDescribedby() ?? null"

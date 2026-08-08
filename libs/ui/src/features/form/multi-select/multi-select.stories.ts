@@ -37,3 +37,13 @@ export default meta;
 type Story = StoryObj<MultiSelectComponent<unknown>>;
 
 export const MultiSelect: Story = {};
+
+export const VirtualScroll: Story = {
+  args: {
+    virtualScroll: true,
+    options: Array.from({ length: 10000 }, (_, index) => ({
+      label: `Option ${index + 1}`,
+      value: `option${index + 1}`,
+    })),
+  },
+};

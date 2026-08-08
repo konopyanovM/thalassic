@@ -23,6 +23,27 @@
   list-style: none;
 
   @include mixins.panel-open;
+
+  &--virtual {
+    // The virtual-scroll viewport inside is the scroll container; the panel only clips
+    // to its rounded corners.
+    overflow: hidden;
+
+    // Windowing positions every row at a fixed offset, so each row must occupy exactly
+    // the item size the viewport publishes — a taller custom option template is clipped
+    // rather than allowed to drift the rows out of place.
+    .tls-autocomplete__option {
+      height: var(--tls-virtual-scroll-item-size);
+
+      box-sizing: border-box;
+
+      overflow: hidden;
+    }
+
+    .tls-autocomplete__option-button {
+      height: 100%;
+    }
+  }
 }
 
 .tls-autocomplete__option {
