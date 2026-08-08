@@ -1,3 +1,13 @@
+## 22.17.3 (2026-08-08)
+
+### 🚀 Features
+
+- **ui/table:** collapse columns below a container breakpoint ([462ac55](https://github.com/konopyanovM/thalassic/commit/462ac55))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.17.2 (2026-08-08)
 
 This was a version bump only, there were no code changes.
