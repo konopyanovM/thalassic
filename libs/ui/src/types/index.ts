@@ -5,5 +5,6 @@ export * from './overlay-arrow-alignment';
 export * from './overlay-arrow-position';
 export * from './overlay-arrow-side';
 export * from './overlay-position';
+export * from './radius';
 export * from './size';
 export * from './ui-config-provider';

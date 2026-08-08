@@ -47,10 +47,16 @@ describe('Skeleton', () => {
     expect(fixture.nativeElement.style.getPropertyValue('--tls-skeleton-radius')).toBe('50%');
   });
 
-  it('should use radius value when rounded is false', () => {
-    fixture.componentRef.setInput('radius', 12);
+  it('should resolve the radius token to its custom property when rounded is false', () => {
+    fixture.componentRef.setInput('radius', 'lg');
     fixture.detectChanges();
-    expect(fixture.nativeElement.style.getPropertyValue('--tls-skeleton-radius')).toBe('12px');
+    expect(fixture.nativeElement.style.getPropertyValue('--tls-skeleton-radius')).toBe('var(--radius-lg)');
+  });
+
+  it('should resolve a scale-step radius token', () => {
+    fixture.componentRef.setInput('radius', '2xl');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.style.getPropertyValue('--tls-skeleton-radius')).toBe('var(--radius-2xl)');
   });
 
   it('should apply no-animate class when animate is false', () => {

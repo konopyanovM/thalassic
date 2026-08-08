@@ -18,7 +18,7 @@ const meta: Meta<SkeletonComponent> = {
     size: { control: { type: 'number' } },
     width: { control: { type: 'number' } },
     height: { control: { type: 'number' } },
-    radius: { control: { type: 'number' } },
+    radius: { control: { type: 'select' }, options: ['sm', 'md', 'lg', 'xl', '2xl', '3xl'] },
     duration: { control: { type: 'number' } },
     rounded: { control: { type: 'boolean' } },
     animate: { control: { type: 'boolean' } },
