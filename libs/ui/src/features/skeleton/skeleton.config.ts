@@ -1,10 +1,10 @@
-import { radius } from '../../types';
+import { radiusValue } from '../../types';
 
 export interface SkeletonConfig {
   size: number | string | null;
   width: number | string | null;
   height: number | string | null;
-  radius: radius;
+  radius: radiusValue;
   duration: number;
   rounded: boolean;
   animate: boolean;

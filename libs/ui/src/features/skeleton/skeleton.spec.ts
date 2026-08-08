@@ -59,6 +59,18 @@ describe('Skeleton', () => {
     expect(fixture.nativeElement.style.getPropertyValue('--tls-skeleton-radius')).toBe('var(--radius-2xl)');
   });
 
+  it('should resolve a numeric radius to pixels', () => {
+    fixture.componentRef.setInput('radius', 12);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.style.getPropertyValue('--tls-skeleton-radius')).toBe('12px');
+  });
+
+  it('should pass a raw CSS length radius through untouched', () => {
+    fixture.componentRef.setInput('radius', '2rem');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.style.getPropertyValue('--tls-skeleton-radius')).toBe('2rem');
+  });
+
   it('should apply no-animate class when animate is false', () => {
     fixture.componentRef.setInput('animate', false);
     fixture.detectChanges();

@@ -6,6 +6,7 @@ export * from './overlay-arrow-position';
 export * from './overlay-arrow-side';
 export * from './overlay-position';
 export * from './radius';
+export * from './radius-value';
 export * from './size';
 export * from './track-by';
 export * from './ui-config-provider';
