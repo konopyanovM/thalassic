@@ -1,3 +1,13 @@
+## 22.17.6 (2026-08-09)
+
+### 🚀 Features
+
+- **ui/form-item:** added custom label template ([d58b9d0](https://github.com/konopyanovM/thalassic/commit/d58b9d0))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.17.5 (2026-08-09)
 
 ### 🚀 Features

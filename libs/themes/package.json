@@ -1,6 +1,6 @@
 {
   "name": "@thalassic/themes",
-  "version": "22.17.5",
+  "version": "22.17.6",
   "license": "MIT",
   "peerDependencies": {
     "@angular/common": "^22.0.0",
