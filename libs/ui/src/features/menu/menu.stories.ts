@@ -1,3 +1,4 @@
+import { signal } from '@angular/core';
 import { Meta, moduleMetadata, StoryObj } from '@storybook/angular';
 import { STORY_OVERLAY_POSITION_OPTIONS } from '../../../.storybook/constants';
 import { Button } from '../button';
@@ -111,6 +112,68 @@ export const WithIcons: Story = {
   }),
 };
 
+
+export const CheckableItems: Story = {
+  render: args => {
+    const view = signal({ statusBar: true, minimap: false, sidebar: 'left' });
+    const toggle = (key: 'statusBar' | 'minimap') =>
+      view.update(value => ({ ...value, [key]: !value[key] }));
+    const setSidebar = (sidebar: string) => view.update(value => ({ ...value, sidebar }));
+
+    return {
+      props: {
+        ...args,
+        buildItems: (): MenuItemDefinition[] => {
+          const currentView = view();
+          return [
+            { type: 'label', label: 'Appearance' },
+            {
+              type: 'item',
+              role: 'menuitemcheckbox',
+              checked: currentView.statusBar,
+              closeOnSelect: false,
+              label: 'Status Bar',
+              action: () => toggle('statusBar'),
+            },
+            {
+              type: 'item',
+              role: 'menuitemcheckbox',
+              checked: currentView.minimap,
+              closeOnSelect: false,
+              label: 'Minimap',
+              description: 'Code overview at the edge of the editor',
+              action: () => toggle('minimap'),
+            },
+            { type: 'divider' },
+            { type: 'label', label: 'Sidebar position' },
+            {
+              type: 'item',
+              role: 'menuitemradio',
+              checked: currentView.sidebar === 'left',
+              closeOnSelect: false,
+              label: 'Left',
+              action: () => setSidebar('left'),
+            },
+            {
+              type: 'item',
+              role: 'menuitemradio',
+              checked: currentView.sidebar === 'right',
+              closeOnSelect: false,
+              label: 'Right',
+              action: () => setSidebar('right'),
+            },
+          ];
+        },
+      },
+      template: `
+        <div style="display: flex; justify-content: center; align-items: center; height: 260px;">
+          <tls-button [tlsMenuTrigger]="menu">View options</tls-button>
+          <tls-menu #menu [items]="buildItems()" [position]="position"></tls-menu>
+        </div>
+      `,
+    };
+  },
+};
 
 export const WithCustomTemplates: Story = {
   render: args => ({

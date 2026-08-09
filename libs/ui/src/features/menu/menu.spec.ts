@@ -245,6 +245,73 @@ describe('Menu', () => {
     expect(queryPanel()).toBeNull();
   });
 
+  describe('roles, checked state and descriptions', () => {
+    beforeEach(() => {
+      host.items.set([
+        { type: 'item', label: 'Plain', action: () => host.clicks.push('Plain') },
+        {
+          type: 'item',
+          label: 'Checkbox',
+          role: 'menuitemcheckbox',
+          checked: true,
+          closeOnSelect: false,
+          action: () => host.clicks.push('Checkbox'),
+        },
+        {
+          type: 'item',
+          label: 'Radio',
+          role: 'menuitemradio',
+          checked: false,
+          description: 'Secondary text',
+        },
+      ]);
+      fixture.detectChanges();
+
+      getMenu().open(trigger);
+      fixture.detectChanges();
+    });
+
+    it('should default to the menuitem role without aria-checked', () => {
+      const [plain] = queryItems();
+      expect(plain.getAttribute('role')).toBe('menuitem');
+      expect(plain.hasAttribute('aria-checked')).toBe(false);
+    });
+
+    it('should reflect role and checked state on checkable items', () => {
+      const [, checkbox, radio] = queryItems();
+      expect(checkbox.getAttribute('role')).toBe('menuitemcheckbox');
+      expect(checkbox.getAttribute('aria-checked')).toBe('true');
+      expect(radio.getAttribute('role')).toBe('menuitemradio');
+      expect(radio.getAttribute('aria-checked')).toBe('false');
+    });
+
+    it('should render a check indicator only for checkable items, filled only when checked', () => {
+      const [plain, checkbox, radio] = queryItems();
+      expect(plain.querySelector('.tls-menu__item-check')).toBeNull();
+      expect(checkbox.querySelector('.tls-menu__item-check tls-icon')).not.toBeNull();
+      expect(radio.querySelector('.tls-menu__item-check')).not.toBeNull();
+      expect(radio.querySelector('.tls-menu__item-check tls-icon')).toBeNull();
+    });
+
+    it('should keep the menu open when closeOnSelect is false', () => {
+      queryItems()[1].click();
+      fixture.detectChanges();
+
+      expect(host.clicks).toEqual(['Checkbox']);
+      expect(getMenu().isOpen()).toBe(true);
+    });
+
+    it('should name the item from its label and link the description via aria-describedby', () => {
+      const [, , radio] = queryItems();
+
+      const labelId = radio.getAttribute('aria-labelledby');
+      expect(document.getElementById(String(labelId))?.textContent).toContain('Radio');
+
+      const descriptionId = radio.getAttribute('aria-describedby');
+      expect(document.getElementById(String(descriptionId))?.textContent).toContain('Secondary text');
+    });
+  });
+
   describe('keyboard navigation', () => {
     beforeEach(() => {
       host.items.set([

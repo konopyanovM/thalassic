@@ -135,6 +135,21 @@ export class Menu {
   // Protected
   protected onItemClick(item: MenuActionItem): void {
     item.action?.();
-    this.close();
+    if (item.closeOnSelect ?? true) this.close();
+  }
+
+  /** Whether the item carries a checked state (`menuitemradio` / `menuitemcheckbox`). */
+  protected isCheckable(item: MenuActionItem): boolean {
+    return item.role === 'menuitemradio' || item.role === 'menuitemcheckbox';
+  }
+
+  /** Id of the item's label element, referenced by `aria-labelledby`. */
+  protected itemLabelId(index: number): string {
+    return `${this.id}-item-${index}-label`;
+  }
+
+  /** Id of the item's description element, referenced by `aria-describedby`. */
+  protected itemDescriptionId(index: number): string {
+    return `${this.id}-item-${index}-description`;
   }
 }

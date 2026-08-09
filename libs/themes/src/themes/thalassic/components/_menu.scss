@@ -17,6 +17,7 @@
   --tls-menu-item-padding-block: var(--spacing-2);
   --tls-menu-item-padding-inline: var(--spacing-4);
   --tls-menu-item-icon-size: 14px;
+  --tls-menu-item-check-size: 14px;
 
   --tls-menu-label-color: var(--color-outline);
   --tls-menu-label-padding-block: var(--spacing-2);
@@ -80,6 +81,23 @@
     }
   }
 
+  // Leading indicator of a checkable (radio / checkbox) item. Always rendered for
+  // such items so the label doesn't shift when the checkmark appears.
+  &__item-check {
+    width: var(--tls-menu-item-check-size);
+    height: var(--tls-menu-item-check-size);
+
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+
+    .tls-icon {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
   &__item-icon {
     flex-shrink: 0;
 
@@ -96,8 +114,21 @@
     }
   }
 
-  &__item-label {
+  &__item-text {
+    min-width: 0;
+
     flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__item-description {
+    font-size: var(--font-label-small-size);
+    font-weight: var(--font-label-small-weight);
+    line-height: var(--font-label-small-line-height);
+    letter-spacing: var(--font-label-small-letter-spacing);
+    white-space: normal;
+    color: var(--tls-menu-label-color);
   }
 
   &__item-shortcut {
