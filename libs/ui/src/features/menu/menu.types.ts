@@ -51,3 +51,28 @@ export interface MenuCustomItem {
 }
 
 export type MenuItemDefinition = MenuActionItem | MenuDivider | MenuLabel | MenuCustomItem;
+
+/** A non-label item paired with its index in the source `items` array (the index keys per-item element ids). */
+export interface MenuRenderEntry {
+  item: Exclude<MenuItemDefinition, MenuLabel>;
+  index: number;
+}
+
+/**
+ * A `label` item together with the run of items it introduces — everything up to
+ * the next label or divider. Rendered as a `role="group"` container named after
+ * the label, so assistive tech announces the section an item belongs to.
+ */
+export interface MenuRenderGroup {
+  kind: 'group';
+  label: MenuLabel;
+  entries: MenuRenderEntry[];
+}
+
+/** An item outside any labeled section, rendered directly in the menu. */
+export interface MenuRenderSingle {
+  kind: 'single';
+  entry: MenuRenderEntry;
+}
+
+export type MenuRenderBlock = MenuRenderGroup | MenuRenderSingle;

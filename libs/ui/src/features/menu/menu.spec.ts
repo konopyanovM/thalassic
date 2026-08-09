@@ -1,6 +1,7 @@
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { Component, signal, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { Menu } from './menu';
 import { MenuItemDefinition } from './menu.types';
 
@@ -47,6 +48,7 @@ describe('Menu', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [HostComponent],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     overlayContainer = TestBed.inject(OverlayContainer);
@@ -309,6 +311,87 @@ describe('Menu', () => {
 
       const descriptionId = radio.getAttribute('aria-describedby');
       expect(document.getElementById(String(descriptionId))?.textContent).toContain('Secondary text');
+    });
+  });
+
+  describe('labeled groups', () => {
+    beforeEach(() => {
+      host.items.set([
+        { type: 'label', label: 'Edit' },
+        { type: 'item', label: 'Cut' },
+        { type: 'item', label: 'Copy' },
+        { type: 'divider' },
+        { type: 'item', label: 'Ungrouped' },
+      ]);
+      fixture.detectChanges();
+
+      getMenu().open(trigger);
+      fixture.detectChanges();
+    });
+
+    it('should wrap a labeled section in a group named after the label', () => {
+      const group = overlayContainerElement.querySelector('.tls-menu__group');
+      expect(group?.getAttribute('role')).toBe('group');
+      expect(group?.getAttribute('aria-label')).toBe('Edit');
+
+      const groupedLabels = Array.from(group?.querySelectorAll('.tls-menu__item') ?? []).map(
+        element => element.textContent?.trim(),
+      );
+      expect(groupedLabels).toEqual(['Cut', 'Copy']);
+    });
+
+    it('should end the group at a divider and render later items outside it', () => {
+      const group = overlayContainerElement.querySelector('.tls-menu__group');
+      const ungrouped = queryItems().find(item => item.textContent?.includes('Ungrouped'));
+
+      expect(ungrouped).toBeDefined();
+      expect(group?.contains(ungrouped ?? null)).toBe(false);
+    });
+
+    it('should keep keyboard navigation working across group boundaries', () => {
+      queryPanel()?.dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true }));
+      fixture.detectChanges();
+
+      expect(document.activeElement?.textContent).toContain('Ungrouped');
+    });
+  });
+
+  describe('link items', () => {
+    beforeEach(() => {
+      host.items.set([
+        { type: 'item', label: 'Enabled link', link: '/somewhere' },
+        { type: 'item', label: 'Disabled link', link: '/elsewhere', disabled: true },
+      ]);
+      fixture.detectChanges();
+
+      getMenu().open(trigger);
+      fixture.detectChanges();
+    });
+
+    it('should render links as anchors with the menuitem role', () => {
+      const anchors = Array.from(
+        overlayContainerElement.querySelectorAll<HTMLAnchorElement>('a.tls-menu__item'),
+      );
+      expect(anchors.length).toBe(2);
+      expect(anchors[0].getAttribute('role')).toBe('menuitem');
+      expect(anchors[0].getAttribute('href')).toBe('/somewhere');
+    });
+
+    it('should mark a disabled link and keep it out of the tab order', () => {
+      const disabledAnchor = Array.from(
+        overlayContainerElement.querySelectorAll<HTMLAnchorElement>('a.tls-menu__item'),
+      )[1];
+
+      expect(disabledAnchor.getAttribute('aria-disabled')).toBe('true');
+      expect(disabledAnchor.getAttribute('tabindex')).toBe('-1');
+      expect(disabledAnchor.classList.contains('tls-menu__item--disabled')).toBe(true);
+    });
+
+    it('should not focus a disabled link via keyboard navigation', () => {
+      queryPanel()?.dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true }));
+      fixture.detectChanges();
+
+      expect(document.activeElement?.textContent).not.toContain('Disabled link');
     });
   });
 

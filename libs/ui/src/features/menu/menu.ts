@@ -28,7 +28,7 @@ import { Icon } from '../icon';
 import { Kbd } from '../kbd';
 import { MenuItemComponent } from './menu-item';
 import { MENU_CONFIG } from './menu.token';
-import { MenuActionItem, MenuItemDefinition } from './menu.types';
+import { MenuActionItem, MenuItemDefinition, MenuRenderBlock, MenuRenderGroup } from './menu.types';
 
 @Component({
   selector: 'tls-menu',
@@ -74,6 +74,33 @@ export class Menu {
   private readonly _positions = computed<ConnectedPosition[]>(() =>
     buildOverlayPositions(this.position(), this.offset()),
   );
+
+  // A `label` item opens a section that runs until the next label or divider;
+  // its items render inside a `role="group"` container named after the label.
+  protected readonly blocks = computed<MenuRenderBlock[]>(() => {
+    const blocks: MenuRenderBlock[] = [];
+    let group: MenuRenderGroup | null = null;
+
+    this.items().forEach((item, index) => {
+      if (item.type === 'label') {
+        group = { kind: 'group', label: item, entries: [] };
+        blocks.push(group);
+        return;
+      }
+      if (item.type === 'divider') {
+        group = null;
+        blocks.push({ kind: 'single', entry: { item, index } });
+        return;
+      }
+      if (group) {
+        group.entries.push({ item, index });
+      } else {
+        blocks.push({ kind: 'single', entry: { item, index } });
+      }
+    });
+
+    return blocks;
+  });
 
   // An inline menu is always "open" (rendered in place); otherwise reflect the overlay.
   public readonly isOpen = computed(() => this.inline() || this._overlay.isOpen());

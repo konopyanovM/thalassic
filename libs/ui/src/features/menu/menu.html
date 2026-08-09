@@ -11,10 +11,29 @@
     (keydown.escape)="close()"
     [attr.aria-label]="ariaLabel() ?? null"
   >
-    @for (item of items(); track $index) {
-      @switch (item.type) {
+    @for (block of blocks(); track $index) {
+      @if (block.kind === 'group') {
+        <div class="tls-menu__group" role="group" [attr.aria-label]="block.label.label">
+          @if (labelTemplate(); as template) {
+            <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{ $implicit: block.label }" />
+          } @else {
+            <!-- The group carries the section name via aria-label; the visible header stays hidden to avoid double announcement. -->
+            <span class="tls-menu__label" aria-hidden="true">{{ block.label.label }}</span>
+          }
+          @for (entry of block.entries; track entry.index) {
+            <ng-container [ngTemplateOutlet]="entryTemplate" [ngTemplateOutletContext]="{ $implicit: entry }" />
+          }
+        </div>
+      } @else {
+        <ng-container [ngTemplateOutlet]="entryTemplate" [ngTemplateOutletContext]="{ $implicit: block.entry }" />
+      }
+    }
+
+    <ng-template #entryTemplate let-entry>
+      @switch (entry.item.type) {
         @case ('item') {
-          @let actionItem = item;
+          @let actionItem = entry.item;
+          @let itemIndex = entry.index;
           @if (itemTemplate(); as template) {
             <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{ $implicit: actionItem }" />
           } @else if (actionItem.link) {
@@ -27,10 +46,10 @@
               [class.tls-menu__item--disabled]="actionItem.disabled ?? false"
               [role]="actionItem.role ?? 'menuitem'"
               [attr.aria-checked]="isCheckable(actionItem) ? (actionItem.checked ?? false) : null"
-              [attr.aria-labelledby]="itemLabelId($index)"
-              [attr.aria-describedby]="actionItem.description ? itemDescriptionId($index) : null"
+              [attr.aria-labelledby]="itemLabelId(itemIndex)"
+              [attr.aria-describedby]="actionItem.description ? itemDescriptionId(itemIndex) : null"
             >
-              <ng-container [ngTemplateOutlet]="actionItemContent" [ngTemplateOutletContext]="{ $implicit: actionItem, index: $index }" />
+              <ng-container [ngTemplateOutlet]="actionItemContent" [ngTemplateOutletContext]="{ $implicit: actionItem, index: itemIndex }" />
             </a>
           } @else {
             <button
@@ -41,10 +60,10 @@
               [attr.disabled]="actionItem.disabled ? '' : null"
               [role]="actionItem.role ?? 'menuitem'"
               [attr.aria-checked]="isCheckable(actionItem) ? (actionItem.checked ?? false) : null"
-              [attr.aria-labelledby]="itemLabelId($index)"
-              [attr.aria-describedby]="actionItem.description ? itemDescriptionId($index) : null"
+              [attr.aria-labelledby]="itemLabelId(itemIndex)"
+              [attr.aria-describedby]="actionItem.description ? itemDescriptionId(itemIndex) : null"
             >
-              <ng-container [ngTemplateOutlet]="actionItemContent" [ngTemplateOutletContext]="{ $implicit: actionItem, index: $index }" />
+              <ng-container [ngTemplateOutlet]="actionItemContent" [ngTemplateOutletContext]="{ $implicit: actionItem, index: itemIndex }" />
             </button>
           }
 
@@ -78,28 +97,20 @@
             }
           </ng-template>
         }
-        @case ('label') {
-          @let labelItem = item;
-          @if (labelTemplate(); as template) {
-            <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{ $implicit: labelItem }" />
-          } @else {
-            <span class="tls-menu__label" aria-hidden="true">{{ labelItem.label }}</span>
-          }
-        }
         @case ('divider') {
           @if (dividerTemplate(); as template) {
-            <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{ $implicit: item }" />
+            <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{ $implicit: entry.item }" />
           } @else {
-            <hr class="tls-menu__divider" role="separator" aria-hidden="true" />
+            <hr class="tls-menu__divider" role="separator" />
           }
         }
         @case ('custom') {
-          @if (customTemplates().get(item.key); as template) {
+          @if (customTemplates().get(entry.item.key); as template) {
             <ng-container [ngTemplateOutlet]="template" />
           }
         }
       }
-    }
+    </ng-template>
   </div>
 </ng-template>
 

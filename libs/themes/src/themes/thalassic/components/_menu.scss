@@ -2,6 +2,7 @@
 
 .tls-menu {
   --tls-menu-min-width: 160px;
+  --tls-menu-max-width: 320px;
   --tls-menu-padding-block: var(--spacing-1);
 
   --tls-menu-border-radius: var(--radius-md);
@@ -27,6 +28,7 @@
   --tls-menu-divider-margin-block: var(--spacing-1);
 
   min-width: var(--tls-menu-min-width);
+  max-width: var(--tls-menu-max-width);
   padding-block: var(--tls-menu-padding-block);
 
   background-color: var(--tls-menu-background);
@@ -120,6 +122,12 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+  }
+
+  // Labels keep the item's nowrap and truncate at the menu's max-width instead of widening it.
+  &__item-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__item-description {
