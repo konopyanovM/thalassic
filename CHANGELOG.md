@@ -1,3 +1,20 @@
+## 22.17.5 (2026-08-09)
+
+### 🚀 Features
+
+- **themes/button:** squircle corners and a unified disabled treatment ([aabbfc4](https://github.com/konopyanovM/thalassic/commit/aabbfc4))
+- **ui/menu:** render item shortcuts as nested kbd keycaps ([145bc4f](https://github.com/konopyanovM/thalassic/commit/145bc4f))
+- **ui/menu:** checkable items, descriptions ([96e8237](https://github.com/konopyanovM/thalassic/commit/96e8237))
+- **ui/menu:** per-item content templates with managed item wrapper ([4271bb9](https://github.com/konopyanovM/thalassic/commit/4271bb9))
+
+### 🩹 Fixes
+
+- **ui/menu:** expose labeled sections to assistive tech and cap menu width ([f43e785](https://github.com/konopyanovM/thalassic/commit/f43e785))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.17.4 (2026-08-09)
 
 ### 🩹 Fixes
