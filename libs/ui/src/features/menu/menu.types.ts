@@ -28,6 +28,12 @@ export interface MenuActionItem extends BaseMenuItem {
   checked?: boolean;
   /** Whether selecting the item closes the menu. Defaults to `true`. */
   closeOnSelect?: boolean;
+  /**
+   * Key of a `<tls-menu-item>` slot whose content replaces this item's default content
+   * (check indicator, icon, label, shortcut). The menu still renders the interactive
+   * wrapper with its ARIA and keyboard wiring. Takes precedence over `#itemTemplate`.
+   */
+  templateKey?: string;
   disabled?: boolean;
   data?: unknown;
   action?: () => void;

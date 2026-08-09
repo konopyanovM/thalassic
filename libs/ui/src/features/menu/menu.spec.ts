@@ -3,6 +3,7 @@ import { Component, signal, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { Menu } from './menu';
+import { MenuItemComponent } from './menu-item';
 import { MenuItemDefinition } from './menu.types';
 
 @Component({
@@ -21,6 +22,29 @@ class HostComponent {
   ]);
   public readonly inline = signal(false);
   public readonly ariaLabel = signal<string | undefined>(undefined);
+  public readonly menu = viewChild.required(Menu);
+}
+
+@Component({
+  imports: [Menu, MenuItemComponent],
+  template: `
+    <button #trigger type="button">Trigger</button>
+    <tls-menu [items]="items()">
+      <ng-template #itemTemplate let-item>
+        <em class="shared-content">★ {{ item.label }}</em>
+      </ng-template>
+      <tls-menu-item key="special">
+        <strong class="keyed-content">Keyed</strong>
+      </tls-menu-item>
+    </tls-menu>
+  `,
+})
+class TemplateHostComponent {
+  public readonly clicks: string[] = [];
+  public readonly items = signal<MenuItemDefinition[]>([
+    { type: 'item', label: 'First', action: () => this.clicks.push('First') },
+    { type: 'item', label: 'Special', templateKey: 'special', action: () => this.clicks.push('Special') },
+  ]);
   public readonly menu = viewChild.required(Menu);
 }
 
@@ -392,6 +416,50 @@ describe('Menu', () => {
       fixture.detectChanges();
 
       expect(document.activeElement?.textContent).not.toContain('Disabled link');
+    });
+  });
+
+  describe('custom item content', () => {
+    let templateFixture: ComponentFixture<TemplateHostComponent>;
+    let templateHost: TemplateHostComponent;
+
+    beforeEach(async () => {
+      templateFixture = TestBed.createComponent(TemplateHostComponent);
+      templateHost = templateFixture.componentInstance;
+      templateFixture.detectChanges();
+      await templateFixture.whenStable();
+
+      templateHost.menu().open(templateFixture.nativeElement.querySelector('button'));
+      templateFixture.detectChanges();
+    });
+
+    afterEach(() => {
+      templateFixture.destroy();
+    });
+
+    it('should render the shared template inside the managed interactive item', () => {
+      const [first] = queryItems();
+      expect(first.getAttribute('role')).toBe('menuitem');
+      expect(first.querySelector('.shared-content')?.textContent).toContain('First');
+    });
+
+    it('should prefer a keyed slot over the shared template', () => {
+      const [, special] = queryItems();
+      expect(special.querySelector('.keyed-content')).not.toBeNull();
+      expect(special.querySelector('.shared-content')).toBeNull();
+    });
+
+    it('should keep selection working with custom content', () => {
+      queryItems()[0].click();
+      templateFixture.detectChanges();
+
+      expect(templateHost.clicks).toEqual(['First']);
+      expect(templateHost.menu().isOpen()).toBe(false);
+    });
+
+    it('should not reference label ids that custom content does not render', () => {
+      const [first] = queryItems();
+      expect(first.hasAttribute('aria-labelledby')).toBe(false);
     });
   });
 

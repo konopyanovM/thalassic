@@ -52,6 +52,7 @@ export class Menu {
     return map;
   });
 
+  /** Content of every action item, rendered inside the menu-managed interactive wrapper. */
   protected readonly itemTemplate = contentChild<TemplateRef<unknown>>('itemTemplate');
   protected readonly labelTemplate = contentChild<TemplateRef<unknown>>('labelTemplate');
   protected readonly dividerTemplate = contentChild<TemplateRef<unknown>>('dividerTemplate');
@@ -113,6 +114,11 @@ export class Menu {
           if (item.type === 'custom' && !templates.has(item.key)) {
             console.warn(
               `[tls-menu] No <tls-menu-item key="${item.key}"> found for custom item. The slot will be skipped.`,
+            );
+          }
+          if (item.type === 'item' && item.templateKey && !templates.has(item.templateKey)) {
+            console.warn(
+              `[tls-menu] No <tls-menu-item key="${item.templateKey}"> found for item "${item.label}". Its default content is rendered instead.`,
             );
           }
         }
@@ -178,5 +184,14 @@ export class Menu {
   /** Id of the item's description element, referenced by `aria-describedby`. */
   protected itemDescriptionId(index: number): string {
     return `${this.id}-item-${index}-description`;
+  }
+
+  /** Content template for the item: its keyed slot first, the shared `#itemTemplate` otherwise. */
+  protected itemContentTemplate(item: MenuActionItem): TemplateRef<unknown> | undefined {
+    if (item.templateKey) {
+      const template = this.customTemplates().get(item.templateKey);
+      if (template) return template;
+    }
+    return this.itemTemplate();
   }
 }

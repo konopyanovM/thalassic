@@ -34,9 +34,7 @@
         @case ('item') {
           @let actionItem = entry.item;
           @let itemIndex = entry.index;
-          @if (itemTemplate(); as template) {
-            <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{ $implicit: actionItem }" />
-          } @else if (actionItem.link) {
+          @if (actionItem.link) {
             <a
               ngMenuItem
               [value]="actionItem"
@@ -46,8 +44,8 @@
               [class.tls-menu__item--disabled]="actionItem.disabled ?? false"
               [role]="actionItem.role ?? 'menuitem'"
               [attr.aria-checked]="isCheckable(actionItem) ? (actionItem.checked ?? false) : null"
-              [attr.aria-labelledby]="itemLabelId(itemIndex)"
-              [attr.aria-describedby]="actionItem.description ? itemDescriptionId(itemIndex) : null"
+              [attr.aria-labelledby]="itemContentTemplate(actionItem) ? null : itemLabelId(itemIndex)"
+              [attr.aria-describedby]="!itemContentTemplate(actionItem) && actionItem.description ? itemDescriptionId(itemIndex) : null"
             >
               <ng-container [ngTemplateOutlet]="actionItemContent" [ngTemplateOutletContext]="{ $implicit: actionItem, index: itemIndex }" />
             </a>
@@ -60,14 +58,25 @@
               [attr.disabled]="actionItem.disabled ? '' : null"
               [role]="actionItem.role ?? 'menuitem'"
               [attr.aria-checked]="isCheckable(actionItem) ? (actionItem.checked ?? false) : null"
-              [attr.aria-labelledby]="itemLabelId(itemIndex)"
-              [attr.aria-describedby]="actionItem.description ? itemDescriptionId(itemIndex) : null"
+              [attr.aria-labelledby]="itemContentTemplate(actionItem) ? null : itemLabelId(itemIndex)"
+              [attr.aria-describedby]="!itemContentTemplate(actionItem) && actionItem.description ? itemDescriptionId(itemIndex) : null"
             >
               <ng-container [ngTemplateOutlet]="actionItemContent" [ngTemplateOutletContext]="{ $implicit: actionItem, index: itemIndex }" />
             </button>
           }
 
           <ng-template #actionItemContent let-actionItem let-index="index">
+            @if (itemContentTemplate(actionItem); as template) {
+              <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{ $implicit: actionItem }" />
+            } @else {
+              <ng-container
+                [ngTemplateOutlet]="defaultItemContent"
+                [ngTemplateOutletContext]="{ $implicit: actionItem, index: index }"
+              />
+            }
+          </ng-template>
+
+          <ng-template #defaultItemContent let-actionItem let-index="index">
             @if (isCheckable(actionItem)) {
               <span class="tls-menu__item-check" aria-hidden="true">
                 @if (actionItem.checked) {

@@ -183,9 +183,7 @@ export const WithCustomTemplates: Story = {
         <tls-button [tlsMenuTrigger]="menu">Open menu</tls-button>
         <tls-menu #menu [items]="items" [position]="position">
           <ng-template #itemTemplate let-item>
-            <button class="tls-menu__item" style="color: cornflowerblue; font-style: italic;">
-              ★ {{ item.label }}
-            </button>
+            <span style="color: cornflowerblue; font-style: italic;">★ {{ item.label }}</span>
           </ng-template>
           <ng-template #labelTemplate let-item>
             <span class="tls-menu__label" style="color: tomato;">▸ {{ item.label }}</span>
@@ -193,6 +191,31 @@ export const WithCustomTemplates: Story = {
           <ng-template #dividerTemplate>
             <div style="margin: 4px 16px; border-top: 2px dashed cornflowerblue; opacity: 0.4;"></div>
           </ng-template>
+        </tls-menu>
+      </div>
+    `,
+  }),
+};
+
+export const PerItemContent: Story = {
+  render: args => ({
+    props: {
+      ...args,
+      perItemItems: [
+        { type: 'item', label: 'Cut', shortcut: ['⌘', 'X'], action: () => console.log('cut') },
+        { type: 'item', label: 'Copy', shortcut: ['⌘', 'C'], action: () => console.log('copy') },
+        { type: 'divider' },
+        { type: 'item', label: 'Upgrade to Pro', templateKey: 'upgrade', action: () => console.log('upgrade') },
+      ] satisfies MenuItemDefinition[],
+    },
+    template: `
+      <div style="display: flex; justify-content: center; align-items: center; height: 200px;">
+        <tls-button [tlsMenuTrigger]="menu">Open menu</tls-button>
+        <tls-menu #menu [items]="perItemItems" [position]="position">
+          <tls-menu-item key="upgrade">
+            <span style="flex: 1;">Upgrade to Pro</span>
+            <span style="padding: 2px 6px; border-radius: 6px; background: gold; font-size: 11px; font-weight: 700;">NEW</span>
+          </tls-menu-item>
         </tls-menu>
       </div>
     `,
