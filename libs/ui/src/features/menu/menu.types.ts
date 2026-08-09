@@ -12,7 +12,8 @@ export interface MenuActionItem extends BaseMenuItem {
   type: 'item';
   label: string;
   icon?: string;
-  shortcut?: string;
+  /** Keyboard shortcut, one entry per key — each renders as its own keycap (e.g. ['⌘', 'C']). */
+  shortcut?: string[];
   disabled?: boolean;
   data?: unknown;
   action?: () => void;

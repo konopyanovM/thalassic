@@ -129,7 +129,6 @@ This was a version bump only, there were no code changes.
 
 ### ❤️ Thank You
 
-- Claude Opus 5
 - konopyanov
 
 ## 22.14.3 (2026-08-02)

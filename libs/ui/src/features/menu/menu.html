@@ -49,8 +49,12 @@
               }
             }
             <span class="tls-menu__item-label">{{ actionItem.label }}</span>
-            @if (actionItem.shortcut) {
-              <kbd class="tls-menu__item-shortcut">{{ actionItem.shortcut }}</kbd>
+            @if (actionItem.shortcut; as shortcut) {
+              <kbd class="tls-menu__item-shortcut">
+                @for (key of shortcut; track $index) {
+                  <kbd tlsKbd size="sm">{{ key }}</kbd>
+                }
+              </kbd>
             }
           </ng-template>
         }

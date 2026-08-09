@@ -102,17 +102,10 @@
 
   &__item-shortcut {
     margin-inline-start: auto;
-    color: var(--tls-menu-label-color);
 
-    font-size: var(--font-label-small-size);
-    font-weight: var(--font-label-small-weight);
-    line-height: var(--font-label-small-line-height);
-    letter-spacing: var(--font-label-small-letter-spacing);
-
-    font-family: inherit;
-    background: none;
-    border: none;
-    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-1);
   }
 
   &__label {

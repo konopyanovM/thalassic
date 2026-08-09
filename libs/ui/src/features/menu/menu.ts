@@ -25,13 +25,14 @@ import { createOverlayManager } from '../../abstract/overlay';
 import { overlayPosition } from '../../types';
 import { buildOverlayPositions } from '../../utils';
 import { Icon } from '../icon';
+import { Kbd } from '../kbd';
 import { MenuItemComponent } from './menu-item';
 import { MENU_CONFIG } from './menu.token';
 import { MenuActionItem, MenuItemDefinition } from './menu.types';
 
 @Component({
   selector: 'tls-menu',
-  imports: [NgTemplateOutlet, Icon, RouterLink, AriaMenu, AriaMenuItem],
+  imports: [NgTemplateOutlet, Icon, Kbd, RouterLink, AriaMenu, AriaMenuItem],
   templateUrl: './menu.html',
 })
 export class Menu {

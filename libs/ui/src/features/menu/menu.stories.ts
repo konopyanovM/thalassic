@@ -18,11 +18,11 @@ const ICON_SELECT = svgIcon(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 
 
 const BASIC_ITEMS: MenuItemDefinition[] = [
   { type: 'label', label: 'Edit' },
-  { type: 'item', label: 'Cut', shortcut: '⌘X', action: () => console.log('cut') },
-  { type: 'item', label: 'Copy', shortcut: '⌘C', action: () => console.log('copy') },
-  { type: 'item', label: 'Paste', shortcut: '⌘V', disabled: true },
+  { type: 'item', label: 'Cut', shortcut: ['⌘', 'X'], action: () => console.log('cut') },
+  { type: 'item', label: 'Copy', shortcut: ['⌘', 'C'], action: () => console.log('copy') },
+  { type: 'item', label: 'Paste', shortcut: ['⌘', 'V'], disabled: true },
   { type: 'divider' },
-  { type: 'item', label: 'Select All', shortcut: '⌘A', action: () => console.log('select all') },
+  { type: 'item', label: 'Select All', shortcut: ['⌘', 'A'], action: () => console.log('select all') },
 ];
 
 const meta: Meta<MenuComponent> = {
@@ -95,11 +95,11 @@ export const WithIcons: Story = {
       ...args,
       iconItems: [
         { type: 'label', label: 'Edit' },
-        { type: 'item', label: 'Cut', icon: ICON_CUT, shortcut: '⌘X', action: () => console.log('cut') },
-        { type: 'item', label: 'Copy', icon: ICON_COPY, shortcut: '⌘C', action: () => console.log('copy') },
-        { type: 'item', label: 'Paste', icon: ICON_PASTE, shortcut: '⌘V', disabled: true },
+        { type: 'item', label: 'Cut', icon: ICON_CUT, shortcut: ['⌘', 'X'], action: () => console.log('cut') },
+        { type: 'item', label: 'Copy', icon: ICON_COPY, shortcut: ['⌘', 'C'], action: () => console.log('copy') },
+        { type: 'item', label: 'Paste', icon: ICON_PASTE, shortcut: ['⌘', 'V'], disabled: true },
         { type: 'divider' },
-        { type: 'item', label: 'Select All', icon: ICON_SELECT, shortcut: '⌘A', action: () => console.log('select all') },
+        { type: 'item', label: 'Select All', icon: ICON_SELECT, shortcut: ['⌘', 'A'], action: () => console.log('select all') },
       ] satisfies MenuItemDefinition[],
     },
     template: `
