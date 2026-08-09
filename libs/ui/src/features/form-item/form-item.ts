@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import {
   booleanAttribute,
   Component,
@@ -7,15 +8,16 @@ import {
   inject,
   input,
   Signal,
+  TemplateRef,
 } from '@angular/core';
 import { ValidationError, WithOptionalFieldTree } from '@angular/forms/signals';
 import { FORM_CONTROL, FormControl } from '../../abstract/form';
 import { FORM_ITEM_CONFIG } from './form-item.token';
-import { labelPosition } from './form-item.types';
+import { FormItemLabelContext, labelPosition } from './form-item.types';
 
 @Component({
   selector: 'tls-form-item',
-  imports: [],
+  imports: [NgTemplateOutlet],
   templateUrl: './form-item.html',
   host: { '[class]': 'hostClasses()' },
 })
@@ -25,6 +27,12 @@ export class FormItem {
   private _config = inject(FORM_ITEM_CONFIG);
 
   protected control: Signal<FormControl | undefined> = contentChild(FORM_CONTROL);
+
+  /**
+   * Content of the label, rendered inside the item's own `<label>` element so the `for` /
+   * `aria-labelledby` wiring is kept. Replaces the label text and the required / optional markers.
+   */
+  protected readonly labelTemplate = contentChild<TemplateRef<FormItemLabelContext>>('labelTemplate');
 
   /** Stable id for the label element, linked to the control via `aria-labelledby`. */
   protected readonly labelId = `tls-form-item-label-${FormItem._counter}`;
@@ -75,6 +83,16 @@ export class FormItem {
     return !control.required();
   });
 
+  /** Whether a label is rendered, from either the `label` input or a custom label template. */
+  protected hasLabel = computed(() => Boolean(this.label()) || Boolean(this.labelTemplate()));
+
+  protected labelContext = computed<FormItemLabelContext>(() => ({
+    $implicit: this.label(),
+    required: this.showRequired(),
+    optionalText: this.showOptional() ? this.optionalText() : undefined,
+    invalid: this.isInvalid(),
+  }));
+
   protected labelFor = computed(() => {
     const control = this.control();
     if (!control || !control.supportsLabelFor) return null;
@@ -116,7 +134,7 @@ export class FormItem {
 
       // Point the control's aria-labelledby at the rendered label element so screen readers
       // announce the visible label text when the control receives focus.
-      control.labelId.set(this.label() ? this.labelId : null);
+      control.labelId.set(this.hasLabel() ? this.labelId : null);
 
       // Assign the stable control id so the label's `for` attribute can target the native element.
       control.formItemInputId.set(control.supportsLabelFor ? this.controlId : null);

@@ -166,3 +166,30 @@ export const Spread: Story = {
     control: `<tls-switch />`,
   }),
 };
+
+export const CustomLabelTemplate: Story = {
+  args: {
+    label: 'API key',
+  },
+  render: args => ({
+    props: args,
+    template: `
+      <tls-form-item ${argsToTemplate(args)}>
+        <ng-template #labelTemplate let-label let-required="required" let-optionalText="optionalText">
+          <span style="display: flex; align-items: center; gap: 6px;">
+            <span style="font-weight: 700;">{{ label }}</span>
+            <span style="padding: 1px 6px; border-radius: 6px; background: gold; font-size: 11px; font-weight: 700;">
+              BETA
+            </span>
+            @if (required) {
+              <span style="color: tomato;">required</span>
+            } @else if (optionalText) {
+              <span style="opacity: 0.6;">{{ optionalText }}</span>
+            }
+          </span>
+        </ng-template>
+        <tls-input placeholder="sk-…" [required]="true" />
+      </tls-form-item>
+    `,
+  }),
+};

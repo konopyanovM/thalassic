@@ -1,11 +1,15 @@
 <div class="form-item-main">
-  @if (label() || reserveLabelSpace()) {
+  @if (hasLabel() || reserveLabelSpace()) {
     <label class="form-item-label" [id]="labelId" [attr.for]="labelFor()">
-      <span class="form-item-label__text">{{ label() }}</span>
-      @if (showRequired()) {
-        <span class="form-item-label__required">*</span>
-      } @else if (showOptional()) {
-        <span class="form-item-label__optional">{{ optionalText() }}</span>
+      @if (labelTemplate(); as template) {
+        <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="labelContext()" />
+      } @else {
+        <span class="form-item-label__text">{{ label() }}</span>
+        @if (showRequired()) {
+          <span class="form-item-label__required">*</span>
+        } @else if (showOptional()) {
+          <span class="form-item-label__optional">{{ optionalText() }}</span>
+        }
       }
     </label>
   }
