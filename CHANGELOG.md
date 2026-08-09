@@ -1,3 +1,13 @@
+## 22.17.4 (2026-08-09)
+
+### 🩹 Fixes
+
+- **themes:** resolve core styles by package specifier ([6251722](https://github.com/konopyanovM/thalassic/commit/6251722))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.17.3 (2026-08-08)
 
 ### 🚀 Features
