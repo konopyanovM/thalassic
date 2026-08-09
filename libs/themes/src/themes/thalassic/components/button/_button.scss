@@ -2,7 +2,15 @@
 
 .tls-button {
   --tls-button-border-width: 1px;
-  --tls-button-border-radius: var(--radius-sm);
+
+  // Unavailability is signalled by dropping the accent for a neutral pair, which
+  // keeps the label at full contrast instead of fading it below legibility.
+  --tls-button-disabled-color: var(--color-surface-variant);
+  --tls-button-disabled-on-color: var(--color-on-surface-variant);
+
+  // Each size carries a radius per corner shape: the continuous curve needs the
+  // larger of the two to read with the same weight as the circular fallback.
+  --tls-button-border-radius: var(--tls-button-radius-round);
 
   position: relative;
   z-index: 1;
@@ -16,6 +24,7 @@
 
   border: var(--tls-button-border-width) solid transparent;
   border-radius: var(--tls-button-border-radius);
+  corner-shape: var(--corner-shape-squircle);
 
   background-color: var(--color-surface);
 
@@ -28,8 +37,20 @@
     box-shadow var(--motion-fast) var(--motion-ease-in-out),
     color var(--motion-fast) var(--motion-ease-in-out);
 
+  @supports (corner-shape: squircle) {
+    --tls-button-border-radius: var(--tls-button-radius-squircle);
+  }
+
   &:focus-visible {
     @include mixins.focus-ring;
+  }
+
+  // A pill has no corner left to shape — the arc spans the whole edge, which a
+  // superellipse would flatten back towards a rectangle.
+  &--rounded {
+    --tls-button-border-radius: calc(var(--tls-button-height) / 2);
+
+    corner-shape: round;
   }
 
   @include mixins.touch-target(var(--tls-button-height));

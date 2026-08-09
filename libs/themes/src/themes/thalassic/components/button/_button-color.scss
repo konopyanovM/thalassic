@@ -2,9 +2,4 @@
 
 .tls-button {
   @include mixins.color-variants('tls-button', $tonal: true);
-
-  &.tls-button--disabled {
-    --tls-button-on-color: var(--color-on-surface-variant);
-    --tls-button-color: var(--color-surface-variant);
-  }
 }

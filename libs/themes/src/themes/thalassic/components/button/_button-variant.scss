@@ -22,13 +22,16 @@
     @include mixins.variant-treatment(elevated, 'tls-button');
   }
 
+  // Unavailability overrides the treatment entirely: every variant collapses to
+  // the same neutral container, so the state reads identically wherever it
+  // appears rather than asking the reader to recognise five faded silhouettes.
   &--disabled {
-    border-color: var(--color-outline);
+    border-color: transparent;
 
-    background-color: var(--tls-button-color);
+    background-color: var(--tls-button-disabled-color);
     box-shadow: none;
 
-    color: var(--tls-button-on-color);
+    color: var(--tls-button-disabled-on-color);
 
     cursor: not-allowed;
   }
