@@ -14,5 +14,15 @@
     "type": "git",
     "url": "https://github.com/konopyanovM/thalassic"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "exports": {
+    "./styles": {
+      "sass": "./styles/index.scss",
+      "default": "./styles/index.scss"
+    },
+    "./styles/*": {
+      "sass": "./styles/*",
+      "default": "./styles/*"
+    }
+  }
 }

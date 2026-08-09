@@ -56,7 +56,10 @@
           "libs/core/src/styles/index.scss",
           "libs/themes/src/utils/index.scss",
           "libs/themes/src/themes/thalassic/index.scss"
-        ]
+        ],
+        "stylePreprocessorOptions": {
+          "includePaths": ["libs", "sass-paths"]
+        }
       },
       "configurations": {
         "ci": {
@@ -76,7 +79,10 @@
           "libs/core/src/styles/index.scss",
           "libs/themes/src/utils/index.scss",
           "libs/themes/src/themes/thalassic/index.scss"
-        ]
+        ],
+        "stylePreprocessorOptions": {
+          "includePaths": ["libs", "sass-paths"]
+        }
       },
       "configurations": {
         "ci": {
