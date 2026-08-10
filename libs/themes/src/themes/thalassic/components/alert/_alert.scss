@@ -1,25 +1,47 @@
 .tls-alert {
   --tls-alert-padding: var(--spacing-4);
-  --tls-alert-border-width: 1px;
+  --tls-alert-gap: var(--spacing-3);
   --tls-alert-border-radius: var(--radius-sm);
+  --tls-alert-edge-width: 4px;
+  --tls-alert-icon-size: 20px;
   --tls-alert-label-font-weight: var(--font-weight-bold);
 
   padding: var(--tls-alert-padding);
 
   display: flex;
+  align-items: flex-start;
+  gap: var(--tls-alert-gap);
 
+  // Accent rule down the leading edge, in the color's full-strength tone. Set
+  // `--tls-alert-edge-width: 0` for a plain tonal surface with no rule.
+  border-inline-start: var(--tls-alert-edge-width) solid var(--tls-alert-edge-color);
   border-radius: var(--tls-alert-border-radius);
-  border: var(--tls-alert-border-width) solid var(--tls-alert-border-color);
 
-  color: var(--tls-alert-color);
   background-color: var(--tls-alert-background-color);
 
-  &-body {
-    &__label {
-      font-weight: var(--tls-alert-label-font-weight);
-    }
+  color: var(--tls-alert-color);
 
-    &__content {
-    }
+  &__icon {
+    width: var(--tls-alert-icon-size);
+    height: var(--tls-alert-icon-size);
+
+    // Centres the glyph on the first line's box instead of its top edge, so it
+    // reads as part of the text baseline rather than floating above it.
+    margin-block-start: calc((1lh - var(--tls-alert-icon-size)) / 2);
+
+    display: flex;
+    flex-shrink: 0;
+
+    color: inherit;
+  }
+
+  &__body {
+    min-width: 0;
+
+    flex: 1;
+  }
+
+  &__label {
+    font-weight: var(--tls-alert-label-font-weight);
   }
 }

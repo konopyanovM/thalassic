@@ -2,18 +2,22 @@ import {
   booleanAttribute,
   Component,
   computed,
+  contentChild,
   inject,
   input,
   InputSignal,
   InputSignalWithTransform,
+  Signal,
 } from '@angular/core';
-import { buttonColor } from '../button/button.types';
+import { Icon, systemIcon } from '../icon';
+import { AlertIcon } from './alert-icon';
 import { AlertConfig } from './alert.config';
+import { alertColor } from './alert.types';
 import { ALERT_CONFIG } from './alert.token';
 
 @Component({
   selector: 'tls-alert',
-  imports: [],
+  imports: [Icon],
   templateUrl: './alert.html',
   host: {
     '[class]': 'hostClasses()',
@@ -22,9 +26,11 @@ import { ALERT_CONFIG } from './alert.token';
   },
 })
 export class Alert {
-  private _config: AlertConfig = inject(ALERT_CONFIG);
+  // Injections
+  private readonly _config: AlertConfig = inject(ALERT_CONFIG);
 
-  public readonly color: InputSignal<buttonColor> = input<buttonColor>(this._config.color);
+  // Inputs
+  public readonly color: InputSignal<alertColor> = input<alertColor>(this._config.color);
   public readonly label: InputSignal<string | null> = input<string | null>(
     typeof this._config.label === 'string' ? this._config.label : null,
   );
@@ -32,8 +38,21 @@ export class Alert {
     this._config.hideLabel,
     { transform: booleanAttribute },
   );
+  /** Overrides the color-derived glyph with another icon from the registry. */
+  public readonly icon: InputSignal<systemIcon | undefined> = input<systemIcon>();
+  /** Renders an arbitrary SVG or image URL as the icon instead of a registry glyph. */
+  public readonly iconSrc: InputSignal<string | undefined> = input<string>();
+  public readonly hideIcon: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    this._config.hideIcon,
+    { transform: booleanAttribute },
+  );
 
-  protected displayLabel = computed(() => {
+  // State
+  /** Consumer-provided visual rendered in place of the built-in icon. */
+  protected readonly projectedIcon: Signal<AlertIcon | undefined> = contentChild(AlertIcon);
+
+  // Computed
+  protected readonly displayLabel: Signal<string> = computed<string>(() => {
     const label = this.label();
     if (label) return label;
 
@@ -44,7 +63,25 @@ export class Alert {
     return '';
   });
 
-  protected hostClasses = computed(() => {
+  /**
+   * Registry glyph for the current color, or undefined when the icon comes from
+   * `iconSrc` — `tls-icon` ignores a source as soon as a name is present.
+   */
+  protected readonly displayIcon: Signal<systemIcon | undefined> = computed<systemIcon | undefined>(
+    () => {
+      if (this.iconSrc()) return undefined;
+
+      const icon = this.icon();
+      if (icon) return icon;
+
+      const configIcon = this._config.icon;
+      if (typeof configIcon === 'string') return configIcon;
+
+      return configIcon[this.color()];
+    },
+  );
+
+  protected readonly hostClasses: Signal<string[]> = computed<string[]>(() => {
     const className = 'tls-alert';
 
     const array: string[] = [className];
@@ -54,7 +91,7 @@ export class Alert {
     return array;
   });
 
-  protected hostRole = computed(() => {
+  protected readonly hostRole: Signal<string> = computed<string>(() => {
     const urgent = ['danger', 'warning'];
     return urgent.includes(this.color()) ? 'alert' : 'note';
   });

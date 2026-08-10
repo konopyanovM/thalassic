@@ -1,9 +1,21 @@
-<div class="tls-alert-icon"></div>
-<div class="tls-alert-body">
-  @if (!hideLabel()) {
-    <span class="tls-alert-body__label">{{ displayLabel() }}</span>
+@if (!hideIcon()) {
+  <ng-content select="[tlsAlertIcon]"></ng-content>
+
+  @if (!projectedIcon()) {
+    <tls-icon
+      class="tls-alert__icon"
+      [name]="displayIcon()"
+      [iconSrc]="iconSrc()"
+      aria-hidden="true"
+    />
   }
-  <span class="tls-alert-body__content">
+}
+
+<div class="tls-alert__body">
+  @if (!hideLabel()) {
+    <span class="tls-alert__label">{{ displayLabel() }}</span>
+  }
+  <span class="tls-alert__content">
     <ng-content></ng-content>
   </span>
 </div>
