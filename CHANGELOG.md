@@ -1,3 +1,13 @@
+## 22.18.1 (2026-08-10)
+
+### 🚀 Features
+
+- **ui/alert:** icon slot and leading edge accent ([3fa2c17](https://github.com/konopyanovM/thalassic/commit/3fa2c17))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.18.0 (2026-08-10)
 
 ### 🚀 Features
