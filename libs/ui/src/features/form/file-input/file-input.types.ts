@@ -1,11 +1,9 @@
-export type acceptInput = string | string[];
+import { fileDragState } from '../file-drop-target';
 
 export type fileInputVariant = 'dropzone' | 'button';
 
-export type fileInputDragState = 'idle' | 'valid' | 'invalid';
-
 export interface FileInputDropZoneContext {
-  $implicit: fileInputDragState;
+  $implicit: fileDragState;
   accept: string;
 }
 

@@ -28,31 +28,31 @@
   }
 } @else {
   <div
+    #dropTarget="tlsFileDropTarget"
     class="tls-file-input__drop-zone"
     role="button"
+    [tlsFileDropTarget]="accept()"
+    [disabled]="notInteractive()"
     [attr.tabindex]="notInteractive() ? -1 : 0"
     [attr.aria-label]="dropZoneLabel()"
     [attr.aria-labelledby]="labelledBy()"
     [attr.aria-invalid]="invalid() ? 'true' : null"
     [attr.aria-describedby]="describedBy()"
-    [class.tls-file-input__drop-zone--dragging]="dragState() === 'valid'"
-    [class.tls-file-input__drop-zone--rejected]="dragState() === 'invalid'"
+    [class.tls-file-input__drop-zone--dragging]="dropTarget.dragState() === 'valid'"
+    [class.tls-file-input__drop-zone--rejected]="dropTarget.dragState() === 'invalid'"
     [class.tls-file-input__drop-zone--disabled]="notInteractive()"
     (click)="openFilePicker()"
     (keydown)="onDropZoneKeydown($event)"
-    (dragenter)="onDragEnter()"
-    (dragover)="onDragOver($event)"
-    (dragleave)="onDragLeave()"
-    (drop)="onDrop($event)"
+    (filesDropped)="addFiles($event)"
   >
     @if (dropZoneTemplate(); as template) {
       <ng-container
         [ngTemplateOutlet]="template"
-        [ngTemplateOutletContext]="{ $implicit: dragState(), accept: acceptHint() }"
+        [ngTemplateOutletContext]="{ $implicit: dropTarget.dragState(), accept: acceptHint() }"
       />
     } @else {
       <span class="tls-file-input__label">
-        @if (dragState() === 'invalid') {
+        @if (dropTarget.dragState() === 'invalid') {
           File type not allowed
         } @else {
           Drop files here or <strong>browse</strong>

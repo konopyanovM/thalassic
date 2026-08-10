@@ -1,5 +1,6 @@
 import { controlSize } from '../../../types';
-import { acceptInput, fileInputVariant } from './file-input.types';
+import { acceptInput } from '../file-drop-target';
+import { fileInputVariant } from './file-input.types';
 
 export interface FileInputConfig {
   variant: fileInputVariant;

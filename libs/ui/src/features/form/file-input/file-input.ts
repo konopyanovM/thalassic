@@ -13,30 +13,29 @@ import {
   model,
   ModelSignal,
   Signal,
-  signal,
   TemplateRef,
   viewChild,
 } from '@angular/core';
 import { FORM_CONTROL, ValueFormControl } from '../../../abstract/form';
 import { controlSize } from '../../../types';
 import { ButtonDirective } from '../../button';
-import { FILE_INPUT_CONFIG } from './file-input.token';
 import {
   acceptInput,
+  acceptsFile,
+  FileDropTargetDirective,
+  normalizeAccept,
+} from '../file-drop-target';
+import { FILE_INPUT_CONFIG } from './file-input.token';
+import {
   FileInputDropZoneContext,
   FileInputFileContext,
-  fileInputDragState,
   fileInputVariant,
 } from './file-input.types';
-
-function normalizeAccept(value: acceptInput): string {
-  return Array.isArray(value) ? value.join(',') : value;
-}
 
 @Component({
   selector: 'tls-file-input',
   templateUrl: './file-input.html',
-  imports: [NgTemplateOutlet, ButtonDirective],
+  imports: [NgTemplateOutlet, ButtonDirective, FileDropTargetDirective],
   providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => FileInput) }],
   host: { '[class]': 'classes()' },
 })
@@ -71,10 +70,6 @@ export class FileInput extends ValueFormControl<File[]> {
 
   // State
   protected readonly nativeInput = viewChild.required<ElementRef<HTMLInputElement>>('nativeInput');
-  protected readonly dragState = signal<fileInputDragState>('idle');
-
-  /** Nesting depth of the active drag: dragenter/dragleave pairs fired by the drop zone's children. */
-  private _dragDepth = 0;
 
   protected readonly dropZoneTemplate =
     contentChild<TemplateRef<FileInputDropZoneContext>>('dropZone');
@@ -121,7 +116,7 @@ export class FileInput extends ValueFormControl<File[]> {
   protected onFilesSelected(event: Event): void {
     const target = event.target as HTMLInputElement;
     if (!target.files) return;
-    this._addFiles(Array.from(target.files));
+    this.addFiles(Array.from(target.files));
     target.value = '';
   }
 
@@ -131,45 +126,15 @@ export class FileInput extends ValueFormControl<File[]> {
     this.openFilePicker();
   }
 
-  protected onDragEnter(): void {
-    this._dragDepth++;
-  }
-
-  protected onDragOver(event: DragEvent): void {
-    event.preventDefault();
-    if (this.notInteractive() || !event.dataTransfer) return;
-
-    const draggedItems = Array.from(event.dataTransfer.items).filter(item => item.kind === 'file');
-    const rejected = draggedItems.some(item => this._isTypeRejected(item.type));
-
-    event.dataTransfer.dropEffect = rejected ? 'none' : 'copy';
-    this.dragState.set(rejected ? 'invalid' : 'valid');
-  }
-
-  // `dragleave` also fires when the pointer crosses onto a child of the drop
-  // zone; only a leave that balances every enter means the drag actually left.
-  protected onDragLeave(): void {
-    this._dragDepth = Math.max(0, this._dragDepth - 1);
-    if (this._dragDepth === 0) this.dragState.set('idle');
-  }
-
-  protected onDrop(event: DragEvent): void {
-    event.preventDefault();
-    this._dragDepth = 0;
-    this.dragState.set('idle');
-    if (this.notInteractive() || !event.dataTransfer) return;
-    this._addFiles(Array.from(event.dataTransfer.files));
-  }
-
   // Arrow function so it keeps `this` when passed through a custom file template context.
   protected readonly removeFile = (fileIndex: number): void => {
     if (this.notInteractive()) return;
     this.value.update(files => files.filter((_file, index) => index !== fileIndex));
   };
 
-  // Private methods
-  private _addFiles(incoming: File[]): void {
-    const accepted = incoming.filter(file => this._acceptsFile(file));
+  // Adds what the picker or a drop hands over, keeping only what is accepted.
+  protected addFiles(incoming: File[]): void {
+    const accepted = incoming.filter(file => acceptsFile(file, this.accept()));
     if (!accepted.length) return;
 
     this.touched.set(true);
@@ -180,22 +145,7 @@ export class FileInput extends ValueFormControl<File[]> {
     }
   }
 
-  private _acceptsFile(file: File): boolean {
-    const accept = this.accept().trim();
-    if (!accept) return true;
-
-    const fileName = file.name.toLowerCase();
-    const fileType = file.type.toLowerCase();
-
-    return accept.split(',').some(rule => {
-      const pattern = rule.trim().toLowerCase();
-      if (!pattern) return false;
-      if (pattern.startsWith('.')) return fileName.endsWith(pattern);
-      if (pattern.endsWith('/*')) return fileType.startsWith(pattern.slice(0, -1));
-      return fileType === pattern;
-    });
-  }
-
+  // Private methods
   private _formatAcceptRule(rule: string): string {
     if (rule.startsWith('.')) return rule.slice(1).toUpperCase();
 
@@ -212,27 +162,5 @@ export class FileInput extends ValueFormControl<File[]> {
 
     const subtype = rule.includes('/') ? rule.slice(rule.indexOf('/') + 1) : rule;
     return subtype.toUpperCase();
-  }
-
-  // Drag-time check: only the MIME type is exposed before drop, so reject a
-  // dragged file only when we can be certain it fails purely MIME-based rules.
-  private _isTypeRejected(type: string): boolean {
-    const accept = this.accept().trim();
-    if (!accept) return false;
-
-    const rules = accept
-      .split(',')
-      .map(rule => rule.trim().toLowerCase())
-      .filter(Boolean);
-
-    const hasExtensionRule = rules.some(rule => rule.startsWith('.'));
-    if (hasExtensionRule || !type) return false;
-
-    const fileType = type.toLowerCase();
-    const matches = rules.some(rule =>
-      rule.endsWith('/*') ? fileType.startsWith(rule.slice(0, -1)) : fileType === rule,
-    );
-
-    return !matches;
   }
 }

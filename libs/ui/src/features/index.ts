@@ -17,6 +17,7 @@ export * from './form/checkbox';
 export * from './form/date-time-picker';
 export * from './form/chip-group';
 export * from './form/chip-input';
+export * from './form/file-drop-target';
 export * from './form/file-input';
 export * from './form/input';
 export * from './form/input-number';
