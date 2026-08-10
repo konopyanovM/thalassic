@@ -1,3 +1,13 @@
+## 22.17.7 (2026-08-10)
+
+### 🩹 Fixes
+
+- **themes:** added text no wrap rule to button ([174d398](https://github.com/konopyanovM/thalassic/commit/174d398))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.17.6 (2026-08-09)
 
 ### 🚀 Features
