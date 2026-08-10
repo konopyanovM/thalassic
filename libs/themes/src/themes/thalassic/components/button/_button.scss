@@ -28,14 +28,15 @@
 
   background-color: var(--color-surface);
 
+  white-space: nowrap;
+
   cursor: pointer;
   user-select: none;
 
-  transition:
-    background-color var(--motion-fast) var(--motion-ease-in-out),
-    border-color var(--motion-fast) var(--motion-ease-in-out),
-    box-shadow var(--motion-fast) var(--motion-ease-in-out),
-    color var(--motion-fast) var(--motion-ease-in-out);
+  transition: background-color var(--motion-fast) var(--motion-ease-in-out),
+  border-color var(--motion-fast) var(--motion-ease-in-out),
+  box-shadow var(--motion-fast) var(--motion-ease-in-out),
+  color var(--motion-fast) var(--motion-ease-in-out);
 
   @supports (corner-shape: squircle) {
     --tls-button-border-radius: var(--tls-button-radius-squircle);
