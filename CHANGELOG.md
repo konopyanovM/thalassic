@@ -1,3 +1,13 @@
+## 22.18.0 (2026-08-10)
+
+### 🚀 Features
+
+- **ui:** file drop target directive added ([91c1430](https://github.com/konopyanovM/thalassic/commit/91c1430))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.17.7 (2026-08-10)
 
 ### 🩹 Fixes
