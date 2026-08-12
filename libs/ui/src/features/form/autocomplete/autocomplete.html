@@ -10,7 +10,7 @@
   [attr.aria-labelledby]="labelledBy()"
   [attr.aria-invalid]="invalid() ? 'true' : null"
   [attr.aria-required]="required() ? 'true' : null"
-  [attr.aria-busy]="pending() ? 'true' : null"
+  [attr.aria-busy]="busy() ? 'true' : null"
   [attr.aria-describedby]="describedBy()"
   aria-haspopup="listbox"
   aria-autocomplete="list"
@@ -42,6 +42,13 @@
   <tls-loader class="tls-autocomplete__spinner" size="xs" aria-hidden="true" />
 }
 
+<!--
+  A live region is only announced reliably when it is already in the DOM before its text
+  changes, so the region is permanent and the loading state writes into it. The panel's own
+  notice is hidden from assistive technology to keep it from being read twice.
+-->
+<div class="tls-autocomplete__status" role="status">{{ loading() ? loadingMessage() : '' }}</div>
+
 <ng-template #panel>
   <ng-template #optionButton let-option let-index="index" let-setsize="setsize">
     <button
@@ -67,6 +74,7 @@
   @if (virtualScroll()) {
     <div
       class="tls-autocomplete__panel tls-autocomplete__panel--virtual"
+      [class.tls-autocomplete__panel--hidden]="!hasPanelContent()"
       animate.enter="tls-autocomplete__panel--enter"
       animate.leave="tls-autocomplete__panel--leave"
     >
@@ -95,12 +103,20 @@
         </ng-template>
       </tls-virtual-scroll>
       @if (visibleOptions().length === 0) {
-        <div class="tls-autocomplete__empty" role="presentation">{{ emptyMessage() }}</div>
+        @if (loading()) {
+          <div class="tls-autocomplete__loading" role="presentation" aria-hidden="true">
+            <tls-loader size="xs" />
+            {{ loadingMessage() }}
+          </div>
+        } @else if (!belowMinQueryLength()) {
+          <div class="tls-autocomplete__empty" role="presentation">{{ emptyMessage() }}</div>
+        }
       }
     </div>
   } @else {
     <ul
       class="tls-autocomplete__panel"
+      [class.tls-autocomplete__panel--hidden]="!hasPanelContent()"
       animate.enter="tls-autocomplete__panel--enter"
       animate.leave="tls-autocomplete__panel--leave"
       role="listbox"
@@ -119,7 +135,14 @@
           />
         </li>
       } @empty {
-        <li class="tls-autocomplete__empty" role="presentation">{{ emptyMessage() }}</li>
+        @if (loading()) {
+          <li class="tls-autocomplete__loading" role="presentation" aria-hidden="true">
+            <tls-loader size="xs" />
+            {{ loadingMessage() }}
+          </li>
+        } @else if (!belowMinQueryLength()) {
+          <li class="tls-autocomplete__empty" role="presentation">{{ emptyMessage() }}</li>
+        }
       }
     </ul>
   }

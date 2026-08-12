@@ -174,7 +174,7 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
     array.push(`${this.CLASS_NAME}--${this.size()}`);
     if (this.fluid()) array.push(`${this.CLASS_NAME}--fluid`);
 
-    return array.concat(this.controlClasses());
+    return array.concat(this.hostStateClasses(), this.controlClasses());
   });
 
   protected get listboxId(): string {
@@ -199,6 +199,14 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
   protected abstract commitActiveOption(option: Option<V>): void;
   /** Reset the control to its empty value. */
   protected abstract clear(): void;
+
+  /**
+   * Host modifiers for states only one control has, listed alongside the shared ones. Read from
+   * within the host-class computation, so signals a control reads here stay reactive.
+   */
+  protected hostStateClasses(): string[] {
+    return [];
+  }
 
   /**
    * Narrows the option list shown in the panel. The listbox controls show every option; an editable

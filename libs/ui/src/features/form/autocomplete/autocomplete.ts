@@ -11,6 +11,8 @@ import {
   model,
   ModelSignal,
   numberAttribute,
+  output,
+  OutputEmitterRef,
   Signal,
   WritableSignal,
 } from '@angular/core';
@@ -55,8 +57,31 @@ export class Autocomplete<T, V = unknown> extends AbstractSelect<T, V, V | null>
     this._config.clearable,
     { transform: booleanAttribute },
   );
+  /**
+   * How the typed query narrows the options. `none` hands that job over entirely — the list is
+   * shown as given, which is what a list fetched per query needs.
+   */
   public readonly filterMode = input<autocompleteFilterMode>(this._config.filterMode);
+  /**
+   * Whether a search is in flight. While raised the panel reports the loading state in place of
+   * the empty message, so a list that has not arrived yet stops reading like one that came back
+   * with nothing.
+   */
+  public readonly loading: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    false,
+    { transform: booleanAttribute },
+  );
+  /**
+   * Characters the query must reach before it is emitted and before the panel shows options or
+   * the empty message, so an empty field never asks for the whole collection. `0` places no
+   * floor on it.
+   */
+  public readonly minQueryLength: InputSignalWithTransform<number, unknown> = input<
+    number,
+    unknown
+  >(this._config.minQueryLength, { transform: numberAttribute });
   public readonly emptyMessage = input<string>(this._config.emptyMessage);
+  public readonly loadingMessage = input<string>(this._config.loadingMessage);
   public readonly clearLabel = input<string>(this._config.clearLabel);
   public readonly virtualScroll: InputSignalWithTransform<boolean, unknown> = input<
     boolean,
@@ -66,6 +91,15 @@ export class Autocomplete<T, V = unknown> extends AbstractSelect<T, V, V | null>
     number,
     unknown
   >(this._config.virtualScrollItemSize, { transform: numberAttribute });
+
+  /**
+   * The field's text, emitted as it is typed — the hook for answering a query from a source the
+   * control does not hold. Only typing emits: committing a selection, clearing, and closing the
+   * panel all rewrite the text too, and none of them is a search anyone asked for. Nothing is
+   * emitted while the text is shorter than {@link minQueryLength}. Any debouncing belongs to the
+   * listener.
+   */
+  public readonly queryChange: OutputEmitterRef<string> = output<string>();
 
   protected readonly hasValue: Signal<boolean> = computed(() => {
     const value = this.value();
@@ -86,6 +120,25 @@ export class Autocomplete<T, V = unknown> extends AbstractSelect<T, V, V | null>
    */
   protected readonly query: WritableSignal<string> = linkedSignal(() => this.selectedLabel());
 
+  /** Whether the query has yet to reach the length below which the control stays silent. */
+  protected readonly belowMinQueryLength: Signal<boolean> = computed(
+    () => this.query().trim().length < this.minQueryLength(),
+  );
+
+  /**
+   * Whether the panel has anything to put in its box: options, the loading state, or the empty
+   * message. A query under {@link minQueryLength} produces none of the three, and an empty box is
+   * worse than no box at all.
+   */
+  protected readonly hasPanelContent: Signal<boolean> = computed(() => {
+    if (this.loading()) return true;
+    if (this.visibleOptions().length > 0) return true;
+    return !this.belowMinQueryLength();
+  });
+
+  /** Whether work is outstanding on the control: async validation, or a search in flight. */
+  protected readonly busy: Signal<boolean> = computed(() => this.pending() || this.loading());
+
   protected select(option: Option<V>): void {
     if (option.disabled) return;
     this.value.set(option.value);
@@ -101,6 +154,9 @@ export class Autocomplete<T, V = unknown> extends AbstractSelect<T, V, V | null>
     this.query.set(target.value);
     this.open();
     this.activeIndex.set(this.getInitialActiveIndex());
+    // Typing is the only thing that emits; every other write of `query` re-derives it from the
+    // committed selection, and a listener must not be sent a query nobody typed.
+    if (!this.belowMinQueryLength()) this.queryChange.emit(target.value);
   }
 
   protected override onKeydown(event: KeyboardEvent): void {
@@ -136,6 +192,11 @@ export class Autocomplete<T, V = unknown> extends AbstractSelect<T, V, V | null>
   }
 
   protected override filterVisibleOptions(options: Option<V>[]): Option<V>[] {
+    if (this.belowMinQueryLength()) return [];
+    // The options are already the answer to the query, decided wherever the list came from;
+    // filtering them again here could only drop rows that answer it.
+    if (this.filterMode() === 'none') return options;
+
     const query = this.query().trim().toLowerCase();
     if (!query) return options;
     // While the field shows the committed selection's label (not an active search), list everything.
@@ -145,6 +206,11 @@ export class Autocomplete<T, V = unknown> extends AbstractSelect<T, V, V | null>
       return options.filter(option => option.label.toLowerCase().startsWith(query));
     }
     return options.filter(option => option.label.toLowerCase().includes(query));
+  }
+
+  protected override hostStateClasses(): string[] {
+    if (!this.loading()) return [];
+    return [`${this.hostClassBase}--loading`];
   }
 
   protected override onClosed(): void {

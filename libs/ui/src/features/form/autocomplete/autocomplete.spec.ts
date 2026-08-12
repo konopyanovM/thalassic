@@ -30,6 +30,9 @@ if (!Element.prototype.scrollTo) {
       [disabled]="disabled()"
       [filterMode]="filterMode()"
       [virtualScroll]="virtualScroll()"
+      [loading]="loading()"
+      [minQueryLength]="minQueryLength()"
+      (queryChange)="recordQuery($event)"
       optionLabel="label"
       optionValue="value"
       optionDisabled="disabled"
@@ -48,7 +51,14 @@ class HostComponent {
   public readonly disabled = signal(false);
   public readonly filterMode = signal<autocompleteFilterMode>('contains');
   public readonly virtualScroll = signal(false);
+  public readonly loading = signal(false);
+  public readonly minQueryLength = signal(0);
+  public readonly queries: string[] = [];
   public readonly autocomplete = viewChild.required(Autocomplete);
+
+  public recordQuery(query: string): void {
+    this.queries.push(query);
+  }
 }
 
 describe('Autocomplete', () => {
@@ -193,6 +203,132 @@ describe('Autocomplete', () => {
       keydown('Escape'); // abandons the query
       expect(trigger.value).toBe('Apple');
       expect(selectedValue()).toBe(1);
+    });
+  });
+
+  describe('query output', () => {
+    it('should emit the field text as it is typed', () => {
+      type('Ap');
+      type('Apr');
+
+      expect(host.queries).toEqual(['Ap', 'Apr']);
+    });
+
+    it('should not emit when committing a selection rewrites the text', () => {
+      type('Ap');
+      host.queries.length = 0;
+
+      queryOptions()[0].click();
+      fixture.detectChanges();
+
+      expect(trigger.value).toBe('Apple');
+      expect(host.queries).toEqual([]);
+    });
+
+    it('should not emit when the control is cleared', () => {
+      host.clearable.set(true);
+      host.value.set(1);
+      fixture.detectChanges();
+
+      queryClear()?.click();
+      fixture.detectChanges();
+
+      expect(trigger.value).toBe('');
+      expect(host.queries).toEqual([]);
+    });
+
+    it('should not emit when closing restores the committed label', () => {
+      host.value.set(1);
+      fixture.detectChanges();
+
+      type('Ban');
+      host.queries.length = 0;
+      keydown('Escape');
+
+      expect(trigger.value).toBe('Apple');
+      expect(host.queries).toEqual([]);
+    });
+
+    it('should stay silent and show nothing until the query reaches minQueryLength', () => {
+      host.minQueryLength.set(3);
+      fixture.detectChanges();
+
+      type('Ap');
+      expect(host.queries).toEqual([]);
+      expect(queryOptions().length).toBe(0);
+      expect(queryEmpty()).toBeNull();
+      expect(queryPanel()?.classList.contains('tls-autocomplete__panel--hidden')).toBe(true);
+
+      type('App');
+      expect(host.queries).toEqual(['App']);
+      expect(queryOptions().map(option => option.textContent?.trim())).toEqual(['Apple']);
+    });
+  });
+
+  describe('remote search', () => {
+    const queryLoading = () =>
+      overlayContainerElement.querySelector<HTMLElement>('.tls-autocomplete__loading');
+
+    beforeEach(() => {
+      host.filterMode.set('none');
+      fixture.detectChanges();
+    });
+
+    it('should leave the options untouched however the query reads', () => {
+      type('zzz');
+
+      expect(queryOptions().length).toBe(4);
+    });
+
+    it('should keep showing what the source returned after a selection is committed', () => {
+      type('ap');
+      queryOptions()[0].click(); // commits "Apple"
+      fixture.detectChanges();
+
+      // The source answers the next keystroke with a set of its own.
+      host.options.set([{ label: 'Cherry', value: 4, disabled: false }]);
+      type('c');
+
+      expect(queryOptions().map(option => option.textContent?.trim())).toEqual(['Cherry']);
+    });
+
+    it('should show the loading state in place of the empty message', () => {
+      host.options.set([]);
+      host.loading.set(true);
+      fixture.detectChanges();
+
+      type('ap');
+
+      expect(queryEmpty()).toBeNull();
+      expect(queryLoading()?.textContent?.trim()).toContain('Loading');
+    });
+
+    it('should fall back to the empty message once loading ends', () => {
+      host.options.set([]);
+      host.loading.set(true);
+      fixture.detectChanges();
+
+      type('ap');
+      host.loading.set(false);
+      fixture.detectChanges();
+
+      expect(queryLoading()).toBeNull();
+      expect(queryEmpty()).not.toBeNull();
+    });
+
+    it('should reflect the loading state on the host and announce it politely', () => {
+      host.loading.set(true);
+      fixture.detectChanges();
+
+      const status = (fixture.nativeElement as HTMLElement).querySelector(
+        '.tls-autocomplete__status',
+      );
+      expect(
+        (fixture.nativeElement as HTMLElement).querySelector('.tls-autocomplete--loading'),
+      ).not.toBeNull();
+      expect(trigger.getAttribute('aria-busy')).toBe('true');
+      expect(status?.getAttribute('role')).toBe('status');
+      expect(status?.textContent?.trim()).toBe('Loading');
     });
   });
 

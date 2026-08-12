@@ -24,6 +24,12 @@
 
   @include mixins.panel-open;
 
+  // A query under the minimum shows neither options nor a message, and the bare box that
+  // would leave has nothing to say.
+  &--hidden {
+    display: none;
+  }
+
   &--virtual {
     // The virtual-scroll viewport inside is the scroll container; the panel only clips
     // to its rounded corners.
@@ -92,7 +98,8 @@
   }
 }
 
-.tls-autocomplete__empty {
+.tls-autocomplete__empty,
+.tls-autocomplete__loading {
   padding-block: var(--spacing-2);
   padding-inline: var(--spacing-3);
 
@@ -102,4 +109,10 @@
   font-weight: var(--font-body-medium-weight);
   line-height: var(--font-body-medium-line-height);
   letter-spacing: var(--font-body-medium-letter-spacing);
+}
+
+.tls-autocomplete__loading {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
 }
