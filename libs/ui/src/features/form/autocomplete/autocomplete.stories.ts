@@ -102,6 +102,16 @@ const createRemoteSource = () => {
 
   const search = (term: string): void => {
     clearTimeout(debounceHandle);
+
+    // An empty field asks for nothing: the last answer is dropped rather than left standing
+    // against a query it no longer matches, and no request goes out.
+    if (term === '') {
+      latestRequest++;
+      results.set([]);
+      loading.set(false);
+      return;
+    }
+
     // The field is already stale the moment the query changes, so the panel reports itself
     // busy from the keystroke rather than from the request the debounce eventually sends.
     loading.set(true);

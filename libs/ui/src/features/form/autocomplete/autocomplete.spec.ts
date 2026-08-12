@@ -226,7 +226,7 @@ describe('Autocomplete', () => {
       expect(host.queries).toEqual([]);
     });
 
-    it('should not emit when the control is cleared', () => {
+    it('should emit an empty query when the control is cleared', () => {
       host.clearable.set(true);
       host.value.set(1);
       fixture.detectChanges();
@@ -235,6 +235,34 @@ describe('Autocomplete', () => {
       fixture.detectChanges();
 
       expect(trigger.value).toBe('');
+      expect(host.queries).toEqual(['']);
+    });
+
+    it('should emit an empty query when typing empties the field', () => {
+      type('Ap');
+      host.queries.length = 0;
+
+      type('');
+
+      expect(host.queries).toEqual(['']);
+    });
+
+    it('should emit an empty query when a search is abandoned with nothing committed', () => {
+      type('Ban');
+      host.queries.length = 0;
+
+      keydown('Escape');
+
+      expect(trigger.value).toBe('');
+      expect(host.queries).toEqual(['']);
+    });
+
+    it('should not emit when closing an untouched field', () => {
+      trigger.click();
+      fixture.detectChanges();
+
+      keydown('Escape');
+
       expect(host.queries).toEqual([]);
     });
 
@@ -263,6 +291,18 @@ describe('Autocomplete', () => {
       type('App');
       expect(host.queries).toEqual(['App']);
       expect(queryOptions().map(option => option.textContent?.trim())).toEqual(['Apple']);
+    });
+
+    it('should emit an empty query below minQueryLength', () => {
+      host.minQueryLength.set(3);
+      fixture.detectChanges();
+
+      type('App');
+      host.queries.length = 0;
+
+      type('');
+
+      expect(host.queries).toEqual(['']);
     });
 
     it('should hold a committed label short of minQueryLength to no floor', () => {

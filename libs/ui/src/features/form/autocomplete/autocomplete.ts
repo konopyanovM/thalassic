@@ -94,10 +94,11 @@ export class Autocomplete<T, V = unknown> extends AbstractSelect<T, V, V | null>
 
   /**
    * The field's text, emitted as it is typed — the hook for answering a query from a source the
-   * control does not hold. Only typing emits: committing a selection, clearing, and closing the
-   * panel all rewrite the text too, and none of them is a search anyone asked for. Nothing is
-   * emitted while the text is shorter than {@link minQueryLength}. Any debouncing belongs to the
-   * listener.
+   * control does not hold. A typed term is emitted once it reaches {@link minQueryLength}, and an
+   * empty field is emitted however it was emptied (typing, the clear button, a search abandoned by
+   * closing the panel), so a listener is never left holding results for a term the field no longer
+   * shows. Restoring a committed selection's label emits nothing: the item is already chosen, and
+   * searching for it again is noise. Any debouncing belongs to the listener.
    */
   public readonly queryChange: OutputEmitterRef<string> = output<string>();
 
@@ -154,12 +155,13 @@ export class Autocomplete<T, V = unknown> extends AbstractSelect<T, V, V | null>
 
   protected onInput(event: Event): void {
     const target = event.target as HTMLInputElement;
-    this.query.set(target.value);
+    this._setQuery(target.value);
     this.open();
     this.activeIndex.set(this.getInitialActiveIndex());
-    // Typing is the only thing that emits; every other write of `query` re-derives it from the
-    // committed selection, and a listener must not be sent a query nobody typed.
-    if (!this.belowMinQueryLength()) this.queryChange.emit(target.value);
+    // Typing is the only thing that emits a term; every other write of `query` re-derives it from
+    // the committed selection, and a listener must not be sent a query nobody typed. An emptied
+    // field is announced by the write itself, whatever emptied it.
+    if (target.value !== '' && !this.belowMinQueryLength()) this.queryChange.emit(target.value);
   }
 
   protected override onKeydown(event: KeyboardEvent): void {
@@ -218,12 +220,14 @@ export class Autocomplete<T, V = unknown> extends AbstractSelect<T, V, V | null>
 
   protected override onClosed(): void {
     // Discard an unmatched free-text query, restoring the committed selection's label (or empty).
-    this.query.set(this.selectedLabel());
+    this._setQuery(this.selectedLabel());
   }
 
   protected override clear(): void {
+    // The text goes first: dropping the value re-derives the field from the (now absent)
+    // selection, which would erase the outgoing text before it can be seen as emptied.
+    this._setQuery('');
     this.value.set(null);
-    this.query.set('');
   }
 
   protected override getInitialActiveIndex(): number {
@@ -241,5 +245,18 @@ export class Autocomplete<T, V = unknown> extends AbstractSelect<T, V, V | null>
 
   protected override commitActiveOption(option: Option<V>): void {
     this.select(option);
+  }
+
+  // Private methods
+  /**
+   * Writes the field's text, announcing it whenever the write leaves the field empty. An empty
+   * field is the one state a listener cannot infer from silence — its last results answer a term
+   * that is gone — so it is reported no matter which route emptied the field. A write that lands
+   * on text, including a committed selection's restored label, says nothing on its own.
+   */
+  private _setQuery(text: string): void {
+    const emptied = text === '' && this.query() !== '';
+    this.query.set(text);
+    if (emptied) this.queryChange.emit('');
   }
 }
