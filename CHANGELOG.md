@@ -1,3 +1,18 @@
+## 22.19.1 (2026-08-12)
+
+### 🚀 Features
+
+- **ui/autocomplete:** search a source the control does not hold ([fc5208f](https://github.com/konopyanovM/thalassic/commit/fc5208f))
+
+### 🩹 Fixes
+
+- **ui/autocomplete:** keep a committed selection usable under a query floor ([0fafc02](https://github.com/konopyanovM/thalassic/commit/0fafc02))
+- **ui/tooltip:** show for focus inside the host, and one tooltip at a time ([714113e](https://github.com/konopyanovM/thalassic/commit/714113e))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.19.0 (2026-08-12)
 
 ### 🚀 Features
