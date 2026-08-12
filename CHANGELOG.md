@@ -1,3 +1,14 @@
+## 22.19.0 (2026-08-12)
+
+### 🚀 Features
+
+- **ui:** added infinite scroll component ([7ddd87f](https://github.com/konopyanovM/thalassic/commit/7ddd87f))
+- **ui/drawer:** drag-to-dismiss from the grabber ([1df7f18](https://github.com/konopyanovM/thalassic/commit/1df7f18))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.18.1 (2026-08-10)
 
 ### 🚀 Features
