@@ -43,68 +43,105 @@
     }
   }
 
-  // Each side pins the grabber to the panel's inner edge (the one facing the
-  // viewport), centered along the cross axis. Logical insets keep the side panels'
-  // placement correct in RTL, where the physical edges swap.
+  // The grabber is a pill lying along the panel's inner edge (the one facing the
+  // viewport), centered on the cross axis: it runs across an inline panel's block
+  // axis and across a block panel's inline axis. Each side modifier supplies only
+  // the edge it is pinned to.
+  &--start .tls-drawer__grabber,
+  &--end .tls-drawer__grabber {
+    inset-block: 0;
+
+    width: var(--tls-drawer-grabber-thickness);
+    height: var(--tls-drawer-grabber-length);
+
+    margin-block: auto;
+  }
+
+  &--top .tls-drawer__grabber,
+  &--bottom .tls-drawer__grabber {
+    inset-inline: 0;
+
+    width: var(--tls-drawer-grabber-length);
+    height: var(--tls-drawer-grabber-thickness);
+
+    margin-inline: auto;
+  }
+
+  // The pill overlays the panel, so a panel that shows one keeps its own content
+  // clear of the strip the pill occupies: the inset on both sides plus its thickness.
+  &--grabber {
+    --tls-drawer-grabber-strip: calc(
+      var(--tls-drawer-grabber-inset) * 2 + var(--tls-drawer-grabber-thickness)
+    );
+  }
+
+  // Logical insets keep the inline panels' placement correct in RTL, where the
+  // physical edges swap. `--tls-drawer-drag-transform` maps the drag distance the
+  // component writes onto the axis and sign that carry this panel off-screen.
+  // A panel is padded on two opposite edges for two different reasons: the pinned
+  // outer edge keeps content clear of the device's cutout or home indicator, and
+  // the inner edge keeps it clear of the grabber. `env()` insets are physical, so
+  // the inline sides route theirs through `--tls-drawer-safe-area`, which the RTL
+  // block below re-points at the opposite physical edge.
   &--start {
     --tls-drawer-offset: translateX(-100%);
+    --tls-drawer-drag-transform: translateX(calc(-1 * var(--tls-drawer-drag)));
+    --tls-drawer-safe-area: env(safe-area-inset-left);
+
+    padding-inline-start: var(--tls-drawer-safe-area);
 
     .tls-drawer__grabber {
       inset-inline-end: var(--tls-drawer-grabber-inset);
-      inset-block: 0;
+    }
 
-      width: var(--tls-drawer-grabber-thickness);
-      height: var(--tls-drawer-grabber-length);
-
-      margin-block: auto;
+    &.tls-drawer--grabber {
+      padding-inline-end: var(--tls-drawer-grabber-strip);
     }
   }
 
   &--end {
     --tls-drawer-offset: translateX(100%);
+    --tls-drawer-drag-transform: translateX(var(--tls-drawer-drag));
+    --tls-drawer-safe-area: env(safe-area-inset-right);
+
+    padding-inline-end: var(--tls-drawer-safe-area);
 
     .tls-drawer__grabber {
       inset-inline-start: var(--tls-drawer-grabber-inset);
-      inset-block: 0;
+    }
 
-      width: var(--tls-drawer-grabber-thickness);
-      height: var(--tls-drawer-grabber-length);
-
-      margin-block: auto;
+    &.tls-drawer--grabber {
+      padding-inline-start: var(--tls-drawer-grabber-strip);
     }
   }
 
   &--top {
     --tls-drawer-offset: translateY(-100%);
+    --tls-drawer-drag-transform: translateY(calc(-1 * var(--tls-drawer-drag)));
 
-    // Keeps the content clear of a device cutout on the pinned edge.
-    padding-top: env(safe-area-inset-top);
+    padding-block-start: env(safe-area-inset-top);
 
     .tls-drawer__grabber {
-      bottom: var(--tls-drawer-grabber-inset);
-      inset-inline: 0;
+      inset-block-end: var(--tls-drawer-grabber-inset);
+    }
 
-      width: var(--tls-drawer-grabber-length);
-      height: var(--tls-drawer-grabber-thickness);
-
-      margin-inline: auto;
+    &.tls-drawer--grabber {
+      padding-block-end: var(--tls-drawer-grabber-strip);
     }
   }
 
   &--bottom {
     --tls-drawer-offset: translateY(100%);
+    --tls-drawer-drag-transform: translateY(var(--tls-drawer-drag));
 
-    // Keeps the content clear of the home indicator on the pinned edge.
-    padding-bottom: env(safe-area-inset-bottom);
+    padding-block-end: env(safe-area-inset-bottom);
 
     .tls-drawer__grabber {
-      top: var(--tls-drawer-grabber-inset);
-      inset-inline: 0;
+      inset-block-start: var(--tls-drawer-grabber-inset);
+    }
 
-      width: var(--tls-drawer-grabber-length);
-      height: var(--tls-drawer-grabber-thickness);
-
-      margin-inline: auto;
+    &.tls-drawer--grabber {
+      padding-block-start: var(--tls-drawer-grabber-strip);
     }
   }
 
@@ -128,16 +165,21 @@
     }
   }
 
-  // In RTL the logical `start`/`end` edges swap sides, so the slide offset and the
-  // rounded inner corners mirror. `top`/`bottom` are unaffected. The position
-  // strategy resolves the physical edge separately (see DrawerService).
+  // In RTL the logical `start`/`end` edges swap sides, so the slide offset, the
+  // drag direction, the safe-area edge and the rounded inner corners all mirror.
+  // `top`/`bottom` are unaffected. The position strategy resolves the physical
+  // edge separately (see DrawerService).
   :root[dir='rtl'] & {
     &--start {
       --tls-drawer-offset: translateX(100%);
+      --tls-drawer-drag-transform: translateX(var(--tls-drawer-drag));
+      --tls-drawer-safe-area: env(safe-area-inset-right);
     }
 
     &--end {
       --tls-drawer-offset: translateX(-100%);
+      --tls-drawer-drag-transform: translateX(calc(-1 * var(--tls-drawer-drag)));
+      --tls-drawer-safe-area: env(safe-area-inset-left);
     }
 
     &--rounded {

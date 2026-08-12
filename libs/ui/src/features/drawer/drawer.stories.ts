@@ -44,6 +44,7 @@ class DrawerTriggerComponent {
   readonly size = input<drawerSize | string>('md');
   readonly closeable = input(true);
   readonly backdropClose = input(true);
+  readonly escapeClose = input(true);
   readonly rounded = input(false);
   readonly grabber = input(false);
 
@@ -53,6 +54,7 @@ class DrawerTriggerComponent {
       size: this.size(),
       closeable: this.closeable(),
       backdropClose: this.backdropClose(),
+      escapeClose: this.escapeClose(),
       rounded: this.rounded(),
       grabber: this.grabber(),
       data: { title: 'Drawer title', message: 'Content slides in from the chosen edge.' },
@@ -73,6 +75,7 @@ const meta: Meta<DrawerTriggerComponent> = {
     size: 'md',
     closeable: true,
     backdropClose: true,
+    escapeClose: true,
     rounded: false,
     grabber: false,
   },
@@ -95,6 +98,7 @@ const meta: Meta<DrawerTriggerComponent> = {
           [size]="size"
           [closeable]="closeable"
           [backdropClose]="backdropClose"
+          [escapeClose]="escapeClose"
           [rounded]="rounded"
           [grabber]="grabber"
         />
@@ -108,6 +112,11 @@ type Story = StoryObj<DrawerTriggerComponent>;
 
 export const Drawer: Story = {};
 
+/**
+ * `grabber` both draws the pill and makes the panel draggable toward its pinned
+ * edge to dismiss. The gesture is touch and pen only, so exercising it in a
+ * desktop browser needs touch emulation (DevTools device toolbar).
+ */
 export const BottomSheet: Story = {
   args: {
     side: 'bottom',

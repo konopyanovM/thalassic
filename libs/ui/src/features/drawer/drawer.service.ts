@@ -3,8 +3,10 @@ import { Dialog as CdkDialog, DialogRef, DialogRole } from '@angular/cdk/dialog'
 import { Overlay, PositionStrategy } from '@angular/cdk/overlay';
 import { ComponentType } from '@angular/cdk/portal';
 import { inject, Injectable } from '@angular/core';
+import { DEFAULT_PAN_CONFIG, PAN_CONFIG, PanConfig } from '@thalassic/core';
 import { filter, takeUntil } from 'rxjs';
 import { Drawer } from './drawer';
+import { DRAWER_DRAG_POINTER_TYPES } from './drawer.constants';
 import { DrawerConfig } from './drawer.config';
 import { DrawerRef } from './drawer-ref';
 import { DRAWER_CONFIG } from './drawer.token';
@@ -16,8 +18,13 @@ export interface DrawerOpenConfig<D = unknown> {
   size?: drawerSize | string;
   closeable?: boolean;
   backdropClose?: boolean;
+  /** Dismisses the drawer on Escape. Independent of `backdropClose`. */
+  escapeClose?: boolean;
   rounded?: boolean;
-  /** Renders a grabber pill on the edge facing the viewport, the affordance for a sheet-style panel. */
+  /**
+   * Renders a grabber pill on the edge facing the viewport and makes the panel
+   * draggable toward that edge to dismiss.
+   */
   grabber?: boolean;
   /** Accessible name for the close button. */
   closeLabel?: string;
@@ -47,6 +54,7 @@ export class DrawerService {
       size: config?.size ?? this._config.size,
       closeable: config?.closeable ?? this._config.closeable,
       backdropClose: config?.backdropClose ?? this._config.backdropClose,
+      escapeClose: config?.escapeClose ?? this._config.escapeClose,
       rounded: config?.rounded ?? this._config.rounded,
       grabber: config?.grabber ?? this._config.grabber,
       closeLabel: config?.closeLabel ?? this._config.closeLabel,
@@ -57,7 +65,10 @@ export class DrawerService {
     const dialogRef = this._dialog.open<R, D, C>(component, {
       container: {
         type: Drawer,
-        providers: () => [{ provide: DRAWER_CONFIG, useValue: resolvedConfig }],
+        providers: () => [
+          { provide: DRAWER_CONFIG, useValue: resolvedConfig },
+          { provide: PAN_CONFIG, useValue: this._buildPanConfig(resolvedConfig) },
+        ],
       },
       // Built against the content injector so the drawer's content can `inject(DrawerRef)`
       // to close itself. The same instance is returned to the caller below.
@@ -96,6 +107,23 @@ export class DrawerService {
   }
 
   // Private
+  // The drag gesture lives on the drawer container, whose inputs cannot be bound
+  // because the CDK instantiates it rather than a template, so its configuration
+  // is handed down through the injector instead.
+  private _buildPanConfig(config: DrawerConfig): PanConfig {
+    return {
+      ...DEFAULT_PAN_CONFIG,
+      // The grabber is the affordance for the gesture, so the pill and the drag
+      // are one decision — a visible grabber is always draggable, and a panel
+      // without one carries no gesture at all.
+      enabled: config.grabber,
+      // Locked to the panel's own axis so the browser keeps the cross axis and
+      // content inside the drawer still scrolls natively.
+      axis: config.side === 'top' || config.side === 'bottom' ? 'y' : 'x',
+      pointerTypes: DRAWER_DRAG_POINTER_TYPES,
+    };
+  }
+
   private _buildPositionStrategy(side: drawerSide): PositionStrategy {
     const position = this._overlay.position().global();
     const isRtl = this._directionality.value === 'rtl';
@@ -119,17 +147,19 @@ export class DrawerService {
     drawerRef: DrawerRef<R, C>,
     config: DrawerConfig,
   ): void {
-    if (!config.backdropClose) return;
+    // Gated separately: a drawer that ignores backdrop clicks must still be
+    // dismissable from the keyboard unless the caller opts out of that too.
+    if (config.backdropClose) {
+      dialogRef.backdropClick.pipe(takeUntil(dialogRef.closed)).subscribe(() => drawerRef.close());
+    }
 
-    dialogRef.backdropClick
-      .pipe(takeUntil(dialogRef.closed))
-      .subscribe(() => drawerRef.close());
-
-    dialogRef.keydownEvents
-      .pipe(
-        takeUntil(dialogRef.closed),
-        filter(event => event.key === 'Escape'),
-      )
-      .subscribe(() => drawerRef.close());
+    if (config.escapeClose) {
+      dialogRef.keydownEvents
+        .pipe(
+          takeUntil(dialogRef.closed),
+          filter(event => event.key === 'Escape'),
+        )
+        .subscribe(() => drawerRef.close());
+    }
   }
 }

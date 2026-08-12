@@ -15,12 +15,8 @@ import {
   PLATFORM_ID,
   Signal,
 } from '@angular/core';
-import {
-  PAN_DEFAULT_EDGE_SIZE,
-  PAN_DEFAULT_LOCK_RATIO,
-  PAN_DEFAULT_THRESHOLD,
-  PAN_VELOCITY_WINDOW,
-} from './pan.constants';
+import { PAN_VELOCITY_WINDOW } from './pan.constants';
+import { PAN_CONFIG } from './pan.token';
 import { panAxis, panDirection, panEdge, PanEvent } from './pan.types';
 
 interface PanSample {
@@ -68,31 +64,34 @@ export class PanDirective {
   private readonly _directionality = inject(Directionality);
   private readonly _destroyRef = inject(DestroyRef);
   private readonly _isBrowser: boolean = isPlatformBrowser(inject(PLATFORM_ID));
+  // Fallbacks for every input, so a host with no template to bind from can be
+  // configured through the injector instead. Declared before the inputs it seeds.
+  private readonly _config = inject(PAN_CONFIG);
 
   // Inputs
   /** Enables the gesture. Bind `[tlsPan]="false"` to disable; the bare attribute enables. */
-  public readonly tlsPan: InputSignalWithTransform<boolean, unknown> = input(true, {
+  public readonly tlsPan: InputSignalWithTransform<boolean, unknown> = input(this._config.enabled, {
     transform: booleanAttribute,
   });
   /** Axis (or axes) the gesture may lock onto. */
-  public readonly axis: InputSignal<panAxis> = input<panAxis>('both');
+  public readonly axis: InputSignal<panAxis> = input<panAxis>(this._config.axis);
   /** Slop in px the pointer must travel before the gesture axis-locks. */
-  public readonly threshold: InputSignal<number> = input<number>(PAN_DEFAULT_THRESHOLD);
+  public readonly threshold: InputSignal<number> = input<number>(this._config.threshold);
   /**
    * How far the dominant axis must outweigh the other before the gesture locks
    * onto it. `1` locks on whichever component is larger; raise it (`1.5`, `2`)
    * to demand deliberate single-axis intent so an ambiguous diagonal is left to
    * the browser to scroll. Values below `1` have no effect beyond `1`.
    */
-  public readonly lockRatio: InputSignal<number> = input<number>(PAN_DEFAULT_LOCK_RATIO);
+  public readonly lockRatio: InputSignal<number> = input<number>(this._config.lockRatio);
   /** When set, the gesture may only start within this edge zone of the host. */
-  public readonly edge: InputSignal<panEdge | null> = input<panEdge | null>(null);
+  public readonly edge: InputSignal<panEdge | null> = input<panEdge | null>(this._config.edge);
   /** Width in px of the `edge` start zone. */
-  public readonly edgeSize: InputSignal<number> = input<number>(PAN_DEFAULT_EDGE_SIZE);
+  public readonly edgeSize: InputSignal<number> = input<number>(this._config.edgeSize);
   /** Pointer types allowed to drive the gesture (e.g. `['touch']`); `null` allows all. */
   public readonly pointerTypes: InputSignal<readonly string[] | null> = input<
     readonly string[] | null
-  >(null);
+  >(this._config.pointerTypes);
 
   // Outputs
   /** Emits when the pointer crosses the slop threshold and the gesture axis-locks — not on `pointerdown`. */

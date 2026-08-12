@@ -33,8 +33,11 @@ export function afterLeaveAnimation(element: HTMLElement, onDone: () => void): v
 
   // The `--leave` class applies on the next change detection; on the following
   // frame, finalize at once if no animation is running. When motion is enabled
-  // the computed `animationName` is never `none`, so this cannot finalize early.
+  // the computed `animationName` names the keyframes, so this cannot finalize
+  // early. An engine that resolves no animation reports either `none` or an
+  // empty string, and both mean the same thing here.
   requestAnimationFrame(() => {
-    if (getComputedStyle(element).animationName === 'none') finalize();
+    const animationName = getComputedStyle(element).animationName;
+    if (animationName === 'none' || animationName === '') finalize();
   });
 }

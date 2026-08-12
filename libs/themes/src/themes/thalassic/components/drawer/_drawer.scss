@@ -24,6 +24,13 @@
   --tls-drawer-backdrop: rgb(0 0 0 / 0.4);
 
   background-color: var(--tls-drawer-backdrop);
+
+  // The backdrop's opacity is driven inline while a panel is dragged, so it
+  // tracks the finger. This transition only smooths the settle at the end of the
+  // gesture; the drag suspends it inline so it never lags the finger.
+  @include mixins.motion(essential) {
+    transition: opacity var(--motion-default) var(--motion-ease-out);
+  }
 }
 
 .tls-drawer {
@@ -32,11 +39,15 @@
   --tls-drawer-border-radius: var(--radius-xl);
   --tls-drawer-shadow: var(--shadow-lg);
   --tls-drawer-padding: var(--spacing-6);
-  --tls-drawer-close-size: 16px;
+  --tls-drawer-close-size: 32px;
+  --tls-drawer-close-icon-size: 16px;
   --tls-drawer-close-padding: var(--spacing-4);
   --tls-drawer-grabber-length: 36px;
   --tls-drawer-grabber-thickness: 5px;
   --tls-drawer-grabber-inset: var(--spacing-2);
+  // Distance the panel has been dragged toward its pinned edge, written by the
+  // component while a drag is in flight. `0px`, not `0` — it is a length.
+  --tls-drawer-drag: 0px;
 
   position: relative;
 
@@ -57,54 +68,92 @@
   // browser to start a fresh animation (a mere `animation-direction` change does
   // not restart an already-finished animation).
   @include mixins.motion(essential) {
-    &--enter {
-      animation: tls-drawer-slide-in var(--motion-instant) var(--motion-ease-out) both;
+    // The enter keyframe holds `transform` for the panel's whole lifetime
+    // (`animation-fill-mode: both`), so it has to stand down explicitly for a
+    // drag to own the transform. The class names are written out rather than
+    // interpolated because inside this mixin `&` is the whole `:root[data-motion]`
+    // selector list, which `:not()` cannot take. Leaving is exempt: a panel never
+    // slides out and drags at once.
+    &--enter:not(.tls-drawer--dragging):not(.tls-drawer--settling) {
+      animation: tls-drawer-slide-in var(--motion-default) var(--motion-ease-out) both;
     }
 
     &--leave {
-      animation: tls-drawer-slide-out var(--motion-instant) var(--motion-ease-in) both;
+      animation: tls-drawer-slide-out var(--motion-default) var(--motion-ease-in) both;
     }
+
+    // Only the settle animates. The drag itself is direct manipulation, not
+    // motion, so it tracks the finger at every motion level.
+    &--settling {
+      transition: transform var(--motion-default) var(--motion-ease-out);
+    }
+  }
+
+  &--dragging,
+  &--settling {
+    transform: var(--tls-drawer-drag-transform);
   }
 
   &__close {
     position: absolute;
-    top: var(--tls-drawer-close-padding);
+    inset-block-start: var(--tls-drawer-close-padding);
     inset-inline-end: var(--tls-drawer-close-padding);
     z-index: 1;
+
+    width: var(--tls-drawer-close-size);
+    height: var(--tls-drawer-close-size);
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    width: var(--tls-drawer-close-size);
-    height: var(--tls-drawer-close-size);
+    border: none;
+    border-radius: var(--radius-full);
+
+    background: transparent;
 
     color: var(--color-outline);
-    background: transparent;
-    border: none;
+
     cursor: pointer;
 
-    transition: color var(--motion-fast) var(--motion-ease-in-out);
+    transition:
+      color var(--motion-fast) var(--motion-ease-in-out),
+      background-color var(--motion-fast) var(--motion-ease-in-out);
+
+    // The visual box already clears the 24px AA floor; this reaches the 44px
+    // target on touch without growing it.
+    @include mixins.touch-target(var(--tls-drawer-close-size));
 
     &:hover {
+      background-color: var(--color-surface-container-high);
       color: var(--color-on-surface);
     }
 
+    &:focus-visible {
+      @include mixins.focus-ring;
+    }
+
     .tls-icon {
-      width: 100%;
-      height: 100%;
+      width: var(--tls-drawer-close-icon-size);
+      height: var(--tls-drawer-close-icon-size);
     }
   }
 
-  // Grabber pill, the visual affordance of a sheet-style panel. Placement along the
-  // panel's inner edge is side-dependent and lives with the side modifiers.
+  // Grabber pill, the affordance for the panel's drag-to-dismiss gesture. Purely
+  // decorative — the whole panel is the drag surface, so the pill carries no
+  // pointer handling of its own. Placement along the panel's inner edge is
+  // side-dependent and lives with the side modifiers.
+  //
+  // `--color-outline` rather than the fainter `--color-outline-variant`: as the
+  // only visual signal that the panel can be dragged it is a meaningful graphic
+  // and owes 3:1 against the panel (WCAG 1.4.11).
   &__grabber {
     position: absolute;
     z-index: 1;
 
     border-radius: calc(var(--tls-drawer-grabber-thickness) / 2);
 
-    background-color: var(--color-outline-variant);
+    background-color: var(--color-outline);
   }
 
   &__header {
