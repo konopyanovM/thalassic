@@ -9,19 +9,20 @@ import {
 } from '@angular/core';
 import { Point } from '@thalassic/core';
 import { DEFAULT_TOOLTIP_CONTENT_ATTRIBUTE } from './tooltip.constants';
-import { TooltipService } from './tooltip.service';
 import { TooltipTrigger } from './tooltip-trigger';
+import { tooltipSource } from './tooltip.types';
 
 /**
  * Serves tooltips for a whole subtree from one instance. Any descendant carrying the content
  * attribute (`data-tooltip` by default) gets a tooltip, without each one needing its own
  * `[tlsTooltip]`. Events are delegated to this host, so a grid of hundreds of cells costs one
- * directive, one overlay service and one set of listeners rather than one of each per cell.
+ * directive and one set of listeners rather than one of each per cell.
  *
  * Interaction matches `[tlsTooltip]`: hover for mouse and pen, tap-to-toggle for touch, show
  * on keyboard focus, dismiss on Escape without moving the pointer or focus (WCAG 1.4.13), and
- * `aria-describedby` linking the item to the visible tooltip — joining any description the item
- * already carries, and omitted entirely when the item's `aria-label` already says the same thing.
+ * `aria-describedby` linking the visible tooltip to the item — or, when focus is inside a
+ * composite item, to the control holding it — joining any description that element already
+ * carries, and omitted entirely when its `aria-label` already says the same thing.
  *
  * Trade-off: content is a plain string read from an attribute when the tooltip opens, so a
  * `TemplateRef` tooltip is not available here and an attribute change while the tooltip is
@@ -30,7 +31,6 @@ import { TooltipTrigger } from './tooltip-trigger';
  */
 @Directive({
   selector: '[tlsTooltipDelegate]',
-  providers: [TooltipService],
   host: {
     '(pointerover)': 'onPointerOver($event)',
     '(pointermove)': 'onPointerMove($event)',
@@ -67,23 +67,22 @@ export class TooltipDelegateDirective extends TooltipTrigger {
     // A touch "over" is a tap, not a hover — toggle instead. The default is not prevented,
     // so the tap still activates an interactive item.
     if (event.pointerType === 'touch') {
-      if (this.anchor === item) {
-        this._hide();
+      if (this._isTapped(item)) {
+        this._hide('touch');
       } else {
-        this._showItem(item);
+        this._showItem('touch', item);
       }
       return;
     }
 
-    this._showItem(item, { x: event.clientX, y: event.clientY });
+    this._showItem('hover', item, { x: event.clientX, y: event.clientY });
   }
 
   protected onPointerMove(event: PointerEvent): void {
     if (event.pointerType === 'touch') return;
-    if (!this.anchor) return;
 
     if (this.tooltipOrigin() === 'cursor') {
-      this._tooltipService.move({ x: event.clientX, y: event.clientY }, this._positions());
+      this._tooltipService.move(this, { x: event.clientX, y: event.clientY });
     }
   }
 
@@ -91,27 +90,30 @@ export class TooltipDelegateDirective extends TooltipTrigger {
     // A tap retires its pointer immediately, firing `pointerout` within the same gesture;
     // hiding here would undo the toggle the tap just made.
     if (event.pointerType === 'touch') return;
-    if (!this.anchor) return;
 
-    // Crossing between children of the same item is not a leave.
-    if (this._resolveItem(event.relatedTarget) === this.anchor) return;
+    // Crossing into another item — or between children of the one being left — is not a leave:
+    // the `pointerover` that follows re-anchors the tooltip without it ever coming down.
+    if (this._resolveItem(event.relatedTarget)) return;
 
-    this._hide();
+    this._hide('hover');
   }
 
   protected onFocusIn(event: FocusEvent): void {
     const item = this._resolveItem(event.target);
     if (!item) return;
 
-    // No cursor to anchor to; a focus-triggered tooltip always anchors to the item.
-    this._showItem(item);
+    // No cursor to anchor to; a focus-triggered tooltip always anchors to the item. An item that
+    // is a composite holds the control focus actually landed on, and that is what it describes.
+    const focused = event.target;
+    this._showItem('focus', item, null, focused instanceof HTMLElement ? focused : null);
   }
 
   protected onFocusOut(event: FocusEvent): void {
     // Focus moving between children of the same item is not a leave.
-    if (this._resolveItem(event.relatedTarget) === this.anchor) return;
+    const item = this._resolveItem(event.relatedTarget);
+    if (item && item === this.anchor) return;
 
-    this._hide();
+    this._hide('focus');
   }
 
   // Private methods
@@ -127,10 +129,21 @@ export class TooltipDelegateDirective extends TooltipTrigger {
     return item;
   }
 
-  private _showItem(item: HTMLElement, point?: Point): void {
+  private _showItem(
+    source: tooltipSource,
+    item: HTMLElement,
+    point: Point | null = null,
+    describedElement: HTMLElement | null = null,
+  ): void {
     const content = item.getAttribute(this.contentAttribute());
     if (!content) return;
 
-    this._show(item, content, null, point);
+    this._show(source, {
+      anchor: item,
+      describedElement: describedElement ?? item,
+      content,
+      data: null,
+      point,
+    });
   }
 }

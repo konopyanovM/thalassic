@@ -144,6 +144,38 @@ describe('TooltipDelegateDirective', () => {
     expect(queryTooltip()?.textContent?.trim()).toBe('second');
   });
 
+  it('keeps a focused item described while a pointer visits another item', async () => {
+    const [first, second] = Array.from(queryButtons());
+    first.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
+    await fixture.whenStable();
+
+    hover(second);
+    await fixture.whenStable();
+
+    expect(queryTooltip()?.textContent?.trim()).toBe('second');
+
+    unhover(second);
+    await fixture.whenStable();
+
+    // Focus never left the first item, so its tooltip is what remains.
+    expect(queryTooltip()?.textContent?.trim()).toBe('first');
+    expect(second.hasAttribute('aria-describedby')).toBe(false);
+  });
+
+  it('dismisses a tapped tooltip on the next tap outside any item', async () => {
+    const item = queryButtons()[0];
+    item.dispatchEvent(new PointerEvent('pointerover', { bubbles: true, pointerType: 'touch' }));
+    item.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerType: 'touch' }));
+    await fixture.whenStable();
+
+    expect(queryTooltip()?.textContent?.trim()).toBe('first');
+
+    document.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerType: 'touch' }));
+    await fixture.whenStable();
+
+    expect(queryTooltip()).toBeNull();
+  });
+
   it('dismisses on Escape', async () => {
     hover(queryButtons()[0]);
     await fixture.whenStable();
