@@ -21,6 +21,8 @@ import {
   HighlightConfig,
   IconConfig,
   ImageCompareConfig,
+  InfiniteScrollConfig,
+  InfiniteScrollLabels,
   InputConfig,
   LoaderConfig,
   MarkConfig,
@@ -54,7 +56,7 @@ import {
   toastSeverity,
   ToggleGroupConfig,
   TooltipConfig,
-  VirtualScrollConfig
+  VirtualScrollConfig,
 } from '../features';
 import { AccessibilityConfig } from '../abstract/accessibility';
 import { FormControlConfig } from '../abstract/form';
@@ -93,6 +95,9 @@ export interface tlsUiConfigProvider {
     highlight?: Partial<HighlightConfig>;
     icon?: Partial<IconConfig>;
     imageCompare?: Partial<ImageCompareConfig>;
+    infiniteScroll?: Partial<Omit<InfiniteScrollConfig, 'labels'>> & {
+      labels?: Partial<InfiniteScrollLabels>;
+    };
     input?: Partial<InputConfig>;
     loader?: Partial<LoaderConfig>;
     mark?: Partial<MarkConfig>;

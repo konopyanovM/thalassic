@@ -1,0 +1,28 @@
+@use '../../../../core/src/styles' as core;
+
+:host {
+  // The sentinel is what the observer measures, so it needs a box of its own even in the
+  // states that render nothing.
+  min-height: 1px;
+
+  display: block;
+
+  .announcement {
+    @include core.visually-hidden;
+  }
+
+  .state {
+    padding-block: var(--spacing-4);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .notice {
+    font-size: var(--font-body-small-size);
+    line-height: var(--font-body-small-line-height);
+    letter-spacing: var(--font-body-small-letter-spacing);
+    color: var(--color-on-surface-variant);
+  }
+}

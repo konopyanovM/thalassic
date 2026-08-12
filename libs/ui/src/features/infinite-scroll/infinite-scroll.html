@@ -1,0 +1,30 @@
+<!--
+  A live region is only announced reliably when it is already in the DOM before its text
+  changes, so the region is permanent and the states write into it. The visual side of
+  those states is hidden from assistive technology to keep the notice from being read twice.
+-->
+<div class="announcement" role="status">{{ announcement() }}</div>
+
+@switch (state()) {
+  @case ('loading') {
+    <div class="state" aria-hidden="true">
+      <ng-content select="[tlsInfiniteScrollLoading]">
+        <tls-loader size="sm" />
+      </ng-content>
+    </div>
+  }
+  @case ('complete') {
+    <div class="state" aria-hidden="true">
+      <ng-content select="[tlsInfiniteScrollComplete]">
+        <span class="notice">{{ labels.complete }}</span>
+      </ng-content>
+    </div>
+  }
+  @case ('manual') {
+    <div class="state">
+      <ng-content select="[tlsInfiniteScrollTrigger]">
+        <tls-button variant="tonal" [label]="labels.loadMore" (click)="load()" />
+      </ng-content>
+    </div>
+  }
+}
