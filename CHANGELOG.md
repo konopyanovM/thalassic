@@ -1,3 +1,13 @@
+## 22.19.2 (2026-08-12)
+
+### 🩹 Fixes
+
+- **ui/autocomplete:** emit queryChange when the field is emptied ([9b58283](https://github.com/konopyanovM/thalassic/commit/9b58283))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.19.1 (2026-08-12)
 
 ### 🚀 Features
