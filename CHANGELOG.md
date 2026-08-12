@@ -1,3 +1,13 @@
+## 22.19.3 (2026-08-12)
+
+### 🩹 Fixes
+
+- **themes/tabs:** view transition name set to none for tabs content ([7310c8d](https://github.com/konopyanovM/thalassic/commit/7310c8d))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.19.2 (2026-08-12)
 
 ### 🩹 Fixes
