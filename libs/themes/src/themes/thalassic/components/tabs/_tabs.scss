@@ -11,6 +11,13 @@
 .tls-tabs {
   --tls-tabs-gap: var(--spacing-4);
   --tls-tabs-content-padding: 0;
+  // Name the content panel carries into a view transition. Left unnamed the
+  // panel is captured as part of whichever group encloses it and travels with
+  // it; naming it makes the panel a group of its own, so a transition can move
+  // the panel while the header strip holds still. Declared on the container
+  // rather than left to inherit, since a view-transition name has to be unique
+  // across the document and so belongs to one strip at a time.
+  --tls-tabs-content-transition-name: none;
 
   display: flex;
   flex-direction: column;
@@ -18,6 +25,8 @@
 
   .tls-tabs-content {
     padding: var(--tls-tabs-content-padding);
+
+    view-transition-name: var(--tls-tabs-content-transition-name);
 
     // Tab panel — the tabs primitive marks hidden panels `inert`
     .tls-tab {
