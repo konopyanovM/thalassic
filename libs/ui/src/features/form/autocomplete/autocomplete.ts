@@ -121,9 +121,12 @@ export class Autocomplete<T, V = unknown> extends AbstractSelect<T, V, V | null>
   protected readonly query: WritableSignal<string> = linkedSignal(() => this.selectedLabel());
 
   /** Whether the query has yet to reach the length below which the control stays silent. */
-  protected readonly belowMinQueryLength: Signal<boolean> = computed(
-    () => this.query().trim().length < this.minQueryLength(),
-  );
+  protected readonly belowMinQueryLength: Signal<boolean> = computed(() => {
+    // The label a committed selection puts in the field is not a query, however short it is,
+    // so browsing an existing selection is never held to the floor a search has to clear.
+    if (this.hasValue() && this.query() === this.selectedLabel()) return false;
+    return this.query().trim().length < this.minQueryLength();
+  });
 
   /**
    * Whether the panel has anything to put in its box: options, the loading state, or the empty

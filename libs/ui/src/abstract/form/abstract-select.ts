@@ -47,6 +47,13 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
   private _panelWasOpen = false;
 
   /**
+   * Whether the virtualized viewport last rendered with nothing in it. Its height is sized to
+   * the options, so an empty list collapses it to zero — and a measurement taken then would
+   * describe a viewport that no longer exists once options arrive.
+   */
+  private _viewportWasCollapsed = true;
+
+  /**
    * Keeps the active option visible inside the scrolling panel. Focus stays on the
    * trigger and only `aria-activedescendant` moves, so the browser never scrolls the
    * option list on its own — every write of `activeIndex` (keyboard navigation, the
@@ -62,16 +69,23 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
     if (!isOpen) return;
 
     const virtualScroll = this.virtualScrollRef();
-    // The overlay pane is attached (and re-attached — it is reused across opens)
-    // after the panel's view is created, so the viewport's cached measurement is
-    // stale until it is re-measured in the first render of an open panel.
-    if (virtualScroll && !wasOpen) virtualScroll.checkViewportSize();
+    // The option elements are re-created when the visible list changes, so the scroll
+    // has to re-run then too, not only when the index moves.
+    const optionCount = this.visibleOptions().length;
+    const viewportWasCollapsed = this._viewportWasCollapsed;
+    this._viewportWasCollapsed = optionCount === 0;
+
+    // The overlay pane is attached (and re-attached — it is reused across opens) after the
+    // panel's view is created, so the viewport's cached measurement is stale until it is
+    // re-measured in the first render of an open panel. A panel opened on an empty list —
+    // everything filtered out, or a list still being fetched — measures a viewport of no
+    // height, so the first options to arrive call for a fresh measurement too.
+    if (virtualScroll && (!wasOpen || (viewportWasCollapsed && optionCount > 0))) {
+      virtualScroll.checkViewportSize();
+    }
 
     const index = this.activeIndex();
     if (index < 0) return;
-    // The option elements are re-created when the visible list changes, so the scroll
-    // has to re-run then too, not only when the index moves.
-    this.visibleOptions();
 
     if (virtualScroll) {
       // `aria-activedescendant` may only reference a rendered element; scrolling the

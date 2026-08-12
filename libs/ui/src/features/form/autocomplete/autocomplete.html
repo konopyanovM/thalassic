@@ -45,9 +45,12 @@
 <!--
   A live region is only announced reliably when it is already in the DOM before its text
   changes, so the region is permanent and the loading state writes into it. The panel's own
-  notice is hidden from assistive technology to keep it from being read twice.
+  notice is hidden from assistive technology to keep it from being read twice. Only a search
+  behind an open panel is announced: a list nobody is looking at has nothing to report.
 -->
-<div class="tls-autocomplete__status" role="status">{{ loading() ? loadingMessage() : '' }}</div>
+<div class="tls-autocomplete__status" role="status">
+  {{ loading() && isOpen() ? loadingMessage() : '' }}
+</div>
 
 <ng-template #panel>
   <ng-template #optionButton let-option let-index="index" let-setsize="setsize">

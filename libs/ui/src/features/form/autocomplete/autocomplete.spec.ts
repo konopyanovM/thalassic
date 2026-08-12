@@ -1,6 +1,7 @@
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { Component, signal, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { VirtualScroll } from '../../virtual-scroll';
 import { Autocomplete } from './autocomplete';
 import { autocompleteFilterMode } from './autocomplete-filter-mode';
 
@@ -263,6 +264,19 @@ describe('Autocomplete', () => {
       expect(host.queries).toEqual(['App']);
       expect(queryOptions().map(option => option.textContent?.trim())).toEqual(['Apple']);
     });
+
+    it('should hold a committed label short of minQueryLength to no floor', () => {
+      host.options.set([{ label: 'S', value: 1, disabled: false }]);
+      host.minQueryLength.set(3);
+      host.value.set(1);
+      fixture.detectChanges();
+
+      trigger.click();
+      fixture.detectChanges();
+
+      expect(trigger.value).toBe('S');
+      expect(queryOptions().map(option => option.textContent?.trim())).toEqual(['S']);
+    });
   });
 
   describe('remote search', () => {
@@ -317,18 +331,22 @@ describe('Autocomplete', () => {
     });
 
     it('should reflect the loading state on the host and announce it politely', () => {
+      const status = () =>
+        (fixture.nativeElement as HTMLElement).querySelector('.tls-autocomplete__status');
+
       host.loading.set(true);
       fixture.detectChanges();
 
-      const status = (fixture.nativeElement as HTMLElement).querySelector(
-        '.tls-autocomplete__status',
-      );
       expect(
         (fixture.nativeElement as HTMLElement).querySelector('.tls-autocomplete--loading'),
       ).not.toBeNull();
       expect(trigger.getAttribute('aria-busy')).toBe('true');
-      expect(status?.getAttribute('role')).toBe('status');
-      expect(status?.textContent?.trim()).toBe('Loading');
+      expect(status()?.getAttribute('role')).toBe('status');
+      // Nothing is announced for a panel nobody has open.
+      expect(status()?.textContent?.trim()).toBe('');
+
+      type('ap');
+      expect(status()?.textContent?.trim()).toBe('Loading');
     });
   });
 
@@ -515,6 +533,26 @@ describe('Autocomplete', () => {
 
       expect(queryOptions().length).toBe(1);
       expect(queryOptions()[0].getAttribute('aria-setsize')).toBe('1');
+    });
+
+    it('should re-measure the viewport when the first options arrive', async () => {
+      // A viewport sized to an empty list has no height to measure, so the measurement taken
+      // when the panel opened describes nothing — as it does for every list fetched per query.
+      host.options.set([]);
+      fixture.detectChanges();
+
+      trigger.click();
+      fixture.detectChanges();
+      await settle();
+
+      const checkViewportSize = vi.spyOn(VirtualScroll.prototype, 'checkViewportSize');
+
+      host.options.set(MANY_OPTIONS);
+      fixture.detectChanges();
+      await settle();
+
+      expect(checkViewportSize).toHaveBeenCalled();
+      checkViewportSize.mockRestore();
     });
 
     it('should show the empty state outside the viewport when nothing matches', async () => {
