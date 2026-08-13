@@ -37,9 +37,10 @@ import { pullToRefreshState } from './pull-to-refresh.types';
  * written straight to the host's style outside the Angular zone, so following a
  * finger costs no change detection.
  *
- * The host's block overscroll is contained while the gesture is enabled: without
- * it a browser already at the top scrolls whatever is behind the container (or
- * bounces the viewport) rather than leaving the drag to be read as a pull.
+ * The host's block overscroll is disabled entirely while the gesture is enabled:
+ * a browser already at the top otherwise spends the drag on its own overscroll —
+ * chaining to what is behind the container, or the local stretch/bounce effect —
+ * and claims the pointer for it, cancelling the pan before it can become a pull.
  */
 @Directive({
   selector: '[tlsPullToRefresh]',
@@ -61,8 +62,11 @@ import { pullToRefreshState } from './pull-to-refresh.types';
     },
   ],
   host: {
-    '[class]': 'hostClasses()',
-    '[style.overscroll-behavior-block]': "tlsPullToRefresh() ? 'contain' : null",
+    // Only the always-on classes live here; the stage class is written by the
+    // directive itself (see `_setState`) so it lands in the same frame as the
+    // travel it accompanies.
+    class: 'tls-pull-to-refresh tls-pull-to-refresh--idle',
+    '[style.overscroll-behavior-block]': "tlsPullToRefresh() ? 'none' : null",
   },
 })
 export class PullToRefreshDirective {
@@ -108,10 +112,6 @@ export class PullToRefreshDirective {
     Math.min(this.threshold(), this.maxDistance()),
   );
 
-  protected readonly hostClasses: Signal<string> = computed(
-    () => `tls-pull-to-refresh tls-pull-to-refresh--${this._state()}`,
-  );
-
   constructor() {
     const pan = inject(PanDirective);
     // Subscribed rather than bound through host listeners so `panMove` keeps its
@@ -143,7 +143,7 @@ export class PullToRefreshDirective {
     // Only a downward drag is a pull; upward is the container being read.
     if (event.deltaY <= 0) return;
 
-    this._state.set('pulling');
+    this._setState('pulling');
     this._write(this._resolveDistance(event.deltaY));
   }
 
@@ -159,8 +159,7 @@ export class PullToRefreshDirective {
     const distance = this._resolveDistance(event.deltaY);
     this._write(distance);
 
-    const stage = distance >= this._armingDistance() ? 'armed' : 'pulling';
-    if (state !== stage) this._state.set(stage);
+    this._setState(distance >= this._armingDistance() ? 'armed' : 'pulling');
   }
 
   private _onPanEnd(): void {
@@ -174,15 +173,27 @@ export class PullToRefreshDirective {
     }
 
     // Held at the threshold rather than wherever the finger let go, so every
-    // refresh reads the same however hard it was pulled.
-    this._state.set('refreshing');
+    // refresh reads the same however hard it was pulled. The stage moves before
+    // the travel: the refreshing stage is what re-enables a consumer's return
+    // transition, so it must be in force when the travel snaps back.
+    this._setState('refreshing');
     this._write(this._armingDistance());
     this.refresh.emit();
   }
 
   private _settle(): void {
-    this._state.set('idle');
+    this._setState('idle');
     this._write(0);
+  }
+
+  private _setState(state: pullToRefreshState): void {
+    const previous = this._state();
+    if (previous === state) return;
+
+    this._state.set(state);
+    const element = this._elementRef.nativeElement;
+    this._renderer.removeClass(element, `tls-pull-to-refresh--${previous}`);
+    this._renderer.addClass(element, `tls-pull-to-refresh--${state}`);
   }
 
   /**
