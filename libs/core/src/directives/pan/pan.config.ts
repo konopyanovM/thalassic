@@ -18,6 +18,7 @@ import { panAxis, panEdge } from './pan.types';
  */
 export interface PanConfig {
   enabled: boolean;
+  manageTouchAction: boolean;
   axis: panAxis;
   threshold: number;
   lockRatio: number;
@@ -28,6 +29,7 @@ export interface PanConfig {
 
 export const DEFAULT_PAN_CONFIG: PanConfig = {
   enabled: true,
+  manageTouchAction: true,
   axis: 'both',
   threshold: PAN_DEFAULT_THRESHOLD,
   lockRatio: PAN_DEFAULT_LOCK_RATIO,

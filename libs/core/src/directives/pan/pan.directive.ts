@@ -75,6 +75,22 @@ export class PanDirective {
   });
   /** Axis (or axes) the gesture may lock onto. */
   public readonly axis: InputSignal<panAxis> = input<panAxis>(this._config.axis);
+  /**
+   * Whether the host's `touch-action` is set from `axis` so the browser yields
+   * that axis to the gesture.
+   *
+   * Leave it on for a gesture that owns its axis outright. Turn it off for one
+   * that has to share the axis with native scrolling — a gesture that engages
+   * only where a scroll container has no room left to travel needs the browser
+   * scrolling normally until that point, and `touch-action` resolves up the
+   * ancestor chain, so claiming the axis anywhere above a scroller stops it
+   * scrolling too. With it off the host's `touch-action` is left to CSS, and a
+   * gesture that does lock still holds the pointer for the rest of its life.
+   */
+  public readonly manageTouchAction: InputSignalWithTransform<boolean, unknown> = input(
+    this._config.manageTouchAction,
+    { transform: booleanAttribute },
+  );
   /** Slop in px the pointer must travel before the gesture axis-locks. */
   public readonly threshold: InputSignal<number> = input<number>(this._config.threshold);
   /**
@@ -136,7 +152,7 @@ export class PanDirective {
    * and vice versa; `both` claims the pointer entirely.
    */
   protected readonly touchAction: Signal<string | null> = computed(() => {
-    if (!this.tlsPan()) return null;
+    if (!this.tlsPan() || !this.manageTouchAction()) return null;
 
     const axis = this.axis();
     if (axis === 'x') return 'pan-y';
@@ -372,10 +388,14 @@ export class PanDirective {
   }
 
   /**
-   * Walks from the event target up to (excluding) the host looking for an
-   * ancestor that can still scroll in the direction of travel. Such an
-   * ancestor keeps the pointer — otherwise swiping a carousel, wide table or
-   * chip row would also drive the gesture.
+   * Walks from the event target up to and including the host looking for an
+   * element that can still scroll in the direction of travel. Such an element
+   * keeps the pointer — otherwise swiping a carousel, wide table or chip row
+   * would also drive the gesture.
+   *
+   * The host is part of the walk because it is as much under the pointer as its
+   * descendants are: a gesture placed on a scroll container must yield to that
+   * container while it still has room, and engage only once it has none.
    */
   private _hasScrollableAncestor(
     event: PointerEvent,
@@ -385,8 +405,10 @@ export class PanDirective {
   ): boolean {
     const host = this._elementRef.nativeElement;
     let element = event.target instanceof Element ? event.target : null;
+    // The walk stops past the host rather than at it, so the host is examined.
+    const boundary = host.parentElement;
 
-    while (element !== null && element !== host) {
+    while (element !== null && element !== boundary) {
       const canScroll =
         axis === 'x'
           ? this._canScrollHorizontally(element, deltaX)
