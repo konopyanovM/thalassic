@@ -1,0 +1,40 @@
+@use 'sass:map';
+
+// The button's size scale, as a variable block rather than a rule. A button's own
+// size modifier emits it, and so does any container that takes over the sizing of a
+// button nested inside it — one scale, declared once, so the two can never drift.
+$-scales: (
+  'sm': (
+    'padding': '3',
+    'radius-round': 'md',
+    'radius-squircle': 'lg',
+    'font': 'small',
+  ),
+  'md': (
+    'padding': '4',
+    'radius-round': 'lg',
+    'radius-squircle': 'xl',
+    'font': 'medium',
+  ),
+  'lg': (
+    'padding': '5',
+    'radius-round': 'xl',
+    'radius-squircle': '2xl',
+    'font': 'large',
+  ),
+);
+
+@mixin size-vars($size) {
+  $scale: map.get($-scales, $size);
+
+  --tls-button-height: var(--control-height-#{$size});
+  --tls-button-padding-inline: var(--spacing-#{map.get($scale, 'padding')});
+
+  --tls-button-radius-round: var(--radius-#{map.get($scale, 'radius-round')});
+  --tls-button-radius-squircle: var(--radius-#{map.get($scale, 'radius-squircle')});
+
+  --tls-button-font-size: var(--font-label-#{map.get($scale, 'font')}-size);
+  --tls-button-font-weight: var(--font-label-#{map.get($scale, 'font')}-weight);
+  --tls-button-line-height: var(--font-label-#{map.get($scale, 'font')}-line-height);
+  --tls-button-letter-spacing: var(--font-label-#{map.get($scale, 'font')}-letter-spacing);
+}

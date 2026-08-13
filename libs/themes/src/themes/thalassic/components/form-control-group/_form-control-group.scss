@@ -2,11 +2,24 @@
   --tls-form-control-group-border-width: 1px;
   --tls-form-control-group-border-style: solid;
   --tls-form-control-group-border-color: var(--color-outline-variant);
+  --tls-form-control-group-border-radius: var(--radius-md);
+
+  // Own tokens rather than the border's, so the rule between two regions stays put
+  // while the surrounding border moves through its states.
+  --tls-form-control-group-divider-width: 1px;
+  --tls-form-control-group-divider-style: solid;
+  --tls-form-control-group-divider-color: var(--color-outline-variant);
+
+  // Curve of anything that fills the field to its edge: a box drawn against the
+  // inside of the border is exactly one border-width shallower than the outside.
+  --tls-form-control-group-inner-radius: calc(
+    var(--tls-form-control-group-border-radius) - var(--tls-form-control-group-border-width)
+  );
 
   display: inline-flex;
   align-items: center;
 
-  border-radius: var(--radius-md);
+  border-radius: var(--tls-form-control-group-border-radius);
   border: var(--tls-form-control-group-border-width) var(--tls-form-control-group-border-style) var(--tls-form-control-group-border-color);
 
   background-color: var(--color-surface-container-lowest);
@@ -85,6 +98,71 @@
   > :last-child .tls-date-time-picker__trigger,
   > .tls-form-control-addon:last-child {
     padding-inline-end: var(--tls-form-control-group-padding-inline);
+  }
+
+  // A divided addon is seamed off from whatever sits beside it: a rule on each edge
+  // that faces a sibling, so an addon between two controls is divided on both sides
+  // and one at either end only where it has a neighbour. It stretches to the full
+  // height — a rule that stops short of the field's edges reads as an underline
+  // rather than a division. The divided edge takes the field's inline padding too, so
+  // content never sits flush against the rule.
+  //
+  // The rule is fixed: it marks where one region ends and the next begins, which is
+  // structure and does not change with what the field is doing. State belongs to the
+  // field's own border, which surrounds the whole row and carries hover, error and
+  // disabled on its own; a rule that answered those as well would double the signal
+  // and read as a second, competing outline.
+  > .tls-form-control-addon--divider {
+    align-self: stretch;
+  }
+
+  > .tls-form-control-addon--divider:not(:first-child) {
+    border-inline-start: var(--tls-form-control-group-divider-width) var(--tls-form-control-group-divider-style) var(--tls-form-control-group-divider-color);
+  }
+
+  > .tls-form-control-addon--divider:not(:last-child) {
+    padding-inline-end: var(--tls-form-control-group-padding-inline);
+
+    border-inline-end: var(--tls-form-control-group-divider-width) var(--tls-form-control-group-divider-style) var(--tls-form-control-group-divider-color);
+  }
+
+  // A button is a segment of the field rather than something resting inside it:
+  // the addon collapses onto the button so it spans the full height and meets the
+  // border on every edge it touches. Stretching beats a fixed height because the
+  // field grows with its content (a wrapping value, a taller neighbour).
+  > .tls-form-control-addon:has(.tls-button) {
+    padding: 0;
+
+    align-self: stretch;
+    align-items: stretch;
+  }
+
+  .tls-form-control-addon:has(.tls-button) .tls-button {
+    height: 100%;
+
+    // The field owns every edge of the row, so a segment draws none of its own: an
+    // outlined button doubling up against the field's border would read as a
+    // thickened rim, and against a neighbour as an unasked-for seam. A seam is
+    // available on demand through the addon's `divider`.
+    border: none;
+
+    // Edges shared with a neighbouring control are square; only the field's outer
+    // corners are curved, by the rules below.
+    border-radius: 0;
+
+    // A squircle drawn inside a circular corner reads as a mismatch, so a segment
+    // sitting against the border adopts the border's own curve.
+    corner-shape: round;
+  }
+
+  > .tls-form-control-addon:has(.tls-button):first-child .tls-button {
+    border-start-start-radius: var(--tls-form-control-group-inner-radius);
+    border-end-start-radius: var(--tls-form-control-group-inner-radius);
+  }
+
+  > .tls-form-control-addon:has(.tls-button):last-child .tls-button {
+    border-start-end-radius: var(--tls-form-control-group-inner-radius);
+    border-end-end-radius: var(--tls-form-control-group-inner-radius);
   }
 
   // Form control

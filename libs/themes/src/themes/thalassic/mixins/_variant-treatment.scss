@@ -40,19 +40,24 @@
 
     color: var(--#{$block}-on-color-container);
 
+    // Feedback is a state layer of the container's own content colour rather than a
+    // mix towards the surface: a container sits close to the surface by design, so
+    // moving it that way covers too little distance for the step between hover and
+    // pressed to register. Layering the content colour deepens the tint instead,
+    // which stays visible in both a light and a dark theme.
     @include _hover-focus-state($block) {
       background-color: color-mix(
         in srgb,
-        var(--#{$block}-color-container) 85%,
-        var(--color-surface)
+        var(--#{$block}-on-color-container) 8%,
+        var(--#{$block}-color-container)
       );
     }
 
     @include _active-state($block) {
       background-color: color-mix(
         in srgb,
-        var(--#{$block}-color-container) 75%,
-        var(--color-surface)
+        var(--#{$block}-on-color-container) 16%,
+        var(--#{$block}-color-container)
       );
     }
   } @else if $treatment == outlined {

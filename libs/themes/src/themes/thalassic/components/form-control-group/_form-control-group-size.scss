@@ -1,3 +1,5 @@
+@use '../button/button-size-vars' as button;
+
 .tls-form-control-group {
   --tls-form-control-group-width: auto;
 
@@ -57,6 +59,17 @@
       --tls-form-control-font-weight: var(--tls-form-control-group-font-weight);
       --tls-form-control-line-height: var(--tls-form-control-group-line-height);
       --tls-form-control-letter-spacing: var(--tls-form-control-group-letter-spacing);
+    }
+  }
+
+  // A nested button is sized by the group as well, but through the button's own
+  // scale rather than the field's: it keeps a button's proportions (its wider
+  // inline padding, its type ramp) at the step the group resolved to. Taking the
+  // whole scale — not just the height — is what makes the button's own `size`
+  // irrelevant here, so the two can never disagree about how tall the field is.
+  @each $size in ('sm', 'md', 'lg') {
+    &.tls-form-control-group--#{$size} .tls-form-control-addon .tls-button {
+      @include button.size-vars($size);
     }
   }
 }

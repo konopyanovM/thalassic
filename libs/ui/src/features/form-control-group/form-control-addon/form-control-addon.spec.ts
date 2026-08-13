@@ -18,4 +18,31 @@ describe('FormControlAddon', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should carry the block class', () => {
+    expect(fixture.nativeElement.classList).toContain('tls-form-control-addon');
+  });
+
+  it('should not draw a divider by default', () => {
+    expect(fixture.nativeElement.classList).not.toContain('tls-form-control-addon--divider');
+  });
+
+  it('should reflect the divider input onto the host', async () => {
+    fixture.componentRef.setInput('divider', true);
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.classList).toContain('tls-form-control-addon--divider');
+
+    fixture.componentRef.setInput('divider', false);
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.classList).not.toContain('tls-form-control-addon--divider');
+  });
+
+  it('should treat a bare attribute as enabled', async () => {
+    fixture.componentRef.setInput('divider', '');
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.classList).toContain('tls-form-control-addon--divider');
+  });
 });

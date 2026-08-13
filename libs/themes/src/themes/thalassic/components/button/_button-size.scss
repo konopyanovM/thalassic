@@ -1,3 +1,5 @@
+@use 'button-size-vars' as size;
+
 .tls-button {
   --tls-button-width: auto;
 
@@ -23,41 +25,14 @@
   }
 
   &.tls-button--sm {
-    --tls-button-height: var(--control-height-sm);
-    --tls-button-padding-inline: var(--spacing-3);
-
-    --tls-button-radius-round: var(--radius-md);
-    --tls-button-radius-squircle: var(--radius-lg);
-
-    --tls-button-font-size: var(--font-label-small-size);
-    --tls-button-font-weight: var(--font-label-small-weight);
-    --tls-button-line-height: var(--font-label-small-line-height);
-    --tls-button-letter-spacing: var(--font-label-small-letter-spacing);
+    @include size.size-vars('sm');
   }
 
   &.tls-button--md {
-    --tls-button-height: var(--control-height-md);
-    --tls-button-padding-inline: var(--spacing-4);
-
-    --tls-button-radius-round: var(--radius-lg);
-    --tls-button-radius-squircle: var(--radius-xl);
-
-    --tls-button-font-size: var(--font-label-medium-size);
-    --tls-button-font-weight: var(--font-label-medium-weight);
-    --tls-button-line-height: var(--font-label-medium-line-height);
-    --tls-button-letter-spacing: var(--font-label-medium-letter-spacing);
+    @include size.size-vars('md');
   }
 
   &.tls-button--lg {
-    --tls-button-height: var(--control-height-lg);
-    --tls-button-padding-inline: var(--spacing-5);
-
-    --tls-button-radius-round: var(--radius-xl);
-    --tls-button-radius-squircle: var(--radius-2xl);
-
-    --tls-button-font-size: var(--font-label-large-size);
-    --tls-button-font-weight: var(--font-label-large-weight);
-    --tls-button-line-height: var(--font-label-large-line-height);
-    --tls-button-letter-spacing: var(--font-label-large-letter-spacing);
+    @include size.size-vars('lg');
   }
 }
