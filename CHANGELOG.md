@@ -1,3 +1,7 @@
+## 22.20.1 (2026-08-13)
+
+This was a version bump only, there were no code changes.
+
 ## 22.20.0 (2026-08-13)
 
 ### 🚀 Features
