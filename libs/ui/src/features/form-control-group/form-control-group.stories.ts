@@ -127,6 +127,12 @@ const CALENDAR_ICON = `
   </svg>
 `;
 
+const PHONE_ICON = `
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.09 4.18 2 2 0 0 1 4.08 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z" />
+  </svg>
+`;
+
 const SEND_ICON = `
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M22 2 11 13" />
@@ -275,6 +281,47 @@ export const WithDividers: Story = {
         <tls-form-control-addon divider>$</tls-form-control-addon>
         <tls-input placeholder="0.00" />
         <tls-form-control-addon divider>USD</tls-form-control-addon>
+      </tls-form-control-group>
+    `,
+  }),
+};
+
+// A field can hold more than one control. Clicking an addon reaches the control nearest
+// it — the leading icon focuses the country select, the trailing `ext.` the number —
+// rather than whichever control happens to come first in the row.
+export const TwoControls: Story = {
+  args: {},
+  render: args => ({
+    props: {
+      ...args,
+      options: ['+1', '+44', '+90'],
+    },
+    template: `
+      <tls-form-control-group ${argsToTemplate(args)}>
+        <tls-form-control-addon aria-hidden="true">${PHONE_ICON}</tls-form-control-addon>
+        <tls-select [options]="options" placeholder="+1" />
+        <tls-input placeholder="Phone number" />
+        <tls-form-control-addon divider>ext.</tls-form-control-addon>
+      </tls-form-control-group>
+    `,
+  }),
+};
+
+// An addon takes the control nearest it, which leaves an addon between two controls
+// ambiguous. Name the control with a template reference to settle it — here the middle
+// addon hands over to the amount rather than to the currency beside it.
+export const NamedControl: Story = {
+  args: {},
+  render: args => ({
+    props: {
+      ...args,
+      currencies: ['USD', 'EUR', 'GBP'],
+    },
+    template: `
+      <tls-form-control-group ${argsToTemplate(args)}>
+        <tls-select [options]="currencies" placeholder="USD" />
+        <tls-form-control-addon divider [control]="amount">$</tls-form-control-addon>
+        <tls-input #amount placeholder="0.00" />
       </tls-form-control-group>
     `,
   }),

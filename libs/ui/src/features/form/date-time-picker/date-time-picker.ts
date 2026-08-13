@@ -121,6 +121,24 @@ export class DateTimePicker extends ValueFormControl<Date | null> {
     });
   }
 
+  // Public methods
+  /**
+   * Focus lands on the trigger and the picker opens with it: a date is chosen in the
+   * calendar, so handing the control over without showing the calendar would stop one
+   * step short of what was asked for.
+   */
+  public override activate(): void {
+    this.focus();
+
+    if (this.notInteractive()) return;
+
+    const popover: Popover | undefined = this.popoverComponent();
+    const trigger: HTMLElement | null = this.focusTarget();
+    if (!popover || !trigger) return;
+
+    popover.open(trigger);
+  }
+
   // Protected methods
   protected onViewDateChange(date: Date): void {
     this.viewDate.set(date);

@@ -2,6 +2,7 @@ import {
   booleanAttribute,
   computed,
   Directive,
+  ElementRef,
   inject,
   input,
   InputSignal,
@@ -13,12 +14,20 @@ import {
   WritableSignal
 } from '@angular/core';
 import { FormUiControl, ValidationError, WithOptionalFieldTree } from '@angular/forms/signals';
+import { FOCUSABLE_CONTROL_SELECTOR } from './form-control.constants';
 import { FORM_CONTROL_CONFIG } from './form-control.config.token';
 
 @Directive()
 export abstract class FormControl<TValue = unknown> implements FormUiControl<TValue> {
   // Injections
   private readonly _formControlConfig = inject(FORM_CONTROL_CONFIG);
+
+  /**
+   * The control's host element. Public because a container that arranges controls — a
+   * form control group placing an addon beside one — has to locate a control in its own
+   * layout before it can hand anything to it.
+   */
+  public readonly elementRef: ElementRef<HTMLElement> = inject(ElementRef);
 
   // Models
   public readonly touched: ModelSignal<boolean> = model<boolean>(false);
@@ -155,7 +164,39 @@ export abstract class FormControl<TValue = unknown> implements FormUiControl<TVa
   );
   protected controlClasses: Signal<string[]> = computed<string[]>(() => this.baseControlClasses());
 
+  // Public methods
+  /**
+   * Moves focus to the control. Focus lands on the element that actually takes it — the
+   * native input a wrapper renders, or a composite's trigger — never on the host, which
+   * is only a wrapper.
+   */
+  public focus(): void {
+    const target: HTMLElement | null = this.focusTarget();
+    if (!target) return;
+
+    target.focus();
+  }
+
+  /**
+   * Hands the control over as though the user had reached for it directly. Focus alone
+   * for a control whose value is edited in place; a control that keeps its value behind
+   * a panel — a select, a picker — also opens that panel, since focus on its own leaves
+   * such a control looking untouched and the user still a click away from the value.
+   */
+  public activate(): void {
+    this.focus();
+  }
+
   // Protected methods
+  /**
+   * The element focus lands on. Defaults to the first focusable element the control
+   * renders, which is the right one for a control built around a single native element;
+   * a control with a more elaborate view names its own.
+   */
+  protected focusTarget(): HTMLElement | null {
+    return this.elementRef.nativeElement.querySelector<HTMLElement>(FOCUSABLE_CONTROL_SELECTOR);
+  }
+
   protected baseControlClasses() {
     const className = this.CLASS_NAME;
     const array = [className];

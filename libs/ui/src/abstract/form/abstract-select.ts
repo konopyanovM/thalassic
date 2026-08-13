@@ -235,7 +235,26 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
     // No-op by default; an editable combobox overrides this to reconcile its text.
   }
 
+  // Public methods
+  /**
+   * Focus lands on the trigger and the panel opens with it: the value of an option-list
+   * control lives in the list, so handing the control over without showing the list
+   * would stop one step short of what was asked for.
+   */
+  public override activate(): void {
+    this.focus();
+    this.open();
+  }
+
   // Protected methods
+  /** The trigger is the control's single focusable element; the panel is elsewhere. */
+  protected override focusTarget(): HTMLElement | null {
+    const triggerElement = this.triggerElement();
+    if (!triggerElement) return null;
+
+    return triggerElement.nativeElement;
+  }
+
   protected open(): void {
     const triggerElement = this.triggerElement();
     const panelTemplate = this.panelTemplate();
