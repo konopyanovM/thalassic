@@ -12,3 +12,8 @@ export const PULL_TO_REFRESH_DEFAULT_MAX_DISTANCE = 96;
 // 1 the surface lags the finger, which is the resistance that tells a reader
 // they are pulling against something.
 export const PULL_TO_REFRESH_RESISTANCE = 0.5;
+
+// Shortest time in ms the surface is held open once a refresh is asked for. A
+// refresh answered instantly — from a cache, or with nothing reporting on it —
+// would otherwise come and go faster than it can be seen to have happened.
+export const PULL_TO_REFRESH_DEFAULT_MIN_REFRESHING_TIME = 500;

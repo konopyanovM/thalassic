@@ -18,6 +18,7 @@ import {
 import { DEFAULT_PAN_CONFIG, PAN_CONFIG, PanDirective, PanEvent } from '../pan';
 import {
   PULL_TO_REFRESH_DEFAULT_MAX_DISTANCE,
+  PULL_TO_REFRESH_DEFAULT_MIN_REFRESHING_TIME,
   PULL_TO_REFRESH_DEFAULT_THRESHOLD,
   PULL_TO_REFRESH_RESISTANCE,
 } from './pull-to-refresh.constants';
@@ -94,6 +95,14 @@ export class PullToRefreshDirective {
   public readonly refreshing: InputSignalWithTransform<boolean, unknown> = input(false, {
     transform: booleanAttribute,
   });
+  /**
+   * Shortest time in ms the surface is held open once a refresh is asked for,
+   * however quickly `refreshing` clears — so a refresh answered instantly still
+   * reads as one having happened.
+   */
+  public readonly minRefreshingTime: InputSignal<number> = input<number>(
+    PULL_TO_REFRESH_DEFAULT_MIN_REFRESHING_TIME,
+  );
 
   // Outputs
   /** Emits once when a pull is released past the threshold. */
@@ -101,6 +110,13 @@ export class PullToRefreshDirective {
 
   // State
   private readonly _state = signal<pullToRefreshState>('idle');
+  // When the refreshing stage was entered, for measuring the minimum hold.
+  private _refreshingSince = 0;
+  // Pending deferred settle, waiting out the remainder of the minimum hold.
+  private _settleTimeout: ReturnType<typeof setTimeout> | null = null;
+  // Travel last written to the host, for skipping no-op writes; `null` until the
+  // first write.
+  private _writtenDistance: number | null = null;
 
   // Computed
   /**
@@ -125,15 +141,31 @@ export class PullToRefreshDirective {
 
     inject(DestroyRef).onDestroy(() => {
       for (const subscription of subscriptions) subscription.unsubscribe();
+      this._clearSettleTimeout();
     });
 
-    // The pull is held open only while something reports the refresh as running.
-    // Both the report and the stage are dependencies: releasing a pull is what
-    // opens it, so a consumer that tracks nothing must still get it back — and
-    // this settling changes the stage again, which re-runs and stops here.
+    // The pull is held open while something reports the refresh as running, and
+    // never shorter than the minimum hold. Both the report and the stage are
+    // dependencies: releasing a pull is what opens it, so a consumer that tracks
+    // nothing must still get it back — and settling changes the stage again,
+    // which re-runs and stops here.
     effect(() => {
       if (this.refreshing() || this._state() !== 'refreshing') return;
-      this._settle();
+
+      const remaining = this._refreshingSince + this.minRefreshingTime() - Date.now();
+      if (remaining <= 0) {
+        this._settle();
+        return;
+      }
+
+      // The callback re-checks what this effect checked: the report may have
+      // turned back on while the hold ran out.
+      this._clearSettleTimeout();
+      this._settleTimeout = setTimeout(() => {
+        this._settleTimeout = null;
+        if (this.refreshing() || this._state() !== 'refreshing') return;
+        this._settle();
+      }, remaining);
     });
   }
 
@@ -176,14 +208,23 @@ export class PullToRefreshDirective {
     // refresh reads the same however hard it was pulled. The stage moves before
     // the travel: the refreshing stage is what re-enables a consumer's return
     // transition, so it must be in force when the travel snaps back.
+    this._refreshingSince = Date.now();
     this._setState('refreshing');
     this._write(this._armingDistance());
     this.refresh.emit();
   }
 
   private _settle(): void {
+    this._clearSettleTimeout();
     this._setState('idle');
     this._write(0);
+  }
+
+  private _clearSettleTimeout(): void {
+    if (this._settleTimeout === null) return;
+
+    clearTimeout(this._settleTimeout);
+    this._settleTimeout = null;
   }
 
   private _setState(state: pullToRefreshState): void {
@@ -206,6 +247,11 @@ export class PullToRefreshDirective {
   }
 
   private _write(distance: number): void {
+    // A pull held at the cap resolves to the same travel on every following
+    // move; re-writing it would invalidate style once per frame for nothing.
+    if (distance === this._writtenDistance) return;
+    this._writtenDistance = distance;
+
     this._renderer.setStyle(
       this._elementRef.nativeElement,
       '--tls-pull-distance',

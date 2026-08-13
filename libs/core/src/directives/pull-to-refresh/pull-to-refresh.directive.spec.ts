@@ -1,6 +1,9 @@
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PULL_TO_REFRESH_DEFAULT_THRESHOLD } from './pull-to-refresh.constants';
+import {
+  PULL_TO_REFRESH_DEFAULT_MIN_REFRESHING_TIME,
+  PULL_TO_REFRESH_DEFAULT_THRESHOLD,
+} from './pull-to-refresh.constants';
 import { PullToRefreshDirective } from './pull-to-refresh.directive';
 
 interface PointerOptions {
@@ -178,6 +181,7 @@ describe('PullToRefreshDirective', () => {
   });
 
   it('holds the pull open until the refresh it asked for is finished', () => {
+    vi.useFakeTimers();
     setScrollMetrics(0);
     host.refreshing.set(true);
     fixture.detectChanges();
@@ -187,11 +191,36 @@ describe('PullToRefreshDirective', () => {
     fixture.detectChanges();
     expect(scroller.className).toContain('tls-pull-to-refresh--refreshing');
 
+    vi.advanceTimersByTime(PULL_TO_REFRESH_DEFAULT_MIN_REFRESHING_TIME);
     host.refreshing.set(false);
     fixture.detectChanges();
 
     expect(distanceStyle()).toBe('0px');
     expect(scroller.className).toContain('tls-pull-to-refresh--idle');
+    vi.useRealTimers();
+  });
+
+  it('holds an instantly finished refresh open for the minimum time', () => {
+    vi.useFakeTimers();
+    setScrollMetrics(0);
+    host.refreshing.set(true);
+    fixture.detectChanges();
+
+    pull(200);
+    release(200);
+    fixture.detectChanges();
+
+    // The refresh comes back at once, but the surface stays for the hold.
+    host.refreshing.set(false);
+    fixture.detectChanges();
+    expect(scroller.className).toContain('tls-pull-to-refresh--refreshing');
+
+    vi.advanceTimersByTime(PULL_TO_REFRESH_DEFAULT_MIN_REFRESHING_TIME);
+    fixture.detectChanges();
+
+    expect(distanceStyle()).toBe('0px');
+    expect(scroller.className).toContain('tls-pull-to-refresh--idle');
+    vi.useRealTimers();
   });
 
   it('configures the gesture underneath to share the axis it scrolls on', () => {
@@ -201,6 +230,7 @@ describe('PullToRefreshDirective', () => {
   });
 
   it('returns the surface when nothing tracks whether the refresh is running', () => {
+    vi.useFakeTimers();
     const minimalFixture = TestBed.createComponent(MinimalHostComponent);
     minimalFixture.detectChanges();
     const minimalScroller: HTMLElement =
@@ -227,10 +257,14 @@ describe('PullToRefreshDirective', () => {
     minimalFixture.detectChanges();
 
     expect(minimalFixture.componentInstance.refreshCount).toBe(1);
-    // Held open only for a refresh something is reporting on; with nothing
-    // reporting there is nothing to wait for.
+    // With nothing reporting on the refresh there is nothing to wait for beyond
+    // the minimum hold, after which the surface comes back on its own.
+    expect(minimalScroller.className).toContain('tls-pull-to-refresh--refreshing');
+    vi.advanceTimersByTime(PULL_TO_REFRESH_DEFAULT_MIN_REFRESHING_TIME);
+    minimalFixture.detectChanges();
     expect(minimalScroller.style.getPropertyValue('--tls-pull-distance')).toBe('0px');
     expect(minimalScroller.className).toContain('tls-pull-to-refresh--idle');
+    vi.useRealTimers();
   });
 
   it('reads no pull at all while disabled', () => {
