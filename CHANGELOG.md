@@ -1,3 +1,13 @@
+## 22.20.0 (2026-08-13)
+
+### 🚀 Features
+
+- **core:** added pull to refresh directive ([38cf034](https://github.com/konopyanovM/thalassic/commit/38cf034))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.19.3 (2026-08-12)
 
 ### 🩹 Fixes
