@@ -17,12 +17,20 @@
     <ng-content></ng-content>
   </div>
 </div>
-@if (displayErrors()) {
-  <small class="form-item-error">
-    @if (isInvalid()) {
-      <span class="form-item-error__text" [id]="errorId">
-      {{ firstErrorMessage() }}
-    </span>
+@if (reserveErrorSpace() || (displayErrors() && isInvalid()) || hasCounter()) {
+  <small class="form-item-footer">
+    @if (displayErrors() && isInvalid()) {
+      <span class="form-item-error">
+        <span class="form-item-error__text" [id]="errorId">
+          {{ firstErrorMessage() }}
+        </span>
+      </span>
+    }
+    @if (hasCounter()) {
+      <span
+        class="form-item-counter"
+        [class.form-item-counter--over]="overLimit()"
+      >{{ characterCount() }}/{{ maxLength() }}</span>
     }
   </small>
 }

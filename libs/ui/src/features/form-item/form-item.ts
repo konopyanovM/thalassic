@@ -11,7 +11,7 @@ import {
   TemplateRef,
 } from '@angular/core';
 import { ValidationError, WithOptionalFieldTree } from '@angular/forms/signals';
-import { FORM_CONTROL, FormControl } from '../../abstract/form';
+import { FORM_CONTROL, FormControl, ValueFormControl } from '../../abstract/form';
 import { FORM_ITEM_CONFIG } from './form-item.token';
 import { FormItemLabelContext, labelPosition } from './form-item.types';
 
@@ -60,6 +60,11 @@ export class FormItem {
   public displayErrors = input<boolean>(this._config.displayErrors);
   public showRequiredMarker = input<boolean>(this._config.showRequiredMarker);
   public optionalText = input<string | undefined>(this._config.optionalText);
+  /**
+   * Character budget of the control's value. When set, a `current/max` counter is rendered on the
+   * footer's trailing edge, tracking the projected control's string value as it is typed.
+   */
+  public maxLength = input<number | undefined>(undefined);
 
   protected isInvalid = computed(() => {
     const control = this.control();
@@ -113,6 +118,26 @@ export class FormItem {
     if (this.reserveLabelSpace()) array.push(`${className}--label-space-reserved`);
 
     return array;
+  });
+
+  protected hasCounter = computed(() => this.maxLength() !== undefined);
+
+  /**
+   * Length of the control's current value. Only a string value has a character count; any
+   * other control type under a counter reads as empty rather than failing.
+   */
+  protected characterCount = computed(() => {
+    const control = this.control();
+    if (!(control instanceof ValueFormControl)) return 0;
+
+    const value: unknown = control.value();
+    return typeof value === 'string' ? value.length : 0;
+  });
+
+  protected overLimit = computed(() => {
+    const maxLength = this.maxLength();
+    if (maxLength === undefined) return false;
+    return this.characterCount() > maxLength;
   });
 
   protected errorMessages = computed(() => {

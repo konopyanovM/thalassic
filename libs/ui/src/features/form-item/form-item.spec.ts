@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Input } from '../form/input/input';
 import { FormItem } from './form-item';
 
 @Component({
@@ -26,6 +27,18 @@ class LabelTemplateHostComponent {}
 })
 class LabelTemplateWithoutLabelHostComponent {}
 
+@Component({
+  imports: [FormItem, Input],
+  template: `
+    <tls-form-item label="Bio" [maxLength]="10">
+      <tls-input [(value)]="text" />
+    </tls-form-item>
+  `,
+})
+class CounterHostComponent {
+  text = signal('Alex');
+}
+
 describe('FormItem', () => {
   let component: FormItem;
   let fixture: ComponentFixture<FormItem>;
@@ -42,6 +55,34 @@ describe('FormItem', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('character counter', () => {
+    it('should render the current length against the budget', async () => {
+      const counterFixture = TestBed.createComponent(CounterHostComponent);
+      counterFixture.detectChanges();
+      await counterFixture.whenStable();
+
+      const counter: HTMLElement = counterFixture.nativeElement.querySelector('.form-item-counter');
+      expect(counter).not.toBeNull();
+      expect(counter.textContent).toBe('4/10');
+      expect(counter.classList).not.toContain('form-item-counter--over');
+    });
+
+    it('should track the value as it changes and mark the overflow', async () => {
+      const counterFixture = TestBed.createComponent(CounterHostComponent);
+      counterFixture.componentInstance.text.set('Alex Petrov');
+      counterFixture.detectChanges();
+      await counterFixture.whenStable();
+
+      const counter: HTMLElement = counterFixture.nativeElement.querySelector('.form-item-counter');
+      expect(counter.textContent).toBe('11/10');
+      expect(counter.classList).toContain('form-item-counter--over');
+    });
+
+    it('should render no counter without a budget', () => {
+      expect(fixture.nativeElement.querySelector('.form-item-counter')).toBeNull();
+    });
   });
 
   describe('custom label content', () => {

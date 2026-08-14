@@ -42,12 +42,8 @@
   }
 
   &:not(.tls-form-item--error-space-reserved) {
-    .form-item-error {
+    .form-item-footer {
       min-height: auto;
-
-      &:empty {
-        display: none;
-      }
     }
   }
 
@@ -95,16 +91,34 @@
     }
   }
 
-  .form-item-error {
+  .form-item-footer {
     min-height: var(--font-label-small-line-height);
     margin-top: 0.125rem;
 
-    color: var(--color-danger);
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-2);
 
     font-size: var(--font-label-small-size);
     font-weight: var(--font-label-small-weight);
     line-height: var(--font-label-small-line-height);
     letter-spacing: var(--font-label-small-letter-spacing);
+  }
+
+  // Sits on the footer's trailing edge whether or not an error occupies the start.
+  .form-item-counter {
+    margin-inline-start: auto;
+
+    color: var(--color-on-surface-variant);
+    font-variant-numeric: tabular-nums;
+
+    &--over {
+      color: var(--color-danger);
+    }
+  }
+
+  .form-item-error {
+    color: var(--color-danger);
 
     &__text {
       display: inline-block;
