@@ -1,8 +1,17 @@
 // Removes an element from the visual layout while leaving it in the accessibility tree, so the
 // text keeps naming its control for assistive technology. Use it instead of `display: none`
 // whenever hiding content would otherwise strip a control's accessible name.
+// Reserved for non-focusable content: a focusable element must keep its static position so
+// focus tracking lands near its control, and this mixin pins the box away from it.
 @mixin visually-hidden {
   position: absolute;
+  // Anchored to the containing block's origin rather than left at the static position: without
+  // offsets an absolutely positioned box escapes every scrolling ancestor up to its containing
+  // block, so a hidden region deep in a page silently extends the document's scroll range when
+  // no ancestor is positioned. Pinned to the origin, the box adds no overflow anywhere — its
+  // visual placement is irrelevant, being one clipped pixel.
+  inset-block-start: 0;
+  inset-inline-start: 0;
 
   width: 1px;
   height: 1px;
