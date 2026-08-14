@@ -89,4 +89,70 @@
       transform: scaleX(-1);
     }
   }
+
+  // Sizes scale the type and every box keyed to it; the custom properties
+  // above are the `md` base, so only the outliers override.
+  &--sm {
+    --tls-breadcrumbs-gap: var(--spacing-1);
+    --tls-breadcrumbs-link-height: 20px;
+    --tls-breadcrumbs-icon-size: 14px;
+    --tls-breadcrumbs-separator-size: 12px;
+
+    font-size: var(--font-body-small-size);
+  }
+
+  &--lg {
+    --tls-breadcrumbs-link-height: 28px;
+    --tls-breadcrumbs-icon-size: 18px;
+    --tls-breadcrumbs-separator-size: 16px;
+
+    font-size: var(--font-body-large-size);
+  }
+
+  // Single-line mode: crumbs shrink and truncate with an ellipsis instead of
+  // the trail wrapping. The default minimum size of a flex item is its
+  // content, so every box between the list and the label must allow shrinking
+  // below that for the truncation to engage.
+  &--nowrap {
+    .tls-breadcrumbs__list {
+      flex-wrap: nowrap;
+    }
+
+    .tls-breadcrumbs__item,
+    .tls-breadcrumbs__link,
+    .tls-breadcrumbs__text {
+      min-width: 0;
+    }
+
+    // Only the trailing crumb gives way: ancestors are short, stable route
+    // names kept legible at full width, while the current page's crumb
+    // carries the longest label — one the page below already displays in
+    // full. Ancestors are exempted outright rather than given a small shrink
+    // factor: even a fraction of a pixel of shrink makes text-overflow paint
+    // an ellipsis over an otherwise whole label.
+    .tls-breadcrumbs__item {
+      flex-shrink: 0;
+    }
+
+    .tls-breadcrumbs__item:last-child {
+      flex-shrink: 1;
+    }
+
+    // The crumb's content box — the built-in label or a projected template's
+    // root — is where the text actually overflows, so the ellipsis lives here.
+    .tls-breadcrumbs__link > *,
+    .tls-breadcrumbs__text > * {
+      min-width: 0;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    // Fixed-size glyphs keep their box; only text gives way.
+    .tls-breadcrumbs__item-icon,
+    .tls-breadcrumbs__separator {
+      flex-shrink: 0;
+    }
+  }
 }

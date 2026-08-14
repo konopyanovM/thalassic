@@ -1,9 +1,19 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, contentChild, inject, input, TemplateRef } from '@angular/core';
+import {
+  booleanAttribute,
+  Component,
+  computed,
+  contentChild,
+  inject,
+  input,
+  InputSignal,
+  InputSignalWithTransform,
+  TemplateRef,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Icon, systemIcon } from '../icon';
 import { BREADCRUMBS_CONFIG } from './breadcrumbs.token';
-import { BreadcrumbItem, BreadcrumbItemContext } from './breadcrumbs.types';
+import { BreadcrumbItem, BreadcrumbItemContext, breadcrumbsSize } from './breadcrumbs.types';
 
 @Component({
   selector: 'tls-breadcrumbs',
@@ -11,7 +21,7 @@ import { BreadcrumbItem, BreadcrumbItemContext } from './breadcrumbs.types';
   templateUrl: './breadcrumbs.html',
   host: {
     role: 'navigation',
-    class: 'tls-breadcrumbs',
+    '[class]': 'classes()',
     '[attr.aria-label]': 'ariaLabelledby() ? null : ariaLabel()',
     '[attr.aria-labelledby]': 'ariaLabelledby() ?? null',
   },
@@ -24,6 +34,20 @@ export class Breadcrumbs {
   public readonly items = input<BreadcrumbItem[]>([]);
   public readonly separatorIcon = input<systemIcon>(this._config.separatorIcon);
 
+  /** Overall scale of the trail: type size, link height, and glyph sizes together. */
+  public readonly size: InputSignal<breadcrumbsSize> = input<breadcrumbsSize>(this._config.size);
+
+  /**
+   * Keeps the trail on a single line: instead of wrapping, crumbs shrink and
+   * truncate their labels with an ellipsis. For trails in width-constrained
+   * chrome (a header bar) where a second line would break the surrounding
+   * layout.
+   */
+  public readonly nowrap: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    false,
+    { transform: booleanAttribute },
+  );
+
   /** Accessible name for the breadcrumb navigation landmark. */
   public readonly ariaLabel = input<string>('Breadcrumb');
   public readonly ariaLabelledby = input<string | undefined>(undefined);
@@ -34,4 +58,15 @@ export class Breadcrumbs {
   // separators, and `aria-current` stay owned by the component. Bind the item
   // with `<ng-template let-item>`; see BreadcrumbItemContext for the full context.
   public readonly itemTemplate = contentChild<TemplateRef<BreadcrumbItemContext>>(TemplateRef);
+
+  protected readonly classes = computed(() => {
+    const className = 'tls-breadcrumbs';
+    const array: string[] = [className];
+
+    array.push(`${className}--${this.size()}`);
+
+    if (this.nowrap()) array.push(`${className}--nowrap`);
+
+    return array;
+  });
 }

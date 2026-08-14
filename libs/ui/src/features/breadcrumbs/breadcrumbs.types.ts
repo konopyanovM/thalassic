@@ -1,3 +1,5 @@
+export type breadcrumbsSize = 'sm' | 'md' | 'lg';
+
 export interface BreadcrumbItem {
   label: string;
   /** Router link for the item. An item without a link renders as plain text. */
