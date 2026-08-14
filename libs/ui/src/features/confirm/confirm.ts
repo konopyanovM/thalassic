@@ -21,6 +21,12 @@ import { confirmActionsAlign, confirmButton, confirmSize } from './confirm.types
 @Component({
   selector: 'tls-confirm',
   imports: [ConfirmPanel],
+  host: {
+    // Nothing renders in place — the panel lives in an overlay — so the host
+    // leaves the flow rather than claiming a slot (and a flex/grid gap) as an
+    // invisible empty box.
+    style: 'display: none',
+  },
   template: `
     <ng-template #content>
       <tls-confirm-panel

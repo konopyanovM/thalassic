@@ -34,6 +34,12 @@ import { MenuActionItem, MenuItemDefinition, MenuRenderBlock, MenuRenderGroup } 
   selector: 'tls-menu',
   imports: [NgTemplateOutlet, Icon, Kbd, RouterLink, AriaMenu, AriaMenuItem],
   templateUrl: './menu.html',
+  host: {
+    // Unless the menu is inline, nothing renders in place — the panel lives in
+    // an overlay — so the host leaves the flow rather than claiming a slot (and
+    // a flex/grid gap) as an invisible empty box.
+    '[style.display]': "inline() ? null : 'none'",
+  },
 })
 export class Menu {
   private static _counter = 0;
