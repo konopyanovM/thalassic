@@ -1,3 +1,5 @@
+@use '../../mixins/control-radius' as control-radius;
+
 .tls-form-control {
   --tls-form-control-width: auto;
 
@@ -16,6 +18,7 @@
 
   &.tls-form-control--sm {
     --tls-form-control-height: var(--control-height-sm);
+    @include control-radius.radius-vars('sm', 'tls-form-control');
     --tls-form-control-padding-inline: var(--spacing-2);
 
     --tls-form-control-font-size: var(--font-label-small-size);
@@ -26,6 +29,7 @@
 
   &.tls-form-control--md {
     --tls-form-control-height: var(--control-height-md);
+    @include control-radius.radius-vars('md', 'tls-form-control');
     --tls-form-control-padding-inline: var(--spacing-2);
 
     --tls-form-control-font-size: var(--font-label-medium-size);
@@ -36,6 +40,7 @@
 
   &.tls-form-control--lg {
     --tls-form-control-height: var(--control-height-lg);
+    @include control-radius.radius-vars('lg', 'tls-form-control');
     --tls-form-control-padding-inline: var(--spacing-3);
 
     --tls-form-control-font-size: var(--font-label-large-size);

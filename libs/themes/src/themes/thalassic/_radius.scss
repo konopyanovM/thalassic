@@ -9,8 +9,9 @@
   // Continuous corner curvature: the corner hugs the box instead of cutting a
   // quarter-circle out of it, so a control reads as a soft square rather than a
   // rounded rectangle. Because the curve stays closer to the corner, it needs a
-  // larger radius than a circular corner of the same visual weight — pair it
-  // with a value one step up the scale. Browsers without `corner-shape` drop the
-  // declaration and fall back to a circular corner.
+  // notably larger radius than a circular corner of the same visual weight —
+  // pair it with a value two steps up the scale (see the control-radius mixin).
+  // Browsers without `corner-shape` drop the declaration and fall back to a
+  // circular corner at the pair's lower value.
   --corner-shape-squircle: superellipse(2.5);
 }

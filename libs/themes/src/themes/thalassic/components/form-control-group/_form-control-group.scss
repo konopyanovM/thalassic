@@ -1,8 +1,20 @@
+@use '../../mixins' as mixins;
+
 .tls-form-control-group {
   --tls-form-control-group-border-width: 1px;
   --tls-form-control-group-border-style: solid;
   --tls-form-control-group-border-color: var(--color-outline-variant);
-  --tls-form-control-group-border-radius: var(--radius-md);
+  // The radius pair comes from the control-radius scale (emitted by the size
+  // modifiers), so the field carries the same radius as a button of its size;
+  // routed through this token so the inner radius derived below stays one
+  // border-width shallower in either case.
+  --tls-form-control-group-border-radius: var(--tls-form-control-group-radius-round);
+
+  @include mixins.squircle {
+    --tls-form-control-group-border-radius: var(--tls-form-control-group-radius-squircle);
+
+    corner-shape: var(--corner-shape-squircle);
+  }
 
   // Own tokens rather than the border's, so the rule between two regions stays put
   // while the surrounding border moves through its states.
@@ -150,9 +162,13 @@
     // corners are curved, by the rules below.
     border-radius: 0;
 
-    // A squircle drawn inside a circular corner reads as a mismatch, so a segment
-    // sitting against the border adopts the border's own curve.
+    // A segment sitting against the border adopts the border's own curve — a
+    // corner drawn inside it with a different shape reads as a mismatch.
     corner-shape: round;
+
+    @include mixins.squircle {
+      corner-shape: var(--corner-shape-squircle);
+    }
   }
 
   > .tls-form-control-addon:has(.tls-button):first-child .tls-button {

@@ -1,25 +1,22 @@
 @use 'sass:map';
+@use '../../mixins/control-radius' as control-radius;
 
 // The button's size scale, as a variable block rather than a rule. A button's own
 // size modifier emits it, and so does any container that takes over the sizing of a
 // button nested inside it — one scale, declared once, so the two can never drift.
+// The radius pair comes from the control-radius scale shared with the form
+// controls, so a button and a field of one size always carry one radius.
 $-scales: (
   'sm': (
     'padding': '3',
-    'radius-round': 'md',
-    'radius-squircle': 'lg',
     'font': 'small',
   ),
   'md': (
     'padding': '4',
-    'radius-round': 'lg',
-    'radius-squircle': 'xl',
     'font': 'medium',
   ),
   'lg': (
     'padding': '5',
-    'radius-round': 'xl',
-    'radius-squircle': '2xl',
     'font': 'large',
   ),
 );
@@ -30,8 +27,7 @@ $-scales: (
   --tls-button-height: var(--control-height-#{$size});
   --tls-button-padding-inline: var(--spacing-#{map.get($scale, 'padding')});
 
-  --tls-button-radius-round: var(--radius-#{map.get($scale, 'radius-round')});
-  --tls-button-radius-squircle: var(--radius-#{map.get($scale, 'radius-squircle')});
+  @include control-radius.radius-vars($size, 'tls-button');
 
   --tls-button-font-size: var(--font-label-#{map.get($scale, 'font')}-size);
   --tls-button-font-weight: var(--font-label-#{map.get($scale, 'font')}-weight);

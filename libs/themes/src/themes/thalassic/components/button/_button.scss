@@ -24,7 +24,6 @@
 
   border: var(--tls-button-border-width) solid transparent;
   border-radius: var(--tls-button-border-radius);
-  corner-shape: var(--corner-shape-squircle);
 
   background-color: var(--color-surface);
 
@@ -38,8 +37,10 @@
   box-shadow var(--motion-fast) var(--motion-ease-in-out),
   color var(--motion-fast) var(--motion-ease-in-out);
 
-  @supports (corner-shape: squircle) {
+  @include mixins.squircle {
     --tls-button-border-radius: var(--tls-button-radius-squircle);
+
+    corner-shape: var(--corner-shape-squircle);
   }
 
   &:focus-visible {

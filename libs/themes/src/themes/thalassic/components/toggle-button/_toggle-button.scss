@@ -2,7 +2,9 @@
 
 .tls-toggle-button {
   --tls-toggle-button-border-width: 1px;
-  --tls-toggle-button-border-radius: var(--radius-sm);
+  // The radius pair comes from the control-radius scale (emitted by the size
+  // modifiers), so the control carries the same radius as a button of its size.
+  --tls-toggle-button-border-radius: var(--tls-toggle-button-radius-round);
 
   position: relative;
 
@@ -21,6 +23,12 @@
 
   cursor: pointer;
   user-select: none;
+
+  @include mixins.squircle {
+    --tls-toggle-button-border-radius: var(--tls-toggle-button-radius-squircle);
+
+    corner-shape: var(--corner-shape-squircle);
+  }
 
   @include mixins.motion(essential) {
     transition:

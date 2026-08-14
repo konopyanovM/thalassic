@@ -1,0 +1,17 @@
+// Gates a block's squircle corner treatment on the app having opted in and the
+// browser being able to draw it: the corners provider reflects the app's choice
+// onto the document root as `data-corners`, and plain circular rounding is the
+// default while no opt-in is present. The block passes the declarations that
+// only hold under the continuous curve — its `corner-shape` and the larger
+// radius the curve needs (a squircle hugs the corner, so it takes a notably
+// larger radius than a circular corner of the same visual weight).
+//
+// The gate is wrapped in `:where()` so it adds no specificity — a block's own
+// modifiers (a pill's `corner-shape: round`) still win by ordinary cascade.
+@mixin squircle {
+  @supports (corner-shape: squircle) {
+    :where(:root[data-corners='squircle']) & {
+      @content;
+    }
+  }
+}

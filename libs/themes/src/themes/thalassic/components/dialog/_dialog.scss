@@ -55,6 +55,12 @@
   pointer-events: auto;
 
   border-radius: var(--tls-dialog-border-radius);
+
+  @include mixins.squircle {
+    --tls-dialog-border-radius: var(--radius-3xl);
+
+    corner-shape: var(--corner-shape-squircle);
+  }
   background-color: var(--tls-dialog-background);
   color: var(--tls-dialog-color);
   box-shadow: var(--tls-dialog-shadow);

@@ -1,6 +1,9 @@
+@use '../../mixins/control-radius' as control-radius;
+
 .tls-toggle-group {
   &--sm {
     --tls-toggle-group-option-height: var(--control-height-sm);
+    @include control-radius.radius-vars('sm', 'tls-toggle-group');
     --tls-toggle-group-option-padding-inline: var(--spacing-3);
 
     font-size: var(--font-label-small-size);
@@ -11,6 +14,7 @@
 
   &--md {
     --tls-toggle-group-option-height: var(--control-height-md);
+    @include control-radius.radius-vars('md', 'tls-toggle-group');
     --tls-toggle-group-option-padding-inline: var(--spacing-4);
 
     font-size: var(--font-label-medium-size);
@@ -21,6 +25,7 @@
 
   &--lg {
     --tls-toggle-group-option-height: var(--control-height-lg);
+    @include control-radius.radius-vars('lg', 'tls-toggle-group');
     --tls-toggle-group-option-padding-inline: var(--spacing-5);
 
     font-size: var(--font-label-large-size);

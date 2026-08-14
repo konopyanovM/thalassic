@@ -40,6 +40,12 @@
 
   overflow: hidden;
 
+  @include mixins.squircle {
+    --tls-menu-border-radius: var(--radius-xl);
+
+    corner-shape: var(--corner-shape-squircle);
+  }
+
   @include mixins.panel-open;
 
   &__item {

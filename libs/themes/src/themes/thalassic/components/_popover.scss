@@ -21,5 +21,13 @@
 
   box-shadow: var(--tls-popover-box-shadow);
 
+  // The continuous curve needs a larger radius than the circular fallback to
+  // read with the same visual weight — two steps up, per the control-radius rule.
+  @include mixins.squircle {
+    --tls-popover-border-radius: var(--radius-2xl);
+
+    corner-shape: var(--corner-shape-squircle);
+  }
+
   @include mixins.panel-open;
 }

@@ -17,6 +17,12 @@
   background-color: var(--tls-select-panel-background);
   border: var(--tls-select-panel-border);
   border-radius: var(--tls-select-panel-border-radius);
+
+  @include mixins.squircle {
+    --tls-select-panel-border-radius: var(--radius-xl);
+
+    corner-shape: var(--corner-shape-squircle);
+  }
   box-shadow: var(--tls-select-panel-shadow);
 
   overflow-y: auto;

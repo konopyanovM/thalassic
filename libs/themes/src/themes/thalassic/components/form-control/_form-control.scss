@@ -1,3 +1,5 @@
+@use '../../mixins' as mixins;
+
 .tls-form-control {
   --tls-form-control-border-width: 1px;
   --tls-form-control-border-style: solid;
@@ -6,9 +8,17 @@
   color: var(--color-on-surface);
   background-color: var(--color-surface-container-lowest);
 
-  border-radius: var(--radius-md);
+  // The radius pair comes from the control-radius scale (emitted by the size
+  // modifiers), so a field carries the same radius as a button of its size.
+  border-radius: var(--tls-form-control-radius-round);
   border: var(--tls-form-control-border-width) var(--tls-form-control-border-style)
     var(--tls-form-control-border-color);
+
+  @include mixins.squircle {
+    border-radius: var(--tls-form-control-radius-squircle);
+
+    corner-shape: var(--corner-shape-squircle);
+  }
 
   transition:
     border-color var(--motion-fast) var(--motion-ease-in-out),

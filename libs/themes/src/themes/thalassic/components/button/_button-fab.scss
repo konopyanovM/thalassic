@@ -2,27 +2,27 @@
 
 // A FAB is a freestanding floating surface, not an inline row control, so its size
 // scale replaces the shared control heights with the FAB's own larger geometry.
-// Radii pair a circular value with a squircle one step up the scale, matching the
-// weight rule the base button follows.
+// Radii pair a circular value with a squircle two steps up the scale, matching
+// the weight rule of the shared control-radius scale.
 $-scales: (
   'sm': (
     'height': 40px,
     'padding': '4',
-    'radius-round': 'lg',
+    'radius-round': 'md',
     'radius-squircle': 'xl',
     'glyph': 18px,
   ),
   'md': (
     'height': 56px,
     'padding': '5',
-    'radius-round': 'xl',
+    'radius-round': 'lg',
     'radius-squircle': '2xl',
     'glyph': 24px,
   ),
   'lg': (
     'height': 64px,
     'padding': '6',
-    'radius-round': '2xl',
+    'radius-round': 'xl',
     'radius-squircle': '3xl',
     'glyph': 28px,
   ),

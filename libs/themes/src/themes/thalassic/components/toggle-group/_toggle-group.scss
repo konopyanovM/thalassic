@@ -3,7 +3,9 @@
 .tls-toggle-group {
   --tls-toggle-group-border-width: 1px;
   --tls-toggle-group-border-color: var(--color-outline-variant);
-  --tls-toggle-group-border-radius: var(--radius-sm);
+  // The radius pair comes from the control-radius scale (emitted by the size
+  // modifiers), so the group carries the same radius as a button of its size.
+  --tls-toggle-group-border-radius: var(--tls-toggle-group-radius-round);
 
   display: inline-flex;
   flex-direction: row;
@@ -14,6 +16,12 @@
   background-color: var(--color-surface-container-lowest);
 
   overflow: hidden;
+
+  @include mixins.squircle {
+    --tls-toggle-group-border-radius: var(--tls-toggle-group-radius-squircle);
+
+    corner-shape: var(--corner-shape-squircle);
+  }
 
   &--vertical {
     flex-direction: column;

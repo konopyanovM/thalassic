@@ -103,6 +103,12 @@
 
     border-radius: var(--radius-md);
 
+    @include mixins.squircle {
+      border-radius: var(--radius-xl);
+
+      corner-shape: var(--corner-shape-squircle);
+    }
+
     background-color: var(--tls-toast-background-color);
     box-shadow: var(--shadow-md);
     opacity: var(--tls-toast-depth-opacity, 1);

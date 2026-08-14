@@ -37,6 +37,12 @@
   --tls-drawer-background: var(--color-surface-container-lowest);
   --tls-drawer-color: var(--color-on-surface);
   --tls-drawer-border-radius: var(--radius-xl);
+
+  @include mixins.squircle {
+    --tls-drawer-border-radius: var(--radius-3xl);
+
+    corner-shape: var(--corner-shape-squircle);
+  }
   --tls-drawer-shadow: var(--shadow-lg);
   --tls-drawer-padding: var(--spacing-6);
   --tls-drawer-close-size: 32px;

@@ -1,0 +1,33 @@
+@use 'sass:map';
+
+// The corner radius of a control's size step, shared by every button-shaped or
+// field-shaped control (tls-button, tls-form-control, tls-form-control-group)
+// so controls of one size always carry one radius, whatever their kind. Each
+// step pairs a circular radius with a squircle two steps up the scale: the
+// continuous curve hugs the corner and keeps the edges flat, while a circle of
+// the same radius starts curving much earlier along the edge — so equal visual
+// weight puts the circular fallback well below the squircle's value.
+$-scales: (
+  'sm': (
+    'round': 'sm',
+    'squircle': 'lg',
+  ),
+  'md': (
+    'round': 'md',
+    'squircle': 'xl',
+  ),
+  'lg': (
+    'round': 'lg',
+    'squircle': '2xl',
+  ),
+);
+
+// Emits the step's radius pair as `--<prefix>-radius-round` /
+// `--<prefix>-radius-squircle`, for the block's base rule to pick between
+// depending on `corner-shape` support.
+@mixin radius-vars($size, $prefix) {
+  $scale: map.get($-scales, $size);
+
+  --#{$prefix}-radius-round: var(--radius-#{map.get($scale, 'round')});
+  --#{$prefix}-radius-squircle: var(--radius-#{map.get($scale, 'squircle')});
+}
