@@ -28,4 +28,7 @@ export type systemIcon =
   | 'ordered-list'
   | 'blockquote'
   | 'link'
-  | 'code-block';
+  | 'code-block'
+  | 'zoom-in'
+  | 'zoom-out'
+  | 'zoom-reset';

@@ -36,6 +36,7 @@ export * from './form/toggle-group';
 export * from './highlight';
 export * from './icon';
 export * from './image-compare';
+export * from './image-preview';
 export * from './infinite-scroll';
 export * from './kbd';
 export * from './loader';

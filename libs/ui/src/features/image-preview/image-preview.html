@@ -1,0 +1,107 @@
+<div
+  #stage
+  class="tls-image-preview__stage"
+  [tlsSwipe]="swipeEnabled()"
+  (swipe)="onSwipe($event)"
+  (dblclick)="onDoubleClick($event)"
+  (wheel)="onWheel($event)"
+  (pointerdown)="onPointerDown($event)"
+  (pointermove)="onPointerMove($event)"
+  (pointerup)="onPointerUp($event)"
+  (pointercancel)="onPointerCancel($event)"
+>
+  @if (status() === 'loading') {
+    <tls-loader class="tls-image-preview__loader" size="lg" />
+  }
+
+  @if (status() === 'error') {
+    <p class="tls-image-preview__error" role="alert">{{ config.labels.error }}</p>
+  }
+
+  <img
+    #image
+    class="tls-image-preview__image"
+    [class.tls-image-preview__image--hidden]="status() !== 'loaded'"
+    [src]="current().src"
+    [alt]="current().alt ?? ''"
+    [attr.aria-describedby]="captionId()"
+    [style.transform]="transform()"
+    draggable="false"
+    (load)="onImageLoad()"
+    (error)="onImageError()"
+  />
+</div>
+
+<div class="tls-image-preview__toolbar">
+  @if (config.showCounter && multiple()) {
+    <span class="tls-image-preview__counter">{{ counterText() }}</span>
+  }
+
+  <div class="tls-image-preview__actions">
+    @if (config.zoomable) {
+      <tls-button
+        icon
+        variant="text"
+        [ariaLabel]="config.labels.zoomOut"
+        [disabled]="!canZoomOut()"
+        (click)="zoomOut()"
+      >
+        <tls-icon name="zoom-out" aria-hidden="true" />
+      </tls-button>
+
+      <tls-button
+        icon
+        variant="text"
+        [ariaLabel]="config.labels.resetZoom"
+        [disabled]="!zoomed()"
+        (click)="resetZoom()"
+      >
+        <tls-icon name="zoom-reset" aria-hidden="true" />
+      </tls-button>
+
+      <tls-button
+        icon
+        variant="text"
+        [ariaLabel]="config.labels.zoomIn"
+        [disabled]="!canZoomIn()"
+        (click)="zoomIn()"
+      >
+        <tls-icon name="zoom-in" aria-hidden="true" />
+      </tls-button>
+    }
+
+    @if (config.closeable) {
+      <tls-button icon variant="text" [ariaLabel]="config.labels.close" (click)="close()">
+        <tls-icon name="close" aria-hidden="true" />
+      </tls-button>
+    }
+  </div>
+</div>
+
+@if (multiple()) {
+  <tls-button
+    class="tls-image-preview__navigation tls-image-preview__navigation--previous"
+    icon
+    variant="text"
+    [ariaLabel]="config.labels.previous"
+    [disabled]="!canGoPrevious()"
+    (click)="previous()"
+  >
+    <tls-icon [name]="previousIcon()" aria-hidden="true" />
+  </tls-button>
+
+  <tls-button
+    class="tls-image-preview__navigation tls-image-preview__navigation--next"
+    icon
+    variant="text"
+    [ariaLabel]="config.labels.next"
+    [disabled]="!canGoNext()"
+    (click)="next()"
+  >
+    <tls-icon [name]="nextIcon()" aria-hidden="true" />
+  </tls-button>
+}
+
+@if (current().caption; as caption) {
+  <p class="tls-image-preview__caption" [attr.id]="captionId()">{{ caption }}</p>
+}

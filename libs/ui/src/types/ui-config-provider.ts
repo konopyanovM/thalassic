@@ -21,6 +21,8 @@ import {
   HighlightConfig,
   IconConfig,
   ImageCompareConfig,
+  ImagePreviewConfig,
+  ImagePreviewLabels,
   InfiniteScrollConfig,
   InfiniteScrollLabels,
   InputConfig,
@@ -95,6 +97,9 @@ export interface tlsUiConfigProvider {
     highlight?: Partial<HighlightConfig>;
     icon?: Partial<IconConfig>;
     imageCompare?: Partial<ImageCompareConfig>;
+    imagePreview?: Partial<Omit<ImagePreviewConfig, 'labels'>> & {
+      labels?: Partial<ImagePreviewLabels>;
+    };
     infiniteScroll?: Partial<Omit<InfiniteScrollConfig, 'labels'>> & {
       labels?: Partial<InfiniteScrollLabels>;
     };

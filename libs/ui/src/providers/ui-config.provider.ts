@@ -48,6 +48,7 @@ import {
   DEFAULT_HIGHLIGHT_CONFIG,
   DEFAULT_ICON_CONFIG,
   DEFAULT_IMAGE_COMPARE_CONFIG,
+  DEFAULT_IMAGE_PREVIEW_CONFIG,
   DEFAULT_INFINITE_SCROLL_CONFIG,
   DEFAULT_INPUT_CONFIG,
   DEFAULT_LOADER_CONFIG,
@@ -85,6 +86,8 @@ import {
   HIGHLIGHT_CONFIG,
   ICON_CONFIG,
   IMAGE_COMPARE_CONFIG,
+  IMAGE_PREVIEW_CONFIG,
+  ImagePreviewConfig,
   INFINITE_SCROLL_CONFIG,
   InfiniteScrollConfig,
   INPUT_CONFIG,
@@ -235,6 +238,15 @@ export const provideThalassicUIConfig = (
     {
       provide: IMAGE_COMPARE_CONFIG,
       useValue: deepMerge(DEFAULT_IMAGE_COMPARE_CONFIG, components.imageCompare),
+    },
+    {
+      provide: IMAGE_PREVIEW_CONFIG,
+      // `labels` is a deep-partial override; deepMerge merges it recursively, but its
+      // `Partial<T>` signature only models a shallow partial, so cast to it.
+      useValue: deepMerge(
+        DEFAULT_IMAGE_PREVIEW_CONFIG,
+        components.imagePreview as Partial<ImagePreviewConfig>,
+      ),
     },
     {
       provide: INFINITE_SCROLL_CONFIG,

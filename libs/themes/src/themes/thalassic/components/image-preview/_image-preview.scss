@@ -1,0 +1,251 @@
+@use '../../mixins' as mixins;
+
+@keyframes tls-image-preview-open {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes tls-image-preview-close {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+
+// Any element that opens the viewer. It carries no appearance of its own — the
+// thumbnail keeps whatever styling it has — beyond the affordance that it enlarges
+// and a focus ring, which a non-interactive host such as an `<img>` has none of.
+.tls-image-preview-trigger {
+  cursor: zoom-in;
+
+  &:focus-visible {
+    @include mixins.focus-ring;
+  }
+}
+
+// The viewer fills the viewport, so its pane opts out of the centred, content-sized
+// box the overlay gives a dialog.
+.tls-image-preview-pane {
+  width: 100vw;
+  // `dvh` tracks mobile browser chrome as it collapses, which is what a surface
+  // pinned to the visible area wants.
+  height: 100dvh;
+
+  max-width: none;
+  max-height: none;
+
+  // The CDK dialog container wraps the viewer and carries no class of ours, so its
+  // own class is what makes it pass the pane's size through to the viewer.
+  > .cdk-dialog-container {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+  }
+}
+
+.tls-image-preview {
+  // The viewer is a dark room in both themes: a photo reads against a neutral dark
+  // scrim, and its controls are drawn on top of that scrim rather than the surface.
+  --tls-image-preview-scrim: rgb(0 0 0 / 0.9);
+  --tls-image-preview-control-color: #ffffff;
+  --tls-image-preview-control-disabled: rgb(255 255 255 / 0.38);
+  --tls-image-preview-control-inset: var(--spacing-3);
+  --tls-image-preview-glyph-size: 20px;
+  // Gradient behind the toolbar and caption, so light photo edges cannot swallow them.
+  --tls-image-preview-fade: rgb(0 0 0 / 0.5);
+
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  background-color: var(--tls-image-preview-scrim);
+
+  color: var(--tls-image-preview-control-color);
+
+  @include mixins.motion(essential) {
+    // Enter and leave use distinct keyframe names, not one shared keyframe with
+    // `reverse`: the surface keeps its `--enter` class for its whole lifetime, so
+    // swapping to `--leave` must change `animation-name` to force the browser to
+    // start a fresh animation.
+    &--enter {
+      animation: tls-image-preview-open var(--motion-instant) var(--motion-ease-out) both;
+    }
+
+    &--leave {
+      animation: tls-image-preview-close var(--motion-instant) var(--motion-ease-in) both;
+    }
+  }
+
+  &--zoomed {
+    .tls-image-preview__image {
+      cursor: grab;
+    }
+  }
+
+  &--panning {
+    .tls-image-preview__image {
+      cursor: grabbing;
+    }
+  }
+
+  &__stage {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    // A pointer-down anywhere over the stage pans or pinches the image, so native
+    // pan/zoom gestures are suppressed across it — otherwise a touch drag scrolls
+    // the page and cancels the pointer.
+    touch-action: none;
+  }
+
+  &__image {
+    // The box hugs the photo rather than the stage — `auto` overrides the global
+    // `img` sizing — so the scrim around it stays the stage's, where a click
+    // dismisses, and the pan bounds measure the photo itself.
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+
+    user-select: none;
+    -webkit-user-drag: none;
+
+    // Zoom and pan are driven by a transform written on every pointer move, so the
+    // image is promoted to its own layer once and composited from there.
+    will-change: transform;
+
+    &--hidden {
+      visibility: hidden;
+    }
+  }
+
+  &__loader {
+    --tls-loader-color: var(--tls-image-preview-control-color);
+
+    position: absolute;
+  }
+
+  &__error {
+    position: absolute;
+
+    margin: 0;
+    padding-inline: var(--spacing-4);
+
+    text-align: center;
+  }
+
+  &__toolbar {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: 0;
+    z-index: 1;
+
+    padding: var(--tls-image-preview-control-inset);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-4);
+
+    background: linear-gradient(to bottom, var(--tls-image-preview-fade), transparent);
+
+    // Only the controls inside the toolbar are interactive; the strip itself
+    // passes clicks through to the stage, which dismisses the viewer.
+    pointer-events: none;
+  }
+
+  &__counter {
+    font-size: var(--font-label-medium-size);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__actions {
+    // The counter sits at the layout start even when it is absent, so the actions
+    // are pushed to the end rather than relying on it as a spacer.
+    margin-inline-start: auto;
+
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-1);
+
+    pointer-events: auto;
+  }
+
+  &__navigation {
+    position: absolute;
+    inset-block-start: 50%;
+    z-index: 1;
+
+    transform: translateY(-50%);
+
+    &--previous {
+      inset-inline-start: var(--tls-image-preview-control-inset);
+    }
+
+    &--next {
+      inset-inline-end: var(--tls-image-preview-control-inset);
+    }
+  }
+
+  &__caption {
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline: 0;
+    z-index: 1;
+
+    margin: 0;
+    padding: var(--spacing-6) var(--spacing-4) var(--spacing-4);
+
+    background: linear-gradient(to top, var(--tls-image-preview-fade), transparent);
+
+    font-size: var(--font-body-medium-size);
+    text-align: center;
+
+    // The caption describes the image rather than acting on it, so it never
+    // intercepts a dismissing click.
+    pointer-events: none;
+  }
+
+  // Controls are drawn on the scrim, not on a themed surface, so they must not
+  // inherit whatever default color an app configures for buttons. The text variant
+  // derives its rest, hover and active treatment from the one color property, so
+  // overriding it recolors all three; the disabled pair is overridden alongside it
+  // because its default container is a light surface tone that the scrim swallows.
+  //
+  // They are set on the inner control rather than the host because that is where
+  // `.tls-button--<color>` lands; matching that selector's specificity is enough
+  // only because `image-preview` is forwarded after `button` in
+  // `components/index.scss` — keep that order.
+  .tls-button {
+    --tls-button-color: var(--tls-image-preview-control-color);
+    --tls-button-disabled-color: transparent;
+    --tls-button-disabled-on-color: var(--tls-image-preview-control-disabled);
+  }
+
+  .tls-icon {
+    width: var(--tls-image-preview-glyph-size);
+    height: var(--tls-image-preview-glyph-size);
+  }
+}

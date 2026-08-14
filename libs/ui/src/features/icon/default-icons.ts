@@ -62,6 +62,20 @@ export const DEFAULT_ICONS: Record<systemIcon, string> = {
   'code-block': svg(
     '<rect x="3" y="4" width="18" height="16" rx="2" /><polyline points="10 9 8 12 10 15" /><polyline points="14 9 16 12 14 15" />',
   ),
+  // The magnifier of all three zoom glyphs is identical, so only the mark inside
+  // the lens distinguishes them.
+  'zoom-in': svg(
+    '<circle cx="11" cy="11" r="7" /><line x1="20" y1="20" x2="16.65" y2="16.65" />' +
+      '<line x1="11" y1="8" x2="11" y2="14" /><line x1="8" y1="11" x2="14" y2="11" />',
+  ),
+  'zoom-out': svg(
+    '<circle cx="11" cy="11" r="7" /><line x1="20" y1="20" x2="16.65" y2="16.65" />' +
+      '<line x1="8" y1="11" x2="14" y2="11" />',
+  ),
+  'zoom-reset': svg(
+    '<circle cx="11" cy="11" r="7" /><line x1="20" y1="20" x2="16.65" y2="16.65" />' +
+      '<path d="M8.5 11.5a2.5 2.5 0 1 1 .8 1.8" /><polyline points="8.4 9.2 8.4 11.6 10.8 11.6" />',
+  ),
 };
 
 function svg(body: string): string {
