@@ -12,16 +12,18 @@ import { TooltipTrigger } from './tooltip-trigger';
 import { tooltipSource } from './tooltip.types';
 
 /**
- * Attaches a tooltip to the host element. Shows on hover and on focus landing anywhere inside
+ * Attaches a tooltip to the host element. Shows on hover and on keyboard focus landing anywhere inside
  * the host — a host that only wraps its real control is served as well as one that is the
- * control — toggles on touch, and dismisses on Escape without moving the pointer or focus
+ * control — and dismisses on Escape without moving the pointer or focus
  * (WCAG 1.4.13). While visible the tooltip is linked with `aria-describedby` to the element it
  * describes: the host, or the control inside it that holds focus, since a description is only
  * announced on the element that has it. The link joins any description that element already
  * carries rather than replacing it, and leaves that one behind when the tooltip hides.
  *
  * Interaction is driven by pointer events, branching on `pointerType`: mouse
- * and pen get hover semantics, touch gets tap-to-toggle. A single stream avoids
+ * and pen get hover semantics. Touch gets tap-to-toggle on a non-interactive
+ * host only — on an interactive one the tap already carries the control's own
+ * action, so the tooltip stays out of its way entirely. A single stream avoids
  * the synthesized mouse events browsers replay after a tap.
  *
  * Content is live: a tooltip already on screen follows the input it was opened with.
@@ -58,9 +60,15 @@ export class TooltipDirective extends TooltipTrigger {
 
   // Protected methods
   protected onPointerEnter(event: PointerEvent): void {
-    // A touch "enter" is a tap, not a hover — toggle instead. The default is
-    // not prevented, so the tap still activates an interactive host.
+    // A touch "enter" is a tap, not a hover. On an interactive host the tap
+    // already carries the control's own action, so the tooltip claims nothing —
+    // it would ride along on every activation and linger after it. Elsewhere
+    // (truncated text, an info marker) the tap has no other meaning, and
+    // toggles the tooltip in hover's stead.
     if (event.pointerType === 'touch') {
+      this._noteTouch();
+      if (this._isInteractive(this._element)) return;
+
       if (this._isTapped(this._element)) {
         this._hide('touch');
       } else {
@@ -93,6 +101,12 @@ export class TooltipDirective extends TooltipTrigger {
     // whose <button> is inside the template — would never hear about the focus its own tooltip
     // is for. `focusin` does, and the control that took focus is what the tooltip describes.
     const focused = event.target;
+
+    // The focus trigger serves readers who reach the control without a pointer;
+    // focus handed over by a touch tap is not that reader, and would resurface
+    // the tooltip the tap was told not to claim.
+    if (this._followsTouch()) return;
+
     // No cursor to anchor to; a focus-triggered tooltip always anchors to the element.
     this._showHost('focus', null, focused instanceof HTMLElement ? focused : null);
   }

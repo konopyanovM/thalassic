@@ -64,9 +64,13 @@ export class TooltipDelegateDirective extends TooltipTrigger {
     const item = this._resolveItem(event.target);
     if (!item) return;
 
-    // A touch "over" is a tap, not a hover — toggle instead. The default is not prevented,
-    // so the tap still activates an interactive item.
+    // A touch "over" is a tap, not a hover. On an interactive item the tap
+    // already carries the item's own action, so the tooltip claims nothing;
+    // elsewhere it toggles in hover's stead.
     if (event.pointerType === 'touch') {
+      this._noteTouch();
+      if (this._isInteractive(item)) return;
+
       if (this._isTapped(item)) {
         this._hide('touch');
       } else {
@@ -101,6 +105,11 @@ export class TooltipDelegateDirective extends TooltipTrigger {
   protected onFocusIn(event: FocusEvent): void {
     const item = this._resolveItem(event.target);
     if (!item) return;
+
+    // The focus trigger serves readers who reach the item without a pointer;
+    // focus handed over by a touch tap is not that reader, and would resurface
+    // the tooltip the tap was told not to claim.
+    if (this._followsTouch()) return;
 
     // No cursor to anchor to; a focus-triggered tooltip always anchors to the item. An item that
     // is a composite holds the control focus actually landed on, and that is what it describes.

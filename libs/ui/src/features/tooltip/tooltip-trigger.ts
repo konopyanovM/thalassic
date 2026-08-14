@@ -1,3 +1,4 @@
+import { TOUCH_HANDOVER_WINDOW_MS } from './tooltip.constants';
 import { ConnectedPosition, FlexibleConnectedPositionStrategyOrigin } from '@angular/cdk/overlay';
 import {
   computed,
@@ -146,6 +147,28 @@ export abstract class TooltipTrigger implements TooltipOwner, OnDestroy {
 
     this._requests.clear();
     this._present();
+  }
+
+  // Timestamp of the latest touch interaction, for telling a tap-granted focus
+  // apart from a keyboard-granted one.
+  private _lastTouchAt = 0;
+
+  /** Records that a touch interaction just happened; `_followsTouch` reads it. */
+  protected _noteTouch(): void {
+    this._lastTouchAt = Date.now();
+  }
+
+  /** Whether a focus arriving now was handed over by a touch tap rather than a keyboard. */
+  protected _followsTouch(): boolean {
+    return Date.now() - this._lastTouchAt < TOUCH_HANDOVER_WINDOW_MS;
+  }
+
+  /** Whether the element is, or wraps, a control a tap activates. */
+  protected _isInteractive(element: HTMLElement): boolean {
+    const interactiveSelector =
+      'button, a[href], input, select, textarea, [role="button"]';
+    if (element.matches(interactiveSelector)) return true;
+    return element.querySelector(interactiveSelector) !== null;
   }
 
   /** Whether a tap is what is currently holding the tooltip on `anchor`, which another tap ends. */

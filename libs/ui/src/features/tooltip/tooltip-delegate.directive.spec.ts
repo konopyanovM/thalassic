@@ -18,6 +18,7 @@ import { TooltipDelegateDirective } from './tooltip-delegate.directive';
       <button type="button" class="described" aria-describedby="help" data-tooltip="fourth">
         fourth
       </button>
+      <span class="info" data-tooltip="plain">plain</span>
     </div>
   `,
 })
@@ -163,14 +164,23 @@ describe('TooltipDelegateDirective', () => {
   });
 
   it('dismisses a tapped tooltip on the next tap outside any item', async () => {
-    const item = queryButtons()[0];
+    const item = queryElement('.info');
     item.dispatchEvent(new PointerEvent('pointerover', { bubbles: true, pointerType: 'touch' }));
     item.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerType: 'touch' }));
     await fixture.whenStable();
 
-    expect(queryTooltip()?.textContent?.trim()).toBe('first');
+    expect(queryTooltip()?.textContent?.trim()).toBe('plain');
 
     document.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerType: 'touch' }));
+    await fixture.whenStable();
+
+    expect(queryTooltip()).toBeNull();
+  });
+
+  it('leaves a tap on an interactive item to the item itself', async () => {
+    const item = queryButtons()[0];
+    item.dispatchEvent(new PointerEvent('pointerover', { bubbles: true, pointerType: 'touch' }));
+    item.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerType: 'touch' }));
     await fixture.whenStable();
 
     expect(queryTooltip()).toBeNull();
