@@ -2,3 +2,5 @@
 @forward 'button-variant';
 @forward 'button-color';
 @forward 'button-size';
+// After the size scale: the FAB's own scale overrides it at equal specificity.
+@forward 'button-fab';

@@ -30,6 +30,19 @@ export abstract class ButtonBase {
     false,
     { transform: booleanAttribute },
   );
+
+  /**
+   * Renders the button as a floating action button: a larger, elevated container for a
+   * screen's single primary action. Composes with the other inputs — `icon` for the square
+   * icon-only shape, a label for the extended form, `color`/`variant` for the treatment.
+   * Placement (typically floating above other content) is the consumer's concern; the
+   * input only changes the control's own geometry and elevation.
+   */
+  public readonly fab: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    false,
+    { transform: booleanAttribute },
+  );
+
   public readonly color: InputSignal<buttonColor> = input<buttonColor>(this._config.color);
   public readonly variant: InputSignal<buttonVariant> = input<buttonVariant>(this._config.variant);
   public readonly size: InputSignal<controlSize> = input<controlSize>(this._config.size);
@@ -54,6 +67,7 @@ export abstract class ButtonBase {
     array.push(`${className}--${this.size()}`);
     if (this.disabled()) array.push(`${className}--disabled`);
     if (this.icon()) array.push(`${className}--icon-only`);
+    if (this.fab()) array.push(`${className}--fab`);
     if (this.fluid()) array.push(`${className}--fluid`);
     if (this.rounded()) array.push(`${className}--rounded`);
 

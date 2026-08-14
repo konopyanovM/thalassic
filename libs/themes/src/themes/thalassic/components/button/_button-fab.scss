@@ -1,0 +1,57 @@
+@use 'sass:map';
+
+// A FAB is a freestanding floating surface, not an inline row control, so its size
+// scale replaces the shared control heights with the FAB's own larger geometry.
+// Radii pair a circular value with a squircle one step up the scale, matching the
+// weight rule the base button follows.
+$-scales: (
+  'sm': (
+    'height': 40px,
+    'padding': '4',
+    'radius-round': 'lg',
+    'radius-squircle': 'xl',
+    'glyph': 18px,
+  ),
+  'md': (
+    'height': 56px,
+    'padding': '5',
+    'radius-round': 'xl',
+    'radius-squircle': '2xl',
+    'glyph': 24px,
+  ),
+  'lg': (
+    'height': 64px,
+    'padding': '6',
+    'radius-round': '2xl',
+    'radius-squircle': '3xl',
+    'glyph': 28px,
+  ),
+);
+
+.tls-button--fab {
+  // Floats above the content it acts on, so it carries elevation at rest and
+  // rises further when interacted with — regardless of the variant treatment.
+  box-shadow: var(--shadow-md);
+
+  &:not(.tls-button--disabled):hover,
+  &:not(.tls-button--disabled):focus-visible {
+    box-shadow: var(--shadow-lg);
+  }
+
+  @each $size, $scale in $-scales {
+    &.tls-button--#{$size} {
+      --tls-button-height: #{map.get($scale, 'height')};
+      --tls-button-padding-inline: var(--spacing-#{map.get($scale, 'padding')});
+
+      --tls-button-radius-round: var(--radius-#{map.get($scale, 'radius-round')});
+      --tls-button-radius-squircle: var(--radius-#{map.get($scale, 'radius-squircle')});
+    }
+
+    // The icon-only shape holds a glyph, not label text, so its font size — which
+    // an icon inherits — comes from the FAB's glyph scale rather than the label
+    // variant. The extended (labelled) form keeps its size's label typography.
+    &.tls-button--#{$size}.tls-button--icon-only {
+      --tls-button-font-size: #{map.get($scale, 'glyph')};
+    }
+  }
+}
