@@ -1,0 +1,35 @@
+@use '@thalassic/core/styles' as core;
+
+// Depresses a control for the duration of a press. On touch the fingertip covers
+// the control, so this scale is the only acknowledgement that the press landed —
+// it communicates state rather than decorating it, and so belongs to the
+// `essential` tier and survives reduced motion. The depth stays well under the
+// threshold where a scale reads as travel.
+//
+// Written to the standalone `scale` property rather than `transform`, so a control
+// already carrying a transform — a hover offset, a running `pop` — composes with
+// the press instead of one overwriting the other.
+//
+// The press is deliberately shallow: scaling an interactive element shrinks its own
+// hit area, so a press landing near an edge can slip outside the box and cancel the
+// click. A deeper scale needs to move onto a non-interactive inner layer to stay safe.
+//
+// A state that must not depress — a disabled control, a control mid-drag — sets
+// `--tls-press-scale` to 1 rather than having to unset the rule. The depth is read
+// through that property with `$scale` as the fallback, and is never declared here:
+// the motion tier wraps these rules in `:root[data-motion='…'] &`, so a declaration
+// would outweigh the plain modifier selector an override is written on.
+@mixin press($scale: 0.97) {
+  @include core.motion(essential) {
+    // Release is slower than the press: the depress tracks the finger, the return
+    // is a settle.
+    transition: scale var(--motion-fast) var(--motion-ease-in-out);
+
+    &:active {
+      scale: var(--tls-press-scale, #{$scale});
+
+      transition-duration: var(--motion-instant);
+      transition-timing-function: var(--motion-ease-out);
+    }
+  }
+}

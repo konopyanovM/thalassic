@@ -6,6 +6,8 @@
 
     cursor: pointer;
 
+    @include mixins.press;
+
     @include mixins.touch-target(var(--tls-chip-height));
   }
 
@@ -46,6 +48,8 @@
   }
 
   &.tls-chip--disabled {
+    --tls-press-scale: 1;
+
     cursor: not-allowed;
     opacity: 0.5;
   }

@@ -43,8 +43,17 @@
     corner-shape: var(--corner-shape-squircle);
   }
 
+  @include mixins.press;
+
   &:focus-visible {
     @include mixins.focus-ring;
+  }
+
+  // A native `button` never matches `:active` while disabled, but the link form is
+  // an anchor carrying `aria-disabled` — which does. Suppressing the scale keeps
+  // both forms from depressing under a press they do not act on.
+  &--disabled {
+    --tls-press-scale: 1;
   }
 
   // A pill has no corner left to shape — the arc spans the whole edge, which a
