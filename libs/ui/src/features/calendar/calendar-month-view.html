@@ -4,68 +4,75 @@
   }
 </div>
 
-<div
-  ngGrid
-  class="tls-calendar-month-view__grid"
-  rowWrap="nowrap"
-  colWrap="nowrap"
-  [attr.aria-label]="label() ?? null"
-  [style.--tls-calendar-max-lanes]="maxEventsPerDay()"
->
-  @for (week of weeks(); track $index) {
-    <div ngGridRow class="tls-calendar-month-view__week">
-      @for (cell of week.days; track cell.date.getTime()) {
-        <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -- ngGridCell manages role and roving tabindex -->
-        <div
-          ngGridCell
-          class="tls-calendar-month-view__day"
-          [class.tls-calendar-month-view__day--outside]="!cell.inCurrentMonth"
-          [class.tls-calendar-month-view__day--today]="cell.isToday"
-          (click)="dateSelect.emit(cell.date)"
-          (keydown.enter)="dateSelect.emit(cell.date)"
-          (keydown.space)="onDaySpace($event, cell.date)"
-        >
-          @if (dayTemplate(); as template) {
-            <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="cell.context" />
-          } @else {
-            <span class="tls-calendar-month-view__day-number">{{ cell.dayNumber }}</span>
+<!-- The viewport holds the grid's outer border and resting height, clipping the widened
+     grid while a month-navigation scroll slides it through. -->
+<div class="tls-calendar-month-view__viewport">
+  <div
+    ngGrid
+    #grid
+    class="tls-calendar-month-view__grid"
+    rowWrap="nowrap"
+    colWrap="nowrap"
+    [attr.aria-label]="label() ?? null"
+    [style.--tls-calendar-max-lanes]="maxEventsPerDay()"
+  >
+    <!-- Keyed by date so the rows two month windows share keep their DOM identity across a
+         navigation scroll, travelling instead of being rebuilt. -->
+    @for (week of weeks(); track week.days[0].date.getTime()) {
+      <div ngGridRow class="tls-calendar-month-view__week">
+        @for (cell of week.days; track cell.date.getTime()) {
+          <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -- ngGridCell manages role and roving tabindex -->
+          <div
+            ngGridCell
+            class="tls-calendar-month-view__day"
+            [class.tls-calendar-month-view__day--outside]="!cell.inCurrentMonth"
+            [class.tls-calendar-month-view__day--today]="cell.isToday"
+            (click)="dateSelect.emit(cell.date)"
+            (keydown.enter)="dateSelect.emit(cell.date)"
+            (keydown.space)="onDaySpace($event, cell.date)"
+          >
+            @if (dayTemplate(); as template) {
+              <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="cell.context" />
+            } @else {
+              <span class="tls-calendar-month-view__day-number">{{ cell.dayNumber }}</span>
 
-            <!-- Dots stand in for the event bars in the dense layout, which hides those instead. -->
-            @if (cell.eventCount > 0) {
-              <span class="tls-calendar-month-view__markers">
-                <span class="tls-calendar-month-view__markers-label">
-                  {{ eventCountLabel(cell.eventCount) }}
+              <!-- Dots stand in for the event bars in the dense layout, which hides those instead. -->
+              @if (cell.eventCount > 0) {
+                <span class="tls-calendar-month-view__markers">
+                  <span class="tls-calendar-month-view__markers-label">
+                    {{ eventCountLabel(cell.eventCount) }}
+                  </span>
+
+                  @for (marker of cell.markers; track marker.id) {
+                    <span [class]="marker.classes" aria-hidden="true"></span>
+                  }
                 </span>
+              }
 
-                @for (marker of cell.markers; track marker.id) {
-                  <span [class]="marker.classes" aria-hidden="true"></span>
-                }
-              </span>
+              @if (cell.hiddenCount > 0) {
+                <span class="tls-calendar-month-view__more">{{ moreLabel(cell.hiddenCount) }}</span>
+              }
             }
+          </div>
+        }
 
-            @if (cell.hiddenCount > 0) {
-              <span class="tls-calendar-month-view__more">{{ moreLabel(cell.hiddenCount) }}</span>
-            }
+        <!-- Event bars span day columns and stack by lane, overlaid on the cells above. -->
+        <div class="tls-calendar-month-view__bars">
+          @for (bar of week.bars; track bar.event.id) {
+            <tls-calendar-event
+              view="month"
+              class="tls-calendar-month-view__bar"
+              [class.tls-calendar-month-view__bar--continues-before]="bar.continuesBefore"
+              [class.tls-calendar-month-view__bar--continues-after]="bar.continuesAfter"
+              [event]="bar.event"
+              [template]="eventTemplate()"
+              [style.grid-column]="bar.gridColumn"
+              [style.grid-row]="bar.gridRow"
+              (activate)="eventSelect.emit($event)"
+            />
           }
         </div>
-      }
-
-      <!-- Event bars span day columns and stack by lane, overlaid on the cells above. -->
-      <div class="tls-calendar-month-view__bars">
-        @for (bar of week.bars; track bar.event.id) {
-          <tls-calendar-event
-            view="month"
-            class="tls-calendar-month-view__bar"
-            [class.tls-calendar-month-view__bar--continues-before]="bar.continuesBefore"
-            [class.tls-calendar-month-view__bar--continues-after]="bar.continuesAfter"
-            [event]="bar.event"
-            [template]="eventTemplate()"
-            [style.grid-column]="bar.gridColumn"
-            [style.grid-row]="bar.gridRow"
-            (activate)="eventSelect.emit($event)"
-          />
-        }
       </div>
-    </div>
-  }
+    }
+  </div>
 </div>

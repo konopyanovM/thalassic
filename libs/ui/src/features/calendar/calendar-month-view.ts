@@ -1,21 +1,39 @@
 import { NgTemplateOutlet } from '@angular/common';
 import {
+  afterNextRender,
+  ChangeDetectorRef,
   Component,
   computed,
+  effect,
+  ElementRef,
   inject,
+  Injector,
   input,
   InputSignal,
   output,
   OutputEmitterRef,
+  signal,
   Signal,
-  TemplateRef
+  TemplateRef,
+  untracked,
+  viewChild
 } from '@angular/core';
 import { Grid, GridCell, GridRow } from '@angular/aria/grid';
-import { Day, format, isSameDay, isSameMonth } from 'date-fns';
+import {
+  addDays,
+  Day,
+  eachDayOfInterval,
+  format,
+  isSameDay,
+  isSameMonth,
+  startOfMonth,
+  startOfWeek
+} from 'date-fns';
 import { LOCALE_CONFIG, localeFormatOptions } from '../../abstract/locale';
 import { color } from '../../types';
-import { buildMonthDays, createNowSignal, rotateWeekDays } from '../../utils';
+import { createNowSignal, rotateWeekDays } from '../../utils';
 import { assignWeekLanes } from './assign-week-lanes';
+import { buildMonthScrollPlan, MonthScrollPlan } from './build-month-scroll-plan';
 import { CalendarEventItem } from './calendar-event';
 import {
   DAY_NUMBER_FORMAT,
@@ -76,6 +94,8 @@ export class CalendarMonthView {
   // Injections
   private readonly _locale = inject(LOCALE_CONFIG);
   private readonly _config = inject(CALENDAR_CONFIG);
+  private readonly _changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly _injector = inject(Injector);
 
   // Inputs
   public readonly activeDate: InputSignal<Date> = input.required<Date>();
@@ -100,6 +120,17 @@ export class CalendarMonthView {
   /** Ticking current time, so the today highlight tracks the clock across midnight. */
   private readonly _now = createNowSignal(NOW_REFRESH_INTERVAL_MS);
 
+  /** Widened week window a navigation scroll renders through; unset while the grid rests. */
+  private readonly _scrollPlan = signal<MonthScrollPlan | null>(null);
+
+  private readonly _grid = viewChild.required<ElementRef<HTMLElement>>('grid');
+
+  /** Settles the scroll in flight at once, so a follow-up navigation starts from rest. */
+  private _finalizeScroll: (() => void) | null = null;
+
+  /** Anchor the grid last rendered for, naming the window a navigation scrolls away from. */
+  private _renderedDate: Date | null = null;
+
   // Computed
   protected readonly weekdayHeaders: Signal<string[]> = computed(() =>
     rotateWeekDays(this.weekDays(), this.weekStartsOn()),
@@ -111,8 +142,18 @@ export class CalendarMonthView {
     const events = this.events();
     const now = this._now();
 
-    // A fixed 6-week window keeps the grid height from reflowing between months.
-    const days = buildMonthDays(activeDate, this.weekStartsOn(), MONTH_GRID_ROWS);
+    // A fixed 6-week window keeps the grid height from reflowing between months. While a
+    // navigation scroll plays, the window widens to the union of the outgoing and incoming
+    // grids so the rows they share stay one element travelling between them.
+    const plan = this._scrollPlan();
+    const windowStart = plan
+      ? plan.unionStart
+      : startOfWeek(startOfMonth(activeDate), { weekStartsOn: this.weekStartsOn() });
+    const weekCount = plan ? plan.weekCount : MONTH_GRID_ROWS;
+    const days = eachDayOfInterval({
+      start: windowStart,
+      end: addDays(windowStart, weekCount * DAYS_PER_WEEK - 1),
+    });
 
     const weeks: MonthWeek[] = [];
     for (let index = 0; index < days.length; index += DAYS_PER_WEEK) {
@@ -170,6 +211,19 @@ export class CalendarMonthView {
     return weeks;
   });
 
+  constructor() {
+    // A month change scrolls the grid between the two windows; the first render
+    // has no outgoing window to scroll away from.
+    effect(() => {
+      const activeDate = this.activeDate();
+      const previous = this._renderedDate;
+      this._renderedDate = activeDate;
+      if (!previous) return;
+
+      untracked(() => this._scrollBetween(previous, activeDate));
+    });
+  }
+
   // Protected methods
   /** Localized "+N more" label for a day cell with `count` hidden events. */
   protected moreLabel(count: number): string {
@@ -188,6 +242,88 @@ export class CalendarMonthView {
   }
 
   // Private methods
+  /**
+   * Slides the grid from `from`'s window to `to`'s: the union of both windows renders at once,
+   * pinned to the resting row height, and a translate transition carries it from the outgoing
+   * offset to the incoming one. Rows the windows share keep their DOM identity, so their cells
+   * cross-fade out of the outside dimming in place rather than being rebuilt.
+   *
+   * Style writes go to the element directly: the jump to the outgoing offset must paint with
+   * the widened render, and the cleanup must paint with the collapsed one — frame boundaries a
+   * template binding cannot express.
+   */
+  private _scrollBetween(from: Date, to: Date): void {
+    const plan = buildMonthScrollPlan(from, to, this.weekStartsOn());
+    if (!plan) return;
+
+    // A navigation mid-scroll settles the previous scroll first, so the grid and viewport
+    // below are measured at rest.
+    if (this._finalizeScroll) this._finalizeScroll();
+
+    const grid = this._grid().nativeElement;
+    const restingHeight = grid.getBoundingClientRect().height;
+    // Nothing visible to scroll (display: none, detached test DOM) — swap without ceremony.
+    if (restingHeight === 0) return;
+    const rowHeight = restingHeight / MONTH_GRID_ROWS;
+
+    // The viewport wraps the resting grid, so its own height (grid plus its border) is held
+    // while the widened grid overflows it; the union render, the pinned rows, and the
+    // outgoing offset all apply before the next paint.
+    const viewport = grid.parentElement;
+    if (viewport) viewport.style.height = `${viewport.getBoundingClientRect().height}px`;
+    this._scrollPlan.set(plan);
+    grid.classList.add('tls-calendar-month-view__grid--scrolling');
+    grid.style.setProperty('--tls-calendar-scroll-row-height', `${rowHeight}px`);
+    // The jump to the outgoing offset must not itself transition: the measurements above
+    // flushed a style pass holding the resting translate, so without the inline suppression
+    // the browser reads the jump as a change to animate from rest.
+    grid.style.transition = 'none';
+    grid.style.translate = `0 ${-plan.fromRow * rowHeight}px`;
+
+    const finalize = (): void => {
+      if (this._finalizeScroll !== finalize) return;
+      this._finalizeScroll = null;
+      grid.removeEventListener('transitionend', onTransitionEnd);
+
+      // Collapse to the resting render and clear the scroll styles within one task, so the
+      // incoming window's rows and the reset translate paint together, pixel-identical to
+      // the scroll's final frame.
+      this._scrollPlan.set(null);
+      this._changeDetectorRef.detectChanges();
+      grid.classList.remove('tls-calendar-month-view__grid--scrolling');
+      grid.style.transition = '';
+      grid.style.translate = '';
+      grid.style.removeProperty('--tls-calendar-scroll-row-height');
+      if (viewport) viewport.style.height = '';
+    };
+    this._finalizeScroll = finalize;
+
+    const onTransitionEnd = (event: TransitionEvent): void => {
+      if (event.target === grid && event.propertyName === 'translate') finalize();
+    };
+    grid.addEventListener('transitionend', onTransitionEnd);
+
+    afterNextRender(
+      () => {
+        // The union rows are in the DOM at the outgoing offset; give them a painted frame,
+        // then restore the class's transition and let the offset change animate.
+        requestAnimationFrame(() => {
+          if (this._finalizeScroll !== finalize) return;
+          grid.style.transition = '';
+          grid.style.translate = `0 ${-plan.toRow * rowHeight}px`;
+
+          // With motion disabled the transition never runs, so no `transitionend` would ever
+          // settle the scroll — resolve it as an instant swap instead.
+          requestAnimationFrame(() => {
+            if (this._finalizeScroll !== finalize) return;
+            if (!parseFloat(getComputedStyle(grid).transitionDuration)) finalize();
+          });
+        });
+      },
+      { injector: this._injector },
+    );
+  }
+
   private _markerClasses(eventColor: color | undefined): string[] {
     const classes = ['tls-calendar-month-view__marker'];
     if (eventColor) classes.push(`tls-calendar-month-view__marker--${eventColor}`);

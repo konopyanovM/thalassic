@@ -33,6 +33,16 @@
     color: var(--color-on-surface-variant);
   }
 
+  &__viewport {
+    // The viewport owns the outer edge and each cell only its interior lines, so the two
+    // families stay independently controllable and never double up along the perimeter.
+    border: lines.outer();
+
+    // Clips the widened grid a month-navigation scroll slides through; the component holds
+    // the viewport at its resting height for the scroll's duration.
+    overflow: hidden;
+  }
+
   &__grid {
     display: grid;
     // Reserve room for the day number, every visible lane (plus the gaps between them), and
@@ -46,14 +56,30 @@
       1fr
     );
 
-    // The grid owns the outer edge and each cell only its interior lines, so the two families
-    // stay independently controllable and never double up along the perimeter.
-    border: lines.outer();
-
     // With no bars to make room for, a row only has to hold a number and its dots. The floor
     // doubles as the day cell's touch target.
     @include compact.compact {
       grid-auto-rows: minmax(var(--spacing-11), 1fr);
+    }
+
+    // A month-navigation scroll in flight: rows pin to the resting height the component
+    // measured, so the widened window slides through a viewport of unchanged size; the slide
+    // itself is the transition of the translate the component drives. Declared after the
+    // dense layout's row sizing so the pin wins wherever both apply.
+    &--scrolling {
+      grid-auto-rows: var(--tls-calendar-scroll-row-height);
+
+      @include mixins.motion(essential) {
+        transition: translate var(--motion-ease-in-out) var(--motion-slow);
+      }
+
+      .tls-calendar-month-view__day {
+        // Shared rows change month mid-scroll, so the outside dimming crossfades at the
+        // scroll's own pace instead of snapping.
+        @include mixins.motion(essential) {
+          transition-duration: var(--motion-slow), var(--motion-slow);
+        }
+      }
     }
   }
 
@@ -87,7 +113,10 @@
     cursor: pointer;
 
     @include mixins.motion(essential) {
-      transition: background-color var(--motion-fast) var(--motion-ease-in-out);
+      // Color rides along so leaving or joining the outside dimming fades as one change.
+      transition:
+        background-color var(--motion-fast) var(--motion-ease-in-out),
+        color var(--motion-fast) var(--motion-ease-in-out);
     }
 
     @include compact.compact {

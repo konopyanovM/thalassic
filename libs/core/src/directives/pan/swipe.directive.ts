@@ -10,15 +10,23 @@ import { PanEvent, SwipeEvent } from './pan.types';
  * `minVelocity` px/ms (a short flick).
  *
  * The bare `tlsSwipe` attribute enables the gesture; bind `[tlsSwipe]="false"`
- * to disable. `axis`, `threshold`, `edge`, `edgeSize` and `pointerTypes` are
- * forwarded to the underlying pan.
+ * to disable. `axis`, `threshold`, `edge`, `edgeSize`, `pointerTypes` and
+ * `manageTouchAction` are forwarded to the underlying pan.
  */
 @Directive({
   selector: '[tlsSwipe]',
   hostDirectives: [
     {
       directive: PanDirective,
-      inputs: ['tlsPan: tlsSwipe', 'axis', 'threshold', 'edge', 'edgeSize', 'pointerTypes'],
+      inputs: [
+        'tlsPan: tlsSwipe',
+        'axis',
+        'threshold',
+        'edge',
+        'edgeSize',
+        'pointerTypes',
+        'manageTouchAction',
+      ],
     },
   ],
 })

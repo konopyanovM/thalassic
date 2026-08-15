@@ -29,6 +29,7 @@ import {
   startOfMonth,
   startOfWeek,
 } from 'date-fns';
+import { SwipeDirective, SwipeEvent } from '@thalassic/core';
 import { localeFormatOptions, LOCALE_CONFIG } from '../../abstract/locale';
 import { Button } from '../button';
 import { ToggleGroup } from '../form/toggle-group';
@@ -43,6 +44,7 @@ import {
   MONTH_GRID_ROWS,
   MONTH_TITLE_FORMAT,
   NOW_REFRESH_INTERVAL_MS,
+  SWIPE_POINTER_TYPES,
 } from './calendar.constants';
 import { CALENDAR_CONFIG } from './calendar.token';
 import {
@@ -57,7 +59,15 @@ import {
 @Component({
   selector: 'tls-calendar',
   templateUrl: './calendar.html',
-  imports: [Button, ToggleGroup, CalendarMonthView, CalendarTimeGrid, CalendarAgendaView, Icon],
+  imports: [
+    Button,
+    ToggleGroup,
+    CalendarMonthView,
+    CalendarTimeGrid,
+    CalendarAgendaView,
+    Icon,
+    SwipeDirective,
+  ],
   host: {
     '[class]': 'hostClasses()',
   },
@@ -99,6 +109,12 @@ export class Calendar {
    * as tall as the events it has to show; on, the grid's height follows from its width alone.
    */
   public readonly squareCells: InputSignal<boolean> = input<boolean>(false);
+  /**
+   * Whether a vertical touch swipe over the month grid pages the calendar — up to the next
+   * month, down to the previous. Off by default: the gesture claims vertical pans from the
+   * browser, so it belongs only on a grid that is not itself inside something it must scroll.
+   */
+  public readonly swipeNavigation: InputSignal<boolean> = input<boolean>(false);
   /** Accessible name forwarded to the active view's grid. */
   public readonly ariaLabel = input<string | undefined>(undefined);
 
@@ -114,6 +130,8 @@ export class Calendar {
   public readonly activeDate: ModelSignal<Date> = model<Date>(new Date());
 
   protected readonly labels: CalendarLabels = this._config.labels;
+
+  protected readonly swipePointerTypes = SWIPE_POINTER_TYPES;
 
   protected readonly eventTemplate = contentChild<TemplateRef<CalendarEventContext>>('eventTemplate');
   protected readonly dayTemplate = contentChild<TemplateRef<CalendarDayContext>>('dayTemplate');
@@ -241,6 +259,12 @@ export class Calendar {
   protected onViewChange(views: calendarView[]): void {
     const [selected] = views;
     if (selected) this.view.set(selected);
+  }
+
+  /** The grid follows the finger's push: swiping up reveals the next month waiting below. */
+  protected onSwipe(event: SwipeEvent): void {
+    if (event.direction === 'up') this.next();
+    if (event.direction === 'down') this.previous();
   }
 
   // Private methods

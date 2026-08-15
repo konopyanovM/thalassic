@@ -50,7 +50,15 @@
 
 @switch (view()) {
   @case ('month') {
+    <!-- `manageTouchAction` is bound even though it is the pan's own default: an ancestor
+        gesture (a pull-to-refresh pane) may reconfigure `PAN_CONFIG` for its whole subtree,
+        and the `touch-action` claim is exactly what tells such an ancestor to stand aside. -->
     <tls-calendar-month-view
+      [tlsSwipe]="swipeNavigation()"
+      axis="y"
+      [pointerTypes]="swipePointerTypes"
+      [manageTouchAction]="true"
+      (swipe)="onSwipe($event)"
       [activeDate]="activeDate()"
       [events]="events()"
       [weekStartsOn]="weekStartsOn()"

@@ -55,6 +55,9 @@ export const AGENDA_WEEKDAY_FORMAT = 'EEEE';
 /** `date-fns` format token for an agenda day's date, e.g. "Jul 22". */
 export const AGENDA_DATE_FORMAT = 'MMM d';
 
+/** Pointers that may page the calendar with a swipe; with a mouse a drag means selection or a click. */
+export const SWIPE_POINTER_TYPES = ['touch', 'pen'];
+
 /** How often the calendar's notion of "now" refreshes (current-time line, today highlight). */
 export const NOW_REFRESH_INTERVAL_MS = 60_000;
 

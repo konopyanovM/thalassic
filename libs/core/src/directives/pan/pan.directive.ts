@@ -18,6 +18,7 @@ import {
 import { PAN_VELOCITY_WINDOW } from './pan.constants';
 import { PAN_CONFIG } from './pan.token';
 import { panAxis, panDirection, panEdge, PanEvent } from './pan.types';
+import { touchActionClaimsAxis } from './touch-action-claims-axis';
 
 interface PanSample {
   x: number;
@@ -389,13 +390,17 @@ export class PanDirective {
 
   /**
    * Walks from the event target up to and including the host looking for an
-   * element that can still scroll in the direction of travel. Such an element
-   * keeps the pointer — otherwise swiping a carousel, wide table or chip row
-   * would also drive the gesture.
+   * element with a prior claim to the travel: a scroller that can still move in
+   * that direction, or an element that has claimed the axis from the browser via
+   * `touch-action` to drive a gesture of its own (a swipe surface, a drag
+   * handle). Either keeps the pointer — otherwise swiping a carousel, wide
+   * table, chip row or nested gesture surface would also drive this gesture.
    *
    * The host is part of the walk because it is as much under the pointer as its
    * descendants are: a gesture placed on a scroll container must yield to that
-   * container while it still has room, and engage only once it has none.
+   * container while it still has room, and engage only once it has none. Only
+   * the scroll check applies to the host itself — its `touch-action` is this
+   * gesture's own claim, not a competing one.
    */
   private _hasScrollableAncestor(
     event: PointerEvent,
@@ -409,6 +414,10 @@ export class PanDirective {
     const boundary = host.parentElement;
 
     while (element !== null && element !== boundary) {
+      if (element !== host && touchActionClaimsAxis(getComputedStyle(element).touchAction, axis)) {
+        return true;
+      }
+
       const canScroll =
         axis === 'x'
           ? this._canScrollHorizontally(element, deltaX)

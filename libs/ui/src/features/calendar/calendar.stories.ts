@@ -47,6 +47,7 @@ const meta: Meta<Calendar> = {
     showViewSwitcher: true,
     compact: 'auto',
     squareCells: false,
+    swipeNavigation: false,
     ariaLabel: 'Calendar',
     events: SAMPLE_EVENTS,
   },
@@ -62,6 +63,7 @@ const meta: Meta<Calendar> = {
     showViewSwitcher: { control: { type: 'boolean' } },
     compact: { control: { type: 'select' }, options: [true, false, 'auto'] },
     squareCells: { control: { type: 'boolean' } },
+    swipeNavigation: { control: { type: 'boolean' } },
     weekStartsOn: { control: { type: 'select' }, options: [0, 1, 2, 3, 4, 5, 6] },
     hourStart: { control: { type: 'number', min: 0, max: 24 } },
     hourEnd: { control: { type: 'number', min: 0, max: 24 } },
@@ -82,6 +84,11 @@ export default meta;
 type Story = StoryObj<Calendar>;
 
 export const Default: Story = {};
+
+/** Vertical touch swipe over the month grid pages it: up to the next month, down to the previous. */
+export const SwipeNavigation: Story = {
+  args: { swipeNavigation: true },
+};
 
 /** Week view: a time-grid with overlapping events laid into side-by-side lanes. */
 export const Week: Story = {
