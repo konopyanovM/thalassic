@@ -1,12 +1,13 @@
 import { LocationStrategy, NgTemplateOutlet } from '@angular/common';
 import { Component, computed, inject, input, InputSignal, Signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { RippleDirective } from '../ripple';
 import { ButtonBase } from './button.base';
 import { buttonType } from './button.types';
 
 @Component({
   selector: 'tls-button',
-  imports: [NgTemplateOutlet],
+  imports: [NgTemplateOutlet, RippleDirective],
   templateUrl: './button.html',
   host: {
     '[tabindex]': '-1',

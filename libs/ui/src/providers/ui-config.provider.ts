@@ -117,6 +117,8 @@ import {
   TABS_CONFIG,
   TABS_QUERY_SYNC_CONFIG,
   TEXTAREA_CONFIG,
+  RIPPLE_CONFIG,
+  DEFAULT_RIPPLE_CONFIG,
   TOAST_CONFIG,
   ToastConfig,
   TOGGLE_GROUP_CONFIG,
@@ -147,6 +149,11 @@ export const provideThalassicUIConfig = (
     {
       provide: LOCALE_CONFIG,
       useValue: deepMerge(DEFAULT_LOCALE_CONFIG, config.locale),
+    },
+    // Cross-cutting press-ink policy
+    {
+      provide: RIPPLE_CONFIG,
+      useValue: deepMerge(DEFAULT_RIPPLE_CONFIG, config.ripple),
     },
     // Reflect the touch-target opt-out onto the document root. Absent the attribute the
     // expansion is active (accessible by default); this only disables it. The overflow is

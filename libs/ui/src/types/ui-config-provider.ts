@@ -40,6 +40,7 @@ import {
   RadioButtonConfig,
   RatingConfig,
   RatingLabels,
+  RippleConfig,
   SelectConfig,
   SkeletonConfig,
   SliderConfig,
@@ -69,6 +70,8 @@ export interface tlsUiConfigProvider {
   accessibility?: Partial<AccessibilityConfig>;
   /** Cross-cutting locale used by every component that formats dates (not tied to a single one). */
   locale?: Partial<LocaleConfig>;
+  /** Cross-cutting press-ink policy applied wherever a ripple is applied (not tied to a single component). */
+  ripple?: Partial<RippleConfig>;
   /** Cross-cutting defaults inherited by every form control (not tied to a single component). */
   formControl?: Partial<FormControlConfig>;
   components?: {

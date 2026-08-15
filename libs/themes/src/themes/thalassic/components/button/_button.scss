@@ -44,6 +44,7 @@
   }
 
   @include mixins.press;
+  @include mixins.ripple;
 
   &:focus-visible {
     @include mixins.focus-ring;
@@ -54,6 +55,7 @@
   // both forms from depressing under a press they do not act on.
   &--disabled {
     --tls-press-scale: 1;
+    --tls-ripple-opacity: 0;
   }
 
   // A pill has no corner left to shape — the arc spans the whole edge, which a

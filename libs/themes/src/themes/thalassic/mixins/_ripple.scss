@@ -1,0 +1,81 @@
+@use '@thalassic/core/styles' as core;
+
+// The ink's radius has to interpolate inside a gradient, which an unregistered
+// custom property cannot do — it would be substituted as a raw token and jump
+// straight to its end value. Registering it as a `<length>` makes it animatable.
+// It inherits so the pseudo-element drawing the ink reads the radius written to
+// its host.
+@property --tls-ripple-size {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
+@keyframes tls-ripple {
+  from {
+    --tls-ripple-size: 0px;
+
+    // Read through a property with a fallback and never declared by the mixin:
+    // the tier gate wraps the mixin's rules in `:root[data-motion='full'] &`, so
+    // a declaration there would outweigh the plain modifier selector a state
+    // writes its suppression on. A control that must not ink sets this to 0.
+    opacity: var(--tls-ripple-opacity, 0.24);
+  }
+
+  to {
+    --tls-ripple-size: var(--tls-ripple-diameter);
+
+    opacity: 0;
+  }
+}
+
+// Ink spreading from the point of contact, for the duration of one press.
+//
+// The ink is painted as a gradient inside a pseudo-element covering the control,
+// rather than as a circle that outgrows it. A circle would have to be clipped by
+// `overflow: hidden` on the control, and that clip also cuts the `::after` the
+// touch-target expansion overflows — silently returning a 44px tap target to its
+// visual size on exactly the touch input this effect is for. A background is
+// clipped by its own element's corner, so nothing overflowing the control is
+// affected. That corner is inherited, so the ink follows a squircle where one is
+// drawn.
+//
+// The contact point, the radius the ink must reach to cover the control, and the
+// press it stands in for are all supplied by the host: the position of a pointer
+// is not expressible in CSS.
+//
+// Belongs to the `full` tier. Unlike a press, the ink keeps expanding after the
+// finger lifts, so it is expressive rather than functional — under reduced motion
+// the press is the acknowledgement instead.
+@mixin ripple($color: currentColor, $duration: var(--motion-slow)) {
+  @include core.motion(full) {
+    // The ink sits between the control's own background and its content, which
+    // requires a stacking context to order against.
+    isolation: isolate;
+
+    &::before {
+      content: '';
+
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+
+      border-radius: inherit;
+      corner-shape: inherit;
+
+      background: radial-gradient(
+        circle var(--tls-ripple-size) at var(--tls-ripple-x) var(--tls-ripple-y),
+        #{$color} 0 100%,
+        transparent 100%
+      );
+      opacity: 0;
+
+      // The ink must never intercept the press that spawned it.
+      pointer-events: none;
+    }
+
+    &.tls-rippling::before {
+      animation: tls-ripple $duration var(--motion-ease-out);
+    }
+  }
+}

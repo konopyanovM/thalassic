@@ -5,6 +5,7 @@ export * from './overlay-arrow-alignment';
 export * from './overlay-arrow-position';
 export * from './overlay-arrow-side';
 export * from './overlay-position';
+export * from './pointer-type';
 export * from './radius';
 export * from './radius-value';
 export * from './size';
