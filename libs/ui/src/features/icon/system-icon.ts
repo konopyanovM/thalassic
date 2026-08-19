@@ -31,4 +31,14 @@ export type systemIcon =
   | 'code-block'
   | 'zoom-in'
   | 'zoom-out'
-  | 'zoom-reset';
+  | 'zoom-reset'
+  | 'play'
+  | 'pause'
+  | 'replay'
+  | 'volume'
+  | 'volume-muted'
+  | 'fullscreen'
+  | 'fullscreen-exit'
+  | 'picture-in-picture'
+  | 'captions'
+  | 'settings';

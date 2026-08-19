@@ -76,6 +76,40 @@ export const DEFAULT_ICONS: Record<systemIcon, string> = {
     '<circle cx="11" cy="11" r="7" /><line x1="20" y1="20" x2="16.65" y2="16.65" />' +
       '<path d="M8.5 11.5a2.5 2.5 0 1 1 .8 1.8" /><polyline points="8.4 9.2 8.4 11.6 10.8 11.6" />',
   ),
+  play: svg('<polygon fill="currentColor" points="6 4 20 12 6 20 6 4" />'),
+  pause: svg(
+    '<rect fill="currentColor" x="5" y="4" width="4" height="16" rx="1" />' +
+      '<rect fill="currentColor" x="15" y="4" width="4" height="16" rx="1" />',
+  ),
+  replay: svg('<polyline points="1 4 1 10 7 10" /><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />'),
+  volume: svg(
+    '<polygon fill="currentColor" points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />' +
+      '<path d="M15.54 8.46a5 5 0 0 1 0 7.07" /><path d="M19.07 4.93a10 10 0 0 1 0 14.14" />',
+  ),
+  'volume-muted': svg(
+    '<polygon fill="currentColor" points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />' +
+      '<line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" />',
+  ),
+  fullscreen: svg(
+    '<path d="M8 3H5a2 2 0 0 0-2 2v3" /><path d="M21 8V5a2 2 0 0 0-2-2h-3" />' +
+      '<path d="M3 16v3a2 2 0 0 0 2 2h3" /><path d="M16 21h3a2 2 0 0 0 2-2v-3" />',
+  ),
+  'fullscreen-exit': svg(
+    '<path d="M8 3v3a2 2 0 0 1-2 2H3" /><path d="M21 8h-3a2 2 0 0 1-2-2V3" />' +
+      '<path d="M3 16h3a2 2 0 0 1 2 2v3" /><path d="M16 21v-3a2 2 0 0 1 2-2h3" />',
+  ),
+  'picture-in-picture': svg(
+    '<path d="M2 7v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z" />' +
+      '<rect fill="currentColor" x="12" y="11" width="8" height="6" rx="1" />',
+  ),
+  captions: svg(
+    '<rect x="2" y="5" width="20" height="14" rx="2" />' +
+      '<path d="M10 10.5a2 2 0 1 0 0 3" /><path d="M17 10.5a2 2 0 1 0 0 3" />',
+  ),
+  settings: svg(
+    '<circle cx="12" cy="12" r="3" />' +
+      '<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />',
+  ),
 };
 
 function svg(body: string): string {
