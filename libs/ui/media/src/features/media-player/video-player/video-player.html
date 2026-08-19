@@ -24,6 +24,18 @@
   <tls-loader class="loader" />
 }
 
+@if (seekFeedback(); as feedbackSeconds) {
+  <div
+    class="seek-feedback"
+    [class.seek-feedback--backward]="feedbackSeconds < 0"
+    aria-hidden="true"
+    animate.leave="seek-feedback--leave"
+  >
+    <tls-icon [name]="seekFeedbackIcon()" />
+    <span class="seek-feedback__seconds">{{ seekFeedbackText() }}</span>
+  </div>
+}
+
 @if (state() === 'error') {
   <div class="error" role="alert">
     <span class="error__message">{{ labels.errorMessage }}</span>

@@ -32,6 +32,33 @@
     place-self: center;
   }
 
+  // Transient keyboard-seek badge, floating on the side the playhead moved
+  // toward. `justify-self` is inline-relative, so the sides flip with the
+  // layout direction on their own.
+  .seek-feedback {
+    grid-area: 1 / 1;
+
+    margin-inline: var(--spacing-8);
+
+    display: flex;
+    align-items: center;
+    align-self: center;
+    justify-self: end;
+    gap: var(--spacing-1);
+
+    pointer-events: none;
+
+    &--backward {
+      justify-self: start;
+    }
+
+    @include mixins.motion {
+      &--leave {
+        animation: seek-feedback-leave var(--motion-fast) var(--motion-ease-out) forwards;
+      }
+    }
+  }
+
   .error {
     grid-area: 1 / 1;
 
@@ -115,4 +142,10 @@
   aspect-ratio: auto;
 
   border-radius: 0;
+}
+
+@keyframes seek-feedback-leave {
+  to {
+    opacity: 0;
+  }
 }

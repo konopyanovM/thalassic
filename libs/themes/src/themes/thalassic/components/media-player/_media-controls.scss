@@ -122,3 +122,20 @@
     background-color: color-mix(in srgb, currentColor 20%, transparent);
   }
 }
+
+// The transient keyboard-seek badge shares the control plates' translucent
+// treatment, slightly darker so it reads over any footage without a scrim.
+.tls-video-player .seek-feedback {
+  padding: var(--spacing-2) var(--spacing-3);
+
+  border-radius: var(--radius-3xl);
+
+  background-color: rgb(0 0 0 / 0.45);
+
+  font-weight: 600;
+
+  .tls-icon {
+    width: 20px;
+    height: 20px;
+  }
+}

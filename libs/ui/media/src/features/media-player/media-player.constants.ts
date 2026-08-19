@@ -9,3 +9,9 @@ export const DEFAULT_CONTROLS_HIDE_DELAY = 2500;
 
 /** Fraction of full volume (`[0, 1]`) a single arrow-key press applies — 5 on the `[0, 100]` scale. */
 export const VOLUME_STEP = 0.05;
+
+/**
+ * Milliseconds the transient seek-feedback badge stays visible after a
+ * keyboard seek; presses within the window accumulate into one total.
+ */
+export const SEEK_FEEDBACK_DURATION = 800;

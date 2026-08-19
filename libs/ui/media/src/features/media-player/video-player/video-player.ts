@@ -16,7 +16,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { Icon, Loader } from '@thalassic/ui';
+import { Icon, Loader, systemIcon } from '@thalassic/ui';
 import { MediaPlayToggle } from '../controls/play-toggle/play-toggle';
 import { MediaScrubber } from '../controls/scrubber/scrubber';
 import { MediaSettingsMenu } from '../controls/settings-menu/settings-menu';
@@ -24,7 +24,7 @@ import { MediaTimeDisplay } from '../controls/time-display/time-display';
 import { MediaVolumeControl } from '../controls/volume-control/volume-control';
 import { FullscreenController } from '../fullscreen-controller';
 import { MediaController } from '../media-controller';
-import { VOLUME_STEP } from '../media-player.constants';
+import { SEEK_FEEDBACK_DURATION, VOLUME_STEP } from '../media-player.constants';
 import { MEDIA_PLAYER_CONFIG } from '../media-player.token';
 import { MediaCaptionSource, mediaState } from '../media-player.types';
 
@@ -115,7 +115,10 @@ export class VideoPlayer {
   private readonly _pointerIdle = signal(false);
   private readonly _focusWithin = signal(false);
   private readonly _attached = signal(false);
+  /** Accumulated signed seconds of the in-flight keyboard-seek feedback badge, `null` when hidden. */
+  protected readonly seekFeedback = signal<number | null>(null);
   private _hideTimer: ReturnType<typeof setTimeout> | null = null;
+  private _seekFeedbackTimer: ReturnType<typeof setTimeout> | null = null;
   private _skipInitialPlayingChange = true;
 
   protected readonly labels = this._config.labels;
@@ -137,6 +140,18 @@ export class VideoPlayer {
     if (this._focusWithin()) return false;
     if (this._menuOpen()) return false;
     return this._pointerIdle();
+  });
+  protected readonly seekFeedbackText: Signal<string> = computed(() => {
+    const deltaSeconds = this.seekFeedback();
+    if (deltaSeconds === null) return '';
+    return `${deltaSeconds > 0 ? '+' : '−'}${Math.abs(deltaSeconds)}s`;
+  });
+  /** Chevrons pointing in the physical direction the playhead moved; forward points left under RTL. */
+  protected readonly seekFeedbackIcon: Signal<systemIcon> = computed(() => {
+    const deltaSeconds = this.seekFeedback();
+    const forward = deltaSeconds !== null && deltaSeconds > 0;
+    const rtl = this._directionality.value === 'rtl';
+    return forward !== rtl ? 'chevrons-right' : 'chevrons-left';
   });
 
   // constructor
@@ -180,7 +195,10 @@ export class VideoPlayer {
         this._pointerIdle.set(false);
       }
     });
-    this._destroyRef.onDestroy(() => this._cancelHideTimer());
+    this._destroyRef.onDestroy(() => {
+      this._cancelHideTimer();
+      if (this._seekFeedbackTimer !== null) clearTimeout(this._seekFeedbackTimer);
+    });
   }
 
   // Protected methods
@@ -194,10 +212,10 @@ export class VideoPlayer {
         this._controller.togglePlay();
         break;
       case 'ArrowRight':
-        this._controller.seekBy(rtl ? -step : step);
+        this._seekWithFeedback(rtl ? -step : step);
         break;
       case 'ArrowLeft':
-        this._controller.seekBy(rtl ? step : -step);
+        this._seekWithFeedback(rtl ? step : -step);
         break;
       case 'ArrowUp':
         this._controller.setVolume(this._controller.volume() + VOLUME_STEP);
@@ -279,5 +297,19 @@ export class VideoPlayer {
   private _cancelHideTimer(): void {
     if (this._hideTimer !== null) clearTimeout(this._hideTimer);
     this._hideTimer = null;
+  }
+
+  /**
+   * Seeks and surfaces the transient feedback badge. Presses within the badge's
+   * lifetime accumulate into one running total; a press in the opposite
+   * direction restarts the count from its own step.
+   */
+  private _seekWithFeedback(deltaSeconds: number): void {
+    this._controller.seekBy(deltaSeconds);
+    const current = this.seekFeedback();
+    const sameDirection = current !== null && Math.sign(current) === Math.sign(deltaSeconds);
+    this.seekFeedback.set(sameDirection ? current + deltaSeconds : deltaSeconds);
+    if (this._seekFeedbackTimer !== null) clearTimeout(this._seekFeedbackTimer);
+    this._seekFeedbackTimer = setTimeout(() => this.seekFeedback.set(null), SEEK_FEEDBACK_DURATION);
   }
 }

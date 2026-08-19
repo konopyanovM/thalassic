@@ -117,6 +117,37 @@ describe('VideoPlayer', () => {
     vi.useRealTimers();
   });
 
+  it('shows an accumulating seek-feedback badge that clears after its window', async () => {
+    const fixture = await setup();
+    const root = fixture.nativeElement.querySelector('tls-video-player') as HTMLElement;
+    const videoElement = fixture.nativeElement.querySelector('video') as HTMLVideoElement;
+    // Seeks clamp into [0, duration]; give the timeline room to accumulate.
+    Object.defineProperty(videoElement, 'duration', { value: 300, configurable: true });
+    videoElement.dispatchEvent(new Event('durationchange'));
+    vi.useFakeTimers();
+
+    root.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    root.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    fixture.detectChanges();
+
+    const badge = root.querySelector('.seek-feedback');
+    expect(badge).not.toBeNull();
+    if (badge === null) throw new Error('badge not found');
+    expect(badge.textContent).toContain('+10s');
+
+    // An opposite-direction press restarts the count from its own step.
+    root.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
+    fixture.detectChanges();
+    const restartedBadge = root.querySelector('.seek-feedback');
+    if (restartedBadge === null) throw new Error('badge not found after direction change');
+    expect(restartedBadge.textContent).toContain('−5s');
+
+    vi.advanceTimersByTime(1000);
+    fixture.detectChanges();
+    expect(root.querySelector('.seek-feedback')).toBeNull();
+    vi.useRealTimers();
+  });
+
   it('reaches the media element when the source input changes after attach', async () => {
     const fixture = await setup();
     const videoElement = fixture.nativeElement.querySelector('video') as HTMLVideoElement;
