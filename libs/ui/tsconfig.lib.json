@@ -11,7 +11,8 @@
     "src/**/*.ts",
     "charts/src/**/*.ts",
     "fontawesome/src/**/*.ts",
-    "rich-text-editor/src/**/*.ts"
+    "rich-text-editor/src/**/*.ts",
+    "media/src/**/*.ts"
   ],
   "exclude": ["**/*.spec.ts", "**/*.test.ts", "**/*.stories.ts", "**/*.stories.js"]
 }

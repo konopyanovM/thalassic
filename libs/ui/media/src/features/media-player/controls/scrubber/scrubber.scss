@@ -1,0 +1,65 @@
+:host {
+  position: relative;
+
+  display: block;
+
+  cursor: pointer;
+  touch-action: none;
+
+  // Invisible hit-area extension: a 4px line is a needlessly hard drag target,
+  // so the pointer surface reaches beyond the visual track — generously above
+  // (open video surface) but only slightly below, where the control buttons
+  // sit and must not have their clicks stolen. The asymmetric split keeps the
+  // total surface at the 24px WCAG 2.5.8 target-size floor. Vertical only —
+  // the seek math reads the horizontal axis, so the extension never shifts
+  // what a click resolves to.
+  &::before {
+    content: '';
+
+    position: absolute;
+    inset-block-start: calc(-1 * var(--spacing-4));
+    inset-block-end: calc(-1 * var(--spacing-1));
+    inset-inline: 0;
+  }
+
+  .track {
+    position: relative;
+
+    height: var(--tls-media-scrubber-height, 4px);
+
+    border-radius: var(--radius-xl);
+
+    // The fills are clipped to the track's rounded shape by this wrapper; the
+    // thumb sits outside it so it can render its full size instead of being
+    // cropped to the track's height.
+    &__fills {
+      position: absolute;
+      inset: 0;
+
+      border-radius: var(--radius-xl);
+
+      overflow: hidden;
+    }
+
+    &__buffered,
+    &__played {
+      position: absolute;
+      inset-block: 0;
+      inset-inline-start: 0;
+    }
+
+    &__buffered {
+      width: calc(var(--tls-media-buffered, 0) * 100%);
+    }
+
+    &__played {
+      width: calc(var(--tls-media-played, 0) * 100%);
+    }
+
+    &__thumb {
+      position: absolute;
+      inset-block-start: 50%;
+      inset-inline-start: calc(var(--tls-media-played, 0) * 100%);
+    }
+  }
+}

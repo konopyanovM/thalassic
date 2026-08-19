@@ -1,0 +1,27 @@
+// A real box (not `display: contents`) so the theme can paint a plate on the
+// host itself, clear of the inner button's own background reset. The closed
+// menu lives in an `ng-template`, so the host box is exactly the button.
+:host {
+  display: inline-flex;
+
+  .button {
+    position: relative;
+
+    width: var(--tls-media-control-size, 36px);
+    height: var(--tls-media-control-size, 36px);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+
+    // No background declaration: the global reset already strips the UA button
+    // chrome, and declaring one here would out-specific the theme's hover and
+    // active washes (emulated-encapsulation attributes raise this rule above
+    // any theme selector).
+    color: inherit;
+
+    cursor: pointer;
+  }
+}

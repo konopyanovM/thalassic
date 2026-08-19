@@ -38,7 +38,8 @@
         "include": [
           "**/*.spec.ts",
           "../charts/src/**/*.spec.ts",
-          "../rich-text-editor/src/**/*.spec.ts"
+          "../rich-text-editor/src/**/*.spec.ts",
+          "../media/src/**/*.spec.ts"
         ]
       }
     },

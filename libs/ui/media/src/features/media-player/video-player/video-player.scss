@@ -1,0 +1,118 @@
+@use '../../../../../../core/src/styles/tools/motion' as mixins;
+
+:host {
+  position: relative;
+
+  display: grid;
+  // The single track is pinned to the host's own size: with auto tracks a grid
+  // row grows to its items' content size, so footage whose natural height
+  // exceeds the host's (any medium taller than the host's ratio at full width)
+  // would stretch the row, be clipped by the host, and push the end-aligned
+  // controls out of view. A definite 100% track lets the items' height: 100%
+  // resolve against the host and leaves fitting to object-fit.
+  grid-template-rows: 100%;
+  grid-template-columns: 100%;
+
+  aspect-ratio: var(--tls-media-aspect, 16 / 9);
+
+  overflow: hidden;
+
+  .video {
+    width: 100%;
+    height: 100%;
+
+    grid-area: 1 / 1;
+
+    object-fit: contain;
+  }
+
+  .loader {
+    grid-area: 1 / 1;
+
+    place-self: center;
+  }
+
+  .error {
+    grid-area: 1 / 1;
+
+    place-self: center;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-3);
+  }
+
+  .controls {
+    position: relative;
+
+    grid-area: 1 / 1;
+
+    align-self: end;
+
+    padding: var(--spacing-3);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+
+    &__row {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-2);
+    }
+
+    // Same square geometry as the dedicated control components' buttons, so
+    // the bar's own buttons (picture in picture, fullscreen) share their
+    // footprint and plate shape.
+    &__button {
+      position: relative;
+
+      width: var(--tls-media-control-size, 36px);
+      height: var(--tls-media-control-size, 36px);
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      border: none;
+
+      // No background declaration: the global reset already strips the UA
+      // button chrome, and declaring one here would out-specific the theme's
+      // plate (emulated-encapsulation attributes raise this rule above any
+      // theme selector).
+      color: inherit;
+
+      cursor: pointer;
+    }
+
+    &__spacer {
+      flex: 1 1 0;
+    }
+
+    &--hidden {
+      visibility: hidden;
+      opacity: 0;
+    }
+
+    @include mixins.motion {
+      transition:
+        opacity var(--motion-fast) var(--motion-ease-out),
+        visibility var(--motion-fast);
+    }
+  }
+}
+
+// Fullscreen must fill the screen exactly. Browsers differ in whether their UA
+// fullscreen stylesheet forces the element's dimensions; where it does not,
+// the aspect ratio would derive the height from the screen width and overflow
+// any display wider than the ratio (e.g. a 16:10 panel). Pinning both
+// dimensions and dropping the ratio removes the engine dependence.
+:host(:fullscreen) {
+  width: 100%;
+  height: 100%;
+
+  aspect-ratio: auto;
+
+  border-radius: 0;
+}

@@ -1,0 +1,6 @@
+@if (hasSettings()) {
+  <button type="button" class="button" [attr.aria-label]="labels.settings" [tlsMenuTrigger]="menu">
+    <tls-icon [name]="iconName" />
+  </button>
+  <tls-menu #menu [items]="items()" />
+}

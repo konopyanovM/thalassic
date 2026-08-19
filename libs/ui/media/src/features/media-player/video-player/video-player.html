@@ -1,0 +1,56 @@
+<video
+  #videoElement
+  class="video"
+  [attr.poster]="poster() ?? null"
+  [attr.preload]="preload()"
+  [muted]="muted()"
+  [loop]="loop()"
+  [autoplay]="autoplay()"
+  playsinline
+  (click)="onSurfaceClick()"
+>
+  @for (caption of captions(); track caption.src) {
+    <track
+      kind="subtitles"
+      [attr.src]="caption.src"
+      [attr.srclang]="caption.srclang"
+      [attr.label]="caption.label"
+      [attr.default]="caption.default ? '' : null"
+    />
+  }
+</video>
+
+@if (state() === 'loading') {
+  <tls-loader class="loader" />
+}
+
+@if (state() === 'error') {
+  <div class="error" role="alert">
+    <span class="error__message">{{ labels.errorMessage }}</span>
+    <button type="button" class="error__retry" (click)="retry()">{{ labels.retry }}</button>
+  </div>
+}
+
+<div class="controls" [class.controls--hidden]="controlsHidden()">
+  <tls-media-scrubber class="controls__scrubber" />
+  <div class="controls__row">
+    <tls-media-play-toggle />
+    <tls-media-volume-control />
+    <tls-media-time-display />
+    <span class="controls__spacer"></span>
+    <tls-media-settings-menu />
+    @if (pictureInPictureSupported()) {
+      <button type="button" class="controls__button" [attr.aria-label]="labels.pictureInPicture"
+        (click)="togglePictureInPicture()">
+        <tls-icon name="picture-in-picture" />
+      </button>
+    }
+    @if (fullscreenSupported()) {
+      <button type="button" class="controls__button"
+        [attr.aria-label]="fullscreen() ? labels.exitFullscreen : labels.fullscreen"
+        (click)="toggleFullscreen()">
+        <tls-icon [name]="fullscreen() ? 'fullscreen-exit' : 'fullscreen'" />
+      </button>
+    }
+  </div>
+</div>

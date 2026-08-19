@@ -10,6 +10,8 @@
     "charts/src/**/*.ts",
     "charts/src/**/*.d.ts",
     "rich-text-editor/src/**/*.ts",
-    "rich-text-editor/src/**/*.d.ts"
+    "rich-text-editor/src/**/*.d.ts",
+    "media/src/**/*.ts",
+    "media/src/**/*.d.ts"
   ]
 }

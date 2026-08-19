@@ -1,0 +1,29 @@
+<button
+  type="button"
+  class="mute"
+  [attr.aria-label]="muteLabel()"
+  [attr.aria-pressed]="muted()"
+  (click)="toggleMute()"
+>
+  <tls-icon [name]="muteIcon()" />
+</button>
+<div
+  class="track"
+  role="slider"
+  tabindex="0"
+  aria-valuemin="0"
+  aria-valuemax="100"
+  [attr.aria-valuenow]="valueNow()"
+  [attr.aria-label]="labels.volume"
+  [style.--tls-media-volume]="filledFraction()"
+  (pointerdown)="onPointerDown($event)"
+  (pointermove)="onPointerMove($event)"
+  (pointerup)="onPointerUp($event)"
+  (pointercancel)="onPointerCancel()"
+  (keydown)="onKeydown($event)"
+>
+  <div class="track__fills">
+    <div class="track__fill"></div>
+  </div>
+  <div class="track__thumb"></div>
+</div>

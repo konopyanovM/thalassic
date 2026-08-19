@@ -1,0 +1,7 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+
+  font-variant-numeric: tabular-nums;
+}

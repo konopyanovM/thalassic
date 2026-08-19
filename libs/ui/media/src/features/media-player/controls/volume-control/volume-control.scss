@@ -1,0 +1,125 @@
+@use '../../../../../../../core/src/styles/tools/motion' as mixins;
+
+// The expanded slider carries its own inline margins (there is no host gap or
+// padding), so the collapsed control is exactly the square mute button — a
+// surrounding pill background renders 1:1 at rest instead of a squashed oval.
+@mixin track-expanded {
+  width: var(--tls-media-volume-track-width, 64px);
+
+  margin-inline-start: var(--spacing-1);
+  margin-inline-end: var(--spacing-4);
+
+  opacity: 1;
+
+  pointer-events: auto;
+}
+
+:host {
+  display: inline-flex;
+  align-items: center;
+
+  .mute {
+    position: relative;
+
+    width: var(--tls-media-control-size, 36px);
+    height: var(--tls-media-control-size, 36px);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+
+    // No background declaration: the global reset already strips the UA button
+    // chrome, and declaring one here would out-specific the theme's hover and
+    // active washes (emulated-encapsulation attributes raise this rule above
+    // any theme selector).
+    color: inherit;
+
+    cursor: pointer;
+  }
+
+  // Collapsed by default on fine pointers: the slider slides out while the
+  // control is hovered, holds focus, or is mid-drag (a captured pointer can
+  // roam outside the host, so hover alone cannot hold it open). Coarse
+  // pointers have no hover to reveal with, so the slider stays expanded.
+  .track {
+    position: relative;
+
+    width: 0;
+    height: var(--tls-media-scrubber-height, 4px);
+
+    margin-inline: 0;
+
+    border-radius: var(--radius-xl);
+
+    opacity: 0;
+
+    cursor: pointer;
+    pointer-events: none;
+    touch-action: none;
+
+    // Invisible hit-area extension: a 4px line is a needlessly hard drag
+    // target, so the pointer surface reaches well above and below the visual
+    // track. Vertical only — the volume math reads the horizontal axis, so the
+    // extension never shifts what a click resolves to.
+    &::before {
+      content: '';
+
+      position: absolute;
+      inset-block: calc(-1 * var(--spacing-3));
+      inset-inline: 0;
+    }
+
+    @include mixins.motion {
+      transition:
+        width var(--motion-fast) var(--motion-ease-out),
+        margin-inline-start var(--motion-fast) var(--motion-ease-out),
+        margin-inline-end var(--motion-fast) var(--motion-ease-out),
+        opacity var(--motion-fast) var(--motion-ease-out);
+    }
+
+    @media (pointer: coarse) {
+      @include track-expanded;
+    }
+
+    // The fill is clipped to the track's rounded shape by this wrapper; the
+    // thumb sits outside it so it can render its full size instead of being
+    // cropped to the track's height.
+    &__fills {
+      position: absolute;
+      inset: 0;
+
+      border-radius: var(--radius-xl);
+
+      overflow: hidden;
+    }
+
+    &__fill {
+      position: absolute;
+      inset-block: 0;
+      inset-inline-start: 0;
+
+      width: calc(var(--tls-media-volume, 0) * 100%);
+    }
+
+    &__thumb {
+      position: absolute;
+      inset-block-start: 50%;
+      inset-inline-start: calc(var(--tls-media-volume, 0) * 100%);
+    }
+  }
+
+  &:hover,
+  &:focus-within {
+    .track {
+      @include track-expanded;
+    }
+  }
+}
+
+:host(.tls-media-volume-control--dragging) {
+  .track {
+    @include track-expanded;
+  }
+}
