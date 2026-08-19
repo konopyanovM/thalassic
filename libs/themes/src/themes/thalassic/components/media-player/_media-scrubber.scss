@@ -1,0 +1,92 @@
+@use '../../mixins' as mixins;
+
+// The seek scrubber and the volume slider share one track anatomy (base track,
+// fill layers, round thumb), so both are colored here by the same rules.
+.tls-media-scrubber,
+.tls-media-volume-control {
+  --tls-media-scrubber-height: 4px;
+
+  .track {
+    background-color: rgb(255 255 255 / 0.3);
+
+    &__buffered {
+      background-color: rgb(255 255 255 / 0.4);
+    }
+
+    &__played,
+    &__fill {
+      background-color: var(--tls-media-accent);
+    }
+
+    &__thumb {
+      width: 12px;
+      height: 12px;
+
+      border-radius: var(--radius-xl);
+
+      background-color: var(--tls-media-accent);
+
+      transform: translate(-50%, -50%) scale(0.75);
+
+      @include mixins.motion {
+        transition: transform var(--motion-fast) var(--motion-ease-out);
+      }
+    }
+  }
+
+  // The thumb rests slightly shrunken and grows to full size while the slider
+  // is hovered or holds focus, signalling that the line is grabbable.
+  &:hover .track__thumb,
+  &:focus-visible .track__thumb,
+  &:focus-within .track__thumb {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  &:focus-visible {
+    @include mixins.focus-ring;
+  }
+}
+
+// The volume slider's focusable element is its inner track (the host wraps the
+// mute button too), so the ring attaches there rather than to the host.
+.tls-media-volume-control .track:focus-visible {
+  @include mixins.focus-ring;
+}
+
+// On the video surface the volume slider reads as a neutral utility next to
+// the accent-colored seek scrubber, so its level renders in white rather than
+// competing for the accent. The audio player's themed surface keeps the accent
+// (white would vanish against a light surface).
+.tls-video-player .tls-media-volume-control .track {
+  &__fill {
+    background-color: white;
+  }
+
+  &__thumb {
+    background-color: white;
+  }
+}
+
+// The audio player sits on a themed surface, not footage; its tracks derive
+// from surface colors instead of white overlays.
+.tls-audio-player .tls-media-scrubber .track,
+.tls-audio-player .tls-media-volume-control .track {
+  background-color: var(--color-surface-variant);
+
+  &__buffered {
+    background-color: var(--color-outline-variant);
+  }
+}
+
+:root[dir='rtl'] .tls-media-scrubber .track__thumb,
+:root[dir='rtl'] .tls-media-volume-control .track__thumb {
+  transform: translate(50%, -50%) scale(0.75);
+}
+
+:root[dir='rtl'] .tls-media-scrubber:hover .track__thumb,
+:root[dir='rtl'] .tls-media-scrubber:focus-visible .track__thumb,
+:root[dir='rtl'] .tls-media-scrubber:focus-within .track__thumb,
+:root[dir='rtl'] .tls-media-volume-control:hover .track__thumb,
+:root[dir='rtl'] .tls-media-volume-control:focus-within .track__thumb {
+  transform: translate(50%, -50%) scale(1);
+}

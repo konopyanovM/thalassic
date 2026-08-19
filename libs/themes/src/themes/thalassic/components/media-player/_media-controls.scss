@@ -1,0 +1,124 @@
+@use '../../mixins' as mixins;
+
+// Icon buttons wired directly to native <button> markup rather than tls-button,
+// so the control bar keeps its compact 36px geometry instead of the button
+// component's own sizing scale. `currentColor` drives hover/active so the same
+// rule reads correctly against the video surface's forced-dark chrome and the
+// audio player's themed surface alike.
+//
+// Each control component reflects its own class onto its host (even where the
+// host itself renders as `display: contents`), giving this partial a stable
+// selector to reach the inner <button> through.
+.tls-video-player .controls__button,
+.tls-media-volume-control .mute,
+.tls-media-play-toggle .button,
+.tls-media-settings-menu .button {
+  border-radius: var(--radius-md);
+
+  // Icons default to a 1em box; control glyphs read too small at that size
+  // against full-bleed footage, so the bar sizes them explicitly.
+  .tls-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  @include mixins.motion {
+    transition: background-color var(--motion-fast) var(--motion-ease-out);
+  }
+
+  &:hover {
+    background-color: color-mix(in srgb, currentColor 12%, transparent);
+  }
+
+  &:active {
+    background-color: color-mix(in srgb, currentColor 20%, transparent);
+  }
+
+  &:focus-visible {
+    @include mixins.focus-ring;
+  }
+
+  @include mixins.touch-target(var(--tls-media-control-size, 36px));
+}
+
+// The volume group sits in a translucent pill so the slider's reveal reads as
+// one control expanding rather than a bare track appearing in space. Scoped to
+// the video surface: over footage the pill needs its own dark plate, while on
+// the audio player's themed surface the group inherits that surface instead.
+// No horizontal padding: at rest the pill collapses to exactly the square mute
+// button, so the rounding renders it as a 1:1 circle; the slider's own expanded
+// margins provide the breathing room once it slides out.
+.tls-video-player .tls-media-volume-control {
+  border-radius: var(--radius-3xl);
+
+  background-color: rgb(0 0 0 / 0.3);
+}
+
+// The play toggle carries the same translucent plate as the volume pill so the
+// bar's primary action reads as part of one control family; at the button's
+// fixed square size the rounding renders a true circle. Scoped to the video
+// surface for the same reason as the volume pill. Its glyph sizes above the
+// other controls' — it is the bar's primary action.
+.tls-video-player .tls-media-play-toggle {
+  border-radius: var(--radius-3xl);
+
+  background-color: rgb(0 0 0 / 0.3);
+
+  .tls-icon {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+// The settings trigger carries the same circular plate as its siblings.
+.tls-video-player .tls-media-settings-menu {
+  border-radius: var(--radius-3xl);
+
+  background-color: rgb(0 0 0 / 0.3);
+}
+
+// Inside a circular plate the interaction wash must be circular too; these
+// inner buttons otherwise keep the shared rule's smaller radius.
+.tls-video-player .tls-media-play-toggle .button,
+.tls-video-player .tls-media-settings-menu .button,
+.tls-video-player .tls-media-volume-control .mute {
+  border-radius: var(--radius-3xl);
+}
+
+// The video player's own bar buttons (picture in picture, fullscreen) have no
+// wrapper host, so plate and interaction wash would fight over the same
+// background. The plate stays the button's background — re-asserted for the
+// states the shared rule would otherwise repaint — and the wash moves to an
+// overlay pseudo-element that composites above it, matching how the plated
+// siblings stack host plate under button wash.
+.tls-video-player .controls__button {
+  border-radius: var(--radius-3xl);
+
+  background-color: rgb(0 0 0 / 0.3);
+
+  &:hover,
+  &:active {
+    background-color: rgb(0 0 0 / 0.3);
+  }
+
+  &::before {
+    content: '';
+
+    position: absolute;
+    inset: 0;
+
+    border-radius: var(--radius-3xl);
+
+    @include mixins.motion {
+      transition: background-color var(--motion-fast) var(--motion-ease-out);
+    }
+  }
+
+  &:hover::before {
+    background-color: color-mix(in srgb, currentColor 12%, transparent);
+  }
+
+  &:active::before {
+    background-color: color-mix(in srgb, currentColor 20%, transparent);
+  }
+}
