@@ -99,7 +99,13 @@ export class InfiniteScroll {
     { transform: booleanAttribute },
   );
 
-  /** Whether the collection is exhausted. Ends the cycle and renders the end notice. */
+  /**
+   * Whether the collection is exhausted. Ends the cycle, and renders the end notice — though
+   * only for a collection this trigger has paged through: the notice resolves a question the
+   * reader can actually have ("did it stop loading, or is this everything?"), which is only
+   * asked once a page boundary has been crossed. A collection whose first page held
+   * everything ends silently.
+   */
   public readonly complete: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
     false,
     { transform: booleanAttribute },
@@ -159,6 +165,13 @@ export class InfiniteScroll {
   private readonly _automaticLoads: WritableSignal<number> = signal(0);
 
   /**
+   * Whether this trigger has ever requested a page for the current collection. The end
+   * notice is reserved for an end that was found by paging; until a request has gone out
+   * there was never a loading boundary, so exhaustion renders nothing.
+   */
+  private readonly _hasRequested: WritableSignal<boolean> = signal(false);
+
+  /**
    * Whether a request has gone out that nothing has accounted for yet. The sentinel keeps
    * reporting itself visible after a page is asked for — an observer started while it is in
    * view says so immediately — so without this a single request would be repeated for as
@@ -176,7 +189,7 @@ export class InfiniteScroll {
     // Suspension outranks every other state: a trigger told to stand down neither watches
     // nor reports, whatever the collection is doing meanwhile.
     if (this.disabled()) return 'disabled';
-    if (this.complete()) return 'complete';
+    if (this.complete()) return this._hasRequested() ? 'complete' : 'settled';
     if (this.loading()) return 'loading';
 
     const limit = this.autoLoadLimit();
@@ -267,10 +280,13 @@ export class InfiniteScroll {
    * Renews the automatic allowance. A collection that is replaced rather than extended — a
    * new query, a changed filter — starts its own run of automatic loads, which this
    * restores. It emits nothing itself, but it does put the sentinel back under observation,
-   * so a page is requested straight away when the shorter collection leaves it in view.
+   * so a page is requested straight away when the shorter collection leaves it in view. The
+   * end notice starts over with the collection: one earned by paging through the old
+   * collection says nothing about the new one.
    */
   public reset(): void {
     this._automaticLoads.set(0);
+    this._hasRequested.set(false);
   }
 
   // Private methods
@@ -283,6 +299,7 @@ export class InfiniteScroll {
 
   private _emit(): void {
     this._pending.set(true);
+    this._hasRequested.set(true);
     this.loadMore.emit();
   }
 }

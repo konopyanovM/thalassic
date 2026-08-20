@@ -225,13 +225,41 @@ describe('InfiniteScroll', () => {
     expect(text('.state')).toBe(DEFAULT_INFINITE_SCROLL_CONFIG.labels.loadMore);
   });
 
-  it('stops at an exhausted collection and announces it', async () => {
+  it('stops at an exhausted collection and announces the end it paged to', async () => {
+    FakeIntersectionObserver.latest.emit(true);
+    await settlePage();
+
     host.complete.set(true);
     await fixture.whenStable();
 
     expect(FakeIntersectionObserver.active).toHaveLength(0);
     expect(text('.announcement')).toBe(DEFAULT_INFINITE_SCROLL_CONFIG.labels.complete);
     expect(text('.notice')).toBe(DEFAULT_INFINITE_SCROLL_CONFIG.labels.complete);
+  });
+
+  it('ends silently when the first page already held everything', async () => {
+    // No page was ever requested through this trigger, so its exhaustion resolves nothing a
+    // reader could be wondering about — the collection visibly just ends.
+    host.complete.set(true);
+    await fixture.whenStable();
+
+    expect(FakeIntersectionObserver.active).toHaveLength(0);
+    expect(fixture.debugElement.query(By.css('.state'))).toBeNull();
+    expect(text('.announcement')).toBe('');
+  });
+
+  it('starts the end notice over with a replaced collection', async () => {
+    FakeIntersectionObserver.latest.emit(true);
+    await settlePage();
+
+    // The collection is replaced — a new query, a changed filter — and its short successor
+    // is exhausted from the start: the notice earned on the old collection does not carry.
+    host.infiniteScroll().reset();
+    host.complete.set(true);
+    await fixture.whenStable();
+
+    expect(fixture.debugElement.query(By.css('.state'))).toBeNull();
+    expect(text('.announcement')).toBe('');
   });
 
   it('renders nothing and watches nothing while disabled', async () => {
