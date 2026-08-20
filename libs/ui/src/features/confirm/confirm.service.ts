@@ -7,7 +7,7 @@ import {
 import { ComponentPortal } from '@angular/cdk/portal';
 import { ComponentRef, inject, Injectable } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
-import { Point } from '@thalassic/core';
+import { Point, ViewportService } from '@thalassic/core';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { overlayPosition } from '../../types';
@@ -22,7 +22,8 @@ export interface ConfirmOptions {
   /**
    * Element (or the originating event) the dialog is anchored to. Present opens
    * an anchored popover next to the trigger; omitting it opens a centered,
-   * focus-trapped modal instead.
+   * focus-trapped modal instead. A viewport at or below the configured
+   * `modalBelow` breakpoint opens the modal even with a trigger.
    */
   trigger?: HTMLElement | MouseEvent;
   message: string;
@@ -39,8 +40,10 @@ export interface ConfirmOptions {
 /**
  * Imperative confirm dialog for `await`-style flows: opens a dialog and resolves
  * `true` on confirm, `false` on cancel / backdrop / Escape. Anchors to the
- * `trigger` when given, otherwise opens as a centered modal. For a template-driven
- * anchored equivalent, use the `tls-confirm` component.
+ * `trigger` when given, otherwise opens as a centered modal — and a viewport at
+ * or below the configured `modalBelow` breakpoint opens the modal even with a
+ * trigger. For a template-driven anchored equivalent, use the `tls-confirm`
+ * component.
  */
 @Injectable({ providedIn: 'root' })
 export class ConfirmService {
@@ -49,11 +52,16 @@ export class ConfirmService {
   private readonly _focusTrapFactory = inject(ConfigurableFocusTrapFactory);
   private readonly _router = inject(Router, { optional: true });
   private readonly _config = inject(CONFIRM_CONFIG);
+  // Optional: only apps that call `provideViewport()` register it, and without
+  // it the `modalBelow` behaviour simply stays off.
+  private readonly _viewportService = inject(ViewportService, {
+    optional: true,
+  });
 
   // Public methods
   public confirm(options: ConfirmOptions): Promise<boolean> {
     const trigger = options.trigger;
-    const modal = !trigger;
+    const modal = !trigger || this._prefersModal();
 
     const overlayRef = modal
       ? this._createModalOverlay()
@@ -66,6 +74,14 @@ export class ConfirmService {
   }
 
   // Private methods
+  /** Whether the viewport sits at or below the configured modal breakpoint. */
+  private _prefersModal(): boolean {
+    const modalBelow = this._config.modalBelow;
+    if (!modalBelow || !this._viewportService) return false;
+
+    return this._viewportService.isBelow(modalBelow)();
+  }
+
   private _createAnchoredOverlay(
     trigger: HTMLElement | MouseEvent,
     options: ConfirmOptions,
