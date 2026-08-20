@@ -8,7 +8,19 @@ import {
   OutputEmitterRef,
   Signal,
 } from '@angular/core';
-import { addMonths, Day, format, isSameDay, isSameMonth, isToday, subMonths } from 'date-fns';
+import {
+  addMonths,
+  Day,
+  endOfDay,
+  format,
+  isAfter,
+  isBefore,
+  isSameDay,
+  isSameMonth,
+  isToday,
+  startOfDay,
+  subMonths,
+} from 'date-fns';
 import { LOCALE_CONFIG, localeFormatOptions } from '../../../../abstract/locale';
 import { buildMonthDays, rotateWeekDays } from '../../../../utils';
 import { Icon } from '../../../icon';
@@ -30,6 +42,10 @@ export class DatePickerCalendar {
   public readonly selectedDate: InputSignal<Date | null> = input.required<Date | null>();
   public readonly weekStartsOn: InputSignal<Day> = input.required<Day>();
   public readonly weekDays: InputSignal<string[]> = input.required<string[]>();
+  /** Earliest selectable day, inclusive; the time of day is ignored. */
+  public readonly minDate: InputSignal<Date | null> = input<Date | null>(null);
+  /** Latest selectable day, inclusive; the time of day is ignored. */
+  public readonly maxDate: InputSignal<Date | null> = input<Date | null>(null);
 
   // Outputs
   public readonly daySelect: OutputEmitterRef<Date> = output<Date>();
@@ -73,5 +89,15 @@ export class DatePickerCalendar {
 
   protected isTodayDay(day: Date): boolean {
     return isToday(day);
+  }
+
+  protected isDisabledDay(day: Date): boolean {
+    const minDate = this.minDate();
+    if (minDate && isBefore(day, startOfDay(minDate))) return true;
+
+    const maxDate = this.maxDate();
+    if (maxDate && isAfter(day, endOfDay(maxDate))) return true;
+
+    return false;
   }
 }

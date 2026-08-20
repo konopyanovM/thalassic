@@ -80,5 +80,17 @@
         filter: brightness(0.9);
       }
     }
+
+    // Out of the picker's allowed range. Wins over the state modifiers above:
+    // today can lie outside the range, and a bound moved past the current
+    // selection must grey it out rather than leave it looking pickable.
+    &:disabled {
+      background-color: transparent;
+      opacity: 0.3;
+
+      color: var(--color-on-surface-variant);
+
+      cursor: not-allowed;
+    }
   }
 }

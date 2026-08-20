@@ -84,6 +84,10 @@ export class DateTimePicker extends ValueFormControl<Date | null> {
   public readonly yearsPerPage: InputSignal<number> = input<number>(this.config.yearsPerPage);
   public readonly weekStartsOn: InputSignal<Day> = input<Day>(this.config.weekStartsOn);
   public readonly weekDays: InputSignal<string[]> = input<string[]>(this.config.weekDays);
+  /** Earliest selectable day, inclusive; the calendar disables earlier days. */
+  public readonly minDate: InputSignal<Date | null> = input<Date | null>(null);
+  /** Latest selectable day, inclusive; the calendar disables later days. */
+  public readonly maxDate: InputSignal<Date | null> = input<Date | null>(null);
 
   // State
   protected readonly viewDate: WritableSignal<Date> = signal(new Date());
