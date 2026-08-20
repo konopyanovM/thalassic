@@ -23,7 +23,9 @@ export const OVERLAY_POSITION_MAP: Record<overlayPosition, ConnectedPosition> = 
     originY: 'bottom',
     overlayX: 'center',
     overlayY: 'top',
-    offsetX: 1,
+    // No cross-axis shift on a centered placement: the sign here scales the
+    // consumer's `offset.x`, and a non-zero sign would skew the panel sideways.
+    offsetX: 0,
     offsetY: 1,
   },
   left: {
