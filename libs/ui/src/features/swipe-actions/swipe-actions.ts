@@ -29,7 +29,12 @@ import { SWIPE_ACTIONS_CONFIG } from './swipe-actions.token';
  *
  * A side takes part only when its template is projected: `#startAction` is
  * revealed by dragging the content toward inline-end, `#endAction` by dragging
- * toward inline-start; both resolve against the layout direction. Actions
+ * toward inline-start; both resolve against the layout direction. Projected
+ * content is the consumer's to style — the panel only centres it. Whether
+ * releasing would commit is exposed twice for the content to react to: the
+ * `tls-swipe-actions__panel--armed` class on the revealed panel (for CSS
+ * choreography — an icon pop, a label reveal) and the `armedChanged` output
+ * (for behaviour — a haptic tick). Actions
  * committed by swipe must never be the only path to the behaviour — the
  * gesture is invisible and unavailable to keyboards and assistive tech, so a
  * visible control (a button, a menu item) has to offer the same actions.
@@ -45,6 +50,10 @@ import { SWIPE_ACTIONS_CONFIG } from './swipe-actions.token';
   host: {
     class: 'tls-swipe-actions',
     '[class.tls-swipe-actions--dragging]': 'dragging()',
+    // Published for the theme: panel content sits in a slot capped at the
+    // nominal reveal, pinned to the outer edge, so an overdrag stretches the
+    // panel without dragging the content inward with it.
+    '[style.--tls-swipe-actions-reveal]': 'revealWidth() + "px"',
   },
 })
 export class SwipeActions {
@@ -85,6 +94,12 @@ export class SwipeActions {
   public readonly startCommitted: OutputEmitterRef<void> = output<void>();
   /** The end-side action was committed (content dragged toward inline-start). */
   public readonly endCommitted: OutputEmitterRef<void> = output<void>();
+  /**
+   * Whether releasing right now would commit the revealed action. Fires on
+   * every change of that answer during a drag — the hook for a haptic tick on
+   * arming — and always ends `false` when the gesture ends.
+   */
+  public readonly armedChanged: OutputEmitterRef<boolean> = output<boolean>();
 
   // State
   protected readonly dragging: WritableSignal<boolean> = signal(false);
@@ -92,6 +107,9 @@ export class SwipeActions {
   // are rebased against it so the reveal grows from zero at the lock point
   // instead of jumping by the slop the moment the first move lands.
   private _lockDelta = 0;
+  // Whether the current reveal has passed the commit threshold. Written from
+  // the move stream, so the DOM class rides along directly (see _applyOffset).
+  private _armed = false;
 
   // Computed
   protected readonly panEnabled: Signal<boolean> = computed(() => {
@@ -192,5 +210,36 @@ export class SwipeActions {
 
     const endPanel = this.endPanel();
     if (endPanel) endPanel.nativeElement.style.width = `${Math.max(0, -offset)}px`;
+
+    this._updateArmed(offset);
+  }
+
+  /**
+   * Tracks whether releasing at this reveal would commit, mirroring the answer
+   * onto the panels as a class and onto `armedChanged`. Both writes bypass
+   * bindings: this runs on the move stream, outside the Angular zone.
+   */
+  private _updateArmed(offset: number): void {
+    const armed = Math.abs(offset) >= this.commitThreshold();
+    if (armed === this._armed) return;
+    this._armed = armed;
+
+    // Disarming clears both panels: the offset may already have crossed zero
+    // (or been settled there), no longer naming the side that was armed.
+    const startPanel = this.startPanel();
+    if (startPanel) {
+      startPanel.nativeElement.classList.toggle(
+        'tls-swipe-actions__panel--armed',
+        armed && offset > 0,
+      );
+    }
+    const endPanel = this.endPanel();
+    if (endPanel) {
+      endPanel.nativeElement.classList.toggle(
+        'tls-swipe-actions__panel--armed',
+        armed && offset < 0,
+      );
+    }
+    this.armedChanged.emit(armed);
   }
 }
