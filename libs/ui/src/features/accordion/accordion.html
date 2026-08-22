@@ -1,0 +1,79 @@
+<!--
+  The group directive carries the stack's policy as bindings, which a host
+  directive cannot receive, so it sits on an element of its own. That element is
+  laid out as `display: contents`, so the items remain direct layout children of
+  the accordion and the extra element paints nothing.
+-->
+<div
+  ngAccordionGroup
+  class="tls-accordion__group"
+  [multiExpandable]="multiExpandable()"
+  [disabled]="disabled()"
+  [softDisabled]="softDisabled()"
+  [wrap]="wrap()"
+>
+  @for (item of items(); track item) {
+    <div
+      class="tls-accordion__item"
+      [class.tls-accordion__item--expanded]="item.expanded()"
+      [class.tls-accordion__item--disabled]="item.disabled() || disabled()"
+    >
+      <!--
+        The heading is a `role="heading"` element rather than an `h2`–`h6`,
+        since the rank varies with the surrounding document outline and a tag
+        name cannot be chosen at runtime.
+      -->
+      <div
+        class="tls-accordion__heading"
+        role="heading"
+        [attr.aria-level]="resolveHeadingLevel(item)"
+      >
+        <button
+          ngAccordionTrigger
+          class="tls-accordion__trigger"
+          type="button"
+          [panel]="panel"
+          [disabled]="item.disabled()"
+          [(expanded)]="item.expanded"
+          [attr.aria-label]="item.headerTemplateRef() ? item.label() : null"
+        >
+          @if (item.headerTemplateRef(); as headerTemplateRef) {
+            <span class="tls-accordion__header">
+              <ng-container [ngTemplateOutlet]="headerTemplateRef"></ng-container>
+            </span>
+          } @else {
+            <span class="tls-accordion__text">
+              <span class="tls-accordion__label">{{ item.label() }}</span>
+              @if (item.description(); as description) {
+                <span class="tls-accordion__description">{{ description }}</span>
+              }
+            </span>
+          }
+
+          @if (item.trailingTemplateRef(); as trailingTemplateRef) {
+            <span class="tls-accordion__trailing">
+              <ng-container [ngTemplateOutlet]="trailingTemplateRef"></ng-container>
+            </span>
+          }
+
+          <tls-icon class="tls-accordion__chevron" name="chevron-down" aria-hidden="true" />
+        </button>
+      </div>
+
+      <div
+        #panel="ngAccordionPanel"
+        ngAccordionPanel
+        class="tls-accordion__panel"
+        [preserveContent]="preserveContent()"
+      >
+        <div class="tls-accordion__content">
+          <div class="tls-accordion__body">
+            <ng-template ngAccordionContent>
+              <ng-container [ngTemplateOutlet]="item.contentTemplateRef()"></ng-container>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

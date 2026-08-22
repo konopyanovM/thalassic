@@ -1,0 +1,42 @@
+// Surface treatments for the accordion. Each variant only recolours the custom
+// properties declared by the block and adds the rules or radii that define it;
+// the structure itself lives in components/accordion/_accordion.
+//
+// The variants differ in where the boundary between sections is drawn: `flat`
+// and `outlined` share one continuous stack divided by hairlines, while
+// `separated` breaks the stack into detached cards. A rounded stack clips its
+// items so the first and last corners follow the container.
+
+// A continuous stack with no chrome of its own, divided by a hairline between
+// neighbouring sections.
+.tls-accordion--flat {
+  .tls-accordion__item + .tls-accordion__item {
+    border-block-start: var(--tls-accordion-border-width) solid var(--tls-accordion-border-color);
+  }
+}
+
+// The same stack drawn as one card: a single border around the group, hairlines
+// inside it, and radius on the outer corners alone.
+.tls-accordion--outlined {
+  border: var(--tls-accordion-border-width) solid var(--tls-accordion-border-color);
+  border-radius: var(--tls-accordion-border-radius);
+
+  overflow: hidden;
+
+  .tls-accordion__item + .tls-accordion__item {
+    border-block-start: var(--tls-accordion-border-width) solid var(--tls-accordion-border-color);
+  }
+}
+
+// Each section is its own card, spaced from its neighbours.
+.tls-accordion--separated {
+  --tls-accordion-gap: var(--spacing-3);
+  --tls-accordion-item-background-color: var(--color-surface-container-lowest);
+
+  .tls-accordion__item {
+    border: var(--tls-accordion-border-width) solid var(--tls-accordion-border-color);
+    border-radius: var(--tls-accordion-border-radius);
+
+    overflow: hidden;
+  }
+}

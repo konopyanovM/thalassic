@@ -16,6 +16,7 @@ import {
 import { DEFAULT_FORM_CONTROL_CONFIG, FORM_CONTROL_CONFIG } from '../abstract/form';
 import { DEFAULT_LOCALE_CONFIG, LOCALE_CONFIG } from '../abstract/locale';
 import {
+  ACCORDION_CONFIG,
   ACTIVITY_HEATMAP_CONFIG,
   ActivityHeatmapConfig,
   ALERT_CONFIG,
@@ -35,6 +36,7 @@ import {
   ColorPickerConfig,
   ColorRangeConfig,
   DATE_TIME_PICKER_CONFIG,
+  DEFAULT_ACCORDION_CONFIG,
   DEFAULT_ACTIVITY_HEATMAP_CONFIG,
   DEFAULT_ALERT_CONFIG,
   DEFAULT_AUTOCOMPLETE_CONFIG,
@@ -178,6 +180,10 @@ export const provideThalassicUIConfig = (
       useValue: deepMerge(DEFAULT_FORM_CONTROL_CONFIG, config.formControl),
     },
     // Components
+    {
+      provide: ACCORDION_CONFIG,
+      useValue: deepMerge(DEFAULT_ACCORDION_CONFIG, components.accordion),
+    },
     {
       provide: ACTIVITY_HEATMAP_CONFIG,
       // `labels` is a deep-partial override; deepMerge merges it recursively, but its

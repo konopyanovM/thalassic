@@ -1,4 +1,5 @@
 import {
+  AccordionConfig,
   ActivityHeatmapConfig,
   ActivityHeatmapLabels,
   AlertConfig,
@@ -81,6 +82,7 @@ export interface tlsUiConfigProvider {
   /** Cross-cutting defaults inherited by every form control (not tied to a single component). */
   formControl?: Partial<FormControlConfig>;
   components?: {
+    accordion?: Partial<AccordionConfig>;
     activityHeatmap?: Partial<Omit<ActivityHeatmapConfig, 'labels'>> & {
       labels?: Partial<ActivityHeatmapLabels>;
     };

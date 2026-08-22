@@ -1,0 +1,187 @@
+@use '../../mixins' as mixins;
+
+// Structural styles shared by every accordion variant. The block is the stack,
+// `__item` is one collapsible section, and `__trigger` / `__panel` are the
+// heading button and the region it controls.
+//
+// The stack paints nothing of its own here: surfaces, rules and radii belong to
+// the variants (components/accordion/_accordion-variant), which recolour the
+// custom properties declared below rather than restating the structure.
+.tls-accordion {
+  --tls-accordion-gap: 0;
+  --tls-accordion-border-color: var(--color-outline-variant);
+  --tls-accordion-border-width: 1px;
+  --tls-accordion-border-radius: var(--radius-md);
+  --tls-accordion-item-background-color: transparent;
+  // The trigger already clears the 44px touch-target floor at its minimum
+  // height, so its tap area needs no coarse-pointer expansion.
+  --tls-accordion-trigger-min-height: 48px;
+  --tls-accordion-trigger-padding-block: var(--spacing-3);
+  --tls-accordion-trigger-padding-inline: var(--spacing-4);
+  --tls-accordion-trigger-gap: var(--spacing-3);
+  --tls-accordion-trigger-background-color: transparent;
+  --tls-accordion-trigger-hover-background-color: var(--color-surface-container-low);
+  --tls-accordion-label-color: var(--color-on-surface);
+  --tls-accordion-description-color: var(--color-on-surface-variant);
+  --tls-accordion-chevron-size: 20px;
+  --tls-accordion-content-padding-block-end: var(--spacing-4);
+  --tls-accordion-content-padding-inline: var(--spacing-4);
+  --tls-accordion-disabled-opacity: 0.38;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--tls-accordion-gap);
+
+  // The element carrying the accordion primitive exists only to receive the
+  // stack's policy bindings; laying it out as `contents` keeps the items direct
+  // layout children of the stack.
+  &__group {
+    display: contents;
+  }
+
+  &__item {
+    background-color: var(--tls-accordion-item-background-color);
+
+    &--expanded {
+      .tls-accordion__chevron {
+        transform: rotate(180deg);
+      }
+    }
+
+    &--disabled {
+      opacity: var(--tls-accordion-disabled-opacity);
+
+      .tls-accordion__trigger {
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  &__heading {
+    display: flex;
+  }
+
+  &__trigger {
+    width: 100%;
+    min-height: var(--tls-accordion-trigger-min-height);
+
+    padding: var(--tls-accordion-trigger-padding-block) var(--tls-accordion-trigger-padding-inline);
+
+    display: flex;
+    align-items: center;
+    gap: var(--tls-accordion-trigger-gap);
+
+    border: none;
+
+    background-color: var(--tls-accordion-trigger-background-color);
+
+    // The header row reads as a label by default, so a custom header template
+    // matches the built-in label without restating the type scale.
+    font-size: var(--font-label-large-size);
+    font-weight: var(--font-label-large-weight);
+    line-height: var(--font-label-large-line-height);
+    letter-spacing: var(--font-label-large-letter-spacing);
+    text-align: start;
+    color: var(--tls-accordion-label-color);
+
+    cursor: pointer;
+
+    @include mixins.motion(essential) {
+      transition: background-color var(--motion-fast) var(--motion-ease-in-out);
+    }
+
+    &:hover {
+      background-color: var(--tls-accordion-trigger-hover-background-color);
+    }
+
+    // Drawn inside the control's box: an item may be clipped by a variant that
+    // rounds its corners, and items sit flush against their neighbours, so an
+    // outset ring would be cut off on one edge and overlap the next item on the
+    // other.
+    &:focus-visible {
+      @include mixins.focus-ring;
+
+      outline-offset: calc(var(--control-focus-ring-offset) * -1);
+    }
+  }
+
+  // The built-in label/description pair, stacked.
+  &__text {
+    min-width: 0;
+
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  // A header template replaces that pair, so the slot the consumer fills takes
+  // over growing against the trailing content and the chevron. Laid out as a
+  // row, since a replacement header is a single line of its own composition.
+  &__header {
+    min-width: 0;
+
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: var(--spacing-2);
+  }
+
+  &__description {
+    font-size: var(--font-body-small-size);
+    font-weight: var(--font-body-small-weight);
+    line-height: var(--font-body-small-line-height);
+    letter-spacing: var(--font-body-small-letter-spacing);
+    color: var(--tls-accordion-description-color);
+  }
+
+  &__trailing {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+  }
+
+  &__chevron {
+    width: var(--tls-accordion-chevron-size);
+    height: var(--tls-accordion-chevron-size);
+
+    display: flex;
+    flex-shrink: 0;
+
+    color: var(--tls-accordion-description-color);
+
+    @include mixins.motion(essential) {
+      transition: transform var(--motion-default) var(--motion-ease-in-out);
+    }
+  }
+
+  // Collapsing to a zero-height row rather than to `display: none` keeps the
+  // panel in the layout, which is what allows the height to be animated. The
+  // primitive marks a hidden panel `inert`, so the expanded state is read from
+  // the DOM rather than mirrored onto a class.
+  &__panel {
+    display: grid;
+    grid-template-rows: 0fr;
+
+    @include mixins.motion(essential) {
+      transition: grid-template-rows var(--motion-default) var(--motion-ease-in-out);
+    }
+
+    &:not([inert]) {
+      grid-template-rows: 1fr;
+    }
+  }
+
+  &__content {
+    min-height: 0;
+
+    overflow: hidden;
+  }
+
+  // Padding sits inside the clipped box rather than on it: `overflow: hidden`
+  // clips descendants but not the element's own padding, so padding on
+  // `__content` would keep a collapsed panel that many pixels tall.
+  &__body {
+    padding-block-end: var(--tls-accordion-content-padding-block-end);
+    padding-inline: var(--tls-accordion-content-padding-inline);
+  }
+}

@@ -1,3 +1,4 @@
+import { accordionVariant } from '../../src/features/accordion/accordion.types';
 import { badgeVariant } from '../../src/features/badge/badge.types';
 import { buttonVariant } from '../../src/features/button/button.types';
 import { chipSize, chipVariant } from '../../src/features/chip/chip.types';
@@ -7,6 +8,12 @@ import { fileInputVariant } from '../../src/features/form/file-input/file-input.
 import { pinInputType } from '../../src/features/form/pin-input';
 import { tabsHeaderAlign, tabsItemsAlign, tabsVariant } from '../../src/features/tabs/tabs.types';
 import { color, controlSize, orientation, overlayPosition } from '../../src/types';
+
+export const STORY_ACCORDION_VARIANT_OPTIONS: accordionVariant[] = [
+  'flat',
+  'outlined',
+  'separated',
+] as const;
 
 export const STORY_COLOR_OPTIONS: color[] = [
   'primary',
