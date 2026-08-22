@@ -71,6 +71,7 @@ export class SwipeActions {
   /** Fill of the panel behind the inline-end edge. */
   public readonly endColor: InputSignal<color> = input<color>('tertiary');
   public readonly revealWidth: InputSignal<number> = input<number>(this._config.revealWidth);
+  public readonly overdrag: InputSignal<number> = input<number>(this._config.overdrag);
   public readonly commitThreshold: InputSignal<number> = input<number>(
     this._config.commitThreshold,
   );
@@ -140,7 +141,19 @@ export class SwipeActions {
   /** Snaps the row shut; leaving the dragging state re-enables the transitions. */
   private _settle(): void {
     this.dragging.set(false);
-    this._applyOffset(0);
+    // The dragging class suppresses the settle transition, and its removal only
+    // reaches the DOM with the next render pass — resetting the transform in
+    // the same task races that recalc and can land with transitions still off
+    // (reliably so in WebKit, where the snap-back then jumps). Two frames
+    // guarantee a committed style with transitions re-enabled before the
+    // travel back starts.
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        // A gesture that restarted meanwhile owns the offset again.
+        if (this.dragging()) return;
+        this._applyOffset(0);
+      }),
+    );
   }
 
   /** Maps a physical horizontal delta onto the logical axis: `1` in LTR, `-1` in RTL. */
@@ -148,11 +161,26 @@ export class SwipeActions {
     return this._directionality.value === 'rtl' ? -1 : 1;
   }
 
-  /** A side with no action projected refuses to open at all. */
+  /**
+   * A side with no action projected refuses to open at all. Travel past the
+   * full reveal rubber-bands: the overshoot is damped along `L·o / (o + L)`,
+   * whose slope is exactly 1 at the boundary — the hand-off from linear
+   * tracking into resistance has no corner to feel — and which saturates at
+   * the `overdrag` allowance instead of following the finger.
+   */
   private _clampOffset(offset: number): number {
     const startMax = this.startActionTemplate() ? this.revealWidth() : 0;
     const endMax = this.endActionTemplate() ? this.revealWidth() : 0;
-    return Math.min(startMax, Math.max(-endMax, offset));
+
+    if (offset > startMax) return startMax + this._damp(offset - startMax);
+    if (offset < -endMax) return -endMax - this._damp(-endMax - offset);
+    return offset;
+  }
+
+  private _damp(overshoot: number): number {
+    const allowance = this.overdrag();
+    if (allowance <= 0) return 0;
+    return (allowance * overshoot) / (overshoot + allowance);
   }
 
   private _applyOffset(offset: number): void {

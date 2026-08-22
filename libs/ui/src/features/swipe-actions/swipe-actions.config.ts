@@ -1,6 +1,12 @@
 export interface SwipeActionsConfig {
   /** Width in px of a fully revealed action panel. */
   revealWidth: number;
+  /**
+   * Extra travel in px the reveal may rubber-band past its full width. Pulling
+   * beyond the reveal meets growing resistance and saturates at this
+   * allowance; `0` stops the reveal dead at its width.
+   */
+  overdrag: number;
   /** Travel in px past which releasing the pointer commits the action. */
   commitThreshold: number;
   /** Velocity in px/ms past which a flick commits regardless of travel. */
@@ -15,6 +21,7 @@ export interface SwipeActionsConfig {
 
 export const DEFAULT_SWIPE_ACTIONS_CONFIG: SwipeActionsConfig = {
   revealWidth: 96,
+  overdrag: 40,
   commitThreshold: 72,
   flickVelocity: 0.5,
   pointerTypes: ['touch', 'pen'],
