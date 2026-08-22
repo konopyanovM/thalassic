@@ -50,6 +50,7 @@ export * from './ripple';
 export * from './skeleton';
 export * from './splitter';
 export * from './stepper';
+export * from './swipe-actions';
 export * from './tab-nav';
 export * from './table';
 export * from './tabs';

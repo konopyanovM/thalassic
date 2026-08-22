@@ -1,0 +1,71 @@
+$panel-colors: primary, secondary, tertiary, success, info, warning, danger;
+
+.tls-swipe-actions {
+  position: relative;
+
+  // A custom element is inline by default, and an inline box with block
+  // children hit-tests as an empty line box — touches would fall through to
+  // whatever sits behind the row.
+  display: block;
+
+  // The reveal is a width, so an overrun of the content's travel can never
+  // paint outside the row.
+  overflow: hidden;
+
+  &__content {
+    // Paints above the panels for the whole gesture.
+    position: relative;
+
+    transition: transform var(--motion-default) var(--motion-ease-out);
+  }
+
+  &__panel {
+    position: absolute;
+    inset-block: 0;
+
+    width: 0;
+
+    display: flex;
+    align-items: center;
+
+    overflow: hidden;
+
+    transition: width var(--motion-default) var(--motion-ease-out);
+
+    &--start {
+      inset-inline-start: 0;
+      justify-content: flex-start;
+    }
+
+    &--end {
+      inset-inline-end: 0;
+      justify-content: flex-end;
+    }
+
+    @each $color in $panel-colors {
+      &--#{$color} {
+        background-color: var(--color-#{$color});
+        color: var(--color-on-#{$color});
+      }
+    }
+  }
+
+  &__panel-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-1);
+
+    padding-inline: var(--spacing-4);
+
+    font-size: var(--font-label-small-size);
+    white-space: nowrap;
+  }
+
+  // Mid-gesture the reveal tracks the pointer directly; transitions play only
+  // for the settle after release.
+  &--dragging &__content,
+  &--dragging &__panel {
+    transition: none;
+  }
+}

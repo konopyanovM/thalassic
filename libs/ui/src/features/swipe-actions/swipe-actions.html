@@ -1,0 +1,48 @@
+<!-- Panels sit behind the content and are sized to the reveal itself, so a
+     translucent row never shows a parked full-width fill through its body.
+     They are decorative doubles of real controls elsewhere, hence aria-hidden. -->
+@if (startActionTemplate(); as actionTemplate) {
+  <div
+    #startPanel
+    class="tls-swipe-actions__panel tls-swipe-actions__panel--start"
+    [class]="'tls-swipe-actions__panel--' + startColor()"
+    aria-hidden="true"
+  >
+    <div class="tls-swipe-actions__panel-content">
+      <ng-container [ngTemplateOutlet]="actionTemplate" />
+    </div>
+  </div>
+}
+@if (endActionTemplate(); as actionTemplate) {
+  <div
+    #endPanel
+    class="tls-swipe-actions__panel tls-swipe-actions__panel--end"
+    [class]="'tls-swipe-actions__panel--' + endColor()"
+    aria-hidden="true"
+  >
+    <div class="tls-swipe-actions__panel-content">
+      <ng-container [ngTemplateOutlet]="actionTemplate" />
+    </div>
+  </div>
+}
+
+<!-- Every pan input that shapes the gesture is bound explicitly: `PAN_CONFIG`
+     resolves through the element injector, so an ancestor gesture that provides
+     it for itself (a pull-to-refresh on the scroll pane) would otherwise
+     reconfigure this one. The swipe owns its horizontal axis outright — the
+     `touch-action` claim is also what tells surrounding horizontal gestures
+     (a drawer drag) to stand aside. -->
+<div
+  #content
+  class="tls-swipe-actions__content"
+  [tlsPan]="panEnabled()"
+  axis="x"
+  [manageTouchAction]="true"
+  [pointerTypes]="pointerTypes()"
+  (panStart)="onPanStart()"
+  (panMove)="onPanMove($event)"
+  (panEnd)="onPanEnd($event)"
+  (panCancel)="onPanCancel()"
+>
+  <ng-content />
+</div>
