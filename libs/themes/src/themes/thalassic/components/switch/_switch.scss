@@ -10,7 +10,7 @@
   );
 
   --tls-switch-border-width: 1px;
-  --tls-switch-border-radius: 24px;
+  --tls-switch-border-radius: var(--radius-full);
 
   --tls-switch-track-color: var(--color-surface-variant);
   --tls-switch-handle-color: var(--color-surface);

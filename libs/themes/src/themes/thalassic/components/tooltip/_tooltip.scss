@@ -3,7 +3,7 @@
 .tls-tooltip {
   --tls-tooltip-box-shadow: 0 2px 8px -1px rgb(var(--color-shadow) / 0.35);
   --tls-tooltip-padding: var(--spacing-3);
-  --tls-tooltip-border-radius: 8px;
+  --tls-tooltip-border-radius: var(--radius-md);
   --tls-tooltip-arrow-width: 12px;
   --tls-tooltip-arrow-height: 6px;
   // Keeps an edge-aligned arrow clear of the rounded corner it sits next to.

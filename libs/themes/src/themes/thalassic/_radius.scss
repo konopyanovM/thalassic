@@ -5,6 +5,8 @@
   --radius-xl: 16px;
   --radius-2xl: 20px;
   --radius-3xl: 24px;
+  // Pill/circle radius: large enough to cap at half the box's smaller dimension.
+  --radius-full: 9999px;
 
   // Continuous corner curvature: the corner hugs the box instead of cutting a
   // quarter-circle out of it, so a control reads as a soft square rather than a

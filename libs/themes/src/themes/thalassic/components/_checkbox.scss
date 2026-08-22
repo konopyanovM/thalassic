@@ -23,7 +23,7 @@
     appearance: none;
 
     border: var(--tls-checkbox-border-width) solid var(--tls-checkbox-border-color);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
 
     cursor: pointer;
 
