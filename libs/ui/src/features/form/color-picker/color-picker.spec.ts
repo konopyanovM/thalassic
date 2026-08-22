@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ColorPicker } from './color-picker';
-import { colorFormat } from './color-picker.types';
+import { colorFormat, hexCase } from './color-picker.types';
 
 @Component({
   imports: [ColorPicker],
@@ -12,6 +12,7 @@ import { colorFormat } from './color-picker.types';
     [formats]="formats()"
     [presets]="presets()"
     [disabled]="disabled()"
+    [hexCase]="hexCase()"
   />`,
 })
 class HostComponent {
@@ -20,6 +21,7 @@ class HostComponent {
   formats = signal<colorFormat[]>(['hex', 'rgb', 'hsl']);
   presets = signal<string[]>([]);
   disabled = signal(false);
+  hexCase = signal<hexCase>('lower');
 }
 
 describe('ColorPicker', () => {
@@ -169,6 +171,20 @@ describe('ColorPicker', () => {
     presetOptions[1].dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await settle();
     expect(host.value()).toBe('#00ff00');
+  });
+
+  it('shows the hex readout in uppercase when hexCase is upper, emitting lowercase', async () => {
+    host.value.set('#3b82f6');
+    host.hexCase.set('upper');
+    await settle();
+
+    expect(readout().value).toBe('#3B82F6');
+    expect(host.value()).toBe('#3b82f6');
+
+    // Only the hex notation is case-styled.
+    query<HTMLButtonElement>('.tls-color-picker__readout-format').click();
+    await settle();
+    expect(readout().value).toBe('rgb(59, 130, 246)');
   });
 
   it('shows the alpha slider and emits 8-digit hex only when alpha is enabled', async () => {

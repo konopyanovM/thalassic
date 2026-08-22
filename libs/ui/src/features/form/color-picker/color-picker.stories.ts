@@ -16,6 +16,10 @@ const meta: Meta<ColorPickerComponent> = {
       control: { type: 'select' },
       options: STORY_SIZE_OPTIONS,
     },
+    hexCase: {
+      control: { type: 'inline-radio' },
+      options: ['lower', 'upper'],
+    },
   },
 };
 export default meta;

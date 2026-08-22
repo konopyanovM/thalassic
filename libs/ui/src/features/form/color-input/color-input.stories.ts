@@ -18,6 +18,10 @@ const meta: Meta<ColorInputComponent> = {
       control: { type: 'select' },
       options: STORY_SIZE_OPTIONS,
     },
+    hexCase: {
+      control: { type: 'inline-radio' },
+      options: ['lower', 'upper'],
+    },
   },
 };
 export default meta;

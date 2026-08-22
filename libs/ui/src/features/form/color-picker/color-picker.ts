@@ -32,7 +32,7 @@ import {
   SV_KEYBOARD_STEP_LARGE,
 } from './color-picker.constants';
 import { COLOR_PICKER_CONFIG } from './color-picker.token';
-import { colorFormat, EyeDropperConstructor, Hsva } from './color-picker.types';
+import { colorFormat, EyeDropperConstructor, hexCase, Hsva } from './color-picker.types';
 import {
   formatHsl,
   formatRgb,
@@ -87,6 +87,8 @@ export class ColorPicker extends ValueFormControl<string> {
   public readonly formats: InputSignal<colorFormat[]> = input<colorFormat[]>(this._config.formats);
   /** Hex colors offered as one-tap swatches below the readout. */
   public readonly presets: InputSignal<string[]> = input<string[]>([]);
+  /** Letter case the hex readout displays in; the emitted value stays lowercase. */
+  public readonly hexCase: InputSignal<hexCase> = input<hexCase>(this._config.hexCase);
 
   // View children
   private readonly _svThumb: Signal<ElementRef<HTMLElement>> =
@@ -157,6 +159,7 @@ export class ColorPicker extends ValueFormControl<string> {
     const format = this.activeFormat();
     if (format === 'rgb') return formatRgb(hsvToRgb(this._hsv()));
     if (format === 'hsl') return formatHsl(hsvToHsl(this._hsv()));
+    if (this.hexCase() === 'upper') return this.hex().toUpperCase();
     return this.hex();
   });
 

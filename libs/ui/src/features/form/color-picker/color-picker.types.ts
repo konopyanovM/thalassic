@@ -1,6 +1,9 @@
 /** Text notation a color can be displayed and typed in. */
 export type colorFormat = 'hex' | 'rgb' | 'hsl';
 
+/** Letter case hex notation is displayed in; committed values stay lowercase. */
+export type hexCase = 'lower' | 'upper';
+
 /** Color in RGB space: channels 0–255, alpha 0–1. */
 export interface Rgba {
   red: number;

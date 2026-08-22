@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { hexCase } from '../color-picker/color-picker.types';
 import { ColorInput } from './color-input';
 
 @Component({
@@ -10,6 +11,7 @@ import { ColorInput } from './color-input';
     [alpha]="alpha()"
     [disabled]="disabled()"
     [pickerOnly]="pickerOnly()"
+    [hexCase]="hexCase()"
     placeholder="Pick a color"
   />`,
 })
@@ -18,6 +20,7 @@ class HostComponent {
   alpha = signal(false);
   disabled = signal(false);
   pickerOnly = signal(false);
+  hexCase = signal<hexCase>('lower');
 }
 
 describe('ColorInput', () => {
@@ -109,6 +112,20 @@ describe('ColorInput', () => {
 
     expect(field().value).toBe('');
     expect(field().getAttribute('placeholder')).toBe('Pick a color');
+  });
+
+  it('shows the field in uppercase when hexCase is upper, committing lowercase', async () => {
+    host.hexCase.set('upper');
+    await settle();
+
+    expect(field().value).toBe('#3B82F6');
+
+    field().value = '#ff8800';
+    field().dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+    await settle();
+
+    expect(host.value()).toBe('#ff8800');
+    expect(field().value).toBe('#FF8800');
   });
 
   it('keeps the field freely typable by default', () => {

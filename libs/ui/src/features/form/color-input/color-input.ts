@@ -21,7 +21,7 @@ import { ColorPicker } from '../color-picker';
 import { InputDirective } from '../input';
 import { COLOR_PICKER_DEFAULT_VALUE } from '../color-picker/color-picker.constants';
 import { COLOR_PICKER_CONFIG } from '../color-picker/color-picker.token';
-import { colorFormat } from '../color-picker/color-picker.types';
+import { colorFormat, hexCase } from '../color-picker/color-picker.types';
 import { parseColor, rgbaToHex } from '../color-picker/color.utils';
 import { COLOR_INPUT_CONFIG } from './color-input.token';
 
@@ -58,6 +58,8 @@ export class ColorInput extends ValueFormControl<string> {
   public readonly formats: InputSignal<colorFormat[]> = input<colorFormat[]>(
     this._pickerConfig.formats,
   );
+  /** Letter case the field and panel readout display hex in; the emitted value stays lowercase. */
+  public readonly hexCase: InputSignal<hexCase> = input<hexCase>(this._pickerConfig.hexCase);
   /**
    * Confines the value to the panel: the field rejects typing and instead
    * opens the picker on click or Enter/Space/ArrowDown. Unlike `readonly`,
@@ -90,6 +92,11 @@ export class ColorInput extends ValueFormControl<string> {
     if (!parsed) return '#ffffff00';
     return rgbaToHex(parsed, this.alpha());
   });
+
+  /** Field text: the value, hex-cased for display; the model itself stays lowercase. */
+  protected readonly displayValue: Signal<string> = computed(() =>
+    this.hexCase() === 'upper' ? this.value().toUpperCase() : this.value(),
+  );
 
   /** The panel needs a concrete color to start from even while the field is empty. */
   protected readonly pickerValue: Signal<string> = computed(() => {
@@ -156,6 +163,6 @@ export class ColorInput extends ValueFormControl<string> {
     // Re-sync the field imperatively: after a revert (or a commit that
     // normalizes the text) the bound signal may not change, so the binding
     // alone would leave the stale text in place.
-    field.value = this.value();
+    field.value = this.displayValue();
   }
 }
