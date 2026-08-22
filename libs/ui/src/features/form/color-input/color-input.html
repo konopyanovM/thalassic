@@ -30,8 +30,12 @@
   [attr.aria-describedby]="describedBy()"
   [placeholder]="placeholder()"
   [disabled]="disabled()"
-  [readonly]="readonly()"
+  [readonly]="readonly() || pickerOnly()"
+  [class.tls-color-input__input--picker-only]="pickerOnly()"
+  [attr.aria-haspopup]="pickerOnly() ? 'dialog' : null"
+  [attr.aria-expanded]="pickerOnly() ? popoverRef.isOpen() : null"
   [value]="value()"
+  (click)="onFieldClick()"
   (keydown)="onFieldKeydown($event)"
   (blur)="onFieldBlur($event)"
 />

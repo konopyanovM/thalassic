@@ -9,6 +9,7 @@ import { ColorInput } from './color-input';
     (valueChange)="value.set($event)"
     [alpha]="alpha()"
     [disabled]="disabled()"
+    [pickerOnly]="pickerOnly()"
     placeholder="Pick a color"
   />`,
 })
@@ -16,6 +17,7 @@ class HostComponent {
   value = signal('#3b82f6');
   alpha = signal(false);
   disabled = signal(false);
+  pickerOnly = signal(false);
 }
 
 describe('ColorInput', () => {
@@ -107,6 +109,53 @@ describe('ColorInput', () => {
 
     expect(field().value).toBe('');
     expect(field().getAttribute('placeholder')).toBe('Pick a color');
+  });
+
+  it('keeps the field freely typable by default', () => {
+    expect(field().readOnly).toBe(false);
+    expect(field().getAttribute('aria-haspopup')).toBeNull();
+  });
+
+  it('makes the field readonly with popup semantics when pickerOnly', async () => {
+    host.pickerOnly.set(true);
+    await settle();
+
+    expect(field().readOnly).toBe(true);
+    expect(field().getAttribute('aria-haspopup')).toBe('dialog');
+    expect(field().getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('opens the panel from a click on the pickerOnly field', async () => {
+    host.pickerOnly.set(true);
+    await settle();
+
+    field().click();
+    await settle();
+
+    expect(overlayPicker()).not.toBeNull();
+    expect(field().getAttribute('aria-expanded')).toBe('true');
+  });
+
+  it('opens the panel instead of committing on Enter when pickerOnly', async () => {
+    host.pickerOnly.set(true);
+    await settle();
+
+    field().dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+    await settle();
+
+    expect(overlayPicker()).not.toBeNull();
+    expect(host.value()).toBe('#3b82f6');
+  });
+
+  it('does not open the panel from the field while disabled', async () => {
+    host.pickerOnly.set(true);
+    host.disabled.set(true);
+    await settle();
+
+    field().click();
+    await settle();
+
+    expect(overlayPicker()).toBeNull();
   });
 
   it('disables the trigger and field when disabled', async () => {

@@ -18,6 +18,10 @@
     width: 100%;
 
     padding-inline-start: calc(var(--tls-color-input-trigger-width) + var(--spacing-1));
+
+    &--picker-only {
+      cursor: pointer;
+    }
   }
 
   .tls-color-input__trigger {

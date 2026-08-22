@@ -40,3 +40,10 @@ export const Empty: Story = {
     value: '',
   },
 };
+
+export const PickerOnly: Story = {
+  args: {
+    pickerOnly: true,
+    presets: ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#8b5cf6'],
+  },
+};

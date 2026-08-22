@@ -58,6 +58,15 @@ export class ColorInput extends ValueFormControl<string> {
   public readonly formats: InputSignal<colorFormat[]> = input<colorFormat[]>(
     this._pickerConfig.formats,
   );
+  /**
+   * Confines the value to the panel: the field rejects typing and instead
+   * opens the picker on click or Enter/Space/ArrowDown. Unlike `readonly`,
+   * the control stays fully interactive — only the free-text entry goes.
+   */
+  public readonly pickerOnly: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    false,
+    { transform: booleanAttribute },
+  );
   public readonly placeholder = input<string>(this._config.placeholder);
   public readonly size: InputSignal<controlSize> = input<controlSize>(this._config.size);
   public readonly fluid: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
@@ -104,18 +113,39 @@ export class ColorInput extends ValueFormControl<string> {
     this.value.set(next);
   }
 
+  protected onFieldClick(): void {
+    if (!this.pickerOnly()) return;
+    this._openPanel();
+  }
+
   protected onFieldKeydown(event: KeyboardEvent): void {
+    if (this.pickerOnly()) {
+      if (event.key !== 'Enter' && event.key !== ' ' && event.key !== 'ArrowDown') return;
+      event.preventDefault();
+      this._openPanel();
+      return;
+    }
+
     if (event.key !== 'Enter') return;
     event.preventDefault();
     this._commitField(event.target as HTMLInputElement);
   }
 
   protected onFieldBlur(event: Event): void {
-    this._commitField(event.target as HTMLInputElement);
+    if (!this.pickerOnly()) this._commitField(event.target as HTMLInputElement);
     this.touched.set(true);
   }
 
   // Private methods
+  /** A readonly control still opens the panel — the picker inside is readonly too. */
+  private _openPanel(): void {
+    if (this.disabled()) return;
+
+    const popover = this._popoverComponent();
+    if (!popover) return;
+    popover.open(this._trigger().nativeElement);
+  }
+
   private _commitField(field: HTMLInputElement): void {
     const parsed = parseColor(field.value);
     if (parsed) {
