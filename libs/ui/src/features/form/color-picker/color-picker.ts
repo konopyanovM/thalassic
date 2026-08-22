@@ -24,6 +24,7 @@ import { ButtonDirective } from '../../button';
 import { ColorSwatch } from '../../color-swatch';
 import { Icon } from '../../icon';
 import { ALPHA_MAX, ColorRange } from '../color-range';
+import { ColorSwatchPicker } from '../color-swatch-picker';
 import { InputDirective } from '../input';
 import {
   COLOR_PICKER_DEFAULT_VALUE,
@@ -33,7 +34,6 @@ import {
 import { COLOR_PICKER_CONFIG } from './color-picker.token';
 import { colorFormat, EyeDropperConstructor, Hsva } from './color-picker.types';
 import {
-  contrastForeground,
   formatHsl,
   formatRgb,
   hsvToHsl,
@@ -53,7 +53,7 @@ import {
  */
 @Component({
   selector: 'tls-color-picker',
-  imports: [ButtonDirective, ColorRange, ColorSwatch, Icon, InputDirective],
+  imports: [ButtonDirective, ColorRange, ColorSwatch, ColorSwatchPicker, Icon, InputDirective],
   templateUrl: './color-picker.html',
   host: {
     role: 'group',
@@ -281,24 +281,10 @@ export class ColorPicker extends ValueFormControl<string> {
     this._chosenFormat.set(next);
   }
 
-  protected selectPreset(preset: string): void {
-    if (this.notInteractive()) return;
+  protected onPresetChange(preset: string): void {
     const parsed = parseColor(preset);
     if (!parsed) return;
     this._commit(rgbToHsv(parsed));
-  }
-
-  protected isPresetSelected(preset: string): boolean {
-    const parsed = parseColor(preset);
-    if (!parsed) return false;
-    return rgbaToHex(parsed, this.alpha()) === this.hex();
-  }
-
-  /** Black or white — whichever contrasts more with the preset it sits on. */
-  protected presetCheckColor(preset: string): string {
-    const parsed = parseColor(preset);
-    if (!parsed) return '#ffffff';
-    return contrastForeground(parsed);
   }
 
   protected async openEyeDropper(): Promise<void> {

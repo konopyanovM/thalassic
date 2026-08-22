@@ -1,0 +1,106 @@
+@use '../../mixins' as mixins;
+
+@keyframes tls-color-swatch-picker-check-in {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.tls-color-swatch-picker {
+  // Must match the rendered swatch size of the picker's size step; each size
+  // modifier restates it so the grid columns track the swatch scale.
+  --tls-color-swatch-picker-swatch-size: 24px;
+
+  display: block;
+
+  // Fixed-size columns with the leftover width distributed between them: every
+  // row snaps to the same column grid and the first and last columns sit flush
+  // with the block's edges, instead of a wrapped flex row leaving its slack at
+  // the line end. The gap is the minimum — at least the per-edge touch-target
+  // overflow of a swatch, so neighbouring swatches' expanded hit areas never
+  // overlap even before the distribution widens it.
+  &__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, var(--tls-color-swatch-picker-swatch-size));
+    justify-content: space-between;
+    gap: var(--spacing-3);
+  }
+
+  &__option {
+    position: relative;
+
+    display: inline-flex;
+
+    border-radius: var(--radius-sm);
+
+    cursor: pointer;
+
+    @include mixins.touch-target(var(--tls-color-swatch-picker-swatch-size));
+
+    &:focus {
+      outline: none;
+    }
+
+    &:focus-visible {
+      @include mixins.focus-ring;
+    }
+  }
+
+  // Selection marker overlaid on the swatch; the component sets its `color` to
+  // black or white, whichever contrasts more with the swatch underneath.
+  // The icon keeps its intrinsic 1em box, so with all four edges pinned,
+  // auto margins center it over the swatch.
+  &__check {
+    position: absolute;
+    inset: 0;
+
+    margin: auto;
+
+    font-size: 16px;
+
+    pointer-events: none;
+
+    // The check mounts when its swatch becomes the selection, so an entry
+    // animation plays on every pick. Confirming the selection is functional
+    // feedback — `essential` tier, surviving reduced motion; the spring easing
+    // supplies the pop's overshoot.
+    @include mixins.motion(essential) {
+      animation: tls-color-swatch-picker-check-in var(--motion-fast) var(--motion-ease-spring)
+        both;
+    }
+  }
+
+  &--xs {
+    --tls-color-swatch-picker-swatch-size: 24px;
+  }
+
+  &--sm {
+    --tls-color-swatch-picker-swatch-size: 28px;
+  }
+
+  &--md {
+    --tls-color-swatch-picker-swatch-size: 36px;
+  }
+
+  &--lg {
+    --tls-color-swatch-picker-swatch-size: 44px;
+  }
+
+  &--xl {
+    --tls-color-swatch-picker-swatch-size: 52px;
+  }
+
+  &--disabled {
+    opacity: 0.6;
+
+    .tls-color-swatch-picker__option {
+      cursor: not-allowed;
+    }
+  }
+}

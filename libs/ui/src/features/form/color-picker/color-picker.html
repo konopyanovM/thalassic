@@ -107,27 +107,15 @@
 </div>
 
 @if (presets().length > 0) {
-  <div class="tls-color-picker__presets">
-    @for (preset of presets(); track preset) {
-      <button
-        type="button"
-        class="tls-color-picker__preset"
-        [attr.aria-label]="preset"
-        [attr.aria-pressed]="isPresetSelected(preset)"
-        [disabled]="disabled()"
-        (click)="selectPreset(preset)"
-      >
-        <tls-color-swatch [value]="preset" size="xs" aria-hidden="true" />
-        @if (isPresetSelected(preset)) {
-          <tls-icon
-            name="check"
-            class="tls-color-picker__preset-check"
-            [style.color]="presetCheckColor(preset)"
-            aria-hidden="true"
-          />
-        }
-      </button>
-    }
-  </div>
+  <tls-color-swatch-picker
+    class="tls-color-picker__presets"
+    [colors]="presets()"
+    [value]="hex()"
+    (valueChange)="onPresetChange($event)"
+    [disabled]="disabled()"
+    [readonly]="readonly()"
+    [ariaLabel]="labels.presets"
+    (touchedChange)="touched.set($event)"
+  />
 }
 

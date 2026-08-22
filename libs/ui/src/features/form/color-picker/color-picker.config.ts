@@ -8,6 +8,7 @@ export interface ColorPickerLabels {
   colorValue: string;
   switchFormat: string;
   eyedropper: string;
+  presets: string;
 }
 
 export interface ColorPickerConfig {
@@ -28,5 +29,6 @@ export const DEFAULT_COLOR_PICKER_CONFIG: ColorPickerConfig = {
     colorValue: 'Color value',
     switchFormat: 'Switch color format',
     eyedropper: 'Pick color from screen',
+    presets: 'Preset colors',
   },
 };

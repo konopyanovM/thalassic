@@ -1,0 +1,38 @@
+<!--
+  The listbox cannot live on the host: its selection model is an array of
+  option values, so the directive's bindings have to pass through the
+  adapting computeds/handlers below, which host directives cannot do.
+-->
+<div
+  ngListbox
+  class="tls-color-swatch-picker__list"
+  orientation="horizontal"
+  selectionMode="explicit"
+  [value]="selectedColors()"
+  (valueChange)="onSelectionChange($event)"
+  [disabled]="disabled()"
+  [readonly]="readonly()"
+  [attr.aria-label]="label()"
+  [attr.aria-labelledby]="labelledBy()"
+  [attr.aria-describedby]="describedBy()"
+  [attr.aria-invalid]="invalid() ? 'true' : null"
+>
+  @for (color of colors(); track color) {
+    <div
+      ngOption
+      class="tls-color-swatch-picker__option"
+      [value]="color"
+      [label]="color"
+    >
+      <tls-color-swatch [value]="color" [size]="size()" aria-hidden="true" />
+      @if (isSelected(color)) {
+        <tls-icon
+          name="check"
+          class="tls-color-swatch-picker__check"
+          [style.color]="checkColor(color)"
+          aria-hidden="true"
+        />
+      }
+    </div>
+  }
+</div>

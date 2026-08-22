@@ -18,6 +18,7 @@ export * from './form/checkbox';
 export * from './form/color-input';
 export * from './form/color-picker';
 export * from './form/color-range';
+export * from './form/color-swatch-picker';
 export * from './form/date-time-picker';
 export * from './form/chip-group';
 export * from './form/chip-input';

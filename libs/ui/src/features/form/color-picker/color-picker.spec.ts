@@ -154,17 +154,19 @@ describe('ColorPicker', () => {
     host.presets.set(['#ff0000', '#00ff00']);
     await settle();
 
-    const presetButtons = fixture.nativeElement.querySelectorAll('.tls-color-picker__preset');
-    expect(presetButtons.length).toBe(2);
-    expect(presetButtons[0].getAttribute('aria-pressed')).toBe('true');
-    expect(presetButtons[1].getAttribute('aria-pressed')).toBe('false');
+    const presetOptions = fixture.nativeElement.querySelectorAll(
+      '.tls-color-picker__presets [role="option"]',
+    );
+    expect(presetOptions.length).toBe(2);
+    expect(presetOptions[0].getAttribute('aria-selected')).toBe('true');
+    expect(presetOptions[1].getAttribute('aria-selected')).toBe('false');
 
     // Selection shows as a check icon inside the swatch, contrast-colored.
-    const check = presetButtons[0].querySelector('.tls-color-picker__preset-check');
+    const check = presetOptions[0].querySelector('.tls-color-swatch-picker__check');
     expect(check).not.toBeNull();
-    expect(presetButtons[1].querySelector('.tls-color-picker__preset-check')).toBeNull();
+    expect(presetOptions[1].querySelector('.tls-color-swatch-picker__check')).toBeNull();
 
-    presetButtons[1].click();
+    presetOptions[1].dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await settle();
     expect(host.value()).toBe('#00ff00');
   });
