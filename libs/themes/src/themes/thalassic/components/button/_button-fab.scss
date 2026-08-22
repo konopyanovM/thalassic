@@ -33,6 +33,24 @@ $-scales: (
   // rises further when interacted with — regardless of the variant treatment.
   box-shadow: var(--shadow-md);
 
+  // A floating control supplies its own backdrop: the tonal wash is
+  // translucent by design, which suits an inline chip sitting on its surface
+  // but lets scrolling content bleed through a FAB. Compositing the same wash
+  // over the surface keeps the tint identical while making the fill opaque;
+  // feedback deepens the hue's share over the same backing.
+  &.tls-button--tonal {
+    background-color: color-mix(in srgb, var(--tls-button-color) 15%, var(--color-surface));
+
+    &:not(.tls-button--disabled):hover,
+    &:not(.tls-button--disabled):focus-visible {
+      background-color: color-mix(in srgb, var(--tls-button-color) 23%, var(--color-surface));
+    }
+
+    &:not(.tls-button--disabled):active {
+      background-color: color-mix(in srgb, var(--tls-button-color) 31%, var(--color-surface));
+    }
+  }
+
   &:not(.tls-button--disabled):hover,
   &:not(.tls-button--disabled):focus-visible {
     box-shadow: var(--shadow-lg);

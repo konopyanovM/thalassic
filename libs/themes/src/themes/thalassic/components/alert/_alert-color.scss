@@ -1,43 +1,13 @@
+@use '../../mixins' as mixins;
+
+// Alerts are permanent tonal surfaces: the hue's wash behind hue-toned ink,
+// with the edge rule keeping the full-strength colour (see the wash helpers).
 .tls-alert {
-  &.tls-alert--primary {
-    --tls-alert-edge-color: var(--color-primary);
-    --tls-alert-color: var(--color-on-primary-container);
-    --tls-alert-background-color: var(--color-primary-container);
-  }
-
-  &.tls-alert--secondary {
-    --tls-alert-edge-color: var(--color-secondary);
-    --tls-alert-color: var(--color-on-secondary-container);
-    --tls-alert-background-color: var(--color-secondary-container);
-  }
-
-  &.tls-alert--tertiary {
-    --tls-alert-edge-color: var(--color-tertiary);
-    --tls-alert-color: var(--color-on-tertiary-container);
-    --tls-alert-background-color: var(--color-tertiary-container);
-  }
-
-  &.tls-alert--success {
-    --tls-alert-edge-color: var(--color-success);
-    --tls-alert-color: var(--color-on-success-container);
-    --tls-alert-background-color: var(--color-success-container);
-  }
-
-  &.tls-alert--info {
-    --tls-alert-edge-color: var(--color-info);
-    --tls-alert-color: var(--color-on-info-container);
-    --tls-alert-background-color: var(--color-info-container);
-  }
-
-  &.tls-alert--warning {
-    --tls-alert-edge-color: var(--color-warning);
-    --tls-alert-color: var(--color-on-warning-container);
-    --tls-alert-background-color: var(--color-warning-container);
-  }
-
-  &.tls-alert--danger {
-    --tls-alert-edge-color: var(--color-danger);
-    --tls-alert-color: var(--color-on-danger-container);
-    --tls-alert-background-color: var(--color-danger-container);
+  @each $color in mixins.$colors {
+    &.tls-alert--#{$color} {
+      --tls-alert-edge-color: var(--color-#{$color});
+      --tls-alert-color: #{mixins.wash-ink(var(--color-#{$color}))};
+      --tls-alert-background-color: #{mixins.wash-fill(var(--color-#{$color}))};
+    }
   }
 }

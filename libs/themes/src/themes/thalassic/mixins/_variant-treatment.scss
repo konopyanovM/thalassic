@@ -40,11 +40,11 @@
 
     color: var(--#{$block}-on-color-container);
 
-    // Feedback is a state layer of the container's own content colour rather than a
-    // mix towards the surface: a container sits close to the surface by design, so
-    // moving it that way covers too little distance for the step between hover and
-    // pressed to register. Layering the content colour deepens the tint instead,
-    // which stays visible in both a light and a dark theme.
+    // Feedback is a state layer of the wash's own ink rather than a mix towards
+    // the surface: the wash fill is translucent, so folding in the mostly-opaque
+    // ink both deepens the tint and raises the fill's alpha — a step that
+    // registers in both themes, where a mix towards the surface would cover too
+    // little distance.
     @include _hover-focus-state($block) {
       background-color: color-mix(
         in srgb,

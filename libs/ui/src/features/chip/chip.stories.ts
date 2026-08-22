@@ -13,7 +13,7 @@ const meta: Meta<ChipComponent> = {
   args: {
     label: 'Chip',
     color: 'primary',
-    variant: 'filled',
+    variant: 'tonal',
     size: 'md',
     rounded: false,
     icon: false,

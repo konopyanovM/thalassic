@@ -1,11 +1,33 @@
 $colors: primary, secondary, tertiary, success, info, warning, danger;
 
+// Wash mix stops: the share of the hue in the low-emphasis fill and in its ink.
+// The fill is the hue over a transparent base, so it composites on any surface
+// and holds in both themes; the ink pulls the hue toward the surface's text
+// colour, which darkens it on a light theme and lightens it on a dark one —
+// keeping hues that are illegible at full strength (yellows, light greens)
+// within reach of body-text contrast.
+$wash-fill-share: 15%;
+$wash-ink-share: 75%;
+
+// The tonal wash as value expressions, for components that map hues onto their
+// own custom properties instead of the shared container pair (see tls-alert).
+@function wash-fill($color) {
+  @return color-mix(in srgb, #{$color} #{$wash-fill-share}, transparent);
+}
+
+@function wash-ink($color) {
+  @return color-mix(in srgb, #{$color} #{$wash-ink-share}, var(--color-on-surface));
+}
+
 // Maps each theme hue onto a component's --<block>-color / --<block>-on-color pair.
 // Expects the component to consume those two custom properties.
 //
 // With $tonal: true, each hue additionally exposes the container token pair
-// (--<block>-color-container / --<block>-on-color-container) for a lower-emphasis,
-// tonal appearance.
+// (--<block>-color-container / --<block>-on-color-container) for the tonal,
+// lower-emphasis appearance: a translucent wash of the hue with ink of the
+// same hue, computed from the base colour rather than read from the theme's
+// `--color-*-container` tokens (those remain for true container surfaces —
+// menu hovers, selected rows — not for the tonal variant).
 //
 // $modifier prefixes the hue classes, so a component with a second, independently
 // colored state can reuse the same mapping (e.g. $modifier: 'checked-' emits
@@ -17,8 +39,8 @@ $colors: primary, secondary, tertiary, success, info, warning, danger;
       --#{$block}-on-color: var(--color-on-#{$color});
 
       @if $tonal {
-        --#{$block}-color-container: var(--color-#{$color}-container);
-        --#{$block}-on-color-container: var(--color-on-#{$color}-container);
+        --#{$block}-color-container: #{wash-fill(var(--color-#{$color}))};
+        --#{$block}-on-color-container: #{wash-ink(var(--color-#{$color}))};
       }
     }
   }
