@@ -1,0 +1,17 @@
+@use '../../mixins' as mixins;
+
+.tls-color-input__trigger {
+  border-radius: var(--radius-sm);
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    @include mixins.focus-ring;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}

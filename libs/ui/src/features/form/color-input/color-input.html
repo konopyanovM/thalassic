@@ -1,0 +1,48 @@
+<button
+  #triggerRef
+  type="button"
+  class="tls-color-input__trigger"
+  aria-haspopup="dialog"
+  [attr.aria-label]="labels.openPicker"
+  [attr.aria-expanded]="popoverRef.isOpen()"
+  [disabled]="disabled()"
+  (click)="popoverRef.toggle($event)"
+  (blur)="touched.set(true)"
+>
+  <tls-color-swatch [value]="swatchColor()" size="xs" aria-hidden="true" />
+</button>
+<input
+  type="text"
+  tlsInput
+  class="tls-color-input__input"
+  autocomplete="off"
+  spellcheck="false"
+  [name]="name()"
+  [size]="size()"
+  [fluid]="fluid()"
+  [class]="controlClasses()"
+  [attr.id]="effectiveInputId()"
+  [attr.aria-label]="ariaLabel() ?? null"
+  [attr.aria-labelledby]="labelledBy()"
+  [attr.aria-invalid]="invalid() ? 'true' : null"
+  [attr.aria-required]="required() ? 'true' : null"
+  [attr.aria-busy]="pending() ? 'true' : null"
+  [attr.aria-describedby]="describedBy()"
+  [placeholder]="placeholder()"
+  [disabled]="disabled()"
+  [readonly]="readonly()"
+  [value]="value()"
+  (keydown)="onFieldKeydown($event)"
+  (blur)="onFieldBlur($event)"
+/>
+<tls-popover #popoverRef position="bottom-start" [ariaLabel]="labels.panel">
+  <tls-color-picker
+    [value]="pickerValue()"
+    (valueChange)="onPickerValueChange($event)"
+    [alpha]="alpha()"
+    [formats]="formats()"
+    [presets]="presets()"
+    [size]="size()"
+    [readonly]="readonly()"
+  />
+</tls-popover>

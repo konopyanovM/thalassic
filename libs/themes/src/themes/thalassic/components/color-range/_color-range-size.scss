@@ -1,0 +1,21 @@
+.tls-color-range {
+  &.tls-color-range--xs {
+    --tls-color-range-track-height: 4px;
+    --tls-color-range-thumb-size: 10px;
+  }
+
+  &.tls-color-range--sm {
+    --tls-color-range-track-height: 6px;
+    --tls-color-range-thumb-size: 12px;
+  }
+
+  &.tls-color-range--md {
+    --tls-color-range-track-height: 8px;
+    --tls-color-range-thumb-size: 16px;
+  }
+
+  &.tls-color-range--lg {
+    --tls-color-range-track-height: 10px;
+    --tls-color-range-thumb-size: 20px;
+  }
+}

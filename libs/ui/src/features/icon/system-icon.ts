@@ -41,4 +41,5 @@ export type systemIcon =
   | 'fullscreen-exit'
   | 'picture-in-picture'
   | 'captions'
-  | 'settings';
+  | 'settings'
+  | 'eyedropper';

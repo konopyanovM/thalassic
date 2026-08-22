@@ -1,0 +1,43 @@
+:host {
+  display: inline-block;
+
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-sm);
+
+  // The color layer sits over a checkerboard so a translucent color shows its
+  // alpha instead of blending into the page background. The checkerboard is
+  // intentionally theme-independent — white/gray is the universal transparency
+  // signifier.
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(var(--tls-color-swatch-color), var(--tls-color-swatch-color)),
+    repeating-conic-gradient(#c8c8c8 0% 25%, transparent 0% 50%);
+  background-size:
+    100% 100%,
+    8px 8px;
+
+  &.tls-color-swatch--xs {
+    width: 24px;
+    height: 24px;
+  }
+
+  &.tls-color-swatch--sm {
+    width: 28px;
+    height: 28px;
+  }
+
+  &.tls-color-swatch--md {
+    width: 36px;
+    height: 36px;
+  }
+
+  &.tls-color-swatch--lg {
+    width: 44px;
+    height: 44px;
+  }
+
+  &.tls-color-swatch--xl {
+    width: 52px;
+    height: 52px;
+  }
+}

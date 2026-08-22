@@ -12,6 +12,12 @@ import {
   ChipControlConfig,
   ChipGroupConfig,
   ChipInputConfig,
+  ColorInputConfig,
+  ColorInputLabels,
+  ColorPickerConfig,
+  ColorPickerLabels,
+  ColorRangeConfig,
+  ColorRangeLabels,
   DateTimePickerConfig,
   DialogConfig,
   DividerConfig,
@@ -91,6 +97,15 @@ export interface tlsUiConfigProvider {
     chipControl?: Partial<ChipControlConfig>;
     chipGroup?: Partial<ChipGroupConfig>;
     chipInput?: Partial<ChipInputConfig>;
+    colorInput?: Partial<Omit<ColorInputConfig, 'labels'>> & {
+      labels?: Partial<ColorInputLabels>;
+    };
+    colorPicker?: Partial<Omit<ColorPickerConfig, 'labels'>> & {
+      labels?: Partial<ColorPickerLabels>;
+    };
+    colorRange?: Partial<Omit<ColorRangeConfig, 'labels'>> & {
+      labels?: Partial<ColorRangeLabels>;
+    };
     dateTimePicker?: Partial<DateTimePickerConfig>;
     dialog?: Partial<DialogConfig>;
     divider?: Partial<DividerConfig>;

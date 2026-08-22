@@ -28,6 +28,12 @@ import {
   CHIP_CONTROL_CONFIG,
   CHIP_GROUP_CONFIG,
   CHIP_INPUT_CONFIG,
+  COLOR_INPUT_CONFIG,
+  COLOR_PICKER_CONFIG,
+  COLOR_RANGE_CONFIG,
+  ColorInputConfig,
+  ColorPickerConfig,
+  ColorRangeConfig,
   DATE_TIME_PICKER_CONFIG,
   DEFAULT_ACTIVITY_HEATMAP_CONFIG,
   DEFAULT_ALERT_CONFIG,
@@ -39,6 +45,9 @@ import {
   DEFAULT_CHIP_CONTROL_CONFIG,
   DEFAULT_CHIP_GROUP_CONFIG,
   DEFAULT_CHIP_INPUT_CONFIG,
+  DEFAULT_COLOR_INPUT_CONFIG,
+  DEFAULT_COLOR_PICKER_CONFIG,
+  DEFAULT_COLOR_RANGE_CONFIG,
   DEFAULT_DATE_TIME_PICKER_CONFIG,
   DEFAULT_DIALOG_CONFIG,
   DEFAULT_DIVIDER_CONFIG,
@@ -212,6 +221,33 @@ export const provideThalassicUIConfig = (
     {
       provide: CHIP_INPUT_CONFIG,
       useValue: deepMerge(DEFAULT_CHIP_INPUT_CONFIG, components.chipInput),
+    },
+    {
+      provide: COLOR_INPUT_CONFIG,
+      // `labels` is a deep-partial override; deepMerge merges it recursively, but its
+      // `Partial<T>` signature only models a shallow partial, so cast to it.
+      useValue: deepMerge(
+        DEFAULT_COLOR_INPUT_CONFIG,
+        components.colorInput as Partial<ColorInputConfig>,
+      ),
+    },
+    {
+      provide: COLOR_PICKER_CONFIG,
+      // `labels` is a deep-partial override; deepMerge merges it recursively, but its
+      // `Partial<T>` signature only models a shallow partial, so cast to it.
+      useValue: deepMerge(
+        DEFAULT_COLOR_PICKER_CONFIG,
+        components.colorPicker as Partial<ColorPickerConfig>,
+      ),
+    },
+    {
+      provide: COLOR_RANGE_CONFIG,
+      // `labels` is a deep-partial override; deepMerge merges it recursively, but its
+      // `Partial<T>` signature only models a shallow partial, so cast to it.
+      useValue: deepMerge(
+        DEFAULT_COLOR_RANGE_CONFIG,
+        components.colorRange as Partial<ColorRangeConfig>,
+      ),
     },
     {
       provide: DATE_TIME_PICKER_CONFIG,

@@ -1,0 +1,45 @@
+:host {
+  --tls-color-input-width: 200px;
+  // Inline-start zone the swatch trigger occupies; the field's text starts
+  // after it.
+  --tls-color-input-trigger-width: 32px;
+
+  position: relative;
+
+  width: var(--tls-color-input-width);
+
+  display: inline-block;
+
+  &:has(.tls-form-control--fluid) {
+    --tls-color-input-width: 100%;
+  }
+
+  .tls-color-input__input {
+    width: 100%;
+
+    padding-inline-start: calc(var(--tls-color-input-trigger-width) + var(--spacing-1));
+  }
+
+  .tls-color-input__trigger {
+    // Inset by the field's border so the trigger never covers it; spanning the
+    // field's full block-size keeps the tap target as tall as the control.
+    position: absolute;
+    inset-block: 1px;
+    inset-inline-start: 1px;
+    z-index: 1;
+
+    width: var(--tls-color-input-trigger-width);
+
+    padding: 0;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+
+    background-color: transparent;
+
+    cursor: pointer;
+  }
+}

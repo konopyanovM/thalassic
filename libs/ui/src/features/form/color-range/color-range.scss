@@ -1,0 +1,18 @@
+:host {
+  --tls-color-range-width: 200px;
+
+  position: relative;
+
+  width: var(--tls-color-range-width);
+
+  display: inline-flex;
+  align-items: center;
+
+  .tls-color-range-input {
+    width: 100%;
+  }
+}
+
+:host(.tls-color-range--fluid) {
+  --tls-color-range-width: 100%;
+}

@@ -1,0 +1,133 @@
+<div
+  #svArea
+  class="tls-color-picker__area"
+  [style.--tls-color-picker-hue-color]="hueColor()"
+  (pointerdown)="onSvPointerDown($event)"
+  (pointermove)="onSvPointerMove($event)"
+  (pointerup)="onSvPointerUp($event)"
+  (pointercancel)="onSvPointerCancel()"
+>
+  <div
+    #svThumb
+    class="tls-color-picker__area-thumb"
+    role="slider"
+    [tabindex]="tabindex()"
+    [attr.aria-label]="labels.saturationBrightness"
+    [attr.aria-valuemin]="0"
+    [attr.aria-valuemax]="100"
+    [attr.aria-valuenow]="saturationPercent()"
+    [attr.aria-valuetext]="svValueText()"
+    [attr.aria-disabled]="disabled() ? 'true' : null"
+    [style.inset-inline-start.%]="saturationPercent()"
+    [style.top.%]="100 - brightnessPercent()"
+    [style.--tls-color-picker-thumb-color]="hex()"
+    (keydown)="onSvKeydown($event)"
+  ></div>
+</div>
+
+<div class="tls-color-picker__channels">
+  <div class="tls-color-picker__sliders">
+    <tls-color-range
+      class="tls-color-picker__channel"
+      channel="hue"
+      [size]="size()"
+      [value]="hue()"
+      (valueChange)="onHueChange($event)"
+      [disabled]="disabled()"
+      [readonly]="readonly()"
+      (touchedChange)="touched.set($event)"
+    />
+    @if (alpha()) {
+      <tls-color-range
+        class="tls-color-picker__channel"
+        channel="alpha"
+        [size]="size()"
+        [color]="opaqueColor()"
+        [value]="alphaPercent()"
+        (valueChange)="onAlphaChange($event)"
+        [disabled]="disabled()"
+        [readonly]="readonly()"
+        (touchedChange)="touched.set($event)"
+      />
+    }
+  </div>
+  @if (supportsEyeDropper) {
+    <button
+      type="button"
+      tlsButton
+      icon
+      variant="outlined"
+      color="secondary"
+      class="tls-color-picker__eyedropper"
+      [attr.aria-label]="labels.eyedropper"
+      [disabled]="disabled()"
+      (click)="openEyeDropper()"
+    >
+      <tls-icon name="eyedropper" aria-hidden="true" />
+    </button>
+  }
+  <tls-color-swatch
+    class="tls-color-picker__preview"
+    [value]="hex()"
+    size="md"
+    aria-hidden="true"
+  />
+</div>
+
+<div class="tls-color-picker__readout">
+  <input
+    type="text"
+    tlsInput
+    size="sm"
+    class="tls-color-picker__readout-input"
+    autocomplete="off"
+    spellcheck="false"
+    [attr.aria-label]="labels.colorValue"
+    [value]="readoutText()"
+    [disabled]="disabled()"
+    [readonly]="readonly()"
+    (keydown)="onReadoutKeydown($event)"
+    (blur)="onReadoutBlur($event)"
+  />
+  @if (formats().length > 1) {
+    <button
+      type="button"
+      tlsButton
+      size="sm"
+      variant="outlined"
+      color="secondary"
+      class="tls-color-picker__readout-format"
+      [attr.aria-label]="labels.switchFormat"
+      [disabled]="disabled()"
+      (click)="cycleFormat()"
+    >
+      {{ activeFormat() }}
+    </button>
+  }
+</div>
+
+@if (presets().length > 0) {
+  <div class="tls-color-picker__presets">
+    @for (preset of presets(); track preset) {
+      <button
+        type="button"
+        class="tls-color-picker__preset"
+        [attr.aria-label]="preset"
+        [attr.aria-pressed]="isPresetSelected(preset)"
+        [disabled]="disabled()"
+        (click)="selectPreset(preset)"
+      >
+        <tls-color-swatch [value]="preset" size="xs" aria-hidden="true" />
+        @if (isPresetSelected(preset)) {
+          <tls-icon
+            name="check"
+            class="tls-color-picker__preset-check"
+            [style.color]="presetCheckColor(preset)"
+            aria-hidden="true"
+          />
+        }
+      </button>
+    }
+  </div>
+}
+

@@ -1,0 +1,155 @@
+@use '../../mixins' as mixins;
+
+.tls-color-range {
+  --tls-color-range-track-height: 8px;
+  --tls-color-range-thumb-size: 16px;
+  --tls-color-range-thumb-active-scale: 1.25;
+  // White/gray is the universal transparency signifier, so the checkerboard
+  // stays theme-independent.
+  --tls-color-range-checkerboard: repeating-conic-gradient(#c8c8c8 0% 25%, #ffffff 0% 50%);
+  // Track gradients are physical; RTL flips the direction explicitly below.
+  --tls-color-range-direction: to right;
+
+  .tls-color-range-input {
+    // Positioning context for the touch-target expansion below.
+    position: relative;
+
+    height: var(--tls-color-range-thumb-size);
+
+    margin: 0;
+
+    appearance: none;
+
+    background-color: transparent;
+
+    cursor: pointer;
+
+    @include mixins.touch-target(var(--tls-color-range-thumb-size));
+
+    // The ring belongs on the thumb, not the full-width input box.
+    &:focus {
+      outline: none;
+    }
+
+    &:focus-visible::-webkit-slider-thumb {
+      @include mixins.focus-ring;
+    }
+
+    &:focus-visible::-moz-range-thumb {
+      @include mixins.focus-ring;
+    }
+
+    &::-webkit-slider-runnable-track {
+      height: var(--tls-color-range-track-height);
+
+      border-radius: var(--radius-sm);
+
+      background-image: var(--tls-color-range-image);
+      background-size: var(--tls-color-range-background-size, auto);
+    }
+
+    &::-moz-range-track {
+      height: var(--tls-color-range-track-height);
+
+      border-radius: var(--radius-sm);
+
+      background-image: var(--tls-color-range-image);
+      background-size: var(--tls-color-range-background-size, auto);
+    }
+
+    &::-webkit-slider-thumb {
+      width: var(--tls-color-range-thumb-size);
+      height: var(--tls-color-range-thumb-size);
+
+      // WebKit lays the thumb out from the track's top edge, so it has to be
+      // pulled back up by half their size difference to sit centered on it.
+      margin-block-start: calc(
+        (var(--tls-color-range-track-height) - var(--tls-color-range-thumb-size)) / 2
+      );
+
+      appearance: none;
+
+      // A white ring rather than a theme surface: the thumb previews a color,
+      // and white borders read on any hue in both themes.
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+
+      background-color: var(--tls-color-range-thumb-color, var(--color-on-surface));
+      box-shadow: var(--shadow-xs);
+
+      cursor: inherit;
+
+      @include mixins.motion {
+        transition: transform var(--motion-fast) var(--motion-ease-spring);
+      }
+    }
+
+    &::-moz-range-thumb {
+      width: var(--tls-color-range-thumb-size);
+      height: var(--tls-color-range-thumb-size);
+
+      box-sizing: border-box;
+
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+
+      background-color: var(--tls-color-range-thumb-color, var(--color-on-surface));
+      box-shadow: var(--shadow-xs);
+
+      cursor: inherit;
+
+      @include mixins.motion {
+        transition: transform var(--motion-fast) var(--motion-ease-spring);
+      }
+    }
+  }
+
+  // Grows the thumb under the finger/cursor while the value is being dragged.
+  // The scale itself is ungated so the state still reads at every motion level;
+  // only the easing into it is (see the thumb rules above).
+  &:not(.tls-color-range--disabled):not(.tls-color-range--readonly)
+    .tls-color-range-input:active::-webkit-slider-thumb {
+    transform: scale(var(--tls-color-range-thumb-active-scale));
+  }
+
+  &:not(.tls-color-range--disabled):not(.tls-color-range--readonly)
+    .tls-color-range-input:active::-moz-range-thumb {
+    transform: scale(var(--tls-color-range-thumb-active-scale));
+  }
+
+  &.tls-color-range--hue {
+    --tls-color-range-image: linear-gradient(
+      var(--tls-color-range-direction),
+      #ff0000,
+      #ffff00,
+      #00ff00,
+      #00ffff,
+      #0000ff,
+      #ff00ff,
+      #ff0000
+    );
+  }
+
+  &.tls-color-range--alpha {
+    --tls-color-range-image: linear-gradient(
+        var(--tls-color-range-direction),
+        transparent,
+        var(--tls-color-range-color)
+      ),
+      var(--tls-color-range-checkerboard);
+    --tls-color-range-background-size: auto, 8px 8px;
+  }
+
+  &.tls-color-range--disabled .tls-color-range-input {
+    cursor: not-allowed;
+    filter: brightness(0.9);
+  }
+
+  &.tls-color-range--readonly .tls-color-range-input {
+    cursor: default;
+  }
+
+  :root[dir='rtl'] & {
+    --tls-color-range-direction: to left;
+  }
+}
