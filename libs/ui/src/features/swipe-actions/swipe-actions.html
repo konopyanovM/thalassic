@@ -39,7 +39,7 @@
   axis="x"
   [manageTouchAction]="true"
   [pointerTypes]="pointerTypes()"
-  (panStart)="onPanStart()"
+  (panStart)="onPanStart($event)"
   (panMove)="onPanMove($event)"
   (panEnd)="onPanEnd($event)"
   (panCancel)="onPanCancel()"

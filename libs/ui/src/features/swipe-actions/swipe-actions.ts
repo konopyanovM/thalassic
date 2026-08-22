@@ -87,6 +87,10 @@ export class SwipeActions {
 
   // State
   protected readonly dragging: WritableSignal<boolean> = signal(false);
+  // Travel already spent crossing the pan slop when the gesture locked. Deltas
+  // are rebased against it so the reveal grows from zero at the lock point
+  // instead of jumping by the slop the moment the first move lands.
+  private _lockDelta = 0;
 
   // Computed
   protected readonly panEnabled: Signal<boolean> = computed(() => {
@@ -95,7 +99,8 @@ export class SwipeActions {
   });
 
   // Protected methods
-  protected onPanStart(): void {
+  protected onPanStart(event: PanEvent): void {
+    this._lockDelta = event.deltaX;
     this.dragging.set(true);
   }
 
@@ -104,12 +109,14 @@ export class SwipeActions {
    * so the reveal is written straight to the DOM rather than through bindings.
    */
   protected onPanMove(event: PanEvent): void {
-    this._applyOffset(this._clampOffset(event.deltaX * this._logicalFactor()));
+    this._applyOffset(
+      this._clampOffset((event.deltaX - this._lockDelta) * this._logicalFactor()),
+    );
   }
 
   protected onPanEnd(event: PanEvent): void {
     const factor = this._logicalFactor();
-    const offset = this._clampOffset(event.deltaX * factor);
+    const offset = this._clampOffset((event.deltaX - this._lockDelta) * factor);
     const velocity = event.velocityX * factor;
 
     if (offset > 0 && this._commits(offset, velocity)) {
