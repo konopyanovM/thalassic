@@ -20,7 +20,8 @@ export class Button extends ButtonBase {
   private _router = inject(Router, { optional: true });
   private _locationStrategy = inject(LocationStrategy, { optional: true });
 
-  protected override APPLY_HOST_CLASSES = false;
+  // The interactive control is the inner `button`/`a`; the host is a wrapper.
+  protected override HOST_IS_CONTROL = false;
 
   // Inputs
   /** The text label displayed inside the button. Takes priority over projected content. */
@@ -54,7 +55,7 @@ export class Button extends ButtonBase {
    * `href` wins; otherwise the URL is derived from the host `routerLink`.
    */
   protected linkHref: Signal<string | null> = computed<string | null>(() => {
-    if (this.disabled()) return null;
+    if (this.unavailable()) return null;
 
     const explicitHref = this.href();
     if (explicitHref) return explicitHref;
@@ -68,6 +69,19 @@ export class Button extends ButtonBase {
 
   // Protected methods
   /**
+   * Stops a click on an inactive button at the control, so it never reaches a
+   * consumer's handler on the host. A natively disabled button dispatches no
+   * click at all; one held focusable by `inactive` does, and the refusal has to
+   * be made here.
+   */
+  protected onControlClick(event: MouseEvent): void {
+    if (!this.inactive()) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  /**
    * Keeps navigation correct when the host carries a `routerLink` while the inner anchor
    * exposes a real `href`:
    *  - modified / non-primary clicks bubble to the browser so it can open a new tab, and
@@ -76,7 +90,7 @@ export class Button extends ButtonBase {
    *    own full-page navigation is prevented.
    */
   protected onLinkClick(event: MouseEvent): void {
-    if (this.disabled()) {
+    if (this.unavailable()) {
       event.preventDefault();
       event.stopPropagation();
       return;

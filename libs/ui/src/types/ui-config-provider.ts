@@ -8,6 +8,8 @@ import {
   CalendarConfig,
   CalendarLabels,
   calendarView,
+  CarouselConfig,
+  CarouselLabels,
   CheckboxConfig,
   ChipConfig,
   ChipControlConfig,
@@ -94,6 +96,7 @@ export interface tlsUiConfigProvider {
         views?: Partial<Record<calendarView, string>>;
       };
     };
+    carousel?: Partial<Omit<CarouselConfig, 'labels'>> & { labels?: Partial<CarouselLabels> };
     checkbox?: Partial<CheckboxConfig>;
     chip?: Partial<ChipConfig>;
     chipControl?: Partial<ChipControlConfig>;

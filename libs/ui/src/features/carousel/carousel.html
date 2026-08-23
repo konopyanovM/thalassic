@@ -1,0 +1,91 @@
+<!-- The controls sit inside the viewport so they are positioned against the
+     slides alone: the host also carries the indicator row, and centring an
+     arrow on it would park the arrow below the middle of the slide. -->
+<div
+  #viewport
+  class="tls-carousel__viewport"
+  [tlsPan]="count() > 1"
+  axis="x"
+  [manageTouchAction]="true"
+  [threshold]="dragSlop"
+  [lockRatio]="dragLockRatio"
+  (dragstart)="onDragStart($event)"
+  (panStart)="onPanStart($event)"
+  (panMove)="onPanMove($event)"
+  (panEnd)="onPanEnd($event)"
+  (panCancel)="onPanCancel()"
+>
+  @if (autoplayEnabled()) {
+    <tls-button
+      class="tls-carousel__control tls-carousel__control--rotation"
+      icon
+      rounded
+      size="lg"
+      variant="elevated"
+      [ariaLabel]="playing() ? labels.pause : labels.play"
+      (click)="toggleRotation()"
+    >
+      <tls-icon [name]="playing() ? 'pause' : 'play'" aria-hidden="true" />
+    </tls-button>
+  }
+
+  <!-- An arrow at the end of the track is `inactive` rather than `disabled`: a
+       keyboard user who reaches the last slide by repeating the control must
+       not have the focused element removed from the tab order under them. -->
+  @if (showArrows() && count() > 1) {
+    <tls-button
+      class="tls-carousel__control tls-carousel__control--previous"
+      icon
+      rounded
+      size="lg"
+      variant="elevated"
+      [ariaLabel]="labels.previous"
+      [inactive]="!canPrevious()"
+      (click)="previous()"
+    >
+      <tls-icon name="chevron-left" aria-hidden="true" />
+    </tls-button>
+    <tls-button
+      class="tls-carousel__control tls-carousel__control--next"
+      icon
+      rounded
+      size="lg"
+      variant="elevated"
+      [ariaLabel]="labels.next"
+      [inactive]="!canNext()"
+      (click)="next()"
+    >
+      <tls-icon name="chevron-right" aria-hidden="true" />
+    </tls-button>
+  }
+
+  <div class="tls-carousel__track" [attr.aria-live]="liveMode()">
+    @for (slide of slides(); track slide; let index = $index) {
+      <div
+        class="tls-carousel__slide"
+        role="group"
+        aria-roledescription="slide"
+        [attr.aria-label]="labels.slide(index + 1, count(), slide.label())"
+        [attr.aria-hidden]="index === selected() ? null : 'true'"
+        [attr.inert]="index === selected() ? null : ''"
+      >
+        <ng-container [ngTemplateOutlet]="slide.contentTemplateRef()"></ng-container>
+      </div>
+    }
+  </div>
+</div>
+
+@if (showIndicators() && count() > 1) {
+  <div class="tls-carousel__indicators">
+    @for (slide of slides(); track slide; let index = $index) {
+      <button
+        type="button"
+        class="tls-carousel__indicator"
+        [class.tls-carousel__indicator--active]="index === selected()"
+        [attr.aria-label]="labels.goToSlide(index + 1)"
+        [attr.aria-current]="index === selected() ? 'true' : null"
+        (click)="goTo(index)"
+      ></button>
+    }
+  </div>
+}

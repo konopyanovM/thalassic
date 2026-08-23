@@ -6,6 +6,7 @@ export * from './badge';
 export * from './breadcrumbs';
 export * from './button';
 export * from './calendar';
+export * from './carousel';
 export * from './chip';
 export * from './color-swatch';
 export * from './confirm';

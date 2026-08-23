@@ -24,6 +24,8 @@ import {
   BUTTON_CONFIG,
   CALENDAR_CONFIG,
   CalendarConfig,
+  CAROUSEL_CONFIG,
+  CarouselConfig,
   CHECKBOX_CONFIG,
   CHIP_CONFIG,
   CHIP_CONTROL_CONFIG,
@@ -42,6 +44,7 @@ import {
   DEFAULT_AUTOCOMPLETE_CONFIG,
   DEFAULT_BUTTON_CONFIG,
   DEFAULT_CALENDAR_CONFIG,
+  DEFAULT_CAROUSEL_CONFIG,
   DEFAULT_CHECKBOX_CONFIG,
   DEFAULT_CHIP_CONFIG,
   DEFAULT_CHIP_CONTROL_CONFIG,
@@ -210,6 +213,12 @@ export const provideThalassicUIConfig = (
       // `labels` is a deep-partial override; deepMerge merges it recursively, but its
       // `Partial<T>` signature only models a shallow partial, so cast to it.
       useValue: deepMerge(DEFAULT_CALENDAR_CONFIG, components.calendar as Partial<CalendarConfig>),
+    },
+    {
+      provide: CAROUSEL_CONFIG,
+      // `labels` is a deep-partial override; deepMerge merges it recursively, but its
+      // `Partial<T>` signature only models a shallow partial, so cast to it.
+      useValue: deepMerge(DEFAULT_CAROUSEL_CONFIG, components.carousel as Partial<CarouselConfig>),
     },
     {
       provide: CHECKBOX_CONFIG,

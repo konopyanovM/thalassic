@@ -13,18 +13,39 @@ import { buttonColor, buttonVariant } from './button.types';
 
 @Directive({
   host: {
-    '[class]': 'APPLY_HOST_CLASSES ? classes() : null',
+    '[class]': 'HOST_IS_CONTROL ? classes() : null',
+    '[attr.aria-disabled]': 'HOST_IS_CONTROL ? ariaDisabled() : null',
   },
 })
 export abstract class ButtonBase {
   // Injections
   protected _config = inject(BUTTON_CONFIG);
 
-  protected APPLY_HOST_CLASSES = true;
+  // Whether the host element is the interactive control itself. It is for a
+  // directive applied to a native `button`; a component that renders its own
+  // control inside places the classes and the ARIA state on that instead.
+  protected HOST_IS_CONTROL = true;
 
   public readonly disabled: InputSignalWithTransform<boolean, unknown> = input(false, {
     transform: booleanAttribute,
   });
+
+  /**
+   * Marks the button unavailable while leaving it focusable: it takes the
+   * disabled treatment and `aria-disabled`, and refuses activation, but keeps
+   * its place in the tab order.
+   *
+   * Reach for it over `disabled` wherever removing the control from the tab
+   * order would strand focus — a control that becomes unavailable through its
+   * own activation, such as a pager arrow at the end of its range, would
+   * otherwise vanish from under the keyboard user who just pressed it. Plain
+   * `disabled` remains the stronger choice everywhere else, since the platform
+   * enforces it.
+   */
+  public readonly inactive: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    false,
+    { transform: booleanAttribute },
+  );
 
   public readonly icon: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
     false,
@@ -38,10 +59,9 @@ export abstract class ButtonBase {
    * Placement (typically floating above other content) is the consumer's concern; the
    * input only changes the control's own geometry and elevation.
    */
-  public readonly fab: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
-    false,
-    { transform: booleanAttribute },
-  );
+  public readonly fab: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(false, {
+    transform: booleanAttribute,
+  });
 
   public readonly color: InputSignal<buttonColor> = input<buttonColor>(this._config.color);
   public readonly variant: InputSignal<buttonVariant> = input<buttonVariant>(this._config.variant);
@@ -57,6 +77,11 @@ export abstract class ButtonBase {
     { transform: booleanAttribute },
   );
 
+  /** Whether the button refuses activation, for either reason. */
+  public readonly unavailable = computed(() => this.disabled() || this.inactive());
+
+  protected ariaDisabled = computed(() => (this.unavailable() ? 'true' : null));
+
   protected classes = computed(() => {
     const className = 'tls-button';
 
@@ -65,7 +90,8 @@ export abstract class ButtonBase {
     array.push(`${className}--${this.color()}`);
     array.push(`${className}--${this.variant()}`);
     array.push(`${className}--${this.size()}`);
-    if (this.disabled()) array.push(`${className}--disabled`);
+    // One treatment for both: unavailability looks the same however it is enforced.
+    if (this.unavailable()) array.push(`${className}--disabled`);
     if (this.icon()) array.push(`${className}--icon-only`);
     if (this.fab()) array.push(`${className}--fab`);
     if (this.fluid()) array.push(`${className}--fluid`);

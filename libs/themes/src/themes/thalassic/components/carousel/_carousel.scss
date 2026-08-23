@@ -1,0 +1,168 @@
+@use '../../mixins' as mixins;
+
+.tls-carousel {
+  // Zero-based index of the selected slide; the track translates one viewport width per step.
+  --tls-carousel-selected: 0;
+  // Live pointer-drag offset applied on top of the selected-slide translation.
+  --tls-carousel-drag: 0px;
+
+  // Glyph of the overlay controls (arrows and the rotation toggle). The disc
+  // itself is a `tls-button`, so its fill, elevation and size come from there.
+  --tls-carousel-control-color: var(--color-on-surface);
+  --tls-carousel-control-icon-size: 20px;
+
+  // Indicator dots. The button box is the WCAG minimum target; the dot is the visual.
+  --tls-carousel-indicator-size: 24px;
+  --tls-carousel-indicator-dot-size: 8px;
+  --tls-carousel-indicator-color: var(--color-outline-variant);
+  --tls-carousel-indicator-active-color: var(--color-primary);
+
+  position: relative;
+
+  display: block;
+
+  // The positioning context for the overlay controls, so they resolve against
+  // the slides rather than the host, which is taller by the indicator row.
+  //
+  // `touch-action` is left to the drag gesture, which claims the horizontal
+  // axis for itself and leaves vertical scrolling native.
+  &__viewport {
+    position: relative;
+
+    overflow: hidden;
+  }
+
+  &__track {
+    display: flex;
+
+    transform: translateX(calc(var(--tls-carousel-selected) * -100% + var(--tls-carousel-drag)));
+
+    @include mixins.motion(full) {
+      transition: transform var(--motion-default) var(--motion-ease-in-out);
+    }
+
+    // The track flows right-to-left in RTL, so the slide translation flips sign;
+    // the drag offset is a physical px delta and stays as-is.
+    :root[dir='rtl'] & {
+      transform: translateX(calc(var(--tls-carousel-selected) * 100% + var(--tls-carousel-drag)));
+    }
+  }
+
+  &__slide {
+    min-width: 0;
+
+    flex: 0 0 100%;
+  }
+
+  // A `tls-button` floated over the slides: the disc, its states and its target
+  // size are the button's, and only the placement and the glyph belong here.
+  &__control {
+    position: absolute;
+    z-index: 1;
+
+    // Beats the button's own color-variant rule, which sets the glyph from the
+    // hue: over arbitrary slide content a neutral glyph is the readable one.
+    //.tls-button {
+    //  color: var(--tls-carousel-control-color);
+    //}
+
+    .tls-icon {
+      width: var(--tls-carousel-control-icon-size);
+      height: var(--tls-carousel-control-icon-size);
+    }
+
+    &--previous,
+    &--next {
+      inset-block-start: 50%;
+
+      transform: translateY(-50%);
+
+      // Mirrors the chevron so it keeps pointing outward when the layout flips.
+      :root[dir='rtl'] & {
+        transform: translateY(-50%) scaleX(-1);
+      }
+    }
+
+    &--previous {
+      inset-inline-start: var(--spacing-2);
+    }
+
+    &--next {
+      inset-inline-end: var(--spacing-2);
+    }
+
+    &--rotation {
+      inset-block-start: var(--spacing-2);
+      inset-inline-end: var(--spacing-2);
+    }
+  }
+
+  &__indicators {
+    margin-block-start: var(--spacing-3);
+
+    display: flex;
+    justify-content: center;
+    // Twice the touch-target per-edge overflow ((44px − indicator size) / 2), so
+    // the expanded hit areas of two neighbours meet rather than overlap and
+    // neither steals the other's edge taps.
+    gap: var(--spacing-5);
+  }
+
+  &__indicator {
+    position: relative;
+
+    width: var(--tls-carousel-indicator-size);
+    height: var(--tls-carousel-indicator-size);
+
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+
+    background-color: transparent;
+
+    cursor: pointer;
+
+    @include mixins.touch-target(var(--tls-carousel-indicator-size));
+
+    &:focus-visible {
+      @include mixins.focus-ring;
+    }
+
+    &::before {
+      content: '';
+
+      width: var(--tls-carousel-indicator-dot-size);
+      height: var(--tls-carousel-indicator-dot-size);
+
+      border-radius: 50%;
+
+      background-color: var(--tls-carousel-indicator-color);
+
+      @include mixins.motion(essential) {
+        transition: background-color var(--motion-fast) var(--motion-ease-in-out);
+      }
+    }
+
+    &--active::before {
+      background-color: var(--tls-carousel-indicator-active-color);
+    }
+  }
+
+  &--dragging {
+    user-select: none;
+  }
+
+  // The track follows the finger during a drag, and cuts rather than slides for
+  // a change that would otherwise travel the whole track (a wrap around the
+  // ends); neither is a transition.
+  &--dragging &__track,
+  &--instant &__track {
+    @include mixins.motion(full) {
+      transition: none;
+    }
+  }
+}

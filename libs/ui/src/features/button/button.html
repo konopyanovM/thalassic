@@ -7,7 +7,7 @@
     [tabindex]="tabindex()"
     [attr.aria-label]="ariaLabel() ?? null"
     [attr.aria-labelledby]="ariaLabelledby() ?? null"
-    [attr.aria-disabled]="disabled()"
+    [attr.aria-disabled]="ariaDisabled()"
     (click)="onLinkClick($event)"
   >
     <ng-container [ngTemplateOutlet]="contentTemplate"></ng-container>
@@ -22,7 +22,8 @@
     [attr.aria-label]="ariaLabel() ?? null"
     [attr.aria-labelledby]="ariaLabelledby() ?? null"
     [disabled]="disabled()"
-    [attr.aria-disabled]="disabled()"
+    [attr.aria-disabled]="ariaDisabled()"
+    (click)="onControlClick($event)"
   >
     <ng-container [ngTemplateOutlet]="contentTemplate"></ng-container>
   </button>
