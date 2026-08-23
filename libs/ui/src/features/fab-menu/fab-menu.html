@@ -1,0 +1,65 @@
+@if (isOpen()) {
+  <ul
+    #itemsList
+    class="tls-fab-menu__items"
+    ngMenu
+    tabindex="-1"
+    [id]="id"
+    [softDisabled]="false"
+    (itemSelected)="onItemSelected($event)"
+    (keydown.escape)="close(true)"
+    [attr.aria-label]="ariaLabel() ?? null"
+    animate.enter="tls-fab-menu__items--enter"
+    animate.leave="tls-fab-menu__items--leave"
+  >
+    @for (item of items(); track $index) {
+      <!-- Inside role="menu" the list markup is presentational; the button is
+           the menuitem. The index drives the fan-out stagger. -->
+      <li
+        class="tls-fab-menu__entry"
+        role="none"
+        [style.--tls-fab-menu-entry-index]="$index"
+      >
+        <button
+          ngMenuItem
+          type="button"
+          class="tls-fab-menu__item"
+          [value]="item"
+          [disabled]="item.disabled ?? false"
+        >
+          @if (iconTemplate(); as template) {
+            <span class="tls-fab-menu__item-icon" aria-hidden="true">
+              <ng-container
+                [ngTemplateOutlet]="template"
+                [ngTemplateOutletContext]="{ $implicit: item }"
+              />
+            </span>
+          } @else if (item.icon) {
+            <tls-icon class="tls-fab-menu__item-icon" [iconSrc]="item.icon" />
+          }
+          <span class="tls-fab-menu__item-label">{{ item.label }}</span>
+        </button>
+      </li>
+    }
+  </ul>
+}
+
+<tls-button
+  #trigger
+  class="tls-fab-menu__trigger"
+  fab
+  rounded
+  icon
+  [color]="color()"
+  [ariaLabel]="ariaLabel()"
+  [attr.aria-haspopup]="'menu'"
+  [attr.aria-expanded]="isOpen()"
+  [attr.aria-controls]="isOpen() ? id : null"
+  (click)="toggle()"
+>
+  <span class="tls-fab-menu__trigger-icon" aria-hidden="true">
+    <!-- The consumer's glyph, with the speed dial's canonical plus standing in
+         when nothing is projected. -->
+    <ng-content><tls-icon name="plus" /></ng-content>
+  </span>
+</tls-button>

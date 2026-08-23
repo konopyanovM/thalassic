@@ -19,6 +19,7 @@ export const DEFAULT_ICONS: Record<systemIcon, string> = {
     '<polyline points="13 17 18 12 13 7" /><polyline points="6 17 11 12 6 7" />',
   ),
   close: svg('<line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />'),
+  plus: svg('<line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />'),
   star: svg(
     '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />',
   ),

@@ -1,0 +1,152 @@
+@use '@thalassic/core/styles' as core;
+@use '../../mixins' as mixins;
+
+// Speed-dial FAB menu (tls-fab-menu): a FAB trigger whose tap fans a vertical
+// stack of labelled pill actions out above it. The consumer positions the
+// host — the host is the FAB — so the stack anchors to it and grows upward
+// from the trigger, nearest item first.
+.tls-fab-menu {
+  --tls-fab-menu-gap: var(--spacing-3);
+  --tls-fab-menu-stagger: 30ms;
+
+  --tls-fab-menu-item-height: 40px;
+  --tls-fab-menu-item-background: var(--color-surface-container);
+  --tls-fab-menu-item-color: var(--color-on-surface);
+  --tls-fab-menu-item-icon-size: 16px;
+
+  position: relative;
+
+  display: inline-flex;
+
+  &__items {
+    position: absolute;
+    bottom: calc(100% + var(--tls-fab-menu-gap));
+    inset-inline-end: 0;
+    z-index: 1;
+
+    // Nearest-first order: the first item sits closest to the trigger and the
+    // stack grows away from it, so item priority tracks reachability.
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-end;
+    gap: var(--spacing-2);
+
+    outline: none;
+
+    // The stack's presence is a functional origin cue, so its fade survives
+    // reduced motion; the per-entry fan-out below is decorative on top of it.
+    @include core.motion(essential) {
+      &--enter {
+        animation: tls-fab-menu-open var(--motion-instant) var(--motion-ease-out) both;
+      }
+
+      &--leave {
+        animation: tls-fab-menu-open var(--motion-instant) var(--motion-ease-in) reverse both;
+      }
+    }
+  }
+
+  &__entry {
+    @include core.motion(full) {
+      // `backwards` holds a still-waiting entry invisible through its stagger
+      // slot, so the stack builds nearest-first instead of arriving as a mass.
+      animation: tls-fab-menu-entry var(--motion-default) var(--motion-ease-spring)
+        calc(var(--tls-fab-menu-entry-index, 0) * var(--tls-fab-menu-stagger)) backwards;
+    }
+  }
+
+  &__item {
+    height: var(--tls-fab-menu-item-height);
+    padding-inline: var(--spacing-4);
+
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+
+    appearance: none;
+    border: none;
+    border-radius: var(--radius-lg);
+
+    background-color: var(--tls-fab-menu-item-background);
+    box-shadow: var(--shadow-md);
+
+    font-size: var(--font-label-large-size);
+    font-weight: var(--font-label-large-weight);
+    white-space: nowrap;
+    color: var(--tls-fab-menu-item-color);
+
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      background-color: var(--color-surface-container-high);
+    }
+
+    &:focus-visible {
+      @include mixins.focus-ring;
+    }
+
+    &:disabled {
+      color: var(--color-outline);
+
+      cursor: not-allowed;
+    }
+  }
+
+  &__item-icon {
+    width: var(--tls-fab-menu-item-icon-size);
+    height: var(--tls-fab-menu-item-icon-size);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    font-size: var(--tls-fab-menu-item-icon-size);
+    color: var(--color-primary);
+  }
+
+  &__trigger-icon {
+    // Sized in em so the glyph box tracks the FAB's per-size glyph font-size;
+    // a `tls-icon` has no intrinsic size and fills this box.
+    width: 1em;
+    height: 1em;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    @include core.motion(essential) {
+      transition: rotate var(--motion-fast) var(--motion-ease-in-out);
+    }
+  }
+
+  // A quarter-turn folds the glyph into its dismiss form (a plus reads as a
+  // close cross), telling apart "opens" from "closes" without a glyph swap.
+  &--open &__trigger-icon {
+    rotate: 45deg;
+  }
+}
+
+@keyframes tls-fab-menu-open {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes tls-fab-menu-entry {
+  from {
+    opacity: 0;
+    translate: 0 var(--spacing-2);
+    scale: 0.9;
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+  }
+}

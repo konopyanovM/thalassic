@@ -14,6 +14,7 @@ export type systemIcon =
   | 'chevrons-left'
   | 'chevrons-right'
   | 'close'
+  | 'plus'
   | 'star'
   | 'star-filled'
   | 'success'
