@@ -1,0 +1,11 @@
+<button
+  type="button"
+  class="tls-picker-field__trigger"
+  [disabled]="disabled()"
+  [attr.aria-label]="ariaLabel() ?? null"
+>
+  <span class="tls-picker-field__value">
+    <ng-content />
+  </span>
+  <tls-icon class="tls-picker-field__chevron" name="chevron-down" aria-hidden="true" />
+</button>

@@ -29,6 +29,7 @@ export * from './form/input';
 export * from './form/input-number';
 export * from './form/mask';
 export * from './form/password';
+export * from './form/picker-field';
 export * from './form/pin-input';
 export * from './form/radio-button';
 export * from './form/rating';

@@ -1,0 +1,78 @@
+// Field-shaped shell for panel-holding controls (tls-picker-field). Mirrors
+// the select's trigger anatomy — value on the inline-start, turning chevron on
+// the inline-end — over the shared form-control frame; the panel itself
+// belongs to the consumer.
+.tls-picker-field {
+  --tls-picker-field-gap: var(--spacing-2);
+  --tls-picker-field-icon-size: 16px;
+
+  &.tls-form-control {
+    display: inline-flex;
+    align-items: stretch;
+    padding-inline: 0;
+
+    cursor: pointer;
+
+    &.tls-form-control--fluid {
+      --tls-form-control-width: 100%;
+    }
+
+    &.tls-form-control--disabled {
+      cursor: not-allowed;
+    }
+
+    &:focus-within {
+      border: var(--tls-form-control-border-width) solid var(--color-primary);
+      box-shadow: 0 0 3px -1px var(--color-primary);
+    }
+  }
+
+  &.tls-picker-field--open {
+    .tls-picker-field__chevron {
+      transform: rotate(180deg);
+    }
+  }
+
+  .tls-picker-field__trigger {
+    flex: 1;
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    gap: var(--tls-picker-field-gap);
+
+    padding-inline: var(--tls-form-control-padding-inline);
+
+    border: none;
+
+    background: none;
+
+    color: inherit;
+    font: inherit;
+
+    appearance: none;
+    outline: none;
+    cursor: inherit;
+  }
+
+  .tls-picker-field__value {
+    flex: 1;
+    min-width: 0;
+
+    display: inline-flex;
+    align-items: center;
+    gap: var(--tls-picker-field-gap);
+
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .tls-picker-field__chevron {
+    width: var(--tls-picker-field-icon-size);
+    height: var(--tls-picker-field-icon-size);
+
+    flex-shrink: 0;
+
+    transition: transform var(--motion-fast) var(--motion-ease-in-out);
+  }
+}
