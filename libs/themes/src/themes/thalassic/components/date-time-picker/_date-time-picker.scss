@@ -1,7 +1,15 @@
+@use '../../mixins' as mixins;
+
 .tls-date-time-picker {
   --tls-date-time-picker-width: 200px;
+  --tls-date-time-picker-gap: var(--spacing-2);
 
   display: inline-block;
+
+  // The shared field-shaped trigger anatomy comes from the picker shell; the
+  // open/chevron rules it carries are inert here until the trigger grows an
+  // end glyph of its own.
+  @include mixins.picker-shell('tls-date-time-picker');
 
   &__panel {
     padding: var(--spacing-3);
@@ -26,39 +34,6 @@
 
   &.tls-form-control {
     --tls-form-control-width: var(--tls-date-time-picker-width);
-
-    display: inline-flex;
-    align-items: stretch;
-    padding-inline: 0;
-
-    cursor: pointer;
-
-    &.tls-form-control--disabled {
-      cursor: not-allowed;
-    }
-
-    &:focus-within {
-      border: var(--tls-form-control-border-width) solid var(--color-primary);
-      box-shadow: 0 0 3px -1px var(--color-primary);
-    }
-  }
-
-  &__trigger {
-    flex: 1;
-
-    display: flex;
-    align-items: center;
-
-    padding-inline: var(--tls-form-control-padding-inline);
-
-    appearance: none;
-    outline: none;
-    border: none;
-    background: transparent;
-    color: inherit;
-    font: inherit;
-
-    cursor: inherit;
   }
 
   &__spinner {
