@@ -1,0 +1,70 @@
+// The field-shaped trigger anatomy shared by panel-holding controls
+// (tls-select, tls-picker-field): the form-control frame arranged around a
+// start-aligned value and an end chevron that turns while the panel is open.
+// Emitted per block so each control keeps its own class namespace and extras
+// (a clear button, a spinner, an icon box) while the shared anatomy cannot
+// drift between them. Expects `--#{$block}-gap` declared on the block, and a
+// `#{$block}--open` modifier while the panel is open.
+@mixin picker-shell($block) {
+  &.tls-form-control {
+    display: inline-flex;
+    align-items: stretch;
+    padding-inline: 0;
+
+    cursor: pointer;
+
+    &.tls-form-control--fluid {
+      --tls-form-control-width: 100%;
+    }
+
+    &.tls-form-control--disabled {
+      cursor: not-allowed;
+    }
+
+    &:focus-within {
+      border: var(--tls-form-control-border-width) solid var(--color-primary);
+      box-shadow: 0 0 3px -1px var(--color-primary);
+    }
+  }
+
+  &.#{$block}--open {
+    .#{$block}__chevron {
+      transform: rotate(180deg);
+    }
+  }
+
+  .#{$block}__trigger {
+    flex: 1;
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    gap: var(--#{$block}-gap);
+
+    padding-inline: var(--tls-form-control-padding-inline);
+
+    border: none;
+
+    background: none;
+
+    color: inherit;
+    font: inherit;
+
+    appearance: none;
+    outline: none;
+    cursor: inherit;
+  }
+
+  .#{$block}__value {
+    flex: 1;
+    min-width: 0;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .#{$block}__chevron {
+    transition: transform var(--motion-fast) var(--motion-ease-in-out);
+  }
+}
