@@ -3,6 +3,22 @@
 @use './palettes' as palettes;
 @use '../../palettes' as common-palettes;
 
+// Hues carrying no meaning of their own, for a surface colored by choice rather
+// than by status: a tag, a category, a tile a reader tints to tell it apart.
+// Named for the hue precisely so nothing reads a state into it — a red accent
+// says "red", never "wrong". Each takes the same four roles every semantic
+// color has, so the two are interchangeable at a usage site.
+$accents: (
+  'aqua': common-palettes.$aqua,
+  'blue': common-palettes.$blue,
+  'green': common-palettes.$green,
+  'orange': common-palettes.$orange,
+  'pink': common-palettes.$pink,
+  'red': common-palettes.$red,
+  'violet': common-palettes.$violet,
+  'yellow': common-palettes.$yellow,
+);
+
 :root {
   // Primary
   --color-primary: #{map.get(palettes.$primary, 40)};
@@ -45,6 +61,14 @@
   --color-on-warning: #{map.get(common-palettes.$yellow, 100)};
   --color-warning-container: #{map.get(common-palettes.$yellow, 90)};
   --color-on-warning-container: #{map.get(common-palettes.$yellow, 30)};
+
+  // Accents
+  @each $name, $palette in $accents {
+    --color-#{$name}: #{map.get($palette, 40)};
+    --color-on-#{$name}: #{map.get($palette, 100)};
+    --color-#{$name}-container: #{map.get($palette, 90)};
+    --color-on-#{$name}-container: #{map.get($palette, 30)};
+  }
 
   // Surface
   --color-surface: #f6fafe;
@@ -107,6 +131,14 @@
     --color-on-warning: #{map.get(common-palettes.$yellow, 20)};
     --color-warning-container: #{map.get(common-palettes.$yellow, 30)};
     --color-on-warning-container: #{map.get(common-palettes.$yellow, 90)};
+
+    // Accents
+    @each $name, $palette in $accents {
+      --color-#{$name}: #{map.get($palette, 80)};
+      --color-on-#{$name}: #{map.get($palette, 20)};
+      --color-#{$name}-container: #{map.get($palette, 30)};
+      --color-on-#{$name}-container: #{map.get($palette, 90)};
+    }
 
     // Surface
     --color-surface: #101417;
