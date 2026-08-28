@@ -77,6 +77,19 @@ export abstract class ButtonBase {
     { transform: booleanAttribute },
   );
 
+  /**
+   * Whether the button stretches to fill its container's height, the block-axis
+   * counterpart to `fluid`. For a button that is a region in its own right — a slot in a
+   * grid of cards, a panel that happens to be pressable — rather than a control sitting in
+   * a line of content. Takes effect only where the container's height is definite, and is
+   * opt-in for that reason: a control in a fixed-height bar keeps its own size unless it
+   * asks for the bar's.
+   */
+  public readonly stretch: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    false,
+    { transform: booleanAttribute },
+  );
+
   /** Whether the button refuses activation, for either reason. */
   public readonly unavailable = computed(() => this.disabled() || this.inactive());
 
@@ -95,6 +108,7 @@ export abstract class ButtonBase {
     if (this.icon()) array.push(`${className}--icon-only`);
     if (this.fab()) array.push(`${className}--fab`);
     if (this.fluid()) array.push(`${className}--fluid`);
+    if (this.stretch()) array.push(`${className}--stretch`);
     if (this.rounded()) array.push(`${className}--rounded`);
 
     return array;

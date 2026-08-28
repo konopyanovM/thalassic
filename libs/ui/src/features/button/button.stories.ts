@@ -15,6 +15,7 @@ const meta: Meta<ButtonComponent> = {
     variant: 'filled',
     size: 'md',
     fluid: false,
+    stretch: false,
     icon: false,
     fab: false,
     rounded: false,

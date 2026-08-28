@@ -24,6 +24,12 @@
     --tls-button-width: 100%;
   }
 
+  // The control's own height is a floor rather than a fixed size, so filling the
+  // container is a matter of taking its height where one is offered.
+  &.tls-button--stretch {
+    height: 100%;
+  }
+
   &.tls-button--sm {
     @include size.size-vars('sm');
   }

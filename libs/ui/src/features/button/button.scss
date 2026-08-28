@@ -10,4 +10,10 @@
   &:has(.tls-button.tls-button--fluid) {
     width: 100%;
   }
+
+  // The host wraps the control, so the control can only fill a height the host
+  // has taken first.
+  &:has(.tls-button.tls-button--stretch) {
+    height: 100%;
+  }
 }
