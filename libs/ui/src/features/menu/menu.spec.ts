@@ -2,8 +2,11 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { Component, signal, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { ViewportService } from '@thalassic/core';
 import { Menu } from './menu';
 import { MenuItemComponent } from './menu-item';
+import { DEFAULT_MENU_CONFIG } from './menu.config';
+import { MENU_CONFIG } from './menu.token';
 import { MenuItemDefinition } from './menu.types';
 
 @Component({
@@ -501,6 +504,63 @@ describe('Menu', () => {
       dispatchKey('Enter');
 
       expect(host.clicks).toEqual(['First']);
+      expect(getMenu().isOpen()).toBe(false);
+    });
+  });
+
+  describe('sheet presentation (sheetBelow)', () => {
+    const configureSheet = async (isBelow: boolean) => {
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [HostComponent],
+        providers: [
+          provideRouter([]),
+          { provide: MENU_CONFIG, useValue: { ...DEFAULT_MENU_CONFIG, sheetBelow: 'md' } },
+          { provide: ViewportService, useValue: { isBelow: () => signal(isBelow) } },
+        ],
+      }).compileComponents();
+
+      overlayContainer = TestBed.inject(OverlayContainer);
+      overlayContainerElement = overlayContainer.getContainerElement();
+
+      fixture = TestBed.createComponent(HostComponent);
+      host = fixture.componentInstance;
+      fixture.detectChanges();
+      await fixture.whenStable();
+      trigger = fixture.nativeElement.querySelector('button');
+    };
+
+    it('should present as a sheet at or below the configured breakpoint', async () => {
+      await configureSheet(true);
+
+      getMenu().open(trigger);
+      fixture.detectChanges();
+
+      expect(queryPanel()?.classList.contains('tls-menu--sheet')).toBe(true);
+      expect(queryBackdrop()?.classList.contains('tls-dialog-backdrop')).toBe(true);
+      expect(overlayContainerElement.querySelector('.tls-menu__grabber')).toBeTruthy();
+    });
+
+    it('should stay anchored above the breakpoint', async () => {
+      await configureSheet(false);
+
+      getMenu().open(trigger);
+      fixture.detectChanges();
+
+      expect(queryPanel()?.classList.contains('tls-menu--sheet')).toBe(false);
+      expect(queryBackdrop()?.classList.contains('cdk-overlay-transparent-backdrop')).toBe(true);
+      expect(overlayContainerElement.querySelector('.tls-menu__grabber')).toBeNull();
+    });
+
+    it('should still dismiss a sheet on backdrop click', async () => {
+      await configureSheet(true);
+
+      getMenu().open(trigger);
+      fixture.detectChanges();
+
+      queryBackdrop()?.click();
+      fixture.detectChanges();
+
       expect(getMenu().isOpen()).toBe(false);
     });
   });

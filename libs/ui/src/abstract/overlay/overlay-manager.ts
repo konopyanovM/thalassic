@@ -10,6 +10,7 @@ import { DestroyRef, inject, signal, TemplateRef, ViewContainerRef } from '@angu
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
 import { disposeAfterLeaveAnimation } from './dispose-after-leave-animation';
+import { MODAL_BACKDROP_CLASS } from './overlay.constants';
 
 const TRANSPARENT_BACKDROP_CLASS = 'cdk-overlay-transparent-backdrop';
 
@@ -20,6 +21,14 @@ export interface ConnectedOverlayConfig {
   origin: FlexibleConnectedPositionStrategyOrigin;
   /** Connected positions to try, in order of preference. */
   positions: ConnectedPosition[];
+  /**
+   * How the pane is placed. `'connected'` (the default) anchors it beside the
+   * origin through `positions`. `'sheet'` pins it to the viewport's bottom
+   * edge at full width — the origin and positions are ignored, the page's
+   * scroll is blocked, and the backdrop defaults to the shared modal scrim so
+   * the sheet reads as the modal surface it is.
+   */
+  presentation?: 'connected' | 'sheet';
   /** Forwarded to the position strategy. Defaults to the CDK default (true). */
   flexibleDimensions?: boolean;
   /** Forwarded to the position strategy. Defaults to the CDK default (true). */
@@ -86,6 +95,11 @@ export class OverlayManager {
 
   public readonly isOpen = this._isOpen.asReadonly();
 
+  /** Backdrop element of the open overlay; `null` while closed or without one. */
+  public get backdropElement(): HTMLElement | null {
+    return this._overlayRef ? this._overlayRef.backdropElement : null;
+  }
+
   // Dispose the overlay with the host. Registered in a field initializer so no
   // constructor is needed.
   private readonly _teardown = this._destroyRef.onDestroy(() => this._dispose());
@@ -95,15 +109,21 @@ export class OverlayManager {
 
     this._config = config;
 
+    const sheet = config.presentation === 'sheet';
+
     if (!this._overlayRef) {
       this._overlayRef = this._overlay.create({
         positionStrategy: this._buildPositionStrategy(config),
-        scrollStrategy:
-          config.scrollStrategy === 'close'
+        // A sheet blocks the page's scroll for its lifetime — it is a modal
+        // surface, and content drifting beneath it would carry its anchor away.
+        scrollStrategy: sheet
+          ? this._overlay.scrollStrategies.block()
+          : config.scrollStrategy === 'close'
             ? this._overlay.scrollStrategies.close()
             : this._overlay.scrollStrategies.reposition(),
         hasBackdrop: config.hasBackdrop ?? true,
-        backdropClass: config.backdropClass ?? TRANSPARENT_BACKDROP_CLASS,
+        backdropClass:
+          config.backdropClass ?? (sheet ? MODAL_BACKDROP_CLASS : TRANSPARENT_BACKDROP_CLASS),
         ...(config.panelClass != null && { panelClass: config.panelClass }),
       });
 
@@ -114,7 +134,9 @@ export class OverlayManager {
       this._overlayRef.updatePositionStrategy(this._buildPositionStrategy(config));
     }
 
-    if (config.minWidth != null) {
+    if (sheet) {
+      this._overlayRef.updateSize({ width: '100%' } satisfies OverlaySizeConfig);
+    } else if (config.minWidth != null) {
       this._overlayRef.updateSize({ minWidth: config.minWidth } satisfies OverlaySizeConfig);
     }
 
@@ -151,6 +173,10 @@ export class OverlayManager {
 
   // Private
   private _buildPositionStrategy(config: ConnectedOverlayConfig) {
+    if (config.presentation === 'sheet') {
+      return this._overlay.position().global().centerHorizontally().bottom('0');
+    }
+
     let strategy = this._overlay
       .position()
       .flexibleConnectedTo(config.origin)

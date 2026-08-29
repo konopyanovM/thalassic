@@ -1,6 +1,10 @@
 <ng-template #panel>
   <div
+    #sheetPane
     class="tls-menu"
+    [class.tls-menu--sheet]="sheet()"
+    [class.tls-menu--dragging]="sheetDragState() === 'dragging'"
+    [class.tls-menu--settling]="sheetDragState() === 'settling'"
     animate.enter="tls-menu--enter"
     animate.leave="tls-menu--leave"
     [id]="id"
@@ -10,7 +14,15 @@
     (itemSelected)="onItemClick($event)"
     (keydown.escape)="close()"
     [attr.aria-label]="ariaLabel() ?? null"
+    [tlsPan]="sheet()"
+    (panStart)="onSheetPanStart(sheetPane)"
+    (panMove)="onSheetPanMove($event, sheetPane)"
+    (panEnd)="onSheetPanEnd($event, sheetPane)"
+    (panCancel)="onSheetPanCancel(sheetPane)"
   >
+    @if (sheet()) {
+      <div class="tls-menu__grabber" aria-hidden="true"></div>
+    }
     @for (block of blocks(); track $index) {
       @if (block.kind === 'group') {
         <div class="tls-menu__group" role="group" [attr.aria-label]="block.label.label">

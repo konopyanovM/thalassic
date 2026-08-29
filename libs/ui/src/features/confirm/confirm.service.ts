@@ -13,8 +13,10 @@ import { filter } from 'rxjs/operators';
 import { overlayPosition } from '../../types';
 import { buildOverlayPositions } from '../../utils';
 import { ConfirmPanel } from './confirm-panel';
-import { disposeAfterLeaveAnimation } from '../../abstract/overlay';
-import { MODAL_BACKDROP_CLASS } from './confirm.constants';
+import {
+  disposeAfterLeaveAnimation,
+  MODAL_BACKDROP_CLASS,
+} from '../../abstract/overlay';
 import { CONFIRM_CONFIG } from './confirm.token';
 import { confirmActionsAlign, confirmButton, confirmSize } from './confirm.types';
 

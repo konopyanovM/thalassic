@@ -173,4 +173,107 @@
     border: none;
     border-top: 1px solid var(--tls-menu-divider-color);
   }
+
+  // Presented as a bottom sheet: full viewport width pinned to the bottom
+  // edge, capped so the page behind stays in view, scrolling its own overflow.
+  // Corners round only at the top — the bottom edge is the viewport's own —
+  // and the safe-area inset keeps the last row above a device's home
+  // indicator. Rows grow to comfortable touch height: on the viewports that
+  // present a sheet the pointer is a finger.
+  &--sheet {
+    --tls-menu-grabber-length: 36px;
+    --tls-menu-grabber-thickness: 5px;
+    --tls-menu-grabber-inset: var(--spacing-2);
+    // Distance the pane has been dragged toward the bottom edge, written by
+    // the component while a drag is in flight. `0px`, not `0` — it is a length.
+    --tls-menu-drag: 0px;
+    --tls-menu-item-padding-block: var(--spacing-3);
+
+    position: relative;
+
+    width: 100%;
+    max-width: none;
+    max-height: 60dvh;
+
+    // The head clears the grabber pill; the foot clears the home indicator.
+    padding-block-start: calc(
+      var(--tls-menu-grabber-inset) + var(--tls-menu-grabber-thickness) +
+      var(--tls-menu-padding-block)
+    );
+    padding-block-end: calc(var(--tls-menu-padding-block) + env(safe-area-inset-bottom));
+
+    border: none;
+    border-block-start: var(--tls-menu-border-width) solid var(--tls-menu-border-color);
+    border-radius: var(--tls-menu-border-radius) var(--tls-menu-border-radius) 0 0;
+
+    overflow-y: auto;
+
+    @include mixins.motion(essential) {
+      // The enter keyframe holds `transform` for the pane's whole lifetime
+      // (`animation-fill-mode: both`), so it has to stand down for a drag to
+      // own the transform — and the leave keyframe stands down after a
+      // drag-dismissal too: that pane is already at the edge the keyframe
+      // would slide it to, and replaying the slide would snap it open for a
+      // frame first.
+      &.tls-menu--enter:not(.tls-menu--dragging):not(.tls-menu--settling) {
+        animation: tls-menu-sheet-open var(--motion-fast) var(--motion-ease-out) both;
+      }
+
+      &.tls-menu--leave:not(.tls-menu--dragging):not(.tls-menu--settling) {
+        animation: tls-menu-sheet-open var(--motion-fast) var(--motion-ease-in) reverse both;
+      }
+
+      // Only the settle animates. The drag itself is direct manipulation, not
+      // motion, so it tracks the finger at every motion level.
+      &.tls-menu--settling {
+        transition: transform var(--motion-default) var(--motion-ease-out);
+      }
+
+      // A pane the drag machinery owns plays no keyframes at all. The sheet's
+      // own enter/leave already stand down above, but the anchored panel's
+      // base leave animation matches `--leave` too — and a keyframe always
+      // outweighs the drag's transform, so it would seize the dismissed sheet
+      // back to fully open for its opening frame.
+      &.tls-menu--dragging,
+      &.tls-menu--settling {
+        animation: none;
+      }
+    }
+
+    &.tls-menu--dragging,
+    &.tls-menu--settling {
+      transform: translateY(var(--tls-menu-drag));
+    }
+  }
+
+  // The pill that says the sheet can be dragged toward the bottom edge.
+  // `--color-outline` rather than the fainter `--color-outline-variant`: as the
+  // only visual signal of the gesture it is a meaningful graphic and owes 3:1
+  // against the pane (WCAG 1.4.11).
+  &__grabber {
+    position: absolute;
+    inset-block-start: var(--tls-menu-grabber-inset);
+    inset-inline-start: calc(50% - var(--tls-menu-grabber-length) / 2);
+    z-index: 1;
+
+    width: var(--tls-menu-grabber-length);
+    height: var(--tls-menu-grabber-thickness);
+
+    border-radius: calc(var(--tls-menu-grabber-thickness) / 2);
+
+    background-color: var(--color-outline);
+  }
+}
+
+// The sheet's travel: in from the viewport's bottom edge on enter, back out
+// the same way on leave and no fade either way — the edge travelling is the
+// whole cue, and a vertical slide needs no direction-flip for RTL.
+@keyframes tls-menu-sheet-open {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
 }
