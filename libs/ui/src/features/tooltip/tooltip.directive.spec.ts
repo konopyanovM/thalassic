@@ -129,6 +129,36 @@ describe('TooltipDirective', () => {
     expect(queryTooltip()).toBeNull();
   });
 
+  it('retires a hovered tooltip when the host is pressed', async () => {
+    const element = queryElement('.plain');
+    hover(element);
+    await fixture.whenStable();
+    expect(queryTooltip()).not.toBeNull();
+
+    element.dispatchEvent(
+      new PointerEvent('pointerdown', { bubbles: true, pointerType: 'mouse' }),
+    );
+    await fixture.whenStable();
+
+    expect(queryTooltip()).toBeNull();
+  });
+
+  it('does not resurface for the focus a click hands over', async () => {
+    const element = queryElement('.plain');
+    hover(element);
+    await fixture.whenStable();
+
+    // A click grants focus right after the press; neither may bring the
+    // tooltip the press just retired back up.
+    element.dispatchEvent(
+      new PointerEvent('pointerdown', { bubbles: true, pointerType: 'mouse' }),
+    );
+    focus(element);
+    await fixture.whenStable();
+
+    expect(queryTooltip()).toBeNull();
+  });
+
   it('keeps a focused tooltip while a pointer passes over and leaves', async () => {
     const host = queryElement('.plain');
     focus(host);

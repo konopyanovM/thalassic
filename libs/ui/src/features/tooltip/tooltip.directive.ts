@@ -35,6 +35,7 @@ import { tooltipSource } from './tooltip.types';
   selector: '[tlsTooltip]',
   host: {
     '(pointerenter)': 'onPointerEnter($event)',
+    '(pointerdown)': 'onPointerDown($event)',
     '(pointermove)': 'onPointerMove($event)',
     '(pointerleave)': 'onPointerLeave($event)',
     '(focusin)': 'onFocusIn($event)',
@@ -66,7 +67,7 @@ export class TooltipDirective extends TooltipTrigger {
     // (truncated text, an info marker) the tap has no other meaning, and
     // toggles the tooltip in hover's stead.
     if (event.pointerType === 'touch') {
-      this._noteTouch();
+      this._notePointer();
       if (this._isInteractive(this._element)) return;
 
       if (this._isTapped(this._element)) {
@@ -78,6 +79,18 @@ export class TooltipDirective extends TooltipTrigger {
     }
 
     this._showHost('hover', { x: event.clientX, y: event.clientY });
+  }
+
+  protected onPointerDown(event: PointerEvent): void {
+    this._notePointer();
+
+    // A press is the activation, and activation retires the tooltip: the
+    // description has served its purpose, and left up it would ride into
+    // whatever the activation triggers — a navigation's view transition
+    // captures a still-open tooltip and clips it mid-air. Touch keeps its own
+    // tap semantics from `pointerenter`.
+    if (event.pointerType === 'touch') return;
+    this._hide('hover');
   }
 
   protected onPointerMove(event: PointerEvent): void {
@@ -103,9 +116,10 @@ export class TooltipDirective extends TooltipTrigger {
     const focused = event.target;
 
     // The focus trigger serves readers who reach the control without a pointer;
-    // focus handed over by a touch tap is not that reader, and would resurface
-    // the tooltip the tap was told not to claim.
-    if (this._followsTouch()) return;
+    // focus handed over by a tap or a click is not that reader — a tap's
+    // tooltip was already told not to claim the activation, and a click's
+    // would outlive the hover that click just retired.
+    if (this._followsPointer()) return;
 
     // No cursor to anchor to; a focus-triggered tooltip always anchors to the element.
     this._showHost('focus', null, focused instanceof HTMLElement ? focused : null);

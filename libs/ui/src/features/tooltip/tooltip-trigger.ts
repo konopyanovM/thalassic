@@ -149,18 +149,18 @@ export abstract class TooltipTrigger implements TooltipOwner, OnDestroy {
     this._present();
   }
 
-  // Timestamp of the latest touch interaction, for telling a tap-granted focus
-  // apart from a keyboard-granted one.
-  private _lastTouchAt = 0;
+  // Timestamp of the latest pointer interaction (tap or click), for telling a
+  // pointer-granted focus apart from a keyboard-granted one.
+  private _lastPointerAt = 0;
 
-  /** Records that a touch interaction just happened; `_followsTouch` reads it. */
-  protected _noteTouch(): void {
-    this._lastTouchAt = Date.now();
+  /** Records that a pointer interaction just happened; `_followsPointer` reads it. */
+  protected _notePointer(): void {
+    this._lastPointerAt = Date.now();
   }
 
-  /** Whether a focus arriving now was handed over by a touch tap rather than a keyboard. */
-  protected _followsTouch(): boolean {
-    return Date.now() - this._lastTouchAt < TOUCH_HANDOVER_WINDOW_MS;
+  /** Whether a focus arriving now was handed over by a pointer rather than a keyboard. */
+  protected _followsPointer(): boolean {
+    return Date.now() - this._lastPointerAt < TOUCH_HANDOVER_WINDOW_MS;
   }
 
   /** Whether the element is, or wraps, a control a tap activates. */
