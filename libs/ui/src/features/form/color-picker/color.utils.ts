@@ -72,6 +72,19 @@ export function rgbaToHex(rgba: Rgba, includeAlpha = false): string {
   return `${base}${channelToHex(clamp(rgba.alpha, 0, 1) * 255)}`;
 }
 
+/**
+ * One color written two ways reduced to a single form, so notations can be
+ * compared: lowercase `#rrggbb`, or `#rrggbbaa` when the color is translucent.
+ * Null for anything that is not a readable color — a custom property that only
+ * the browser can resolve, or a string that is not a color at all.
+ */
+export function canonicalHex(text: string): string | null {
+  const parsed = parseColor(text);
+  if (!parsed) return null;
+
+  return rgbaToHex(parsed, parsed.alpha < 1);
+}
+
 export function rgbToHsv(rgba: Rgba): Hsva {
   const red = clamp(rgba.red, 0, 255) / 255;
   const green = clamp(rgba.green, 0, 255) / 255;

@@ -9,7 +9,7 @@ const meta: Meta<ColorSwatchPickerComponent> = {
   component: ColorSwatchPickerComponent,
   title: 'Form/Color Swatch Picker',
   args: {
-    colors: [
+    options: [
       '#ef4444',
       '#f97316',
       '#eab308',
@@ -40,7 +40,7 @@ export const Default: Story = {
 
 export const Translucent: Story = {
   args: {
-    colors: ['#ef444480', '#22c55e80', '#3b82f680', '#8b5cf680'],
+    options: ['#ef444480', '#22c55e80', '#3b82f680', '#8b5cf680'],
     value: '#3b82f680',
   },
 };

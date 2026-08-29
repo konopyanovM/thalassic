@@ -284,7 +284,9 @@ export class ColorPicker extends ValueFormControl<string> {
     this._chosenFormat.set(next);
   }
 
-  protected onPresetChange(preset: string): void {
+  protected onPresetChange(preset: string | null): void {
+    if (preset === null) return;
+
     const parsed = parseColor(preset);
     if (!parsed) return;
     this._commit(rgbToHsv(parsed));

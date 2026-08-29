@@ -8,7 +8,7 @@
   class="tls-color-swatch-picker__list"
   orientation="horizontal"
   selectionMode="explicit"
-  [value]="selectedColors()"
+  [value]="selectedValues()"
   (valueChange)="onSelectionChange($event)"
   [disabled]="disabled()"
   [readonly]="readonly()"
@@ -17,22 +17,21 @@
   [attr.aria-describedby]="describedBy()"
   [attr.aria-invalid]="invalid() ? 'true' : null"
 >
-  @for (color of colors(); track color) {
+  @for (option of normalizedOptions(); track option.value) {
+    <!--
+      The swatch is a picture of the color and nothing else, so the option
+      carries the name: without it a color is announced as whatever notation it
+      happens to be written in.
+    -->
     <div
       ngOption
       class="tls-color-swatch-picker__option"
-      [value]="color"
-      [label]="color"
+      [value]="option.value"
+      [label]="option.label"
+      [disabled]="option.disabled"
+      [attr.aria-label]="option.label"
     >
-      <tls-color-swatch [value]="color" [size]="size()" aria-hidden="true" />
-      @if (isSelected(color)) {
-        <tls-icon
-          name="check"
-          class="tls-color-swatch-picker__check"
-          [style.color]="checkColor(color)"
-          aria-hidden="true"
-        />
-      }
+      <tls-color-swatch [value]="color(option)" [size]="size()" aria-hidden="true" />
     </div>
   }
 </div>

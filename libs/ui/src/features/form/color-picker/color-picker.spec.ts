@@ -163,11 +163,6 @@ describe('ColorPicker', () => {
     expect(presetOptions[0].getAttribute('aria-selected')).toBe('true');
     expect(presetOptions[1].getAttribute('aria-selected')).toBe('false');
 
-    // Selection shows as a check icon inside the swatch, contrast-colored.
-    const check = presetOptions[0].querySelector('.tls-color-swatch-picker__check');
-    expect(check).not.toBeNull();
-    expect(presetOptions[1].querySelector('.tls-color-swatch-picker__check')).toBeNull();
-
     presetOptions[1].dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await settle();
     expect(host.value()).toBe('#00ff00');

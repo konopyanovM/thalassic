@@ -5,7 +5,7 @@ import { ColorSwatchPicker } from './color-swatch-picker';
 @Component({
   imports: [ColorSwatchPicker],
   template: `<tls-color-swatch-picker
-    [colors]="colors()"
+    [options]="colors()"
     [value]="value()"
     (valueChange)="value.set($event)"
     [disabled]="disabled()"
@@ -15,9 +15,35 @@ import { ColorSwatchPicker } from './color-swatch-picker';
 })
 class HostComponent {
   colors = signal(['#FF0000', '#00ff00', '#0000ff', '#ffffff']);
-  value = signal('');
+  value = signal<string | null>(null);
   disabled = signal(false);
   readonly = signal(false);
+}
+
+interface Accent {
+  id: string;
+  name: string;
+  token: string;
+}
+
+@Component({
+  imports: [ColorSwatchPicker],
+  template: `<tls-color-swatch-picker
+    [options]="accents"
+    optionValue="id"
+    optionLabel="name"
+    optionColor="token"
+    [value]="value()"
+    (valueChange)="value.set($event)"
+    ariaLabel="Accents"
+  />`,
+})
+class AccentHostComponent {
+  accents: Accent[] = [
+    { id: 'blue', name: 'Blue', token: 'var(--color-blue)' },
+    { id: 'orange', name: 'Orange', token: 'var(--color-orange)' },
+  ];
+  value = signal<string | null>(null);
 }
 
 describe('ColorSwatchPicker', () => {
@@ -64,20 +90,13 @@ describe('ColorSwatchPicker', () => {
     expect(options()[1].getAttribute('aria-selected')).toBe('false');
   });
 
-  it('shows a check mark on the selected swatch, tinted for contrast', async () => {
-    host.value.set('#ffffff');
-    await settle();
-
-    const check = query('.tls-color-swatch-picker__check');
-    expect(options()[3].contains(check)).toBe(true);
-    expect(check.style.color).toBe('rgb(0, 0, 0)');
-  });
-
-  it('commits the clicked color as a normalized lowercase hex', async () => {
+  // A plain color list stores the color itself, so what was offered is what is
+  // committed — the control never rewrites the consumer's own notation.
+  it('commits the clicked color as it was offered', async () => {
     options()[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await settle();
 
-    expect(host.value()).toBe('#ff0000');
+    expect(host.value()).toBe('#FF0000');
   });
 
   it('marks the control touched when a color is committed', async () => {
@@ -97,7 +116,7 @@ describe('ColorSwatchPicker', () => {
     options()[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await settle();
 
-    expect(host.value()).toBe('#3b82f680');
+    expect(host.value()).toBe('#3B82F680');
   });
 
   it('does not commit while disabled', async () => {
@@ -107,7 +126,7 @@ describe('ColorSwatchPicker', () => {
     options()[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await settle();
 
-    expect(host.value()).toBe('');
+    expect(host.value()).toBeNull();
   });
 
   it('does not commit while readonly', async () => {
@@ -117,7 +136,7 @@ describe('ColorSwatchPicker', () => {
     options()[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await settle();
 
-    expect(host.value()).toBe('');
+    expect(host.value()).toBeNull();
   });
 
   it('selects with the keyboard: arrows navigate, Space commits', async () => {
@@ -133,5 +152,51 @@ describe('ColorSwatchPicker', () => {
     listbox.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
     await settle();
     expect(host.value()).toBe('#00ff00');
+  });
+
+  // Options carrying their own value, name and color are what let a theme token
+  // be offered: the swatch paints something no color parser can read, while the
+  // value committed is the consumer's own identifier for that choice.
+  describe('with options carrying their color', () => {
+    let accentFixture: ComponentFixture<AccentHostComponent>;
+    let accentHost: AccentHostComponent;
+
+    const accentOptions = (): HTMLElement[] =>
+      Array.from(accentFixture.nativeElement.querySelectorAll('[role="option"]'));
+
+    beforeEach(async () => {
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({ imports: [AccentHostComponent] }).compileComponents();
+      accentFixture = TestBed.createComponent(AccentHostComponent);
+      accentHost = accentFixture.componentInstance;
+      accentFixture.detectChanges();
+      await accentFixture.whenStable();
+    });
+
+    it('paints each swatch with the color its option names', () => {
+      const swatch = accentOptions()[0].querySelector<HTMLElement>('.tls-color-swatch');
+      expect(swatch?.style.getPropertyValue('--tls-color-swatch-color')).toBe('var(--color-blue)');
+    });
+
+    it('names each option by its label rather than by the color drawn', () => {
+      expect(accentOptions()[0].getAttribute('aria-label')).toBe('Blue');
+    });
+
+    it('commits the option value, not the color', async () => {
+      accentOptions()[1].dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      accentFixture.detectChanges();
+      await accentFixture.whenStable();
+
+      expect(accentHost.value()).toBe('orange');
+    });
+
+    it('shows the stored value as the selection', async () => {
+      accentHost.value.set('orange');
+      accentFixture.detectChanges();
+      await accentFixture.whenStable();
+
+      expect(accentOptions()[1].getAttribute('aria-selected')).toBe('true');
+      expect(accentOptions()[0].getAttribute('aria-selected')).toBe('false');
+    });
   });
 });

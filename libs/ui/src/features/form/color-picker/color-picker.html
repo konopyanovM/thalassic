@@ -109,7 +109,7 @@
 @if (presets().length > 0) {
   <tls-color-swatch-picker
     class="tls-color-picker__presets"
-    [colors]="presets()"
+    [options]="presets()"
     [value]="hex()"
     (valueChange)="onPresetChange($event)"
     [disabled]="disabled()"

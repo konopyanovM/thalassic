@@ -1,9 +1,9 @@
 @use '../../mixins' as mixins;
 
-@keyframes tls-color-swatch-picker-check-in {
+@keyframes tls-color-swatch-picker-ring-in {
   from {
     opacity: 0;
-    transform: scale(0);
+    transform: scale(0.8);
   }
 
   to {
@@ -52,26 +52,27 @@
     }
   }
 
-  // Selection marker overlaid on the swatch; the component sets its `color` to
-  // black or white, whichever contrasts more with the swatch underneath.
-  // The icon keeps its intrinsic 1em box, so with all four edges pinned,
-  // auto margins center it over the swatch.
-  &__check {
+  // Selection is stated by a ring drawn clear of the swatch rather than by a
+  // mark laid over it: the ring holds against every color, including one whose
+  // value the control cannot read — a theme token resolves in the browser, so
+  // no contrast can be computed for it here.
+  &__option[aria-selected='true']::after {
+    content: '';
+
     position: absolute;
-    inset: 0;
+    inset: -4px;
 
-    margin: auto;
-
-    font-size: 16px;
+    border: 2px solid var(--color-on-surface);
+    border-radius: var(--radius-md);
 
     pointer-events: none;
 
-    // The check mounts when its swatch becomes the selection, so an entry
+    // The ring mounts when its swatch becomes the selection, so an entry
     // animation plays on every pick. Confirming the selection is functional
     // feedback — `essential` tier, surviving reduced motion; the spring easing
     // supplies the pop's overshoot.
     @include mixins.motion(essential) {
-      animation: tls-color-swatch-picker-check-in var(--motion-fast) var(--motion-ease-spring)
+      animation: tls-color-swatch-picker-ring-in var(--motion-fast) var(--motion-ease-spring)
         both;
     }
   }

@@ -1,4 +1,5 @@
 import {
+  canonicalHex,
   contrastForeground,
   formatHsl,
   formatRgb,
@@ -6,8 +7,8 @@ import {
   hsvToHsl,
   hsvToRgb,
   parseColor,
-  rgbToHsv,
   rgbaToHex,
+  rgbToHsv,
 } from './color.utils';
 
 describe('color.utils', () => {
@@ -85,6 +86,24 @@ describe('color.utils', () => {
 
     it('rounds fractional channels', () => {
       expect(rgbaToHex({ red: 12.6, green: 0.4, blue: 255, alpha: 1 })).toBe('#0d00ff');
+    });
+  });
+
+  describe('canonicalHex', () => {
+    it('reduces the same color written differently to one form', () => {
+      expect(canonicalHex('#FFF')).toBe('#ffffff');
+      expect(canonicalHex('rgb(255, 255, 255)')).toBe('#ffffff');
+    });
+
+    it('keeps the alpha of a translucent color, and drops it from an opaque one', () => {
+      expect(canonicalHex('rgba(255, 0, 0, 0.5)')).toBe('#ff000080');
+      expect(canonicalHex('#ff0000')).toBe('#ff0000');
+    });
+
+    // A custom property resolves in the browser, so nothing here can read it.
+    it('refuses a color it cannot read', () => {
+      expect(canonicalHex('var(--color-blue)')).toBeNull();
+      expect(canonicalHex('not a color')).toBeNull();
     });
   });
 
