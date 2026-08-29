@@ -29,7 +29,9 @@
 
   white-space: nowrap;
 
-  cursor: pointer;
+  // Overridable so a button serving as a drag grip can advertise the grab
+  // gesture instead of a click.
+  cursor: var(--tls-button-cursor, pointer);
   user-select: none;
 
   transition: background-color var(--motion-fast) var(--motion-ease-in-out),
