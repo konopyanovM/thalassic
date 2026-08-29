@@ -48,9 +48,9 @@
   --tls-drawer-close-size: 32px;
   --tls-drawer-close-icon-size: 16px;
   --tls-drawer-close-padding: var(--spacing-4);
-  --tls-drawer-grabber-length: 36px;
-  --tls-drawer-grabber-thickness: 5px;
-  --tls-drawer-grabber-inset: var(--spacing-2);
+  --tls-drawer-grabber-length: var(--grabber-length);
+  --tls-drawer-grabber-thickness: var(--grabber-thickness);
+  --tls-drawer-grabber-inset: var(--grabber-inset);
   // Distance the panel has been dragged toward its pinned edge, written by the
   // component while a drag is in flight. `0px`, not `0` — it is a length.
   --tls-drawer-drag: 0px;
@@ -149,17 +149,11 @@
   // decorative — the whole panel is the drag surface, so the pill carries no
   // pointer handling of its own. Placement along the panel's inner edge is
   // side-dependent and lives with the side modifiers.
-  //
-  // `--color-outline` rather than the fainter `--color-outline-variant`: as the
-  // only visual signal that the panel can be dragged it is a meaningful graphic
-  // and owes 3:1 against the panel (WCAG 1.4.11).
   &__grabber {
     position: absolute;
     z-index: 1;
 
-    border-radius: calc(var(--tls-drawer-grabber-thickness) / 2);
-
-    background-color: var(--color-outline);
+    @include mixins.grabber-pill(var(--tls-drawer-grabber-thickness));
   }
 
   &__header {

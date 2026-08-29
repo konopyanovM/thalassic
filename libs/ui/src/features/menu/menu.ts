@@ -25,6 +25,8 @@ import {
 } from '@angular/core';
 import {
   DEFAULT_PAN_CONFIG,
+  DRAG_DISMISS_POINTER_TYPES,
+  DRAG_DISMISS_RATIO,
   PAN_CONFIG,
   PanDirective,
   PanEvent,
@@ -38,7 +40,6 @@ import { buildOverlayPositions } from '../../utils';
 import { Icon } from '../icon';
 import { Kbd } from '../kbd';
 import { MenuItemComponent } from './menu-item';
-import { SHEET_DISMISS_RATIO } from './menu.constants';
 import { MENU_CONFIG } from './menu.token';
 import { MenuActionItem, MenuItemDefinition, MenuRenderBlock, MenuRenderGroup } from './menu.types';
 
@@ -46,10 +47,19 @@ import { MenuActionItem, MenuItemDefinition, MenuRenderBlock, MenuRenderGroup } 
   selector: 'tls-menu',
   imports: [NgTemplateOutlet, Icon, Kbd, RouterLink, AriaMenu, AriaMenuItem, PanDirective],
   providers: [
-    // The sheet's dismissal drag runs down the vertical axis only; whether the
-    // gesture is live at all is driven per open through the pane's `tlsPan`
-    // binding, so the config's own flag stays off.
-    { provide: PAN_CONFIG, useValue: { ...DEFAULT_PAN_CONFIG, axis: 'y', enabled: false } },
+    // The sheet's dismissal drag runs down the vertical axis only, from the
+    // pointers that drag panels shut anywhere else; whether the gesture is
+    // live at all is driven per open through the pane's `tlsPan` binding, so
+    // the config's own flag stays off.
+    {
+      provide: PAN_CONFIG,
+      useValue: {
+        ...DEFAULT_PAN_CONFIG,
+        axis: 'y',
+        enabled: false,
+        pointerTypes: DRAG_DISMISS_POINTER_TYPES,
+      },
+    },
   ],
   templateUrl: './menu.html',
   host: {
@@ -272,7 +282,7 @@ export class Menu {
     // its own.
     const travelled =
       this._sheetDragExtent > 0 &&
-      Math.max(0, event.deltaY) / this._sheetDragExtent >= SHEET_DISMISS_RATIO;
+      Math.max(0, event.deltaY) / this._sheetDragExtent >= DRAG_DISMISS_RATIO;
     const flicked = event.velocityY >= SWIPE_DEFAULT_MIN_VELOCITY;
 
     if (travelled || flicked) {

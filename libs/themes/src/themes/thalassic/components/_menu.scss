@@ -181,9 +181,9 @@
   // indicator. Rows grow to comfortable touch height: on the viewports that
   // present a sheet the pointer is a finger.
   &--sheet {
-    --tls-menu-grabber-length: 36px;
-    --tls-menu-grabber-thickness: 5px;
-    --tls-menu-grabber-inset: var(--spacing-2);
+    --tls-menu-grabber-length: var(--grabber-length);
+    --tls-menu-grabber-thickness: var(--grabber-thickness);
+    --tls-menu-grabber-inset: var(--grabber-inset);
     // Distance the pane has been dragged toward the bottom edge, written by
     // the component while a drag is in flight. `0px`, not `0` — it is a length.
     --tls-menu-drag: 0px;
@@ -215,12 +215,14 @@
       // drag-dismissal too: that pane is already at the edge the keyframe
       // would slide it to, and replaying the slide would snap it open for a
       // frame first.
+      // `--motion-default`, matching the drawer's slide: the two bottom
+      // surfaces travel the same edge and must feel like one mechanism.
       &.tls-menu--enter:not(.tls-menu--dragging):not(.tls-menu--settling) {
-        animation: tls-menu-sheet-open var(--motion-fast) var(--motion-ease-out) both;
+        animation: tls-menu-sheet-open var(--motion-default) var(--motion-ease-out) both;
       }
 
       &.tls-menu--leave:not(.tls-menu--dragging):not(.tls-menu--settling) {
-        animation: tls-menu-sheet-open var(--motion-fast) var(--motion-ease-in) reverse both;
+        animation: tls-menu-sheet-open var(--motion-default) var(--motion-ease-in) reverse both;
       }
 
       // Only the settle animates. The drag itself is direct manipulation, not
@@ -246,10 +248,8 @@
     }
   }
 
-  // The pill that says the sheet can be dragged toward the bottom edge.
-  // `--color-outline` rather than the fainter `--color-outline-variant`: as the
-  // only visual signal of the gesture it is a meaningful graphic and owes 3:1
-  // against the pane (WCAG 1.4.11).
+  // The pill that says the sheet can be dragged toward the bottom edge,
+  // centered along its top edge.
   &__grabber {
     position: absolute;
     inset-block-start: var(--tls-menu-grabber-inset);
@@ -259,9 +259,7 @@
     width: var(--tls-menu-grabber-length);
     height: var(--tls-menu-grabber-thickness);
 
-    border-radius: calc(var(--tls-menu-grabber-thickness) / 2);
-
-    background-color: var(--color-outline);
+    @include mixins.grabber-pill(var(--tls-menu-grabber-thickness));
   }
 }
 

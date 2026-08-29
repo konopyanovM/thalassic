@@ -12,11 +12,16 @@ import {
   RendererStyleFlags2,
   signal,
 } from '@angular/core';
-import { PanDirective, PanEvent, SWIPE_DEFAULT_MIN_VELOCITY } from '@thalassic/core';
+import {
+  DRAG_DISMISS_RATIO,
+  PanDirective,
+  PanEvent,
+  SWIPE_DEFAULT_MIN_VELOCITY,
+} from '@thalassic/core';
 import { afterLeaveAnimation, LEAVE_ANIMATION_FALLBACK_MS } from '../../abstract/overlay';
 import { Icon } from '../icon';
 import { DrawerConfig } from './drawer.config';
-import { DRAWER_DISMISS_RATIO, DRAWER_NAMED_SIZES } from './drawer.constants';
+import { DRAWER_NAMED_SIZES } from './drawer.constants';
 import { DRAWER_CONFIG } from './drawer.token';
 import { drawerDragState, drawerSize } from './drawer.types';
 
@@ -141,7 +146,7 @@ export class Drawer extends CdkDialogContainer {
     // Either condition commits: a short flick is as clear an intent to dismiss as
     // a slow drag past the ratio, and requiring both would strand each on its own.
     const travelled =
-      this._dragExtent > 0 && this._dismissTravel(event) / this._dragExtent >= DRAWER_DISMISS_RATIO;
+      this._dragExtent > 0 && this._dismissTravel(event) / this._dragExtent >= DRAG_DISMISS_RATIO;
     const flicked = this._dismissVelocity(event) >= SWIPE_DEFAULT_MIN_VELOCITY;
 
     if (travelled || flicked) {

@@ -1,0 +1,14 @@
+// The pill that says a panel can be dragged toward its pinned edge. Its
+// geometry comes from the global `--grabber-*` tokens (the semantic layer),
+// which each surface aliases into its own custom-property namespace. The
+// thickness arrives as the surface's own custom property so a themed override
+// keeps the radius round; positioning stays with the caller, whose edge the
+// pill lies along. `--color-outline` rather than the fainter
+// `--color-outline-variant`: as the only visual signal that the panel can be
+// dragged it is a meaningful graphic and owes 3:1 against the panel
+// (WCAG 1.4.11).
+@mixin grabber-pill($thickness) {
+  border-radius: calc(#{$thickness} / 2);
+
+  background-color: var(--color-outline);
+}

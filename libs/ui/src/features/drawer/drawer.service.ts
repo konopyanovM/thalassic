@@ -3,10 +3,14 @@ import { Dialog as CdkDialog, DialogRef, DialogRole } from '@angular/cdk/dialog'
 import { Overlay, PositionStrategy } from '@angular/cdk/overlay';
 import { ComponentType } from '@angular/cdk/portal';
 import { inject, Injectable } from '@angular/core';
-import { DEFAULT_PAN_CONFIG, PAN_CONFIG, PanConfig } from '@thalassic/core';
+import {
+  DEFAULT_PAN_CONFIG,
+  DRAG_DISMISS_POINTER_TYPES,
+  PAN_CONFIG,
+  PanConfig,
+} from '@thalassic/core';
 import { filter, takeUntil } from 'rxjs';
 import { Drawer } from './drawer';
-import { DRAWER_DRAG_POINTER_TYPES } from './drawer.constants';
 import { DrawerConfig } from './drawer.config';
 import { DrawerRef } from './drawer-ref';
 import { DRAWER_CONFIG } from './drawer.token';
@@ -120,7 +124,7 @@ export class DrawerService {
       // Locked to the panel's own axis so the browser keeps the cross axis and
       // content inside the drawer still scrolls natively.
       axis: config.side === 'top' || config.side === 'bottom' ? 'y' : 'x',
-      pointerTypes: DRAWER_DRAG_POINTER_TYPES,
+      pointerTypes: DRAG_DISMISS_POINTER_TYPES,
     };
   }
 

@@ -1,0 +1,8 @@
+:root {
+  // The grabber pill every drag-dismissable surface wears (drawer, menu
+  // sheet). Component namespaces alias these, so restyling the pill here
+  // restyles it everywhere at once.
+  --grabber-length: 36px;
+  --grabber-thickness: 5px;
+  --grabber-inset: var(--spacing-2);
+}
