@@ -12,6 +12,8 @@ const meta: Meta<AlertComponent> = {
     label: '',
     hideLabel: false,
     hideIcon: false,
+    closable: false,
+    dismissLabel: 'Dismiss',
   },
   argTypes: {
     color: {
@@ -53,4 +55,24 @@ export const ProjectedIcon: Story = {
 
 export const WithoutIcon: Story = {
   args: { color: 'warning', hideIcon: true },
+};
+
+export const Closable: Story = {
+  args: { color: 'success', label: 'Success', closable: true },
+  render: args => ({
+    props: {
+      ...args,
+      visible: true,
+      onDismissed(this: { visible: boolean }): void {
+        this.visible = false;
+      },
+    },
+    template: `
+      @if (visible) {
+        <tls-alert ${argsToTemplate(args)} (dismissed)="onDismissed()">
+          An action was completed successfully.
+        </tls-alert>
+      }
+    `,
+  }),
 };

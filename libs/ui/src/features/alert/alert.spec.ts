@@ -65,4 +65,28 @@ describe('Alert', () => {
 
     expect(host.querySelector('.tls-alert__icon')).toBeNull();
   });
+
+  it('renders no close button by default', async () => {
+    await fixture.whenStable();
+
+    const host = fixture.nativeElement as HTMLElement;
+    expect(host.querySelector('.tls-alert__close')).toBeNull();
+  });
+
+  it('emits dismissed when the close button is pressed', async () => {
+    fixture.componentRef.setInput('closable', true);
+    fixture.componentRef.setInput('dismissLabel', 'Close the alert');
+    await fixture.whenStable();
+
+    let dismissals = 0;
+    component.dismissed.subscribe(() => dismissals++);
+
+    const host = fixture.nativeElement as HTMLElement;
+    const close = host.querySelector<HTMLButtonElement>('.tls-alert__close');
+    if (!close) throw new Error('close button not rendered');
+    expect(close.getAttribute('aria-label')).toBe('Close the alert');
+
+    close.click();
+    expect(dismissals).toBe(1);
+  });
 });

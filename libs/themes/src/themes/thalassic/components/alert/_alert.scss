@@ -1,3 +1,28 @@
+@use '../../mixins' as mixins;
+
+@keyframes tls-alert-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+// Zeroing the margins as well collapses whatever spacing the surrounding
+// layout hung on the alert, so following content settles flush.
+@keyframes tls-alert-collapse {
+  to {
+    block-size: 0;
+
+    margin-block: 0;
+    padding-block: 0;
+
+    border-block-width: 0;
+  }
+}
+
 .tls-alert {
   --tls-alert-padding: var(--spacing-4);
   --tls-alert-gap: var(--spacing-3);
@@ -5,6 +30,12 @@
   --tls-alert-edge-width: 4px;
   --tls-alert-icon-size: 20px;
   --tls-alert-label-font-weight: var(--font-weight-bold);
+  --tls-alert-body-gap: var(--spacing-2);
+  --tls-alert-close-size: 28px;
+  --tls-alert-close-inset: var(--spacing-2);
+
+  // Anchors the corner-pinned close button.
+  position: relative;
 
   padding: var(--tls-alert-padding);
 
@@ -25,12 +56,16 @@
     width: var(--tls-alert-icon-size);
     height: var(--tls-alert-icon-size);
 
-    // Centres the glyph on the first line's box instead of its top edge, so it
-    // reads as part of the text baseline rather than floating above it.
+    // Centres the icon box on the first line's box instead of its top edge, so
+    // it reads as part of the text baseline rather than floating above it.
     margin-block-start: calc((1lh - var(--tls-alert-icon-size)) / 2);
 
     display: flex;
     flex-shrink: 0;
+    // A glyph smaller than the box (an SVG sized by font) still sits on the
+    // box's centre, keeping it level with the label's line.
+    align-items: center;
+    justify-content: center;
 
     color: inherit;
   }
@@ -38,10 +73,77 @@
   &__body {
     min-width: 0;
 
+    display: flex;
     flex: 1;
+    // The label is a heading line for the content: the two stack as rows,
+    // both aligned to the body column beside the icon.
+    flex-direction: column;
+    gap: var(--tls-alert-body-gap);
   }
 
   &__label {
     font-weight: var(--tls-alert-label-font-weight);
+  }
+
+  &__close {
+    // Pinned to the corner with one inset, so the button keeps an equal
+    // distance from the top and trailing edges regardless of line height.
+    position: absolute;
+    inset-block-start: var(--tls-alert-close-inset);
+    inset-inline-end: var(--tls-alert-close-inset);
+
+    width: var(--tls-alert-close-size);
+    height: var(--tls-alert-close-size);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: var(--radius-sm);
+
+    background-color: transparent;
+
+    color: inherit;
+
+    cursor: pointer;
+
+    @include mixins.motion(essential) {
+      transition: background-color var(--motion-fast) var(--motion-ease-in-out);
+    }
+
+    &:hover {
+      background-color: rgb(var(--color-shadow) / 0.12);
+    }
+  }
+
+  &__close-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  &--closable {
+    // Keeps the text just clear of the corner-pinned close button: its zone
+    // (inset + size) plus a hair of breathing room, no more.
+    padding-inline-end: calc(var(--tls-alert-close-inset) + var(--tls-alert-close-size) + var(--spacing-1));
+  }
+
+  @include mixins.motion(essential) {
+    // Lets the leave collapse animate from the box's intrinsic size where the
+    // browser supports it; elsewhere only the fade plays and the vacated space
+    // closes in one step.
+    interpolate-size: allow-keywords;
+
+    &--enter {
+      animation: tls-alert-fade var(--motion-default) var(--motion-ease-out) both;
+    }
+
+    &--leave {
+      overflow: hidden;
+
+      animation:
+        tls-alert-fade var(--motion-default) var(--motion-ease-in) reverse both,
+        tls-alert-collapse var(--motion-default) var(--motion-ease-in) both;
+    }
   }
 }

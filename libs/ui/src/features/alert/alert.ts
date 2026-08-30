@@ -7,6 +7,8 @@ import {
   input,
   InputSignal,
   InputSignalWithTransform,
+  output,
+  OutputEmitterRef,
   Signal,
 } from '@angular/core';
 import { Icon, systemIcon } from '../icon';
@@ -23,6 +25,8 @@ import { ALERT_CONFIG } from './alert.token';
     '[class]': 'hostClasses()',
     '[attr.role]': 'hostRole()',
     '[attr.aria-label]': 'hideLabel() ? displayLabel() : null',
+    'animate.enter': 'tls-alert--enter',
+    'animate.leave': 'tls-alert--leave',
   },
 })
 export class Alert {
@@ -46,6 +50,16 @@ export class Alert {
     this._config.hideIcon,
     { transform: booleanAttribute },
   );
+  /** Renders a trailing close button. Dismissal is reported through `dismissed`; the consumer owns removal. */
+  public readonly closable: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    false,
+    { transform: booleanAttribute },
+  );
+  /** Accessible name of the close button. */
+  public readonly dismissLabel: InputSignal<string> = input<string>('Dismiss');
+
+  // Outputs
+  public readonly dismissed: OutputEmitterRef<void> = output<void>();
 
   // State
   /** Consumer-provided visual rendered in place of the built-in icon. */
@@ -88,6 +102,8 @@ export class Alert {
 
     array.push(`${className}--${this.color()}`);
 
+    if (this.closable()) array.push(`${className}--closable`);
+
     return array;
   });
 
@@ -95,4 +111,9 @@ export class Alert {
     const urgent = ['danger', 'warning'];
     return urgent.includes(this.color()) ? 'alert' : 'note';
   });
+
+  // Protected methods
+  protected onClose(): void {
+    this.dismissed.emit();
+  }
 }
