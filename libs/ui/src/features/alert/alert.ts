@@ -50,13 +50,18 @@ export class Alert {
     this._config.hideIcon,
     { transform: booleanAttribute },
   );
-  /** Renders a trailing close button. Dismissal is reported through `dismissed`; the consumer owns removal. */
+  /**
+   * Renders a trailing close button. Dismissal is reported through `dismissed`;
+   * the consumer owns removal — including moving keyboard focus somewhere
+   * sensible, since removing the alert destroys the focused button and focus
+   * would otherwise fall back to the document body.
+   */
   public readonly closable: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
-    false,
+    this._config.closable,
     { transform: booleanAttribute },
   );
   /** Accessible name of the close button. */
-  public readonly dismissLabel: InputSignal<string> = input<string>('Dismiss');
+  public readonly dismissLabel: InputSignal<string> = input<string>(this._config.dismissLabel);
 
   // Outputs
   public readonly dismissed: OutputEmitterRef<void> = output<void>();

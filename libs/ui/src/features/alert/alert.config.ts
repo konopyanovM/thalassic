@@ -8,6 +8,9 @@ export interface AlertConfig {
   /** Leading glyph, either one icon for every color or a per-color status set. */
   icon: Record<alertColor, systemIcon> | systemIcon;
   hideIcon: boolean;
+  closable: boolean;
+  /** Accessible name of the close button; the global place to localize it. */
+  dismissLabel: string;
 }
 
 export const DEFAULT_ALERT_CONFIG: AlertConfig = {
@@ -32,4 +35,6 @@ export const DEFAULT_ALERT_CONFIG: AlertConfig = {
     danger: 'error',
   },
   hideIcon: false,
+  closable: false,
+  dismissLabel: 'Dismiss',
 };

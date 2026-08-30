@@ -86,40 +86,20 @@
   }
 
   &__close {
-    // Pinned to the corner with one inset, so the button keeps an equal
-    // distance from the top and trailing edges regardless of line height.
+    // Pinned out of the flow, vertically centred on the label's first line —
+    // the same line the leading icon sits on — so both ends of the heading row
+    // align; the trailing inset keeps a fixed corner distance.
     position: absolute;
-    inset-block-start: var(--tls-alert-close-inset);
+    inset-block-start: calc(
+      var(--tls-alert-padding) + (1lh - var(--tls-alert-close-size)) / 2
+    );
     inset-inline-end: var(--tls-alert-close-inset);
 
-    width: var(--tls-alert-close-size);
-    height: var(--tls-alert-close-size);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border: none;
-    border-radius: var(--radius-sm);
-
-    background-color: transparent;
-
-    color: inherit;
-
-    cursor: pointer;
-
-    @include mixins.motion(essential) {
-      transition: background-color var(--motion-fast) var(--motion-ease-in-out);
-    }
-
-    &:hover {
-      background-color: rgb(var(--color-shadow) / 0.12);
-    }
+    @include mixins.close-button(var(--tls-alert-close-size));
   }
 
   &__close-icon {
-    width: 14px;
-    height: 14px;
+    @include mixins.close-button-icon;
   }
 
   &--closable {
@@ -129,17 +109,19 @@
   }
 
   @include mixins.motion(essential) {
-    // Lets the leave collapse animate from the box's intrinsic size where the
-    // browser supports it; elsewhere only the fade plays and the vacated space
-    // closes in one step.
-    interpolate-size: allow-keywords;
-
     &--enter {
       animation: tls-alert-fade var(--motion-default) var(--motion-ease-out) both;
     }
 
     &--leave {
       overflow: hidden;
+
+      // Scoped to the leaving element only: the property inherits, and on the
+      // resting alert it would silently enable intrinsic-size animation inside
+      // projected consumer content. Here it lets the collapse animate from the
+      // box's intrinsic size where supported; elsewhere only the fade plays and
+      // the vacated space closes in one step.
+      interpolate-size: allow-keywords;
 
       animation:
         tls-alert-fade var(--motion-default) var(--motion-ease-in) reverse both,

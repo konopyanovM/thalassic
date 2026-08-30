@@ -166,34 +166,11 @@
   &__close {
     flex-shrink: 0;
 
-    width: 28px;
-    height: 28px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border: none;
-    border-radius: var(--radius-sm);
-
-    background-color: transparent;
-
-    color: inherit;
-
-    cursor: pointer;
-
-    @include mixins.motion(essential) {
-      transition: background-color var(--motion-fast) var(--motion-ease-in-out);
-    }
-
-    &:hover {
-      background-color: rgb(var(--color-shadow) / 0.12);
-    }
+    @include mixins.close-button;
   }
 
   &__close-icon {
-    width: 14px;
-    height: 14px;
+    @include mixins.close-button-icon;
   }
 
   // Countdown bar hugging the surface's block-end edge; its width animates from

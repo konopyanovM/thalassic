@@ -1,0 +1,43 @@
+@use '@thalassic/core/styles/tools/motion';
+@use 'focus-ring';
+
+/// The compact icon-only dismiss control shared by closable surfaces: a quiet
+/// square that shows a wash on hover and the standard ring on keyboard focus.
+/// Positioning stays with the caller — a toast keeps it in the flex row, an
+/// alert pins it to the corner.
+@mixin close-button($size: 28px) {
+  width: $size;
+  height: $size;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  border-radius: var(--radius-sm);
+
+  background-color: transparent;
+
+  color: inherit;
+
+  cursor: pointer;
+
+  @include motion.motion(essential) {
+    transition: background-color var(--motion-fast) var(--motion-ease-in-out);
+  }
+
+  &:hover {
+    // currentColor keeps the wash visible on light and dark surfaces alike.
+    background-color: color-mix(in srgb, currentColor 12%, transparent);
+  }
+
+  &:focus-visible {
+    @include focus-ring.focus-ring;
+  }
+}
+
+/// The glyph inside a close button.
+@mixin close-button-icon($size: 14px) {
+  width: $size;
+  height: $size;
+}
