@@ -8,7 +8,11 @@ import { Popover } from './popover';
   imports: [Popover],
   template: `
     <button #trigger type="button">Trigger</button>
-    <tls-popover [position]="position()" [ariaLabel]="ariaLabel()">
+    <tls-popover
+      [position]="position()"
+      [ariaLabel]="ariaLabel()"
+      [panelClass]="panelClass()"
+    >
       <p class="popover-content">Content</p>
     </tls-popover>
   `,
@@ -16,6 +20,7 @@ import { Popover } from './popover';
 class HostComponent {
   public readonly position = signal<overlayPosition>('bottom');
   public readonly ariaLabel = signal<string | undefined>(undefined);
+  public readonly panelClass = signal<string | string[] | undefined>(undefined);
   public readonly popover = viewChild.required(Popover);
 }
 
@@ -34,6 +39,7 @@ describe('Popover', () => {
 
   const getPopover = () => host.popover();
   const queryPanel = () => overlayContainerElement.querySelector<HTMLElement>('.tls-popover');
+  const queryPane = () => overlayContainerElement.querySelector<HTMLElement>('.cdk-overlay-pane');
   const queryBackdrop = () =>
     overlayContainerElement.querySelector<HTMLElement>('.cdk-overlay-backdrop');
 
@@ -122,6 +128,50 @@ describe('Popover', () => {
       fixture.detectChanges();
 
       expect(queryPanel()?.getAttribute('aria-label')).toBe('Calendar');
+    });
+
+    it('should leave the pane unclassed when no panel class is named', () => {
+      getPopover().open(trigger);
+      fixture.detectChanges();
+
+      const pane = queryPane();
+      expect(pane).not.toBeNull();
+      expect(pane?.classList.contains('undefined')).toBe(false);
+    });
+
+    it('should place a named panel class on the overlay pane', () => {
+      host.panelClass.set('custom-panel');
+      fixture.detectChanges();
+
+      getPopover().open(trigger);
+      fixture.detectChanges();
+
+      expect(queryPane()?.classList.contains('custom-panel')).toBe(true);
+    });
+
+    it('should place every class of a named list on the overlay pane', () => {
+      host.panelClass.set(['custom-panel', 'is-wide']);
+      fixture.detectChanges();
+
+      getPopover().open(trigger);
+      fixture.detectChanges();
+
+      const pane = queryPane();
+      expect(pane?.classList.contains('custom-panel')).toBe(true);
+      expect(pane?.classList.contains('is-wide')).toBe(true);
+    });
+
+    // The pane is the panel's ancestor, which is what lets a consumer rule
+    // reach the panel it wraps.
+    it('should place the class above the panel rather than on it', () => {
+      host.panelClass.set('custom-panel');
+      fixture.detectChanges();
+
+      getPopover().open(trigger);
+      fixture.detectChanges();
+
+      expect(queryPanel()?.classList.contains('custom-panel')).toBe(false);
+      expect(queryPane()?.contains(queryPanel())).toBe(true);
     });
 
     it('should render a backdrop', () => {

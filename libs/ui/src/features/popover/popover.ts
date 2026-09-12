@@ -47,6 +47,17 @@ export class Popover {
   public readonly position = input<overlayPosition>(this._config.position);
   public readonly offset = input<Point>(this._config.offset);
   public readonly ariaLabel = input<string | undefined>(undefined);
+  /**
+   * Extra class(es) placed on the overlay pane, so one popover can carry its own
+   * treatment where the shared one does not fit.
+   *
+   * The pane sits outside every component's template and carries no style
+   * encapsulation attribute, so a consumer's scoped rules cannot otherwise reach
+   * it. A class named here is the handle they get. The panel declares its own
+   * `--tls-popover-*` properties, which beat anything inherited from the pane, so
+   * a rule that retunes one has to name the panel too: `.<class> .tls-popover`.
+   */
+  public readonly panelClass = input<string | string[] | undefined>(undefined);
 
   private readonly _positions = computed<ConnectedPosition[]>(() =>
     buildOverlayPositions(this.position(), this.offset()),
@@ -57,10 +68,15 @@ export class Popover {
     const origin: FlexibleConnectedPositionStrategyOrigin =
       trigger instanceof MouseEvent ? (trigger.currentTarget as HTMLElement) : trigger;
 
+    const panelClass = this.panelClass();
+
     this._overlay.open({
       content: this._templateRef(),
       origin,
       positions: this._positions(),
+      // Omitted rather than passed as undefined: the manager spreads the key in
+      // only when it is set, and CDK treats an explicit undefined as a class.
+      ...(panelClass != null && { panelClass }),
     });
   }
 
