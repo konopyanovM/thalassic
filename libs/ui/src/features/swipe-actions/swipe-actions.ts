@@ -138,9 +138,17 @@ export class SwipeActions {
     const offset = this._clampOffset((event.deltaX - this._lockDelta) * factor);
     const velocity = event.velocityX * factor;
 
-    if (offset > 0 && this._commits(offset, velocity)) {
+    // A side that cannot open cannot commit. Its own offset does not say so:
+    // travel toward a closed side still rubber-bands, leaving a signed offset
+    // that a flick would commit on velocity alone, since that arm asks nothing
+    // of how far the row actually opened.
+    if (offset > 0 && this.startActionTemplate() && this._commits(offset, velocity)) {
       this.startCommitted.emit();
-    } else if (offset < 0 && this._commits(-offset, -velocity)) {
+    } else if (
+      offset < 0 &&
+      this.endActionTemplate() &&
+      this._commits(-offset, -velocity)
+    ) {
       this.endCommitted.emit();
     }
 
