@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { INPUT_CONFIG } from './input.token';
 import { controlSize } from '../../../types';
+import { inputVariant } from './input.types';
 
 @Directive({
   selector: '[tlsInput]',
@@ -22,6 +23,7 @@ export class InputDirective {
   private _config = inject(INPUT_CONFIG);
 
   public readonly size: InputSignal<controlSize> = input<controlSize>(this._config.size);
+  public readonly variant: InputSignal<inputVariant> = input<inputVariant>(this._config.variant);
   public readonly fluid: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
     this._config.fluid,
     { transform: booleanAttribute },
@@ -33,6 +35,7 @@ export class InputDirective {
     const array: string[] = [className];
 
     array.push(`${className}--${this.size()}`);
+    array.push(`${className}--${this.variant()}`);
     if (this.fluid()) array.push(`${className}--fluid`);
 
     return array;

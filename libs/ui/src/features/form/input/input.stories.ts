@@ -9,6 +9,7 @@ const meta: Meta<InputComponent> = {
     value: '',
     placeholder: 'Some text',
     size: 'md',
+    variant: 'outlined',
     fluid: false,
     ...STORY_FORM_CONTROL_ARGS,
   },
@@ -16,6 +17,10 @@ const meta: Meta<InputComponent> = {
     size: {
       control: { type: 'select' },
       options: STORY_SIZE_OPTIONS,
+    },
+    variant: {
+      control: { type: 'select' },
+      options: ['outlined', 'plain'],
     },
   },
 };
@@ -25,4 +30,8 @@ type Story = StoryObj<InputComponent>;
 
 export const Input: Story = {
   args: {},
+};
+
+export const Plain: Story = {
+  args: { variant: 'plain', value: 'Editable title' },
 };

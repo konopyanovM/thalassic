@@ -57,4 +57,31 @@
       color: var(--color-danger);
     }
   }
+
+  // Plain: the field is dressed as the text around it and only reveals itself
+  // as a field under the pointer or the caret. The border keeps its width and
+  // goes transparent rather than away, so nothing shifts when focus draws it.
+  // Type is inherited from wherever the field sits — a title-sized field is a
+  // title-sized wrapper — instead of the size step's label scale.
+  &.tls-form-control--plain {
+    --tls-form-control-border-color: transparent;
+
+    background-color: transparent;
+
+    font: inherit;
+    letter-spacing: inherit;
+
+    // A refused value keeps its outline: only a field with nothing to report
+    // hides its border under the pointer. A focused field is excluded too, so
+    // a pointer left resting on it cannot tint the surface being typed on.
+    &:not(.tls-form-control--disabled):not(.tls-form-control--show-error):not(:focus):hover {
+      --tls-form-control-border-color: transparent;
+
+      background-color: var(--color-surface-container);
+    }
+
+    &:focus {
+      background-color: var(--color-surface-container-lowest);
+    }
+  }
 }

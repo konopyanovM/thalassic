@@ -15,6 +15,7 @@ import { FORM_CONTROL, ValueFormControl } from '../../../abstract/form';
 import { controlSize } from '../../../types';
 import { Loader } from '../../loader';
 import { INPUT_CONFIG } from './input.token';
+import { inputVariant } from './input.types';
 
 @Component({
   selector: 'tls-input',
@@ -34,6 +35,7 @@ export class Input extends ValueFormControl<string> {
   public readonly value: ModelSignal<string> = model<string>('');
   public readonly placeholder = input<string>(this._config.placeholder);
   public readonly size: InputSignal<controlSize> = input<controlSize>(this._config.size);
+  public readonly variant: InputSignal<inputVariant> = input<inputVariant>(this._config.variant);
   public readonly fluid: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
     this._config.fluid,
     { transform: booleanAttribute },
@@ -43,6 +45,7 @@ export class Input extends ValueFormControl<string> {
     const array: string[] = [this.CLASS_NAME];
 
     array.push(`${this.CLASS_NAME}--${this.size()}`);
+    array.push(`${this.CLASS_NAME}--${this.variant()}`);
     if (this.fluid()) array.push(`${this.CLASS_NAME}--fluid`);
 
     return array.concat(this.controlClasses());
