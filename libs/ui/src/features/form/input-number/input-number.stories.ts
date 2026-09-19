@@ -9,6 +9,7 @@ const meta: Meta<InputNumber> = {
     value: null,
     placeholder: '0',
     size: 'md',
+    variant: 'outlined',
     fluid: false,
     step: 1,
     hideArrows: true,
@@ -19,6 +20,10 @@ const meta: Meta<InputNumber> = {
       control: { type: 'select' },
       options: STORY_SIZE_OPTIONS,
     },
+    variant: {
+      control: { type: 'select' },
+      options: ['outlined', 'plain'],
+    },
   },
 };
 export default meta;
@@ -28,4 +33,8 @@ type Story = StoryObj<InputNumber>;
 export const InputNumberStory: Story = {
   name: 'InputNumber',
   args: {},
+};
+
+export const Plain: Story = {
+  args: { variant: 'plain', value: 60 },
 };

@@ -54,6 +54,11 @@ export class Textarea extends ValueFormControl<string> {
     this._config.maxRows,
     { transform: numberAttribute },
   );
+  /**
+   * The most characters the field accepts, enforced by the browser: typing stops
+   * at the limit and a paste is cut to it. Unset, the field takes any length.
+   */
+  public readonly maxLength = input<number | undefined>(undefined);
 
   // Computed
   protected readonly classes: Signal<string[]> = computed(() => {

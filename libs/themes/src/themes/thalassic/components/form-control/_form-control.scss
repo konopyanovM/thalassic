@@ -8,6 +8,10 @@
   color: var(--color-on-surface);
   background-color: var(--color-surface-container-lowest);
 
+  // A field's value does not inherit alignment from the text around it, so a
+  // field set in a column of figures states it through this property.
+  text-align: var(--tls-form-control-text-align, start);
+
   // The radius pair comes from the control-radius scale (emitted by the size
   // modifiers), so a field carries the same radius as a button of its size.
   border-radius: var(--tls-form-control-radius-round);

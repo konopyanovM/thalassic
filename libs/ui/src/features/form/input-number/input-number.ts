@@ -14,6 +14,7 @@ import {
 } from '@angular/core';
 import { FORM_CONTROL, ValueFormControl } from '../../../abstract/form';
 import { controlSize } from '../../../types';
+import { inputVariant } from '../input/input.types';
 import { Loader } from '../../loader';
 import { INPUT_NUMBER_CONFIG } from './input-number.token';
 
@@ -34,6 +35,7 @@ export class InputNumber extends ValueFormControl<number | null> {
   public readonly value: ModelSignal<number | null> = model<number | null>(null);
   public readonly placeholder = input<string>(this._config.placeholder);
   public readonly size: InputSignal<controlSize> = input<controlSize>(this._config.size);
+  public readonly variant: InputSignal<inputVariant> = input<inputVariant>(this._config.variant);
   public readonly fluid: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
     this._config.fluid,
     { transform: booleanAttribute },
@@ -54,6 +56,7 @@ export class InputNumber extends ValueFormControl<number | null> {
     const array: string[] = [this.CLASS_NAME, 'tls-input-number'];
 
     array.push(`${this.CLASS_NAME}--${this.size()}`);
+    array.push(`${this.CLASS_NAME}--${this.variant()}`);
     if (this.fluid()) array.push(`${this.CLASS_NAME}--fluid`);
     if (this.hideArrows()) array.push('tls-input-number--no-arrows');
 

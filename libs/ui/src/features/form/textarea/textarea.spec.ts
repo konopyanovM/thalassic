@@ -54,4 +54,19 @@ describe('Textarea', () => {
 
     expect(textarea().style.getPropertyValue('--tls-textarea-resize')).toBe('both');
   });
+
+  it('takes any length by default', () => {
+    const textareaElement: HTMLTextAreaElement = fixture.nativeElement.querySelector('textarea');
+
+    expect(textareaElement.hasAttribute('maxlength')).toBe(false);
+  });
+
+  it('hands the character limit to the native field', async () => {
+    fixture.componentRef.setInput('maxLength', 300);
+    await fixture.whenStable();
+
+    const textareaElement: HTMLTextAreaElement = fixture.nativeElement.querySelector('textarea');
+
+    expect(textareaElement.maxLength).toBe(300);
+  });
 });
