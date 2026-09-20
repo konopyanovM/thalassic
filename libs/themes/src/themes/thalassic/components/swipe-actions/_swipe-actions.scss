@@ -16,6 +16,16 @@ $panel-colors: primary, secondary, tertiary, success, info, warning, danger;
     // Paints above the panels for the whole gesture.
     position: relative;
 
+    // A row that is one line of a larger grid — a table whose rows share the
+    // column tracks of its head — has to hand those tracks down through this
+    // box to reach its cells. A host laid out as such a grid sets these two
+    // properties to make the box a grid spanning it (`grid` and `subgrid`);
+    // left alone, the box is the plain block it is everywhere else, and the
+    // placement below has nothing to act on.
+    grid-column: 1 / -1;
+    display: var(--tls-swipe-actions-content-display, block);
+    grid-template-columns: var(--tls-swipe-actions-content-columns, none);
+
     transition: transform var(--motion-default) var(--motion-ease-out);
   }
 
