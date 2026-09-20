@@ -27,4 +27,26 @@
   &:has(.tls-form-control--fluid) {
     --tls-input-width: 100%;
   }
+
+  // Autosizing is driven by `field-sizing: content`, which sizes the control to
+  // its text. Stated after `fluid` so it wins where both are set: the field is
+  // as wide as its text, and never wider than what holds it. Where
+  // `field-sizing` is unsupported none of this applies and the field keeps the
+  // width it would have had without it.
+  @supports (field-sizing: content) {
+    &:has(.tls-form-control--autosize) {
+      --tls-input-width: auto;
+
+      max-width: 100%;
+    }
+
+    .tls-form-control--autosize {
+      width: auto;
+      // Wide enough to be found and clicked into while it holds nothing.
+      min-width: var(--tls-input-autosize-min-width, 4ch);
+      max-width: 100%;
+
+      field-sizing: content;
+    }
+  }
 }

@@ -11,6 +11,7 @@ const meta: Meta<InputComponent> = {
     size: 'md',
     variant: 'outlined',
     fluid: false,
+    autosize: false,
     ...STORY_FORM_CONTROL_ARGS,
   },
   argTypes: {
@@ -34,4 +35,8 @@ export const Input: Story = {
 
 export const Plain: Story = {
   args: { variant: 'plain', value: 'Editable title' },
+};
+
+export const Autosize: Story = {
+  args: { variant: 'plain', autosize: true, value: 'Grows with its text' },
 };

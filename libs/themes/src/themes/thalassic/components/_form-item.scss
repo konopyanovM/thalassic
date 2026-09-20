@@ -47,7 +47,15 @@
     }
   }
 
-  &:has(.tls-form-control--fluid, .tls-file-input--fluid, .tls-form-control-group--fluid) {
+  // A fluid control fills its item, so the item fills its row. One sized to its
+  // content is the exception whatever `fluid` says: it is as wide as its text,
+  // and an item stretched around it would hold everything after it at the far
+  // end of the row.
+  &:has(
+    .tls-form-control--fluid:not(.tls-form-control--autosize),
+    .tls-file-input--fluid,
+    .tls-form-control-group--fluid
+  ) {
     width: 100%;
   }
 

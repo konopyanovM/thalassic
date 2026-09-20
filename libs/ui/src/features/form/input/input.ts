@@ -40,6 +40,20 @@ export class Input extends ValueFormControl<string> {
     this._config.fluid,
     { transform: booleanAttribute },
   );
+  /**
+   * Sizes the field to the text it holds — or to its placeholder while empty —
+   * instead of to a set width, so whatever follows the field follows the text.
+   */
+  public readonly autosize: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    this._config.autosize,
+    { transform: booleanAttribute },
+  );
+
+  /**
+   * The most characters the field accepts, enforced by the browser: typing stops
+   * at the limit and a paste is cut to it. Unset, the field takes any length.
+   */
+  public readonly maxLength = input<number | undefined>(undefined);
 
   protected readonly classes: Signal<string[]> = computed(() => {
     const array: string[] = [this.CLASS_NAME];
@@ -47,6 +61,7 @@ export class Input extends ValueFormControl<string> {
     array.push(`${this.CLASS_NAME}--${this.size()}`);
     array.push(`${this.CLASS_NAME}--${this.variant()}`);
     if (this.fluid()) array.push(`${this.CLASS_NAME}--fluid`);
+    if (this.autosize()) array.push(`${this.CLASS_NAME}--autosize`);
 
     return array.concat(this.controlClasses());
   });

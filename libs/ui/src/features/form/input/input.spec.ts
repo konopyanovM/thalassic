@@ -36,4 +36,26 @@ describe('Input', () => {
     expect(inputElement.classList).toContain('tls-form-control--plain');
     expect(inputElement.classList).not.toContain('tls-form-control--outlined');
   });
+
+  it('hands a length limit to the native field, and none when unset', async () => {
+    const inputElement: HTMLInputElement = fixture.nativeElement.querySelector('input');
+
+    expect(inputElement.hasAttribute('maxlength')).toBe(false);
+
+    fixture.componentRef.setInput('maxLength', 80);
+    await fixture.whenStable();
+
+    expect(inputElement.getAttribute('maxlength')).toBe('80');
+  });
+
+  it('carries the autosize class only when asked to size to its content', async () => {
+    const inputElement: HTMLInputElement = fixture.nativeElement.querySelector('input');
+
+    expect(inputElement.classList).not.toContain('tls-form-control--autosize');
+
+    fixture.componentRef.setInput('autosize', true);
+    await fixture.whenStable();
+
+    expect(inputElement.classList).toContain('tls-form-control--autosize');
+  });
 });

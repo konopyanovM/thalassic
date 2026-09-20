@@ -7,6 +7,7 @@ export interface InputConfig {
   type: string;
   placeholder: string;
   fluid: boolean;
+  autosize: boolean;
 }
 
 export const DEFAULT_INPUT_CONFIG: InputConfig = {
@@ -15,4 +16,5 @@ export const DEFAULT_INPUT_CONFIG: InputConfig = {
   type: 'text',
   placeholder: '',
   fluid: false,
+  autosize: false,
 };
