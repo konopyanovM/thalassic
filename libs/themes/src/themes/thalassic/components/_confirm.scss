@@ -63,6 +63,9 @@
     margin-top: var(--spacing-2);
 
     display: flex;
+    // Two labels too long to share the panel's width — a longer language, a
+    // wordier action — stack instead of running out past its edge.
+    flex-wrap: wrap;
     gap: var(--spacing-2);
 
     &--start {
