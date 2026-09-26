@@ -70,21 +70,24 @@
   // on the `essential` tier and survives reduced motion (resolved by `MotionService`).
   // Enter and leave use distinct keyframe names, not one shared keyframe with
   // `reverse`: the container keeps its `--enter` class for the panel's whole
-  // lifetime, so swapping to `--leave` must change `animation-name` to force the
-  // browser to start a fresh animation (a mere `animation-direction` change does
-  // not restart an already-finished animation).
+  // lifetime (bar an entrance driven by a drag, which ends in `--open`), so
+  // swapping to `--leave` must change `animation-name` to force the browser to
+  // start a fresh animation (a mere `animation-direction` change does not
+  // restart an already-finished animation).
   @include mixins.motion(essential) {
     // The enter keyframe holds `transform` for the panel's whole lifetime
     // (`animation-fill-mode: both`), so it has to stand down explicitly for a
     // drag to own the transform. The class names are written out rather than
     // interpolated because inside this mixin `&` is the whole `:root[data-motion]`
     // selector list, which `:not()` cannot take. Leaving is exempt: a panel never
-    // slides out and drags at once.
-    &--enter:not(.tls-drawer--dragging):not(.tls-drawer--settling) {
+    // slides out and drags at once. A panel the component moves itself
+    // (`--scripted`: sliding out of its origin, or opening under a drag) takes
+    // neither keyframe.
+    &--enter:not(.tls-drawer--dragging):not(.tls-drawer--settling):not(.tls-drawer--scripted) {
       animation: tls-drawer-slide-in var(--motion-default) var(--motion-ease-out) both;
     }
 
-    &--leave {
+    &--leave:not(.tls-drawer--scripted) {
       animation: tls-drawer-slide-out var(--motion-default) var(--motion-ease-in) both;
     }
 

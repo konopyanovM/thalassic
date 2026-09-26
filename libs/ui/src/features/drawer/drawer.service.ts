@@ -11,10 +11,10 @@ import {
 } from '@thalassic/core';
 import { filter, takeUntil } from 'rxjs';
 import { Drawer } from './drawer';
-import { DrawerConfig } from './drawer.config';
+import { DrawerPanelConfig } from './drawer.config';
 import { DrawerRef } from './drawer-ref';
-import { DRAWER_CONFIG } from './drawer.token';
-import { drawerSide, drawerSize } from './drawer.types';
+import { DRAWER_CONFIG, DRAWER_OPENING, DRAWER_PANEL_CONFIG } from './drawer.token';
+import { drawerGrabber, drawerSide, drawerSize } from './drawer.types';
 
 export interface DrawerOpenConfig<D = unknown> {
   data?: D | null;
@@ -27,9 +27,31 @@ export interface DrawerOpenConfig<D = unknown> {
   rounded?: boolean;
   /**
    * Renders a grabber pill on the edge facing the viewport and makes the panel
-   * draggable toward that edge to dismiss.
+   * draggable toward that edge to dismiss. `auto` shows it on a bottom sheet only.
    */
-  grabber?: boolean;
+  grabber?: drawerGrabber;
+  /**
+   * The element the panel slides out of and back into — typically what opened
+   * it, such as a sheet's lip at the foot of the screen: the panel starts and
+   * ends with only the origin's part of it showing, laid over the origin.
+   * Takes effect only where the panel covers the element; anywhere else, and
+   * once the element has left the page, the panel slides in from off-screen.
+   */
+  origin?: HTMLElement | null;
+  /**
+   * Where focus goes once the drawer closes: an element, or `true` for whatever
+   * held focus when it opened. Name the opener outright where a pointer opens
+   * the drawer — Safari does not focus a button on click, so "whatever held
+   * focus" would be the page itself.
+   */
+  restoreFocus?: HTMLElement | boolean;
+  /**
+   * Opens the drawer under a drag instead of by itself: it stays where it
+   * starts until the caller feeds the drag through `DrawerRef.followOpenDrag`
+   * and ends it with `DrawerRef.releaseOpenDrag`, which settles it open or
+   * closed. `DrawerTriggerDirective` does this for a drag that starts on it.
+   */
+  openByDrag?: boolean;
   /** Accessible name for the close button. */
   closeLabel?: string;
   role?: DialogRole;
@@ -53,14 +75,15 @@ export class DrawerService {
     component: ComponentType<C>,
     config?: DrawerOpenConfig<D>,
   ): DrawerRef<R, C> {
-    const resolvedConfig: DrawerConfig = {
-      side: config?.side ?? this._config.side,
+    const side = config?.side ?? this._config.side;
+    const resolvedConfig: DrawerPanelConfig = {
+      side,
       size: config?.size ?? this._config.size,
       closeable: config?.closeable ?? this._config.closeable,
       backdropClose: config?.backdropClose ?? this._config.backdropClose,
       escapeClose: config?.escapeClose ?? this._config.escapeClose,
       rounded: config?.rounded ?? this._config.rounded,
-      grabber: config?.grabber ?? this._config.grabber,
+      grabber: this._resolveGrabber(config?.grabber ?? this._config.grabber, side),
       closeLabel: config?.closeLabel ?? this._config.closeLabel,
     };
 
@@ -70,7 +93,11 @@ export class DrawerService {
       container: {
         type: Drawer,
         providers: () => [
-          { provide: DRAWER_CONFIG, useValue: resolvedConfig },
+          { provide: DRAWER_PANEL_CONFIG, useValue: resolvedConfig },
+          {
+            provide: DRAWER_OPENING,
+            useValue: { origin: config?.origin ?? null, byDrag: config?.openByDrag ?? false },
+          },
           { provide: PAN_CONFIG, useValue: this._buildPanConfig(resolvedConfig) },
         ],
       },
@@ -88,6 +115,7 @@ export class DrawerService {
       // `DrawerRef.close`, which plays the slide-out before disposal.
       disableClose: true,
       role: config?.role ?? 'dialog',
+      restoreFocus: config?.restoreFocus ?? true,
       ariaLabel: config?.ariaLabel ?? null,
       ariaLabelledBy: config?.ariaLabelledBy ?? null,
       ariaDescribedBy: config?.ariaDescribedBy ?? null,
@@ -114,7 +142,7 @@ export class DrawerService {
   // The drag gesture lives on the drawer container, whose inputs cannot be bound
   // because the CDK instantiates it rather than a template, so its configuration
   // is handed down through the injector instead.
-  private _buildPanConfig(config: DrawerConfig): PanConfig {
+  private _buildPanConfig(config: DrawerPanelConfig): PanConfig {
     return {
       ...DEFAULT_PAN_CONFIG,
       // The grabber is the affordance for the gesture, so the pill and the drag
@@ -126,6 +154,13 @@ export class DrawerService {
       axis: config.side === 'top' || config.side === 'bottom' ? 'y' : 'x',
       pointerTypes: DRAG_DISMISS_POINTER_TYPES,
     };
+  }
+
+  // A bottom sheet is dragged down to dismiss often enough that its grabber is
+  // expected; a panel on any other side shows one only when asked.
+  private _resolveGrabber(grabber: drawerGrabber, side: drawerSide): boolean {
+    if (grabber === 'auto') return side === 'bottom';
+    return grabber;
   }
 
   private _buildPositionStrategy(side: drawerSide): PositionStrategy {
@@ -149,7 +184,7 @@ export class DrawerService {
   private _wireDismissal<R, C>(
     dialogRef: DialogRef<R, C>,
     drawerRef: DrawerRef<R, C>,
-    config: DrawerConfig,
+    config: DrawerPanelConfig,
   ): void {
     // Gated separately: a drawer that ignores backdrop clicks must still be
     // dismissable from the keyboard unless the caller opts out of that too.

@@ -6,7 +6,6 @@ import {
 import { NgTemplateOutlet } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import {
-  afterNextRender,
   booleanAttribute,
   Component,
   computed,
@@ -34,7 +33,7 @@ import {
   SWIPE_DEFAULT_MIN_VELOCITY,
   ViewportService,
 } from '@thalassic/core';
-import { createOverlayManager, LEAVE_ANIMATION_FALLBACK_MS } from '../../abstract/overlay';
+import { createOverlayManager, settleAfterRender } from '../../abstract/overlay';
 import { overlayPosition } from '../../types';
 import { buildOverlayPositions } from '../../utils';
 import { Icon } from '../icon';
@@ -339,52 +338,7 @@ export class Menu {
 
   private _settleSheet(pane: HTMLElement, target: number, onDone: () => void): void {
     this.sheetDragState.set('settling');
-
-    // The settle transition lives on the settling class, so the target value
-    // must not be written until change detection has put that class on the
-    // pane — set in the same frame, the property would jump instead of
-    // animating.
-    afterNextRender(
-      () => {
-        this._applySheetDrag(pane, target);
-        this._afterSheetSettle(pane, onDone);
-      },
-      { injector: this._injector },
-    );
+    settleAfterRender(this._injector, pane, () => this._applySheetDrag(pane, target), onDone);
   }
 
-  // Runs `onDone` once the settle transition finishes, or at once when no
-  // transition is emitted (the `none` motion level), so a sheet dismissed by
-  // drag still closes when the user has asked for no motion.
-  private _afterSheetSettle(pane: HTMLElement, onDone: () => void): void {
-    // `transitionDuration` is a comma-separated list, and is absent entirely
-    // where the engine reports no transition at all, so the test is whether
-    // any entry actually lasts — not equality against a single `0s`.
-    const runs = getComputedStyle(pane)
-      .transitionDuration.split(',')
-      .some(duration => parseFloat(duration) > 0);
-    if (!runs) {
-      onDone();
-      return;
-    }
-
-    let settled = false;
-    const finalize = (): void => {
-      if (settled) return;
-      settled = true;
-      window.clearTimeout(timeoutId);
-      pane.removeEventListener('transitionend', onTransitionEnd);
-      onDone();
-    };
-
-    // Only the pane's own transform settles it; ignore `transitionend`
-    // bubbling up from animated content inside it.
-    const onTransitionEnd = (event: TransitionEvent): void => {
-      if (event.target === pane && event.propertyName === 'transform') finalize();
-    };
-
-    pane.addEventListener('transitionend', onTransitionEnd);
-    // Safety net if `transitionend` never arrives (e.g. the pane is torn down early).
-    const timeoutId = window.setTimeout(finalize, LEAVE_ANIMATION_FALLBACK_MS);
-  }
 }
