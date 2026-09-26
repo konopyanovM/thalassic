@@ -27,7 +27,9 @@ interface ToastLayout {
 }
 
 /**
- * Single instance rendered into a global CDK overlay by {@link ToastService}. Lays
+ * Single instance rendered into a global CDK overlay by {@link ToastService}, and
+ * internal to the kit for that reason: placed in a template it would be a second
+ * stack drawing every toast again over the first. Lays
  * every live toast out as one anchored stack: collapsed into a hover-to-expand
  * pile, or an always-open list, per the resolved config. Each toast's host is the
  * stacking layer, positioned here via transform / scale / z-index computed from
