@@ -32,15 +32,25 @@ $wash-ink-share: 75%;
 // $modifier prefixes the hue classes, so a component with a second, independently
 // colored state can reuse the same mapping (e.g. $modifier: 'checked-' emits
 // `--checked-primary` … `--checked-danger`).
+//
+// Each hue yields to `--<block>-<modifier>accent` (and `--<block>-<modifier>on-accent`
+// for ink over it) where one is set: a colour outside the theme's hues, given to
+// one component from outside it. The hue classes land on the component's inner
+// element, so a pair set there by a consumer would lose to them; the accent is
+// read rather than overridden, so it can be set on any ancestor — the component's
+// host, or a container of several — and reach the element by inheritance. The
+// tonal pair is derived from the accent like any hue.
 @mixin color-variants($block, $tonal: false, $modifier: '') {
   @each $color in $colors {
     &.#{$block}--#{$modifier}#{$color} {
-      --#{$block}-color: var(--color-#{$color});
-      --#{$block}-on-color: var(--color-on-#{$color});
+      $accent: var(--#{$block}-#{$modifier}accent, var(--color-#{$color}));
+
+      --#{$block}-color: #{$accent};
+      --#{$block}-on-color: var(--#{$block}-#{$modifier}on-accent, var(--color-on-#{$color}));
 
       @if $tonal {
-        --#{$block}-color-container: #{wash-fill(var(--color-#{$color}))};
-        --#{$block}-on-color-container: #{wash-ink(var(--color-#{$color}))};
+        --#{$block}-color-container: #{wash-fill($accent)};
+        --#{$block}-on-color-container: #{wash-ink($accent)};
       }
     }
   }
