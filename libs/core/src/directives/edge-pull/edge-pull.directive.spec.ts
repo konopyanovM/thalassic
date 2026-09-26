@@ -46,6 +46,7 @@ function createPointerEvent(type: string, options: PointerOptions): PointerEvent
       [start]="hasPrevious()"
       [end]="hasNext()"
       [reversible]="reversible()"
+      [holdOnCommit]="holdOnCommit()"
       (pulled)="pulls.push($event)"
     >
       <div class="content" style="height: 1000px">
@@ -58,6 +59,7 @@ class HostComponent {
   readonly hasPrevious = signal(true);
   readonly hasNext = signal(true);
   readonly reversible = signal(false);
+  readonly holdOnCommit = signal(false);
   readonly pulls: edgePullEdge[] = [];
 }
 
@@ -155,6 +157,49 @@ describe('EdgePullDirective', () => {
     expect(scroller.className).toContain('tls-edge-pull--idle');
     expect(scroller.className).not.toContain('tls-edge-pull--end');
     expect(distanceStyle()).toBe('0px');
+  });
+
+  describe('holding on commit', () => {
+    beforeEach(async () => {
+      host.holdOnCommit.set(true);
+      await fixture.whenStable();
+      setScrollMetrics(900);
+    });
+
+    it('keeps a committed pull where it was released until settled', () => {
+      drag(-ARMING_TRAVEL);
+      const heldDistance = distanceStyle();
+      release(-ARMING_TRAVEL);
+
+      expect(host.pulls).toEqual(['end']);
+      expect(scroller.className).toContain('tls-edge-pull--armed');
+      expect(scroller.className).toContain('tls-edge-pull--end');
+      expect(distanceStyle()).toBe(heldDistance);
+
+      fixture.debugElement.children[0].injector.get(EdgePullDirective).settle();
+
+      expect(scroller.className).toContain('tls-edge-pull--idle');
+      expect(scroller.className).not.toContain('tls-edge-pull--end');
+      expect(distanceStyle()).toBe('0px');
+    });
+
+    it('springs back a pull released short of the threshold', () => {
+      drag(-60);
+      release(-60);
+
+      expect(scroller.className).toContain('tls-edge-pull--idle');
+      expect(distanceStyle()).toBe('0px');
+    });
+
+    it('begins no new pull while one is held', () => {
+      drag(-ARMING_TRAVEL);
+      release(-ARMING_TRAVEL);
+
+      drag(-ARMING_TRAVEL);
+      release(-ARMING_TRAVEL);
+
+      expect(host.pulls).toEqual(['end']);
+    });
   });
 
   it('reports nothing for a pull released short of the threshold', () => {

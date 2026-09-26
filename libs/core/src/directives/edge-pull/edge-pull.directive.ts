@@ -44,6 +44,11 @@ import { edgePullEdge, edgePullState } from './edge-pull.types';
  * straight to the host's style outside the Angular zone, so following a finger
  * costs no change detection.
  *
+ * A committed pull springs back as it is reported, unless `holdOnCommit` keeps
+ * it where it was released until `settle()` is called — so whatever the pull
+ * led to can take its place from exactly where it stood, a view transition
+ * capturing it mid-pull among them.
+ *
  * The host's block overscroll is disabled entirely while the gesture is enabled:
  * a browser already at an end otherwise spends the drag on its own overscroll —
  * chaining to what is behind the container, or the local stretch/bounce effect —
@@ -126,6 +131,14 @@ export class EdgePullDirective {
    * with a placeholder — and the finger is no longer over what it touched.
    */
   public readonly ignore: InputSignal<string | null> = input<string | null>(null);
+  /**
+   * Keeps a committed pull where it was released — its travel, stage and end —
+   * instead of springing it back, until `settle()` is called. No new pull can
+   * begin in the meantime, so a host that holds must always settle.
+   */
+  public readonly holdOnCommit: InputSignalWithTransform<boolean, unknown> = input(false, {
+    transform: booleanAttribute,
+  });
 
   // Outputs
   /** Emits the end pulled away from, once, when a pull is released past the threshold. */
@@ -145,6 +158,8 @@ export class EdgePullDirective {
   // measured from the dead zone's rim rather than from where the gesture began,
   // so a pull picks up from nothing on either side of it.
   private _reversed = false;
+  // Whether a committed pull is being held for `settle()`.
+  private _held = false;
   // Travel last written to the host, for skipping no-op writes; `null` until the
   // first write.
   private _writtenDistance: number | null = null;
@@ -167,12 +182,25 @@ export class EdgePullDirective {
       pan.panStart.subscribe(event => this._onPanStart(event)),
       pan.panMove.subscribe(event => this._onPanMove(event)),
       pan.panEnd.subscribe(() => this._onPanEnd()),
-      pan.panCancel.subscribe(() => this._settle()),
+      pan.panCancel.subscribe(() => this._onPanCancel()),
     ];
 
     inject(DestroyRef).onDestroy(() => {
       for (const subscription of subscriptions) subscription.unsubscribe();
     });
+  }
+
+  // Public methods
+  /**
+   * Springs the pull back to rest: a committed pull held by `holdOnCommit`, or
+   * one still under way, which is cancelled without being reported.
+   */
+  public settle(): void {
+    this._held = false;
+    this._tracking = false;
+    this._leaveEdge();
+    this._setState('idle');
+    this._write(0);
   }
 
   // Protected methods
@@ -187,7 +215,7 @@ export class EdgePullDirective {
   // Private methods
   private _onPanStart(event: PanEvent): void {
     if (!this.tlsEdgePull() || event.deltaY === 0) return;
-    if (this._startedOnIgnored) return;
+    if (this._startedOnIgnored || this._held) return;
 
     this._tracking = true;
     this._reversed = false;
@@ -218,21 +246,27 @@ export class EdgePullDirective {
   }
 
   private _onPanEnd(): void {
+    // A gesture made while a pull is held never became a pull of its own.
+    if (this._held) return;
+
     const state = this._state();
     const edge = this._edge;
     this._tracking = false;
     // A gesture that never became a pull has nothing to put back.
     if (state === 'idle' || edge === null) return;
 
-    this._settle();
+    if (state === 'armed' && this.holdOnCommit()) {
+      this._held = true;
+    } else {
+      this.settle();
+    }
     if (state === 'armed') this.pulled.emit(edge);
   }
 
-  private _settle(): void {
-    this._tracking = false;
-    this._leaveEdge();
-    this._setState('idle');
-    this._write(0);
+  // A cancelled gesture puts back a pull of its own, never one being held.
+  private _onPanCancel(): void {
+    if (this._held) return;
+    this.settle();
   }
 
   /**
