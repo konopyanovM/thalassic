@@ -1,8 +1,11 @@
 @use '../mixins' as mixins;
 
 // The pane the sheet is attached to covers the viewport but lets pointers
-// through; only the sheet's own surfaces take them.
-.tls-sheet-pane {
+// through; only the sheet's own surfaces take them. Compounded with the CDK's
+// own pane class because the CDK injects `.cdk-overlay-pane { pointer-events:
+// auto }` at runtime, after every stylesheet — a lone class would lose to it
+// and the pane would swallow every tap on the page.
+.cdk-overlay-pane.tls-sheet-pane {
   pointer-events: none;
 }
 
