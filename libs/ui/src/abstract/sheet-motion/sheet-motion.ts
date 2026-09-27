@@ -66,7 +66,8 @@ export class SheetMotion {
     if (surface === null) return;
 
     this._state.set('settling');
-    if (surface.backdrop !== null) this._options.renderer.removeStyle(surface.backdrop, 'transition');
+    if (surface.backdrop !== null)
+      this._options.renderer.removeStyle(surface.backdrop, 'transition');
 
     // Marked by the gesture counter rather than the surface: a caller that
     // reuses one surface object across gestures must still be able to supersede.

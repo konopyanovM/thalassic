@@ -1,21 +1,12 @@
 @use '../mixins' as mixins;
 
-// Pane width at and above which the sheet floats, capped and centred, instead
-// of spanning edge to edge. A container query cannot read a custom property,
-// so the switch is a Sass value; `--tls-sheet-max-inline-size` is the width
-// the floating sheet takes.
-$sheet-floating-min: 40rem;
-
 // The pane the sheet is attached to covers the viewport but lets pointers
 // through; only the sheet's own surfaces take them.
 .tls-sheet-pane {
-  container: tls-sheet-pane / inline-size;
-
   pointer-events: none;
 }
 
 .tls-sheet {
-  --tls-sheet-max-inline-size: 40rem;
   --tls-sheet-surface: var(--color-surface-container-high);
   --tls-sheet-color: var(--color-on-surface);
   --tls-sheet-shadow: var(--shadow-lg);
@@ -26,6 +17,8 @@ $sheet-floating-min: 40rem;
   --tls-sheet-grabber-inset: var(--grabber-inset);
   // A finger-sized header, whatever the slot holds.
   --tls-sheet-header-min-size: 44px;
+  // The sheet's own gutter, shared by the header and the body content.
+  --tls-sheet-padding: var(--spacing-4);
   // Height of the largest detent and the panel's displacement below it, both
   // written by the component. `0px`, not `0` — they are lengths.
   --tls-sheet-height: 0px;
@@ -97,9 +90,16 @@ $sheet-floating-min: 40rem;
     inline-size: 100%;
     min-block-size: var(--tls-sheet-header-min-size);
 
-    padding-block-start: calc(var(--tls-sheet-grabber-inset) + var(--tls-sheet-grabber-thickness));
+    // Clears the grabber above the slot, with the sheet's gutter at the sides.
+    // The header carries the bottom safe-area inset, so a collapsed sheet —
+    // whose visible part is exactly the header — clears a home indicator with
+    // its own surface.
+    padding: calc(var(--tls-sheet-grabber-inset) * 2 + var(--tls-sheet-grabber-thickness))
+      var(--tls-sheet-padding) calc(var(--spacing-3) + env(safe-area-inset-bottom));
 
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
 
     border: 0;
 
@@ -130,6 +130,17 @@ $sheet-floating-min: 40rem;
     // panel's own managed `pan-x` already keeps the browser off vertical pans.
     overflow: hidden;
     overscroll-behavior: contain;
+    // The reclaim of the header's inset moves with the settle rather than
+    // jumping on arrival.
+    @include mixins.motion(essential) {
+      transition: margin-block-start var(--motion-default) var(--motion-ease-out);
+    }
+  }
+
+  // The padding sits on the measured content wrapper rather than on the body,
+  // so a `'content'` detent counts it.
+  &__content {
+    padding: 0 var(--tls-sheet-padding) var(--tls-sheet-padding);
   }
 
   // Answers the component's measurement of a CSS-length detent.
@@ -147,6 +158,16 @@ $sheet-floating-min: 40rem;
     touch-action: pan-y;
   }
 
+  // An open sheet reclaims the inset the header reserves for the lip; the
+  // body's own bottom padding still keeps the last row clear of the indicator.
+  // An open sheet reclaims the inset the header reserves for the lip. The
+  // margin sits on the body, not on the content inside it: the body is the
+  // scroll container, and pulling its child up would only clip the child
+  // within it while the body's own box still started below the padding.
+  &:not(&--collapsed) &__body {
+    margin-block-start: calc(-1 * env(safe-area-inset-bottom));
+  }
+
   &--modal &__backdrop {
     pointer-events: auto;
   }
@@ -160,18 +181,6 @@ $sheet-floating-min: 40rem;
       .tls-sheet__backdrop {
         transition: none;
       }
-    }
-  }
-
-  @container tls-sheet-pane (min-width: #{$sheet-floating-min}) {
-    &__panel {
-      inset-block-end: var(--spacing-4);
-
-      inline-size: min(var(--tls-sheet-max-inline-size), 100%);
-
-      margin-inline: auto;
-
-      border-radius: var(--tls-sheet-radius);
     }
   }
 }

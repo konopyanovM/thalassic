@@ -1,4 +1,4 @@
-import { ConfigurableFocusTrapFactory, FocusTrap } from '@angular/cdk/a11y';
+import { ConfigurableFocusTrapFactory, FocusTrap, InputModalityDetector } from '@angular/cdk/a11y';
 import { DOCUMENT, NgTemplateOutlet } from '@angular/common';
 import { Overlay, OverlayContainer, OverlayRef } from '@angular/cdk/overlay';
 import { DomPortal } from '@angular/cdk/portal';
@@ -79,13 +79,15 @@ export class Sheet implements OnDestroy {
   private readonly _viewportRuler = inject(ViewportRuler);
   private readonly _focusTrapFactory = inject(ConfigurableFocusTrapFactory);
   private readonly _overlayContainer = inject(OverlayContainer);
+  private readonly _inputModalityDetector = inject(InputModalityDetector);
 
   // Inputs
   /** Resting heights, smallest to largest. */
   public readonly detents: InputSignal<SheetDetent[]> = input.required<SheetDetent[]>();
   /**
    * The resting detent's id. Written on arrival at a detent; setting it moves
-   * there. An id no detent carries, the empty default included, reads as the first.
+   * there. An id no detent carries, the empty default included, moves the sheet
+   * to the first detent and is rewritten to that detent's id.
    */
   public readonly detent: ModelSignal<string> = model<string>('');
   /** Detent id at or above which the sheet is modal; `null` never. */
@@ -93,7 +95,9 @@ export class Sheet implements OnDestroy {
   /** Accessible name of the region or dialog. */
   public readonly label: InputSignal<string> = input.required<string>();
   /** Localized names per detent id, announced with the label; an id without one is announced as is. */
-  public readonly detentLabels: InputSignal<Record<string, string>> = input<Record<string, string>>({});
+  public readonly detentLabels: InputSignal<Record<string, string>> = input<Record<string, string>>(
+    {},
+  );
   /** Whether the pill along the top edge that advertises the drag is drawn. */
   public readonly grabber: InputSignalWithTransform<boolean, unknown> = input(true, {
     transform: booleanAttribute,
@@ -171,14 +175,16 @@ export class Sheet implements OnDestroy {
     });
 
     // A detent the page sets moves the sheet. One naming where the sheet is or
-    // is heading — an arrival's own write among them — is already honoured, and
-    // an id no detent carries leaves the sheet where it is.
+    // is heading — an arrival's own write among them — is already honoured. An
+    // id no detent carries moves the sheet to the first detent, whose arrival
+    // rewrites the model to that detent's id.
     effect(() => {
       const id = this.detent();
       untracked(() => {
         const index = this.detents().findIndex(candidate => candidate.id === id);
-        if (this._overlayRef === null || index === -1 || index === this._targetIndex) return;
-        this._settleTo(index);
+        const target = index === -1 ? 0 : index;
+        if (this._overlayRef === null || target === this._targetIndex) return;
+        this._settleTo(target);
       });
     });
 
@@ -368,12 +374,11 @@ export class Sheet implements OnDestroy {
       this._renderer.setStyle(probe, 'block-size', css);
       return probe.offsetHeight;
     };
-    // The lip must clear a home indicator, so the bottom safe-area inset is
-    // part of the header detent — and of `content`, which stacks on it.
-    const inset = length('env(safe-area-inset-bottom)');
+    // The theme pads the header by the bottom safe-area inset, so its height
+    // alone lets the lip clear a home indicator.
     const measures = {
-      header: header.offsetHeight + inset,
-      content: header.offsetHeight + inset + content.offsetHeight,
+      header: header.offsetHeight,
+      content: header.offsetHeight + content.offsetHeight,
       viewport,
       length,
     };
@@ -387,6 +392,7 @@ export class Sheet implements OnDestroy {
       `${largest}px`,
       RendererStyleFlags2.DashCase,
     );
+    // The published value is the lip's height: the first detent's.
     this._renderer.setStyle(
       this._document.documentElement,
       SHEET_COLLAPSED_SIZE_PROPERTY,
@@ -510,8 +516,12 @@ export class Sheet implements OnDestroy {
 
   // While modal the rest of the page is inert and focus stays in the panel,
   // landing on the header button — the one control that explains the state
-  // and undoes it. Leaving modal releases both; focus goes back to the header
-  // when the sheet stays, or to what the page had focused when it is going.
+  // and undoes it — unless a pointer made the change (see
+  // `_focusHeaderUnlessPointer`). Leaving modal releases both. When the sheet stays, focus
+  // goes back to the header only if it has nowhere better to be — nothing
+  // focused, the body, or still inside the panel; focus already elsewhere (another
+  // overlay, the page) is left where it is. When the sheet is going, focus
+  // returns to what the page had focused.
   // Elements already inert are someone else's, so they are neither taken nor
   // released.
   private _applyModality(modal: boolean, restoreTo: sheetFocusRestoreTarget): void {
@@ -521,14 +531,15 @@ export class Sheet implements OnDestroy {
       // Read before the page goes inert, which blurs what it held. Focus
       // already inside the panel is not the page's to return to.
       const focused = this._document.activeElement;
-      this._focusBeforeModal = focused instanceof HTMLElement && !panel.contains(focused) ? focused : null;
+      this._focusBeforeModal =
+        focused instanceof HTMLElement && !panel.contains(focused) ? focused : null;
       const container = this._overlayContainer.getContainerElement();
       this._inerted = Array.from(this._document.body.children).filter(
         child => child !== container && !child.hasAttribute('inert'),
       );
       for (const element of this._inerted) this._renderer.setAttribute(element, 'inert', '');
       this._focusTrap = this._focusTrapFactory.create(panel);
-      this._header().nativeElement.focus();
+      this._focusHeaderUnlessPointer();
       return;
     }
 
@@ -540,10 +551,29 @@ export class Sheet implements OnDestroy {
     const focusBeforeModal = this._focusBeforeModal;
     this._focusBeforeModal = null;
     if (restoreTo === 'header') {
-      this._header().nativeElement.focus();
+      // Modality flips on arrival, well after the move began; by then a page
+      // may have handed focus to another overlay, which keeps it.
+      const active = this._document.activeElement;
+      if (
+        active === null ||
+        active === this._document.body ||
+        this._panel().nativeElement.contains(active)
+      ) {
+        this._focusHeaderUnlessPointer();
+      }
       return;
     }
     if (focusBeforeModal !== null && focusBeforeModal.isConnected) focusBeforeModal.focus();
+  }
+
+  // Keyboard users, and changes made before any interaction or by code, get
+  // the header focused. After a pointer interaction focus stays put: with the
+  // page inert a pointer user's focus rests on `body`, and the first Tab lands
+  // on the header anyway, so moving focus would only paint a ring nobody asked for.
+  private _focusHeaderUnlessPointer(): void {
+    const modality = this._inputModalityDetector.mostRecentModality;
+    if (modality === 'mouse' || modality === 'touch') return;
+    this._header().nativeElement.focus();
   }
 
   // Lifecycle
@@ -559,6 +589,8 @@ export class Sheet implements OnDestroy {
     this._overlayRef = null;
     // A destroy that lands mid-settle waits for the panel's frame and the
     // backdrop's fade to finish, so neither is cut short.
-    void whenAnimationsFinish(this._root().nativeElement, { subtree: true }).then(() => overlayRef.dispose());
+    void whenAnimationsFinish(this._root().nativeElement, { subtree: true }).then(() =>
+      overlayRef.dispose(),
+    );
   }
 }

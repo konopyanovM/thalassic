@@ -1,3 +1,4 @@
+import { InputModalityDetector } from '@angular/cdk/a11y';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { ApplicationRef, Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -34,7 +35,6 @@ class HostComponent {
   readonly detent = signal('lip');
 }
 
-
 describe('Sheet', () => {
   let fixture: ComponentFixture<HostComponent>;
   let host: HostComponent;
@@ -49,27 +49,25 @@ describe('Sheet', () => {
   }
 
   // Sizes jsdom never computes: heights come out as [80, 240, 320] — header,
-  // 30% of the 800px viewport, and 20rem through the probe. The probe answers
-  // by the length it is given: no safe-area inset, and 320 for the `20rem` detent.
-  // jsdom's style parser drops an `env()` value, so the probe keeps the length
-  // it was last given itself rather than reading it back from its style.
+  // 30% of the 800px viewport, and 20rem through the probe, which measures
+  // nothing but the `20rem` detent.
   function stubSizes(): void {
-    Object.defineProperty(query('.tls-sheet__header'), 'offsetHeight', { value: 80, configurable: true });
-    Object.defineProperty(query('.tls-sheet__content'), 'offsetHeight', { value: 300, configurable: true });
-    const probe = query('.tls-sheet__probe');
-    let requested = '';
-    Object.defineProperty(probe.style, 'block-size', {
-      get: () => requested,
-      set: (length: string) => {
-        requested = length;
-      },
+    Object.defineProperty(query('.tls-sheet__header'), 'offsetHeight', {
+      value: 80,
       configurable: true,
     });
-    Object.defineProperty(probe, 'offsetHeight', {
-      get: () => (requested.includes('env(') ? 0 : 320),
+    Object.defineProperty(query('.tls-sheet__content'), 'offsetHeight', {
+      value: 300,
       configurable: true,
     });
-    Object.defineProperty(document.documentElement, 'clientHeight', { value: 800, configurable: true });
+    Object.defineProperty(query('.tls-sheet__probe'), 'offsetHeight', {
+      value: 320,
+      configurable: true,
+    });
+    Object.defineProperty(document.documentElement, 'clientHeight', {
+      value: 800,
+      configurable: true,
+    });
   }
 
   // Whether the root carries a motion state class; change detection first,
@@ -77,7 +75,10 @@ describe('Sheet', () => {
   function isMoving(): boolean {
     fixture.detectChanges();
     const root = query('.tls-sheet');
-    return root.classList.contains('tls-sheet--dragging') || root.classList.contains('tls-sheet--settling');
+    return (
+      root.classList.contains('tls-sheet--dragging') ||
+      root.classList.contains('tls-sheet--settling')
+    );
   }
 
   function panelOffset(): string {
@@ -131,7 +132,9 @@ describe('Sheet', () => {
 
   it('rests at the first detent and publishes its height for the page', () => {
     expect(host.detent()).toBe('lip');
-    expect(document.documentElement.style.getPropertyValue('--tls-sheet-collapsed-size')).toBe('80px');
+    expect(document.documentElement.style.getPropertyValue('--tls-sheet-collapsed-size')).toBe(
+      '80px',
+    );
     const panel = query('.tls-sheet__panel');
     // Author order is kept, not sorted: the largest detent is the last one.
     expect(panel.style.getPropertyValue('--tls-sheet-height')).toBe('320px');
@@ -237,11 +240,36 @@ describe('Sheet', () => {
     expect(root.classList.contains('tls-sheet--top')).toBe(true);
   });
 
+  it('marks the root as collapsed only at the first detent', async () => {
+    const root = query('.tls-sheet');
+    expect(root.classList.contains('tls-sheet--collapsed')).toBe(true);
+
+    sheet.snapTo('half');
+    await settle();
+    expect(root.classList.contains('tls-sheet--collapsed')).toBe(false);
+
+    sheet.snapTo('lip');
+    await settle();
+    expect(root.classList.contains('tls-sheet--collapsed')).toBe(true);
+  });
+
   it('removes the published height and the pane on destroy', async () => {
     fixture.destroy();
 
     expect(document.documentElement.style.getPropertyValue('--tls-sheet-collapsed-size')).toBe('');
     await vi.waitFor(() => expect(container.querySelector('.tls-sheet-pane')).toBeNull());
+  });
+
+  it('moves to the first detent and rewrites the model when the page writes an unknown id', async () => {
+    sheet.snapTo('full');
+    await settle();
+
+    host.detent.set('nowhere');
+    fixture.detectChanges();
+    await settle();
+
+    expect(host.detent()).toBe('lip');
+    expect(panelOffset()).toBe('240px');
   });
 
   describe('drag', () => {
@@ -250,7 +278,9 @@ describe('Sheet', () => {
     }
 
     function panEvent(deltaY: number, velocityY = 0, target?: Element): PanEvent {
-      const originalEvent = { target: target ?? container.querySelector('.tls-sheet__header') } as unknown as PointerEvent;
+      const originalEvent = {
+        target: target ?? container.querySelector('.tls-sheet__header'),
+      } as unknown as PointerEvent;
       return {
         deltaX: 0,
         deltaY,
@@ -367,7 +397,14 @@ describe('Sheet', () => {
     afterEach(() => {
       for (const element of added) element.remove();
       added = [];
+      vi.restoreAllMocks();
     });
+
+    // Stands in for the most recent interaction having been a touch.
+    function mockTouchModality(): void {
+      const detector = TestBed.inject(InputModalityDetector);
+      vi.spyOn(detector, 'mostRecentModality', 'get').mockReturnValue('touch');
+    }
 
     it('is a region below modalFrom and a dialog from it, with the page inert', async () => {
       const panel = query('.tls-sheet__panel');
@@ -447,6 +484,56 @@ describe('Sheet', () => {
 
       expect(document.activeElement).toBe(query('.tls-sheet__header'));
       expect(fixture.nativeElement.hasAttribute('inert')).toBe(false);
+    });
+
+    it('does not move focus when a pointer put the sheet into modal', async () => {
+      mockTouchModality();
+
+      sheet.snapTo('half');
+      await settle();
+
+      expect(fixture.nativeElement.hasAttribute('inert')).toBe(true);
+      expect(document.activeElement).not.toBe(query('.tls-sheet__header'));
+      expect(document.activeElement).toBe(document.body);
+    });
+
+    it('does not move focus back to the header when a pointer collapsed it', async () => {
+      sheet.snapTo('half');
+      await settle();
+      expect(document.activeElement).toBe(query('.tls-sheet__header'));
+      // Focus off the header onto `body`, where a pointer user's rests, so a
+      // return to the header is what the test would see.
+      query('.tls-sheet__header').blur();
+      mockTouchModality();
+
+      pressEscape();
+      await settle();
+
+      expect(host.detent()).toBe('lip');
+      expect(document.activeElement).not.toBe(query('.tls-sheet__header'));
+      expect(fixture.nativeElement.hasAttribute('inert')).toBe(false);
+    });
+
+    it('leaves focus that has moved outside the sheet where it is when leaving modal', async () => {
+      sheet.snapTo('half');
+      await settle();
+      // Stands in for a dialog the page opens as it collapses the sheet. It sits
+      // in an overlay pane, as a real one does: the modal focus trap reclaims
+      // focus from anything outside the panel that is not in a pane.
+      const pane = document.createElement('div');
+      pane.classList.add('cdk-overlay-pane');
+      container.appendChild(pane);
+      added.push(pane);
+      const button = document.createElement('button');
+      pane.appendChild(button);
+      button.focus();
+      expect(document.activeElement).toBe(button);
+
+      sheet.snapTo('lip');
+      await settle();
+
+      expect(host.detent()).toBe('lip');
+      expect(document.activeElement).toBe(button);
     });
 
     it('releases the page and restores its focus when destroyed while modal', async () => {

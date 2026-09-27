@@ -5,6 +5,7 @@
   [class.tls-sheet--settling]="motionState() === 'settling'"
   [class.tls-sheet--modal]="isModal()"
   [class.tls-sheet--top]="isTop()"
+  [class.tls-sheet--collapsed]="currentIndex() === 0"
 >
   <div class="tls-sheet__backdrop" #backdrop aria-hidden="true" (click)="onBackdropClick()"></div>
   <div
@@ -23,7 +24,7 @@
     (panCancel)="onPanCancel()"
   >
     @if (grabber()) {
-      <div class="tls-sheet__grabber" aria-hidden="true"></div>
+    <div class="tls-sheet__grabber" aria-hidden="true"></div>
     }
     <button
       type="button"

@@ -21,9 +21,13 @@ describe('SheetMotion', () => {
   const wroteStyle = (element: HTMLElement, ...rest: unknown[]): boolean =>
     vi
       .mocked(renderer.setStyle)
-      .mock.calls.some(call => call[0] === element && rest.every((value, index) => call[index + 1] === value));
+      .mock.calls.some(
+        call => call[0] === element && rest.every((value, index) => call[index + 1] === value),
+      );
   const removedStyle = (element: HTMLElement, style: string): boolean =>
-    vi.mocked(renderer.removeStyle).mock.calls.some(call => call[0] === element && call[1] === style);
+    vi
+      .mocked(renderer.removeStyle)
+      .mock.calls.some(call => call[0] === element && call[1] === style);
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
@@ -91,8 +95,16 @@ describe('SheetMotion', () => {
     TestBed.inject(ApplicationRef).tick();
     await vi.waitFor(() => expect(done).toHaveBeenCalledTimes(1));
 
-    expect(renderer.setStyle).not.toHaveBeenCalledWith(expect.anything(), 'transition', expect.anything());
-    expect(renderer.setStyle).not.toHaveBeenCalledWith(expect.anything(), 'opacity', expect.anything());
+    expect(renderer.setStyle).not.toHaveBeenCalledWith(
+      expect.anything(),
+      'transition',
+      expect.anything(),
+    );
+    expect(renderer.setStyle).not.toHaveBeenCalledWith(
+      expect.anything(),
+      'opacity',
+      expect.anything(),
+    );
     expect(renderer.removeStyle).not.toHaveBeenCalled();
   });
 
