@@ -58,9 +58,6 @@ export const AGENDA_DATE_FORMAT = 'MMM d';
 /** Pointers that may page the calendar with a swipe; with a mouse a drag means selection or a click. */
 export const SWIPE_POINTER_TYPES = ['touch', 'pen'];
 
-/** How often the calendar's notion of "now" refreshes (current-time line, today highlight). */
-export const NOW_REFRESH_INTERVAL_MS = 60_000;
-
 /** Views that prefix an event chip with its start time; the month grid shows the title alone. */
 export const TIME_AWARE_VIEWS: calendarView[] = ['week', 'day', 'agenda'];
 

@@ -31,7 +31,8 @@ import {
 } from 'date-fns';
 import { LOCALE_CONFIG, localeFormatOptions } from '../../abstract/locale';
 import { color } from '../../types';
-import { createNowSignal, rotateWeekDays } from '../../utils';
+import { NOW_REFRESH_INTERVAL_MS } from '../../constants';
+import { createDaySignal, createNowSignal, rotateWeekDays } from '../../utils';
 import { assignWeekLanes } from './assign-week-lanes';
 import { buildMonthScrollPlan, MonthScrollPlan } from './build-month-scroll-plan';
 import { CalendarEventItem } from './calendar-event';
@@ -39,8 +40,7 @@ import {
   DAY_NUMBER_FORMAT,
   DAYS_PER_WEEK,
   MAX_DAY_MARKERS,
-  MONTH_GRID_ROWS,
-  NOW_REFRESH_INTERVAL_MS
+  MONTH_GRID_ROWS
 } from './calendar.constants';
 import { CALENDAR_CONFIG } from './calendar.token';
 import { CalendarDayContext, CalendarEvent, CalendarEventContext } from './calendar.types';
@@ -117,8 +117,8 @@ export class CalendarMonthView {
 
   // State
   private readonly _dateOptions = localeFormatOptions(this._locale);
-  /** Ticking current time, so the today highlight tracks the clock across midnight. */
-  private readonly _now = createNowSignal(NOW_REFRESH_INTERVAL_MS);
+  /** Today, so the today highlight moves across midnight and the grid rebuilds only then. */
+  private readonly _today = createDaySignal(createNowSignal(NOW_REFRESH_INTERVAL_MS));
 
   /** Widened week window a navigation scroll renders through; unset while the grid rests. */
   private readonly _scrollPlan = signal<MonthScrollPlan | null>(null);
@@ -140,7 +140,7 @@ export class CalendarMonthView {
     const activeDate = this.activeDate();
     const maxLanes = this.maxEventsPerDay();
     const events = this.events();
-    const now = this._now();
+    const today = this._today();
 
     // A fixed 6-week window keeps the grid height from reflowing between months. While a
     // navigation scroll plays, the window widens to the union of the outgoing and incoming
@@ -190,7 +190,7 @@ export class CalendarMonthView {
         );
         const dayNumber = format(date, DAY_NUMBER_FORMAT, this._dateOptions);
         const inCurrentMonth = isSameMonth(date, activeDate);
-        const isToday = isSameDay(date, now);
+        const isToday = isSameDay(date, today);
         return {
           date,
           dayNumber,

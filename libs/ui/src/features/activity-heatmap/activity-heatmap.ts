@@ -25,15 +25,15 @@ import {
 } from 'date-fns';
 import { LOCALE_CONFIG, localeFormatOptions } from '../../abstract/locale';
 import { color, controlSize } from '../../types';
-import { createNowSignal, rotateWeekDays } from '../../utils';
+import { NOW_REFRESH_INTERVAL_MS } from '../../constants';
+import { createDaySignal, createNowSignal, rotateWeekDays } from '../../utils';
 import { TooltipDelegateDirective } from '../tooltip';
 import {
   DAY_LABEL_FORMAT,
   DAYS_PER_WEEK,
   MIN_LEVEL_INTENSITY,
   MIN_LEVELS,
-  MONTH_LABEL_FORMAT,
-  NOW_REFRESH_INTERVAL_MS
+  MONTH_LABEL_FORMAT
 } from './activity-heatmap.constants';
 import { ACTIVITY_HEATMAP_CONFIG } from './activity-heatmap.token';
 import {
@@ -122,8 +122,8 @@ export class ActivityHeatmap {
   protected readonly legendLess = this._config.labels.less;
   protected readonly legendMore = this._config.labels.more;
   private readonly _dateOptions = localeFormatOptions(this._locale);
-  /** Ticking current time, so the today marker tracks the clock across midnight. */
-  private readonly _now = createNowSignal(NOW_REFRESH_INTERVAL_MS);
+  /** Today, so the today marker moves across midnight and the grid rebuilds only then. */
+  private readonly _today = createDaySignal(createNowSignal(NOW_REFRESH_INTERVAL_MS));
 
   // Computed
   /** Steps actually rendered; a heatmap needs an empty step plus at least one active one. */
@@ -141,7 +141,7 @@ export class ActivityHeatmap {
     const { start, end } = this._range();
     const weekStartsOn = this.weekStartsOn();
     const totals = aggregateActivityEntries(this.entries());
-    const today = startOfDay(this._now());
+    const today = this._today();
 
     const days = eachDayOfInterval({
       start: startOfWeek(start, { weekStartsOn }),
@@ -212,7 +212,7 @@ export class ActivityHeatmap {
   /** Inclusive day range covered by the heatmap, whether given or derived from today. */
   private readonly _range: Signal<{ start: Date; end: Date }> = computed(() => {
     const endDate = this.endDate();
-    const end = startOfDay(endDate ?? this._now());
+    const end = startOfDay(endDate ?? this._today());
 
     const startDate = this.startDate();
     if (startDate) return { start: startOfDay(startDate), end };

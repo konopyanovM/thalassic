@@ -14,17 +14,17 @@
   @for (day of displayedWeekDays(); track day) {
     <span class="tls-date-picker-calendar__weekday">{{ day }}</span>
   }
-  @for (day of days(); track day.getTime()) {
+  @for (day of days(); track day.date.getTime()) {
     <button
       type="button"
       class="tls-date-picker-calendar__day"
-      [class.tls-date-picker-calendar__day--outside]="!isInCurrentMonth(day)"
-      [class.tls-date-picker-calendar__day--today]="isTodayDay(day)"
-      [class.tls-date-picker-calendar__day--selected]="isSelectedDay(day)"
-      [disabled]="isDisabledDay(day)"
-      (click)="daySelect.emit(day)"
+      [class.tls-date-picker-calendar__day--outside]="!day.inCurrentMonth"
+      [class.tls-date-picker-calendar__day--today]="day.isToday"
+      [class.tls-date-picker-calendar__day--selected]="day.isSelected"
+      [disabled]="day.isDisabled"
+      (click)="daySelect.emit(day.date)"
     >
-      {{ getDayLabel(day) }}
+      {{ day.label }}
     </button>
   }
 </div>

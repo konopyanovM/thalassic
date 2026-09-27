@@ -11,7 +11,8 @@ import {
 } from '@angular/core';
 import { addHours, differenceInMinutes, format, isSameDay, startOfDay } from 'date-fns';
 import { isHour12, localeFormatOptions, LOCALE_CONFIG } from '../../abstract/locale';
-import { createNowSignal } from '../../utils';
+import { NOW_REFRESH_INTERVAL_MS } from '../../constants';
+import { createDaySignal, createNowSignal } from '../../utils';
 import { assignEventLanes } from './assign-event-lanes';
 import { CalendarEventItem } from './calendar-event';
 import {
@@ -19,7 +20,6 @@ import {
   HOUR_LABEL_FORMAT_12,
   HOUR_LABEL_FORMAT_24,
   MIN_EVENT_HEIGHT,
-  NOW_REFRESH_INTERVAL_MS,
   PX_PER_MINUTE,
   TIME_GRID_HEADING_FORMAT,
 } from './calendar.constants';
@@ -89,8 +89,10 @@ export class CalendarTimeGrid {
   private readonly _hourLabelFormat = isHour12(this._locale)
     ? HOUR_LABEL_FORMAT_12
     : HOUR_LABEL_FORMAT_24;
-  /** Ticking current time, so the now line and today highlight track the clock. */
+  /** Ticking current time, so the now line tracks the clock. */
   private readonly _now = createNowSignal(NOW_REFRESH_INTERVAL_MS);
+  /** Today, so the columns rebuild at midnight rather than with every tick of the now line. */
+  private readonly _today = createDaySignal(this._now);
 
   // Computed
   protected readonly hours: Signal<number[]> = computed(() => {
@@ -103,7 +105,7 @@ export class CalendarTimeGrid {
     const events = this.events();
     const hourStart = this.hourStart();
     const hourEnd = this.hourEnd();
-    const now = this._now();
+    const today = this._today();
 
     return this.days().map(day => {
       const dayStart = startOfDay(day);
@@ -130,7 +132,7 @@ export class CalendarTimeGrid {
 
       return {
         date: day,
-        isToday: isSameDay(day, now),
+        isToday: isSameDay(day, today),
         heading: format(day, TIME_GRID_HEADING_FORMAT, this._dateOptions),
         allDayEvents,
         timedEvents,

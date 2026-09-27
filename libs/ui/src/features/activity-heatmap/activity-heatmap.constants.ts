@@ -15,6 +15,3 @@ export const DAY_LABEL_FORMAT = 'PPP';
  * distinguishable from an empty day instead of fading into the surface.
  */
 export const MIN_LEVEL_INTENSITY = 0.35;
-
-/** How often the heatmap's notion of "today" refreshes, so the marker survives midnight. */
-export const NOW_REFRESH_INTERVAL_MS = 60_000;
