@@ -59,7 +59,7 @@
     </tls-button>
   }
 
-  <div class="tls-carousel__track" [attr.aria-live]="liveMode()">
+  <div #track class="tls-carousel__track" [attr.aria-live]="liveMode()">
     @for (slide of slides(); track slide; let index = $index) {
       <div
         class="tls-carousel__slide"

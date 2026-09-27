@@ -31,6 +31,7 @@ import { CarouselConfig, CarouselLabels } from './carousel.config';
 import {
   CAROUSEL_CLICK_SUPPRESSION_WINDOW,
   CAROUSEL_DRAG_LOCK_RATIO,
+  CAROUSEL_DRAG_PROPERTY,
   CAROUSEL_DRAG_START_SLOP,
   CAROUSEL_EDGE_DRAG_RESISTANCE,
   CAROUSEL_FLICK_VELOCITY,
@@ -120,6 +121,8 @@ export class Carousel {
 
   private readonly _viewport: Signal<ElementRef<HTMLElement>> =
     viewChild.required<ElementRef<HTMLElement>>('viewport');
+  private readonly _track: Signal<ElementRef<HTMLElement>> =
+    viewChild.required<ElementRef<HTMLElement>>('track');
 
   private readonly _dragging: WritableSignal<boolean> = signal(false);
   private readonly _hovered: WritableSignal<boolean> = signal(false);
@@ -390,7 +393,9 @@ export class Carousel {
   }
 
   private _applyDragOffset(offset: number): void {
-    this._elementRef.nativeElement.style.setProperty('--tls-carousel-drag', `${offset}px`);
+    // Written on the track, the element that reads it: the theme registers it as
+    // non-inheriting, so nothing below the track restyles as it changes.
+    this._track().nativeElement.style.setProperty(CAROUSEL_DRAG_PROPERTY, `${offset}px`);
   }
 
   private _settleDrag(): void {
@@ -406,7 +411,7 @@ export class Carousel {
   }
 
   private _clearDragOffset(): void {
-    this._elementRef.nativeElement.style.removeProperty('--tls-carousel-drag');
+    this._track().nativeElement.style.removeProperty(CAROUSEL_DRAG_PROPERTY);
   }
 
   /**

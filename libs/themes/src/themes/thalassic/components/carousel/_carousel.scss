@@ -1,10 +1,19 @@
 @use '../../mixins' as mixins;
 
+// Live pointer-drag offset of the track, applied on top of the selected-slide
+// translation and written by the component onto the track. Registered as
+// non-inheriting: it changes on every frame of a drag, and inherited it would
+// restyle everything inside the element carrying it each time. It is written
+// and read on that one element.
+@property --tls-carousel-drag {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
 .tls-carousel {
   // Zero-based index of the selected slide; the track translates one viewport width per step.
   --tls-carousel-selected: 0;
-  // Live pointer-drag offset applied on top of the selected-slide translation.
-  --tls-carousel-drag: 0px;
 
   // Glyph of the overlay controls (arrows and the rotation toggle). The disc
   // itself is a `tls-button`, so its fill, elevation and size come from there.

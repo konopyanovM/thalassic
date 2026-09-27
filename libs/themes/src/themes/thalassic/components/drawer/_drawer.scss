@@ -1,5 +1,16 @@
 @use '../../mixins' as mixins;
 
+// Distance the panel has been dragged toward its pinned edge, written by the
+// component while a drag is in flight. Registered as non-inheriting: it changes
+// on every frame of a drag, and inherited it would restyle everything inside
+// the element carrying it each time. It is written and read on that one
+// element.
+@property --tls-drawer-drag {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
 @keyframes tls-drawer-slide-in {
   from {
     transform: var(--tls-drawer-offset);
@@ -51,9 +62,6 @@
   --tls-drawer-grabber-length: var(--grabber-length);
   --tls-drawer-grabber-thickness: var(--grabber-thickness);
   --tls-drawer-grabber-inset: var(--grabber-inset);
-  // Distance the panel has been dragged toward its pinned edge, written by the
-  // component while a drag is in flight. `0px`, not `0` — it is a length.
-  --tls-drawer-drag: 0px;
 
   position: relative;
 

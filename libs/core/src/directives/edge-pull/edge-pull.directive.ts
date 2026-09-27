@@ -15,10 +15,12 @@ import {
   Signal,
 } from '@angular/core';
 import { DEFAULT_PAN_CONFIG, PAN_CONFIG, PanDirective, PanEvent } from '../pan';
+import { registerCustomProperty } from '../../utils';
 import {
   EDGE_PULL_DEFAULT_MAX_DISTANCE,
   EDGE_PULL_DEFAULT_REVERSE_DEAD_ZONE,
   EDGE_PULL_DEFAULT_THRESHOLD,
+  EDGE_PULL_DISTANCE_PROPERTY,
   EDGE_PULL_RESISTANCE,
 } from './edge-pull.constants';
 import { edgePullEdge, edgePullState } from './edge-pull.types';
@@ -43,6 +45,12 @@ import { edgePullEdge, edgePullState } from './edge-pull.types';
  * indicator can be placed and styled entirely in CSS. The travel is written
  * straight to the host's style outside the Angular zone, so following a finger
  * costs no change detection.
+ *
+ * The travel is registered as a non-inheriting `<length>`: it changes on every
+ * frame of a pull, and inherited it would restyle the host's whole content each
+ * time. It is read on the host itself, and a descendant that needs it takes it
+ * from its parent with `--tls-edge-pull-distance: inherit` — each element on
+ * the way down declaring the same.
  *
  * A committed pull springs back as it is reported, unless `holdOnCommit` keeps
  * it where it was released until `settle()` is called — so whatever the pull
@@ -175,6 +183,8 @@ export class EdgePullDirective {
   );
 
   constructor() {
+    registerCustomProperty(EDGE_PULL_DISTANCE_PROPERTY);
+
     const pan = inject(PanDirective);
     // Subscribed rather than bound through host listeners so `panMove` keeps its
     // place outside the Angular zone, which is the point of it.
@@ -350,7 +360,7 @@ export class EdgePullDirective {
 
     this._renderer.setStyle(
       this._elementRef.nativeElement,
-      '--tls-edge-pull-distance',
+      EDGE_PULL_DISTANCE_PROPERTY.name,
       `${distance}px`,
       // A custom property only lands when it is set as one; without the flag the
       // renderer treats the name as a camelCase style property.

@@ -1,5 +1,15 @@
 @use '../mixins' as mixins;
 
+// The panel's displacement below the largest detent, written by the component.
+// Registered as non-inheriting: it changes on every frame of a drag, and
+// inherited it would restyle everything inside the element carrying it each
+// time. It is written and read on that one element.
+@property --tls-sheet-offset {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
 // The pane the sheet is attached to covers the viewport but lets pointers
 // through; only the sheet's own surfaces take them. Compounded with the CDK's
 // own pane class because the CDK injects `.cdk-overlay-pane { pointer-events:
@@ -22,10 +32,9 @@
   --tls-sheet-header-min-size: 44px;
   // The sheet's own gutter, shared by the header and the body content.
   --tls-sheet-padding: var(--spacing-4);
-  // Height of the largest detent and the panel's displacement below it, both
-  // written by the component. `0px`, not `0` — they are lengths.
+  // Height of the largest detent, written by the component. `0px`, not `0` —
+  // it is a length.
   --tls-sheet-height: 0px;
-  --tls-sheet-offset: 0px;
 
   position: fixed;
   inset: 0;

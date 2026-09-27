@@ -400,7 +400,9 @@ describe('Carousel', () => {
 
       // 100px of travel past the lock point, against an edge with no slide
       // behind it: the track follows a damped fraction of it.
-      const offset = parseFloat(carouselElement().style.getPropertyValue('--tls-carousel-drag'));
+      const track = carouselElement().querySelector<HTMLElement>('.tls-carousel__track');
+      if (!track) throw new Error('no track');
+      const offset = parseFloat(track.style.getPropertyValue('--tls-carousel-drag'));
       expect(offset).toBeGreaterThan(0);
       expect(offset).toBeLessThan(100);
 

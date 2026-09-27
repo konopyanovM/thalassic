@@ -1,3 +1,13 @@
+// Custom property the travel is published as, in px. Registered as
+// non-inheriting: it changes on every frame of a pull, and inherited it would
+// restyle everything inside the scrolling host each time.
+export const PULL_TO_REFRESH_DISTANCE_PROPERTY: PropertyDefinition = {
+  name: '--tls-pull-distance',
+  syntax: '<length>',
+  inherits: false,
+  initialValue: '0px',
+};
+
 // How far in px the pull must reach before releasing it asks for a refresh.
 // Short enough to be reachable with a thumb, long enough that a stray downward
 // flick at the top of a list does not commit.

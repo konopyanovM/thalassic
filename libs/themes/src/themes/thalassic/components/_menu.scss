@@ -1,5 +1,16 @@
 @use '../mixins' as mixins;
 
+// Distance the sheet pane has been dragged toward the bottom edge, written by
+// the component while a drag is in flight. Registered as non-inheriting: it
+// changes on every frame of a drag, and inherited it would restyle everything
+// inside the element carrying it each time. It is written and read on that one
+// element.
+@property --tls-menu-drag {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
 .tls-menu {
   --tls-menu-min-width: 160px;
   --tls-menu-max-width: 320px;
@@ -184,9 +195,6 @@
     --tls-menu-grabber-length: var(--grabber-length);
     --tls-menu-grabber-thickness: var(--grabber-thickness);
     --tls-menu-grabber-inset: var(--grabber-inset);
-    // Distance the pane has been dragged toward the bottom edge, written by
-    // the component while a drag is in flight. `0px`, not `0` — it is a length.
-    --tls-menu-drag: 0px;
     --tls-menu-item-padding-block: var(--spacing-3);
 
     position: relative;

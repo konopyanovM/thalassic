@@ -1,3 +1,13 @@
+// Custom property the travel is published as, in px. Registered as
+// non-inheriting: it changes on every frame of a pull, and inherited it would
+// restyle everything inside the host each time.
+export const EDGE_PULL_DISTANCE_PROPERTY: PropertyDefinition = {
+  name: '--tls-edge-pull-distance',
+  syntax: '<length>',
+  inherits: false,
+  initialValue: '0px',
+};
+
 // How far in px the pull must reach before releasing it commits. Long enough
 // that scrolling on into the end of a container does not commit by momentum of
 // the hand alone.

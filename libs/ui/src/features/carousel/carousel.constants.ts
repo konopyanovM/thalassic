@@ -1,3 +1,6 @@
+/** Custom property the live drag offset of the track is written to, in px. */
+export const CAROUSEL_DRAG_PROPERTY = '--tls-carousel-drag';
+
 /** Pointer travel in px beyond which a press becomes a drag rather than a click. */
 export const CAROUSEL_DRAG_START_SLOP = 10;
 
