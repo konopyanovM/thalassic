@@ -3,8 +3,8 @@
     #sheetPane
     class="tls-menu"
     [class.tls-menu--sheet]="sheet()"
-    [class.tls-menu--dragging]="sheetDragState() === 'dragging'"
-    [class.tls-menu--settling]="sheetDragState() === 'settling'"
+    [class.tls-menu--dragging]="sheetMotion.state() === 'dragging'"
+    [class.tls-menu--settling]="sheetMotion.state() === 'settling'"
     animate.enter="tls-menu--enter"
     animate.leave="tls-menu--leave"
     [id]="id"
@@ -16,9 +16,9 @@
     [attr.aria-label]="ariaLabel() ?? null"
     [tlsPan]="sheet()"
     (panStart)="onSheetPanStart(sheetPane)"
-    (panMove)="onSheetPanMove($event, sheetPane)"
-    (panEnd)="onSheetPanEnd($event, sheetPane)"
-    (panCancel)="onSheetPanCancel(sheetPane)"
+    (panMove)="onSheetPanMove($event)"
+    (panEnd)="onSheetPanEnd($event)"
+    (panCancel)="onSheetPanCancel()"
   >
     @if (sheet()) {
       <div class="tls-menu__grabber" aria-hidden="true"></div>

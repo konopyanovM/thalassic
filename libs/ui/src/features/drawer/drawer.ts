@@ -9,21 +9,11 @@ import {
   inject,
   Injector,
   Renderer2,
-  RendererStyleFlags2,
   signal,
 } from '@angular/core';
-import {
-  DRAG_DISMISS_RATIO,
-  MOTION_ATTRIBUTE,
-  PanDirective,
-  PanEvent,
-  SWIPE_DEFAULT_MIN_VELOCITY,
-} from '@thalassic/core';
-import {
-  afterLeaveAnimation,
-  settleAfterRender,
-  whenAnimationsFinish,
-} from '../../abstract/overlay';
+import { MOTION_ATTRIBUTE, PanDirective, PanEvent } from '@thalassic/core';
+import { afterLeaveAnimation, whenAnimationsFinish } from '../../abstract/overlay';
+import { decideCommit, SheetMotion } from '../../abstract/sheet-motion';
 import { Icon } from '../icon';
 import { DrawerPanelConfig } from './drawer.config';
 import { DRAWER_NAMED_SIZES } from './drawer.constants';
@@ -37,13 +27,7 @@ import {
   slideToOrigin,
 } from './drawer-origin-slide';
 import { DRAWER_OPENING, DRAWER_PANEL_CONFIG } from './drawer.token';
-import {
-  drawerDragState,
-  DrawerOffset,
-  drawerOpenPhase,
-  drawerSize,
-  DrawerSlideTiming,
-} from './drawer.types';
+import { DrawerOffset, drawerOpenPhase, drawerSize, DrawerSlideTiming } from './drawer.types';
 
 @Component({
   selector: 'tls-drawer',
@@ -74,7 +58,6 @@ export class Drawer extends CdkDialogContainer {
   // `open` marks an entrance the component finished itself (a drag); the
   // stylesheet's slide-in keys off `enter` only, so it does not replay then.
   private readonly _state = signal<'enter' | 'open' | 'leave'>('enter');
-  private readonly _dragState = signal<drawerDragState>('idle');
   // Whether the panel slides out of its origin rather than from off-screen.
   // Taken for granted while an origin is given, and dropped the moment it
   // cannot be measured, which hands the entrance or exit back to the plain slide.
@@ -95,9 +78,14 @@ export class Drawer extends CdkDialogContainer {
   // it ends: measured mid-flight, the panel would read short of where it rests.
   private _entrance: Animation[] = [];
   private _closing = false;
-  // Panel extent along the drag axis, sampled once per gesture: the panel may be
-  // sized by content or by a custom length, so only the rendered box is authoritative.
-  private _dragExtent = 0;
+  // The dismissal drag: the finger's hold on the panel, its travel toward the
+  // pinned edge and the settle after release. The scrim thins as the panel leaves.
+  private readonly _motion = new SheetMotion({
+    property: '--tls-drawer-drag',
+    backdropOpacity: progress => 1 - progress,
+    renderer: this._dragRenderer,
+    injector: this._dragInjector,
+  });
 
   // Computed
   protected readonly hostClasses = computed(() => {
@@ -113,7 +101,7 @@ export class Drawer extends CdkDialogContainer {
     // origin or opens under a drag.
     if (this._slidesFromOrigin() || this._opensByDrag()) classes.push('tls-drawer--scripted');
 
-    const dragState = this._dragState();
+    const dragState = this._motion.state();
     if (dragState !== 'idle') classes.push(`tls-drawer--${dragState}`);
 
     return classes;
@@ -331,11 +319,7 @@ export class Drawer extends CdkDialogContainer {
   // Either a flick decides, whichever way it points; failing one, how far the
   // drag got does — the same rule the drag to dismiss commits by.
   private _opensOnRelease(event: PanEvent, progress: number): boolean {
-    const openVelocity = -this._dismissVelocity(event);
-    if (openVelocity >= SWIPE_DEFAULT_MIN_VELOCITY) return true;
-    if (-openVelocity >= SWIPE_DEFAULT_MIN_VELOCITY) return false;
-
-    return progress >= DRAG_DISMISS_RATIO;
+    return decideCommit(-this._dismissVelocity(event), progress);
   }
 
   // The settle after a drag is released eases like the slide in, and jumps
@@ -369,12 +353,14 @@ export class Drawer extends CdkDialogContainer {
   private _onPanStart(): void {
     if (this._closing || this._openPhase !== 'done') return;
 
-    const rect = this._elementRef.nativeElement.getBoundingClientRect();
-    this._dragExtent = this._isInlineSide() ? rect.width : rect.height;
-    this._dragState.set('dragging');
-    // The backdrop tracks the finger for the drag's duration, so its own
-    // transition — which exists to animate the settle — must not lag it.
-    this._setBackdropTransition('none');
+    const panel = this._elementRef.nativeElement;
+    // The panel may be sized by content or by a custom length, so only the rendered box is authoritative.
+    const rect = panel.getBoundingClientRect();
+    this._motion.begin({
+      panel,
+      backdrop: this._dialogRef.overlayRef.backdropElement,
+      extent: this._isInlineSide() ? rect.width : rect.height,
+    });
   }
 
   // Fired outside the Angular zone (see `PanDirective.panMove`), so it writes to
@@ -382,21 +368,18 @@ export class Drawer extends CdkDialogContainer {
   // Move, end and cancel only follow a drag this panel started: one declined at
   // its start (closing, or still opening under the trigger's drag) is not its own.
   private _onPanMove(event: PanEvent): void {
-    if (this._closing || this._dragState() !== 'dragging') return;
-    this._applyDrag(this._dismissTravel(event));
+    if (this._closing || this._motion.state() !== 'dragging') return;
+    this._motion.follow(Math.max(0, this._dismissTravel(event)));
   }
 
   private _onPanEnd(event: PanEvent): void {
-    if (this._closing || this._dragState() !== 'dragging') return;
+    if (this._closing || this._motion.state() !== 'dragging') return;
 
-    // Either condition commits: a short flick is as clear an intent to dismiss as
-    // a slow drag past the ratio, and requiring both would strand each on its own.
-    const travelled =
-      this._dragExtent > 0 && this._dismissTravel(event) / this._dragExtent >= DRAG_DISMISS_RATIO;
-    const flicked = this._dismissVelocity(event) >= SWIPE_DEFAULT_MIN_VELOCITY;
+    const extent = this._motion.extent;
+    const progress = extent > 0 ? Math.max(0, this._dismissTravel(event)) / extent : 0;
 
-    if (travelled || flicked) {
-      this._dragClose();
+    if (decideCommit(this._dismissVelocity(event), progress)) {
+      this._dragClose(extent);
       return;
     }
 
@@ -404,7 +387,7 @@ export class Drawer extends CdkDialogContainer {
   }
 
   private _onPanCancel(): void {
-    if (this._closing || this._dragState() !== 'dragging') return;
+    if (this._closing || this._motion.state() !== 'dragging') return;
     this._settleBack();
   }
 
@@ -449,57 +432,18 @@ export class Drawer extends CdkDialogContainer {
     return side === 'start' || side === 'end';
   }
 
-  private _applyDrag(travel: number): void {
-    const offset = Math.max(0, travel);
-    this._dragRenderer.setStyle(
-      this._elementRef.nativeElement,
-      '--tls-drawer-drag',
-      `${offset}px`,
-      RendererStyleFlags2.DashCase,
-    );
-
-    const backdrop = this._dialogRef.overlayRef.backdropElement;
-    if (backdrop === null) return;
-
-    const progress = this._dragExtent > 0 ? Math.min(1, offset / this._dragExtent) : 0;
-    this._dragRenderer.setStyle(backdrop, 'opacity', `${1 - progress}`);
-  }
-
-  private _setBackdropTransition(value: string | null): void {
-    const backdrop = this._dialogRef.overlayRef.backdropElement;
-    if (backdrop === null) return;
-
-    if (value === null) {
-      this._dragRenderer.removeStyle(backdrop, 'transition');
-      return;
-    }
-    this._dragRenderer.setStyle(backdrop, 'transition', value);
-  }
-
   // Returns the panel to rest after a drag that did not commit.
   private _settleBack(): void {
-    this._settle(0, () => this._dragState.set('idle'));
+    this._motion.settle(0, () => this._motion.rest());
   }
 
   // Continues the drag out to the pinned edge and disposes on arrival. A dismissal
   // that began as a drag cannot route through `animatedClose`: the slide-out
   // keyframe starts from `transform: none`, so the panel would snap back to fully
   // open for a frame before leaving.
-  private _dragClose(): void {
+  private _dragClose(extent: number): void {
     this._closing = true;
-    this._settle(this._dragExtent, () => this._dialogRef.close());
-  }
-
-  private _settle(target: number, onDone: () => void): void {
-    this._dragState.set('settling');
-    this._setBackdropTransition(null);
-
-    settleAfterRender(
-      this._dragInjector,
-      this._elementRef.nativeElement,
-      () => this._applyDrag(target),
-      onDone,
-    );
+    this._motion.settle(extent, () => this._dialogRef.close());
   }
 
   private _sizeClass(): drawerSize | 'custom' {

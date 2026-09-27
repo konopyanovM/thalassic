@@ -8,8 +8,6 @@ import { whenAnimationsFinish } from './when-animations-finish';
  * Written in the same frame as the class, the value would jump instead of
  * animating; a surface with no transition (the `none` motion level) settles at
  * once.
- *
- * Shared by every surface dragged toward a dismissal (drawer, menu sheet).
  */
 export function settleAfterRender(
   injector: Injector,

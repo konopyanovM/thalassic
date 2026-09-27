@@ -18,6 +18,7 @@ import {
   InputSignal,
   InputSignalWithTransform,
   isDevMode,
+  Renderer2,
   signal,
   TemplateRef,
   viewChild,
@@ -25,15 +26,14 @@ import {
 import {
   DEFAULT_PAN_CONFIG,
   DRAG_DISMISS_POINTER_TYPES,
-  DRAG_DISMISS_RATIO,
   PAN_CONFIG,
   PanDirective,
   PanEvent,
   Point,
-  SWIPE_DEFAULT_MIN_VELOCITY,
   ViewportService,
 } from '@thalassic/core';
-import { createOverlayManager, settleAfterRender } from '../../abstract/overlay';
+import { createOverlayManager } from '../../abstract/overlay';
+import { decideCommit, SheetMotion } from '../../abstract/sheet-motion';
 import { overlayPosition } from '../../types';
 import { buildOverlayPositions } from '../../utils';
 import { Icon } from '../icon';
@@ -78,6 +78,8 @@ export class Menu {
   private readonly _viewportService = inject(ViewportService, {
     optional: true,
   });
+  private readonly _injector = inject(Injector);
+  private readonly _renderer = inject(Renderer2);
 
   private readonly _panelRef = viewChild.required<TemplateRef<unknown>>('panel');
 
@@ -149,16 +151,17 @@ export class Menu {
   // overlay has already placed the other way.
   protected readonly sheet = signal(false);
 
-  // The sheet's dismissal drag. `dragging` while the finger holds the pane,
-  // `settling` while it animates to its released destination — open again, or
-  // out past the bottom edge.
-  protected readonly sheetDragState = signal<'idle' | 'dragging' | 'settling'>('idle');
+  // The sheet's dismissal drag: the finger's hold on the pane, its travel out
+  // past the bottom edge and the settle after release. The scrim thins as the
+  // sheet leaves.
+  protected readonly sheetMotion = new SheetMotion({
+    property: '--tls-menu-drag',
+    backdropOpacity: progress => 1 - progress,
+    renderer: this._renderer,
+    injector: this._injector,
+  });
 
-  private readonly _injector = inject(Injector);
   private _sheetClosing = false;
-  // Pane height sampled once per gesture: the pane is sized by its content, so
-  // only the rendered box is authoritative.
-  private _sheetDragExtent = 0;
 
   constructor() {
     if (isDevMode()) {
@@ -262,39 +265,39 @@ export class Menu {
   protected onSheetPanStart(pane: HTMLElement): void {
     if (this._sheetClosing) return;
 
-    this._sheetDragExtent = pane.getBoundingClientRect().height;
-    this.sheetDragState.set('dragging');
+    // The pane is sized by its content, so only the rendered box is authoritative.
+    this.sheetMotion.begin({
+      panel: pane,
+      backdrop: this._overlay.backdropElement,
+      extent: pane.getBoundingClientRect().height,
+    });
   }
 
   // Fired outside the Angular zone (see `PanDirective.panMove`), so it writes
-  // to the DOM directly and never touches a signal.
-  protected onSheetPanMove(event: PanEvent, pane: HTMLElement): void {
+  // to the DOM directly and never touches a signal. The sheet does not
+  // overshoot open, so upward travel is clamped away.
+  protected onSheetPanMove(event: PanEvent): void {
     if (this._sheetClosing) return;
-    this._applySheetDrag(pane, Math.max(0, event.deltaY));
+    this.sheetMotion.follow(Math.max(0, event.deltaY));
   }
 
-  protected onSheetPanEnd(event: PanEvent, pane: HTMLElement): void {
+  protected onSheetPanEnd(event: PanEvent): void {
     if (this._sheetClosing) return;
 
-    // Either condition commits: a short flick is as clear an intent to dismiss
-    // as a slow drag past the ratio, and requiring both would strand each on
-    // its own.
-    const travelled =
-      this._sheetDragExtent > 0 &&
-      Math.max(0, event.deltaY) / this._sheetDragExtent >= DRAG_DISMISS_RATIO;
-    const flicked = event.velocityY >= SWIPE_DEFAULT_MIN_VELOCITY;
+    const extent = this.sheetMotion.extent;
+    const progress = extent > 0 ? Math.max(0, event.deltaY) / extent : 0;
 
-    if (travelled || flicked) {
-      this._sheetDragClose(pane);
+    if (decideCommit(event.velocityY, progress)) {
+      this._sheetDragClose(extent);
       return;
     }
 
-    this._settleSheet(pane, 0, () => this.sheetDragState.set('idle'));
+    this.sheetMotion.settle(0, () => this.sheetMotion.rest());
   }
 
-  protected onSheetPanCancel(pane: HTMLElement): void {
+  protected onSheetPanCancel(): void {
     if (this._sheetClosing) return;
-    this._settleSheet(pane, 0, () => this.sheetDragState.set('idle'));
+    this.sheetMotion.settle(0, () => this.sheetMotion.rest());
   }
 
   // Private methods
@@ -311,19 +314,8 @@ export class Menu {
   // over.
   private _prepareOpen(sheet: boolean): void {
     this.sheet.set(sheet);
-    this.sheetDragState.set('idle');
+    this.sheetMotion.rest();
     this._sheetClosing = false;
-  }
-
-  private _applySheetDrag(pane: HTMLElement, offset: number): void {
-    pane.style.setProperty('--tls-menu-drag', `${offset}px`);
-
-    // The scrim thins as the sheet travels out, tracking the finger.
-    const backdrop = this._overlay.backdropElement;
-    if (backdrop === null) return;
-
-    const progress = this._sheetDragExtent > 0 ? Math.min(1, offset / this._sheetDragExtent) : 0;
-    backdrop.style.opacity = `${1 - progress}`;
   }
 
   // Continues the drag out past the bottom edge and closes on arrival. A
@@ -331,14 +323,8 @@ export class Menu {
   // that starts from the fully open position, so the pane would snap back for
   // a frame before leaving — the stylesheet stands the keyframe down while
   // the drag state classes are on.
-  private _sheetDragClose(pane: HTMLElement): void {
+  private _sheetDragClose(extent: number): void {
     this._sheetClosing = true;
-    this._settleSheet(pane, this._sheetDragExtent, () => this._overlay.close());
+    this.sheetMotion.settle(extent, () => this._overlay.close());
   }
-
-  private _settleSheet(pane: HTMLElement, target: number, onDone: () => void): void {
-    this.sheetDragState.set('settling');
-    settleAfterRender(this._injector, pane, () => this._applySheetDrag(pane, target), onDone);
-  }
-
 }
