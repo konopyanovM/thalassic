@@ -10,13 +10,15 @@
   }
 }
 
+// Shrinks by `scale` rather than `width`, so the countdown runs on the
+// compositor instead of laying the bar out again on every frame.
 @keyframes tls-toast-progress {
   from {
-    width: 100%;
+    scale: 1 1;
   }
 
   to {
-    width: 0%;
+    scale: 0 1;
   }
 }
 
@@ -173,8 +175,8 @@
     @include mixins.close-button-icon;
   }
 
-  // Countdown bar hugging the surface's block-end edge; its width animates from
-  // full to empty over the auto-dismiss delay. Only rendered under motion (the
+  // Countdown bar hugging the surface's block-end edge; it shrinks from full to
+  // empty over the auto-dismiss delay, toward its inline-start edge. Only rendered under motion (the
   // mixin hides it at the `none` level, so no misleading static bar is shown).
   &__progress {
     position: absolute;
@@ -191,6 +193,14 @@
 
     background-color: var(--tls-toast-icon-color);
     opacity: 0.9;
+
+    // `transform-origin` has no logical keywords, so the edge it shrinks
+    // toward is flipped for RTL by hand.
+    transform-origin: left;
+
+    :root[dir='rtl'] & {
+      transform-origin: right;
+    }
 
     @include mixins.motion(essential) {
       display: block;
