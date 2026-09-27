@@ -1,0 +1,177 @@
+@use '../mixins' as mixins;
+
+// Pane width at and above which the sheet floats, capped and centred, instead
+// of spanning edge to edge. A container query cannot read a custom property,
+// so the switch is a Sass value; `--tls-sheet-max-inline-size` is the width
+// the floating sheet takes.
+$sheet-floating-min: 40rem;
+
+// The pane the sheet is attached to covers the viewport but lets pointers
+// through; only the sheet's own surfaces take them.
+.tls-sheet-pane {
+  container: tls-sheet-pane / inline-size;
+
+  pointer-events: none;
+}
+
+.tls-sheet {
+  --tls-sheet-max-inline-size: 40rem;
+  --tls-sheet-surface: var(--color-surface-container-high);
+  --tls-sheet-color: var(--color-on-surface);
+  --tls-sheet-shadow: var(--shadow-lg);
+  --tls-sheet-radius: var(--radius-xl);
+  --tls-sheet-backdrop: rgb(0 0 0 / 0.4);
+  --tls-sheet-grabber-length: var(--grabber-length);
+  --tls-sheet-grabber-thickness: var(--grabber-thickness);
+  --tls-sheet-grabber-inset: var(--grabber-inset);
+  // A finger-sized header, whatever the slot holds.
+  --tls-sheet-header-min-size: 44px;
+  // Height of the largest detent and the panel's displacement below it, both
+  // written by the component. `0px`, not `0` — they are lengths.
+  --tls-sheet-height: 0px;
+  --tls-sheet-offset: 0px;
+
+  position: fixed;
+  inset: 0;
+
+  pointer-events: none;
+
+  &__backdrop {
+    position: absolute;
+    inset: 0;
+
+    background-color: var(--tls-sheet-backdrop);
+    opacity: 0;
+
+    pointer-events: none;
+
+    // Opacity is driven inline while the sheet is dragged, so it tracks the
+    // finger; this transition only smooths the settle at the end.
+    @include mixins.motion(essential) {
+      transition: opacity var(--motion-default) var(--motion-ease-out);
+    }
+  }
+
+  &__panel {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+
+    block-size: var(--tls-sheet-height);
+
+    display: flex;
+    flex-direction: column;
+
+    border-radius: var(--tls-sheet-radius) var(--tls-sheet-radius) 0 0;
+
+    background-color: var(--tls-sheet-surface);
+    box-shadow: var(--tls-sheet-shadow);
+
+    color: var(--tls-sheet-color);
+
+    pointer-events: auto;
+    translate: 0 var(--tls-sheet-offset);
+
+    // Only the settle animates: the drag is direct manipulation, not motion.
+    @include mixins.motion(essential) {
+      transition: translate var(--motion-default) var(--motion-ease-out);
+    }
+  }
+
+  // The pill that says the sheet can be dragged, centred along its top edge.
+  &__grabber {
+    position: absolute;
+    inset-block-start: var(--tls-sheet-grabber-inset);
+    inset-inline-start: calc(50% - var(--tls-sheet-grabber-length) / 2);
+    z-index: 1;
+
+    inline-size: var(--tls-sheet-grabber-length);
+    block-size: var(--tls-sheet-grabber-thickness);
+
+    @include mixins.grabber-pill(var(--tls-sheet-grabber-thickness));
+  }
+
+  // The header is a real button carrying the slot: it keeps the slot's layout
+  // and type, and clears the grabber above it.
+  &__header {
+    inline-size: 100%;
+    min-block-size: var(--tls-sheet-header-min-size);
+
+    padding-block-start: calc(var(--tls-sheet-grabber-inset) + var(--tls-sheet-grabber-thickness));
+
+    display: block;
+
+    border: 0;
+
+    background: none;
+
+    font: inherit;
+    text-align: start;
+    color: inherit;
+
+    cursor: pointer;
+
+    &:focus-visible {
+      @include mixins.focus-ring;
+    }
+  }
+
+  &__body {
+    flex: 1;
+    min-block-size: 0;
+
+    padding-block-end: env(safe-area-inset-bottom);
+
+    // Below the top detent the body cannot scroll, so an upward drag always
+    // moves the sheet; `contain` keeps a pull at the list's top from reaching
+    // the page's own pull-to-refresh. The body claims no `touch-action` of its
+    // own there: the pan directive reads any vertical claim between the target
+    // and the panel as a competing gesture and would drop the pan, while the
+    // panel's own managed `pan-x` already keeps the browser off vertical pans.
+    overflow: hidden;
+    overscroll-behavior: contain;
+  }
+
+  // Answers the component's measurement of a CSS-length detent.
+  &__probe {
+    position: absolute;
+
+    visibility: hidden;
+
+    pointer-events: none;
+  }
+
+  &--top &__body {
+    overflow-y: auto;
+
+    touch-action: pan-y;
+  }
+
+  &--modal &__backdrop {
+    pointer-events: auto;
+  }
+
+  // The finger owns both while dragging. Gated like the transitions it cancels,
+  // so it shares their `:root[data-motion]` prefix and wins by the one extra
+  // class, `--dragging`, on top of it.
+  &--dragging {
+    @include mixins.motion(essential) {
+      .tls-sheet__panel,
+      .tls-sheet__backdrop {
+        transition: none;
+      }
+    }
+  }
+
+  @container tls-sheet-pane (min-width: #{$sheet-floating-min}) {
+    &__panel {
+      inset-block-end: var(--spacing-4);
+
+      inline-size: min(var(--tls-sheet-max-inline-size), 100%);
+
+      margin-inline: auto;
+
+      border-radius: var(--tls-sheet-radius);
+    }
+  }
+}

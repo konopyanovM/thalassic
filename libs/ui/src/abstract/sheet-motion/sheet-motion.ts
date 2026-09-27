@@ -82,6 +82,16 @@ export class SheetMotion {
     );
   }
 
+  /**
+   * A settle from rest with no drag: takes hold of `surface` and settles it to
+   * `target` in one step, for a change asked by a click, a key or code rather
+   * than a finger. Supersedes a running settle the way a `begin` does.
+   */
+  public moveTo(surface: SheetMotionSurface, target: number, done: () => void): void {
+    this.begin(surface);
+    this.settle(target, done);
+  }
+
   /** Lets go of the surface; the transform is the stylesheet's again. */
   public rest(): void {
     this._gesture += 1;

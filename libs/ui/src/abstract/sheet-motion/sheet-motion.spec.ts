@@ -225,4 +225,32 @@ describe('SheetMotion', () => {
     // Still nothing written
     expect(renderer.setStyle).not.toHaveBeenCalled();
   });
+
+  it('moves to a target from rest: takes hold, settles, and reports once', async () => {
+    const done = vi.fn();
+
+    motion.moveTo({ panel, backdrop, extent: 200 }, 120, done);
+
+    expect(motion.state()).toBe('settling');
+    expect(removedStyle(backdrop, 'transition')).toBe(true);
+    TestBed.inject(ApplicationRef).tick();
+    await vi.waitFor(() => expect(done).toHaveBeenCalledTimes(1));
+    expect(wroteStyle(panel, '--tls-test-drag', '120px')).toBe(true);
+    expect(wroteStyle(backdrop, 'opacity', '0.4')).toBe(true);
+  });
+
+  it('lets a move supersede a running settle like a new gesture', async () => {
+    const supersededDone = vi.fn();
+    const done = vi.fn();
+    motion.begin({ panel, backdrop, extent: 200 });
+    motion.settle(0, supersededDone);
+
+    motion.moveTo({ panel, backdrop, extent: 200 }, 200, done);
+    TestBed.inject(ApplicationRef).tick();
+    await vi.waitFor(() => expect(done).toHaveBeenCalledTimes(1));
+
+    expect(supersededDone).not.toHaveBeenCalled();
+    expect(wroteStyle(panel, '--tls-test-drag', '0px')).toBe(false);
+    expect(wroteStyle(panel, '--tls-test-drag', '200px')).toBe(true);
+  });
 });

@@ -1,0 +1,48 @@
+<div
+  class="tls-sheet"
+  #root
+  [class.tls-sheet--dragging]="motionState() === 'dragging'"
+  [class.tls-sheet--settling]="motionState() === 'settling'"
+  [class.tls-sheet--modal]="isModal()"
+  [class.tls-sheet--top]="isTop()"
+>
+  <div class="tls-sheet__backdrop" #backdrop aria-hidden="true" (click)="onBackdropClick()"></div>
+  <div
+    class="tls-sheet__panel"
+    #panel
+    [attr.role]="isModal() ? 'dialog' : 'region'"
+    [attr.aria-modal]="isModal() ? 'true' : null"
+    [attr.aria-label]="label()"
+    tlsPan
+    axis="y"
+    [pointerTypes]="pointerTypes"
+    [manageTouchAction]="!isTop()"
+    (panStart)="onPanStart($event)"
+    (panMove)="onPanMove($event)"
+    (panEnd)="onPanEnd($event)"
+    (panCancel)="onPanCancel()"
+  >
+    @if (grabber()) {
+      <div class="tls-sheet__grabber" aria-hidden="true"></div>
+    }
+    <button
+      type="button"
+      class="tls-sheet__header"
+      #header
+      [attr.aria-expanded]="isExpanded()"
+      [attr.aria-controls]="bodyId"
+      [attr.aria-description]="description()"
+      (click)="onHeaderClick()"
+      (keydown.arrowUp)="onArrowUp($event)"
+      (keydown.arrowDown)="onArrowDown($event)"
+    >
+      <ng-container [ngTemplateOutlet]="headerTemplate().templateRef" />
+    </button>
+    <div class="tls-sheet__body" #body [id]="bodyId">
+      <div class="tls-sheet__content" #content>
+        <ng-content />
+      </div>
+    </div>
+    <div class="tls-sheet__probe" #probe aria-hidden="true"></div>
+  </div>
+</div>
