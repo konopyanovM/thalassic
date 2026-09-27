@@ -2,6 +2,7 @@ import { MOTION_ATTRIBUTE } from '@thalassic/core';
 import {
   booleanAttribute,
   computed,
+  DestroyRef,
   Directive,
   DOCUMENT,
   ElementRef,
@@ -9,6 +10,7 @@ import {
   input,
   InputSignal,
   InputSignalWithTransform,
+  Renderer2,
   Signal,
 } from '@angular/core';
 import { pointerType } from '../../types';
@@ -51,7 +53,6 @@ import {
   selector: '[tlsRipple]',
   host: {
     '(pointerdown)': 'onPointerDown($event)',
-    '(pointermove)': 'onPointerMove($event)',
     '(pointerup)': 'onPointerRelease()',
     '(pointercancel)': 'onPointerRelease()',
   },
@@ -61,6 +62,7 @@ export class RippleDirective {
   private readonly _elementRef: ElementRef<HTMLElement> = inject(ElementRef);
   private readonly _document: Document = inject(DOCUMENT);
   private readonly _config: RippleConfig = inject(RIPPLE_CONFIG);
+  private readonly _renderer: Renderer2 = inject(Renderer2);
 
   // Inputs
   /**
@@ -91,10 +93,21 @@ export class RippleDirective {
   // State
   /** Where the press landed, to measure a scroll against. */
   private _origin: { x: number; y: number } | null = null;
+  /**
+   * Teardown of the move listener, bound only while an ink is live. A host
+   * listener would schedule change detection for every hover movement across
+   * every host, although only a press ever needs the moves.
+   */
+  private _stopTrackingMoves: (() => void) | null = null;
+
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this._stopTracking());
+  }
 
   // Protected methods
   protected onPointerDown(event: PointerEvent): void {
     const host = this._elementRef.nativeElement;
+    this._stopTracking();
 
     // Anything this directive does not ink is the press's to acknowledge, so the
     // suppression is lifted here rather than on release. `:active` outlives the
@@ -113,6 +126,7 @@ export class RippleDirective {
     const y = event.clientY - bounds.top;
 
     this._origin = { x: event.clientX, y: event.clientY };
+    this._trackMoves(host);
 
     host.style.setProperty(RIPPLE_X_PROPERTY, `${x}px`);
     host.style.setProperty(RIPPLE_Y_PROPERTY, `${y}px`);
@@ -125,7 +139,12 @@ export class RippleDirective {
     this._restartInk(host);
   }
 
-  protected onPointerMove(event: PointerEvent): void {
+  protected onPointerRelease(): void {
+    this._stopTracking();
+  }
+
+  // Private methods
+  private _onPointerMove(event: PointerEvent): void {
     const origin = this._origin;
     if (!origin) return;
 
@@ -135,15 +154,24 @@ export class RippleDirective {
     // The press turned out to be a scroll. The ink goes immediately, but the
     // press stays suppressed until the contact ends — restoring it here would
     // depress the control mid-scroll, which is what the ink was cancelled for.
-    this._origin = null;
+    this._stopTracking();
     this._elementRef.nativeElement.classList.remove(RIPPLE_ACTIVE_CLASS);
   }
 
-  protected onPointerRelease(): void {
-    this._origin = null;
+  private _trackMoves(host: HTMLElement): void {
+    this._stopTrackingMoves = this._renderer.listen(host, 'pointermove', (event: PointerEvent) =>
+      this._onPointerMove(event),
+    );
   }
 
-  // Private methods
+  private _stopTracking(): void {
+    this._origin = null;
+    if (!this._stopTrackingMoves) return;
+
+    this._stopTrackingMoves();
+    this._stopTrackingMoves = null;
+  }
+
   /**
    * Whether a press from this kind of pointer inks. `pointerType` is read off the
    * event rather than from a media query so a device carrying both a touchscreen

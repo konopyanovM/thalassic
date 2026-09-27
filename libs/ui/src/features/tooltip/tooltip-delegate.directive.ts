@@ -34,7 +34,6 @@ import { tooltipSource } from './tooltip.types';
   host: {
     '(pointerover)': 'onPointerOver($event)',
     '(pointerdown)': 'onPointerDown($event)',
-    '(pointermove)': 'onPointerMove($event)',
     '(pointerout)': 'onPointerOut($event)',
     '(focusin)': 'onFocusIn($event)',
     '(focusout)': 'onFocusOut($event)',
@@ -93,14 +92,6 @@ export class TooltipDelegateDirective extends TooltipTrigger {
     // tap semantics from `pointerover`.
     if (event.pointerType === 'touch') return;
     this._hide('hover');
-  }
-
-  protected onPointerMove(event: PointerEvent): void {
-    if (event.pointerType === 'touch') return;
-
-    if (this.tooltipOrigin() === 'cursor') {
-      this._tooltipService.move(this, { x: event.clientX, y: event.clientY });
-    }
   }
 
   protected onPointerOut(event: PointerEvent): void {

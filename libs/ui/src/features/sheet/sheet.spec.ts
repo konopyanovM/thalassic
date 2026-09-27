@@ -2,8 +2,6 @@ import { InputModalityDetector } from '@angular/cdk/a11y';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { ApplicationRef, Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { PanDirective, PanEvent } from '@thalassic/core';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Sheet } from './sheet';
 import { SheetHeaderDirective } from './sheet-header.directive';
@@ -273,57 +271,106 @@ describe('Sheet', () => {
   });
 
   describe('drag', () => {
-    function pan(): PanDirective {
-      return fixture.debugElement.query(By.directive(PanDirective)).injector.get(PanDirective);
+    // Where every drag presses down; travel is measured from here.
+    const pressY = 400;
+
+    interface TouchDrag {
+      /** Moves to `travel` px from the press, `after` ms past the previous event. */
+      move(travel: number, after?: number): void;
+      /** Lifts the finger where it rests, `after` ms past the previous event. */
+      release(after?: number): void;
+      cancel(): void;
     }
 
-    function panEvent(deltaY: number, velocityY = 0, target?: Element): PanEvent {
-      const originalEvent = {
-        target: target ?? container.querySelector('.tls-sheet__header'),
-      } as unknown as PointerEvent;
+    // jsdom ships no full PointerEvent implementation, so pointer events are
+    // built from MouseEvent with the pointer fields (and a controllable
+    // timeStamp, which the release velocity depends on) defined on the instance.
+    function dispatchPointer(type: string, target: Element, y: number, timeStamp: number): void {
+      const event = new MouseEvent(type, {
+        bubbles: true,
+        cancelable: true,
+        clientX: 0,
+        clientY: y,
+        button: 0,
+      });
+      Object.defineProperties(event, {
+        pointerId: { value: 1 },
+        pointerType: { value: 'touch' },
+        isPrimary: { value: true },
+        timeStamp: { value: timeStamp },
+      });
+      target.dispatchEvent(event);
+    }
+
+    // A touch pressed on `target`, driving the sheet's own pan gesture.
+    function touch(target: Element = query('.tls-sheet__header')): TouchDrag {
+      let time = 0;
+      let y = pressY;
+      dispatchPointer('pointerdown', target, y, time);
+
       return {
-        deltaX: 0,
-        deltaY,
-        distance: Math.abs(deltaY),
-        velocityX: 0,
-        velocityY,
-        direction: deltaY < 0 ? 'up' : 'down',
-        logicalDirection: deltaY < 0 ? 'up' : 'down',
-        pointerType: 'touch',
-        originalEvent,
+        move(travel: number, after = 10): void {
+          time += after;
+          y = pressY + travel;
+          dispatchPointer('pointermove', target, y, time);
+        },
+        release(after = 0): void {
+          time += after;
+          dispatchPointer('pointerup', target, y, time);
+        },
+        cancel(): void {
+          dispatchPointer('pointercancel', target, y, time);
+        },
       };
     }
 
+    beforeEach(() => {
+      // jsdom implements no pointer capture; the gesture only needs the calls to
+      // succeed.
+      Element.prototype.setPointerCapture = () => undefined;
+      Element.prototype.releasePointerCapture = () => undefined;
+      Element.prototype.hasPointerCapture = () => true;
+    });
+
+    afterEach(() => {
+      Reflect.deleteProperty(Element.prototype, 'setPointerCapture');
+      Reflect.deleteProperty(Element.prototype, 'releasePointerCapture');
+      Reflect.deleteProperty(Element.prototype, 'hasPointerCapture');
+    });
+
     it('follows the finger between detents and settles on the nearest past the ratio', async () => {
-      const gesture = pan();
-      gesture.panStart.emit(panEvent(-10));
+      const drag = touch();
+      drag.move(-10);
       expect(isMoving()).toBe(true);
 
-      gesture.panMove.emit(panEvent(-100));
+      drag.move(-100);
       // From 80px up 100 = 180px tall: offset = 320 − 180.
       expect(panelOffset()).toBe('140px');
 
       // Released at 230px: past 40% of the 80→240 gap, and nearer 240 than 320.
-      gesture.panEnd.emit(panEvent(-150, 0));
+      // Held still first, so the release carries no velocity.
+      drag.move(-150);
+      drag.release(500);
       await settle();
 
       expect(host.detent()).toBe('half');
     });
 
     it('steps one detent on a flick however short the drag', async () => {
-      const gesture = pan();
-      gesture.panStart.emit(panEvent(-5));
-      gesture.panEnd.emit(panEvent(-8, -1));
+      const drag = touch();
+      drag.move(-10, 5);
+      drag.move(-12, 7);
+      drag.release();
       await settle();
 
       expect(host.detent()).toBe('half');
     });
 
     it('snaps back on cancel', async () => {
-      const gesture = pan();
-      gesture.panStart.emit(panEvent(-10));
-      gesture.panMove.emit(panEvent(-150));
-      gesture.panCancel.emit();
+      const drag = touch();
+      drag.move(-10);
+      drag.move(-150);
+      drag.cancel();
       await settle();
 
       expect(host.detent()).toBe('lip');
@@ -331,44 +378,42 @@ describe('Sheet', () => {
     });
 
     it('rubber-bands below the smallest detent and holds at the largest', () => {
-      const gesture = pan();
-      gesture.panStart.emit(panEvent(10));
-      gesture.panMove.emit(panEvent(60));
+      const drag = touch();
+      drag.move(10);
+      drag.move(60);
       // 60px below the lip: a third of the overshoot on top of the full travel.
       expect(panelOffset()).toBe('260px');
 
-      gesture.panMove.emit(panEvent(600));
+      drag.move(600);
       expect(panelOffset()).toBe('272px');
 
-      gesture.panMove.emit(panEvent(-900));
+      drag.move(-900);
       expect(panelOffset()).toBe('0px');
     });
 
     it('leaves a pan inside a scrolled body to the body at the top detent', async () => {
       sheet.snapTo('full');
       await settle();
-      const body = container.querySelector<HTMLElement>('.tls-sheet__body');
-      if (body === null) throw new Error('no body');
+      const body = query('.tls-sheet__body');
       Object.defineProperty(body, 'scrollTop', { value: 40, configurable: true });
 
-      const gesture = pan();
-      gesture.panStart.emit(panEvent(20, 0, body));
+      const drag = touch(body);
+      drag.move(20);
 
       expect(isMoving()).toBe(false);
-      gesture.panMove.emit(panEvent(80, 0, body));
+      drag.move(80);
       expect(panelOffset()).toBe('0px');
     });
 
-    it('takes a downward pan inside the body once the body is at its top', () => {
+    it('takes a downward pan inside the body once the body is at its top', async () => {
       sheet.snapTo('full');
-      return settle().then(() => {
-        const body = container.querySelector<HTMLElement>('.tls-sheet__body');
-        if (body === null) throw new Error('no body');
-        Object.defineProperty(body, 'scrollTop', { value: 0, configurable: true });
+      await settle();
+      const body = query('.tls-sheet__body');
+      Object.defineProperty(body, 'scrollTop', { value: 0, configurable: true });
 
-        pan().panStart.emit(panEvent(20, 0, body));
-        expect(isMoving()).toBe(true);
-      });
+      touch(body).move(20);
+
+      expect(isMoving()).toBe(true);
     });
   });
 

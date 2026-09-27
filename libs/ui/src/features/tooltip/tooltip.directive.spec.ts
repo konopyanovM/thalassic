@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Button } from '../button';
 import { TooltipDirective } from './tooltip.directive';
+import { TooltipService } from './tooltip.service';
 
 @Component({
   imports: [Button, TooltipDirective],
@@ -20,6 +21,7 @@ import { TooltipDirective } from './tooltip.directive';
       dynamic
     </button>
     <span class="static" tlsTooltip="Static">static</span>
+    <button type="button" class="cursor" tlsTooltip="Cursor" tooltipOrigin="cursor">cursor</button>
     <button type="button" class="untooltipped">plain button</button>
     <tls-button class="component" tlsTooltip="Component">component</tls-button>
     <div class="wrapper" tabindex="-1" tlsTooltip="Wrapped">
@@ -175,6 +177,34 @@ describe('TooltipDirective', () => {
     await fixture.whenStable();
 
     expect(queryTooltip()).toBeNull();
+  });
+
+  it('follows the cursor only while its tooltip is visible', async () => {
+    const element = queryElement('.cursor');
+    const move = vi.spyOn(TestBed.inject(TooltipService), 'move');
+    const pointerMove = () =>
+      element.dispatchEvent(
+        new PointerEvent('pointermove', {
+          bubbles: true,
+          pointerType: 'mouse',
+          clientX: 12,
+          clientY: 34,
+        }),
+      );
+
+    pointerMove();
+    expect(move).not.toHaveBeenCalled();
+
+    hover(element);
+    await fixture.whenStable();
+    pointerMove();
+    expect(move).toHaveBeenCalledWith(expect.anything(), { x: 12, y: 34 });
+
+    move.mockClear();
+    unhover(element);
+    await fixture.whenStable();
+    pointerMove();
+    expect(move).not.toHaveBeenCalled();
   });
 
   it('shows one tooltip at a time across triggers', async () => {

@@ -114,9 +114,11 @@ export class PanDirective {
   /** Emits when the pointer crosses the slop threshold and the gesture axis-locks — not on `pointerdown`. */
   public readonly panStart = output<PanEvent>();
   /**
-   * Emits for every pointer move after axis lock. Fired OUTSIDE the Angular
-   * zone so tracking at pointer rate never triggers change detection per move —
-   * write to a signal or to the DOM directly from the handler.
+   * Emits for every pointer move after axis lock, outside the Angular zone, so
+   * a zone-based app runs no change detection per move. A zoneless app checks
+   * the binding view and its ancestors on each emission, like any template
+   * listener. Either way the handler runs at pointer rate: write to the DOM
+   * directly rather than through bindings.
    */
   public readonly panMove = output<PanEvent>();
   /** Emits when the pointer is released while a gesture is active, with final rolling-window velocity. */

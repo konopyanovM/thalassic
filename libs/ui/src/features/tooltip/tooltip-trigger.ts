@@ -80,8 +80,8 @@ export abstract class TooltipTrigger implements TooltipOwner, OnDestroy {
   private _describedById: string | null = null;
   /** Element that description was put on, which is not always the anchor. */
   private _describedElement: HTMLElement | null = null;
-  /** Teardown of the document listeners that only run while a tooltip is visible. */
-  private _dismissListeners: (() => void)[] = [];
+  /** Teardown of the listeners that only run while a tooltip is visible. */
+  private _visibleListeners: (() => void)[] = [];
 
   // Computed
   protected readonly _positions: Signal<ConnectedPosition[]> = computed(() => {
@@ -224,7 +224,7 @@ export abstract class TooltipTrigger implements TooltipOwner, OnDestroy {
     this._tooltipRef.set(tooltipRef);
 
     this._applyContent(tooltipRef, request);
-    this._listenWhileVisible();
+    this._listenWhileVisible(request.anchor);
   }
 
   private _close(): void {
@@ -282,13 +282,24 @@ export abstract class TooltipTrigger implements TooltipOwner, OnDestroy {
   }
 
   /**
-   * Binds the dismissals that belong to a visible tooltip and nothing else, so a page full of
-   * triggers carries no document listeners for the tooltips it is not showing.
+   * Binds the listeners that belong to a visible tooltip and nothing else, so a page full of
+   * triggers carries no document listeners for the tooltips it is not showing, and a pointer
+   * moving over a trigger schedules no change detection while its tooltip is down.
    */
-  private _listenWhileVisible(): void {
+  private _listenWhileVisible(anchor: HTMLElement): void {
     this._unlisten();
 
-    this._dismissListeners.push(
+    if (this.tooltipOrigin() === 'cursor') {
+      this._visibleListeners.push(
+        this._renderer.listen(anchor, 'pointermove', (event: PointerEvent) => {
+          if (event.pointerType === 'touch') return;
+
+          this._tooltipService.move(this, { x: event.clientX, y: event.clientY });
+        }),
+      );
+    }
+
+    this._visibleListeners.push(
       this._renderer.listen('document', 'keydown', (event: KeyboardEvent) => {
         // Dismissible without moving the pointer or focus (WCAG 1.4.13).
         if (event.key === 'Escape') this._hideAll();
@@ -309,9 +320,9 @@ export abstract class TooltipTrigger implements TooltipOwner, OnDestroy {
   }
 
   private _unlisten(): void {
-    for (const unlisten of this._dismissListeners) unlisten();
+    for (const unlisten of this._visibleListeners) unlisten();
 
-    this._dismissListeners = [];
+    this._visibleListeners = [];
   }
 
   // Lifecycle
