@@ -279,6 +279,25 @@ describe('DrawerService', () => {
       expect(element.style.getPropertyValue('--tls-drawer-drag')).toBe('0px');
     });
 
+    it('does not replay its entrance once a drag lets go of it', async () => {
+      service.open(DrawerContentComponent, { side: 'bottom', grabber: true });
+      flush();
+
+      const element = drawerElement();
+      expect(element).not.toBeNull();
+      if (element === null) return;
+
+      stubPanelExtent(element, 'bottom');
+      dragPanel(element, { x: 0, y: PANEL_EXTENT * 0.1 });
+      await settle();
+
+      // The slide-in keys off `--enter` and stands down only while a drag holds
+      // the panel, so a panel back at rest still on `--enter` would restart it.
+      expect(element.classList.contains('tls-drawer--settling')).toBe(false);
+      expect(element.classList.contains('tls-drawer--enter')).toBe(false);
+      expect(element.classList.contains('tls-drawer--open')).toBe(true);
+    });
+
     it('ignores a drag away from the pinned edge', async () => {
       const drawerRef = service.open(DrawerContentComponent, { side: 'bottom', grabber: true });
       const closed = vi.fn();

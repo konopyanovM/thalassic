@@ -74,13 +74,13 @@
   color: var(--tls-drawer-color);
   box-shadow: var(--tls-drawer-shadow);
 
-  // The slide communicates the panel's spatial origin, so it is a functional cue
-  // on the `essential` tier and survives reduced motion (resolved by `MotionService`).
-  // Enter and leave use distinct keyframe names, not one shared keyframe with
-  // `reverse`: the container keeps its `--enter` class for the panel's whole
-  // lifetime (bar an entrance driven by a drag, which ends in `--open`), so
-  // swapping to `--leave` must change `animation-name` to force the browser to
-  // start a fresh animation (a mere `animation-direction` change does not
+  // The slide communicates the panel's spatial origin, so it is a functional cue on the
+  // `essential` tier and survives reduced motion (resolved by `MotionService`). Enter
+  // and leave use distinct keyframe names, not one shared keyframe with `reverse`: the
+  // container keeps its `--enter` class until the entrance is over for good (an entrance
+  // driven by a drag, or a dismissal drag let go short, ends in `--open`, which takes no
+  // keyframe), so swapping to `--leave` must change `animation-name` to force the
+  // browser to start a fresh animation (a mere `animation-direction` change does not
   // restart an already-finished animation).
   @include mixins.motion(essential) {
     // The enter keyframe holds `transform` for the panel's whole lifetime

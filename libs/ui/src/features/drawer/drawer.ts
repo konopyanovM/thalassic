@@ -55,8 +55,9 @@ export class Drawer extends CdkDialogContainer {
   private readonly _origin = this._opening.origin;
 
   // State
-  // `open` marks an entrance the component finished itself (a drag); the
-  // stylesheet's slide-in keys off `enter` only, so it does not replay then.
+  // `open` marks an entrance that is over and must not replay: one the component
+  // finished itself (opened by a drag), or one a dismissal drag cut short. The
+  // stylesheet's slide-in keys off `enter` only.
   private readonly _state = signal<'enter' | 'open' | 'leave'>('enter');
   // Whether the panel slides out of its origin rather than from off-screen.
   // Taken for granted while an origin is given, and dropped the moment it
@@ -352,6 +353,11 @@ export class Drawer extends CdkDialogContainer {
 
   private _onPanStart(): void {
     if (this._closing || this._openPhase !== 'done') return;
+
+    // Taking hold of the panel ends its entrance. The slide-in stands down only
+    // while a drag holds the panel, so a panel left on `enter` would find the
+    // keyframe applied afresh once the settle lets go of it, and slide in again.
+    this._state.set('open');
 
     const panel = this._elementRef.nativeElement;
     // The panel may be sized by content or by a custom length, so only the rendered box is authoritative.
