@@ -2,6 +2,11 @@
 
 .tls-progress {
   --tls-progress-track-color: var(--color-surface-variant);
+  // How a change of value travels. A bar fed at a steady rate (a countdown)
+  // matches the duration to that rate and runs linear, so each step flows into
+  // the next instead of easing to a stop between them.
+  --tls-progress-duration: var(--motion-fast);
+  --tls-progress-easing: var(--motion-ease-out);
 
   // A track piece: the single full-width bar in continuous mode, one pill per
   // step in segmented mode. Fully rounded ends at every height.
@@ -17,7 +22,7 @@
     overflow: hidden;
 
     @include mixins.motion {
-      transition: flex-grow var(--motion-fast) var(--motion-ease-out);
+      transition: flex-grow var(--tls-progress-duration) var(--tls-progress-easing);
     }
   }
 
@@ -32,7 +37,7 @@
     background-color: var(--tls-progress-color);
 
     @include mixins.motion {
-      transition: inline-size var(--motion-fast) var(--motion-ease-out);
+      transition: inline-size var(--tls-progress-duration) var(--tls-progress-easing);
     }
   }
 }
