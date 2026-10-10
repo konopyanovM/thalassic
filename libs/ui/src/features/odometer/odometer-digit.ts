@@ -1,4 +1,14 @@
-import { Component, effect, input, InputSignal, signal, untracked, WritableSignal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  effect,
+  inject,
+  input,
+  InputSignal,
+  signal,
+  untracked,
+  WritableSignal,
+} from '@angular/core';
 import {
   ODOMETER_CENTER_OFFSET,
   ODOMETER_DIGITS_PER_REPETITION,
@@ -35,10 +45,14 @@ import {
   },
 })
 export class OdometerDigit {
+  // Injections
+  private readonly _destroyRef: DestroyRef = inject(DestroyRef);
+
   // Inputs
   public readonly digit: InputSignal<number> = input.required<number>();
   public readonly duration: InputSignal<number> = input.required<number>();
   public readonly delay: InputSignal<number> = input.required<number>();
+  public readonly animated: InputSignal<boolean> = input.required<boolean>();
 
   // State
   protected readonly strip: readonly number[] = ODOMETER_STRIP;
@@ -53,25 +67,38 @@ export class OdometerDigit {
   // Digit currently settled in the viewport, tracked to derive the roll direction.
   private _currentDigit = 0;
   private _initialized = false;
+  // The frame that will start a pending roll. A newer value cancels it, so a
+  // roll queued for a value already replaced never lands on top of it.
+  private _pendingFrame: number | null = null;
 
   constructor() {
     effect(() => {
       const target = this.digit();
       untracked(() => this._roll(target));
     });
+
+    this._destroyRef.onDestroy(() => this._cancelPendingFrame());
   }
 
   // Private methods
   private _roll(target: number): void {
     // First value paints in place, without a roll.
     if (!this._initialized) {
-      this._currentDigit = target;
-      this.offset.set(ODOMETER_CENTER_OFFSET + target);
+      this._settle(target);
       this._initialized = true;
       return;
     }
 
     if (target === this._currentDigit) return;
+
+    this._cancelPendingFrame();
+
+    // Read as this value arrives, so a roll already under way plays out when
+    // rolling is switched off for the values after it.
+    if (!this.animated()) {
+      this._settle(target);
+      return;
+    }
 
     const base = ODOMETER_CENTER_OFFSET + this._currentDigit;
     const delta = this._shortestDelta(this._currentDigit, target);
@@ -83,12 +110,27 @@ export class OdometerDigit {
     this.animating.set(false);
     this.offset.set(base);
 
-    requestAnimationFrame(() =>
-      requestAnimationFrame(() => {
+    this._pendingFrame = requestAnimationFrame(() => {
+      this._pendingFrame = requestAnimationFrame(() => {
+        this._pendingFrame = null;
         this.animating.set(true);
         this.offset.set(base + delta);
-      }),
-    );
+      });
+    });
+  }
+
+  // Shows a digit in place, with the transition disarmed.
+  private _settle(target: number): void {
+    this._currentDigit = target;
+    this.animating.set(false);
+    this.offset.set(ODOMETER_CENTER_OFFSET + target);
+  }
+
+  private _cancelPendingFrame(): void {
+    if (this._pendingFrame === null) return;
+
+    cancelAnimationFrame(this._pendingFrame);
+    this._pendingFrame = null;
   }
 
   // Signed number of rows to travel from `from` to `to` around the `0-9` wheel,

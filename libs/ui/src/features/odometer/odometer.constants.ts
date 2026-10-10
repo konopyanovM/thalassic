@@ -20,3 +20,6 @@ export const ODOMETER_STRIP: readonly number[] = Array.from(
 
 // Typographic minus (U+2212) reads better than a hyphen-minus for a numeric display.
 export const ODOMETER_MINUS_SIGN = '−';
+
+// A character that rolls as a digit column; anything else is a fixed symbol.
+export const ODOMETER_DIGIT_PATTERN = /^[0-9]$/;

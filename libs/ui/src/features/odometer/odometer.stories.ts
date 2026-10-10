@@ -12,6 +12,7 @@ const meta: Meta<OdometerComponent> = {
     minIntegerDigits: DEFAULT_ODOMETER_CONFIG.minIntegerDigits,
     fractionDigits: DEFAULT_ODOMETER_CONFIG.fractionDigits,
     decimalSeparator: DEFAULT_ODOMETER_CONFIG.decimalSeparator,
+    animated: true,
   },
   argTypes: {
     value: { control: { type: 'number' } },
@@ -20,6 +21,8 @@ const meta: Meta<OdometerComponent> = {
     minIntegerDigits: { control: { type: 'number', min: 1 } },
     fractionDigits: { control: { type: 'number', min: 0 } },
     decimalSeparator: { control: { type: 'text' } },
+    text: { control: { type: 'text' } },
+    animated: { control: { type: 'boolean' } },
   },
   render: args => ({
     props: args,
@@ -43,4 +46,9 @@ export const Decimals: Story = {
 
 export const Negative: Story = {
   args: { value: -128 },
+};
+
+// Text written out by the caller: the digits roll, the colon stays put.
+export const Text: Story = {
+  args: { text: '2:59' },
 };

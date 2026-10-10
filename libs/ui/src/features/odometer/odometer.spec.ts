@@ -99,4 +99,47 @@ describe('Odometer', () => {
     const row = fixture.nativeElement.querySelector('.tls-odometer__row');
     expect(row.getAttribute('aria-hidden')).toBe('true');
   });
+
+  it('should render nothing when given neither a value nor text', () => {
+    fixture.detectChanges();
+    expect(digitColumns().length).toBe(0);
+    expect(component['formattedValue']()).toBe('');
+  });
+
+  it('should roll the digits of text and keep its other characters fixed', () => {
+    fixture.componentRef.setInput('text', '2:59');
+    fixture.detectChanges();
+    expect(digitColumns().length).toBe(3);
+    expect(symbols()).toEqual([':']);
+    expect(component['formattedValue']()).toBe('2:59');
+  });
+
+  it('should prefer text over value', () => {
+    fixture.componentRef.setInput('value', 7);
+    fixture.componentRef.setInput('text', '1:00');
+    fixture.detectChanges();
+    expect(component['formattedValue']()).toBe('1:00');
+  });
+
+  it('should keep text columns keyed from the end as the text grows', () => {
+    fixture.componentRef.setInput('text', '9:59');
+    fixture.detectChanges();
+    const unitsColumn = digitColumns()[2];
+
+    fixture.componentRef.setInput('text', '10:00');
+    fixture.detectChanges();
+    expect(digitColumns()[3]).toBe(unitsColumn);
+  });
+
+  it('should swap a digit in place when animated is off', () => {
+    fixture.componentRef.setInput('text', '5');
+    fixture.componentRef.setInput('animated', false);
+    fixture.detectChanges();
+
+    fixture.componentRef.setInput('text', '6');
+    fixture.detectChanges();
+    const strip = host().querySelector('.tls-odometer-digit__strip') as HTMLElement;
+    expect(strip.classList).not.toContain('tls-odometer-digit__strip--animate');
+    expect(strip.style.getPropertyValue('--tls-odometer-offset')).toBe('16');
+  });
 });
