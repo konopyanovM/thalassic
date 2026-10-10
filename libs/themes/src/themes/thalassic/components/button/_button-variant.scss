@@ -22,9 +22,12 @@
     @include mixins.variant-treatment(elevated, 'tls-button');
   }
 
-  // Unavailability overrides the treatment entirely: every variant collapses to
-  // the same neutral container, so the state reads identically wherever it
-  // appears rather than asking the reader to recognise five faded silhouettes.
+  // Unavailability overrides the treatment: a variant with a container of its
+  // own collapses to the same neutral one, so the state reads identically
+  // wherever it appears rather than asking the reader to recognise faded
+  // silhouettes. A variant without one gains none — a fill would make the
+  // control that cannot be pressed the heaviest in its row — and quiets its
+  // label instead.
   &--disabled {
     border-color: transparent;
 
@@ -34,5 +37,16 @@
     color: var(--tls-button-disabled-on-color);
 
     cursor: not-allowed;
+
+    &.tls-button--text,
+    &.tls-button--outlined {
+      background-color: transparent;
+
+      color: var(--tls-button-disabled-quiet-on-color);
+    }
+
+    &.tls-button--outlined {
+      border-color: var(--tls-button-disabled-quiet-outline);
+    }
   }
 }

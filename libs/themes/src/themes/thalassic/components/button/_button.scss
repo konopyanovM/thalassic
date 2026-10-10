@@ -7,6 +7,15 @@
   // keeps the label at full contrast instead of fading it below legibility.
   --tls-button-disabled-color: var(--color-surface-variant);
   --tls-button-disabled-on-color: var(--color-on-surface-variant);
+  // A treatment with no container of its own has none to neutralise, so its
+  // unavailability shows as a quieted label (and outline) instead: still
+  // legible, but receding beside the controls that can be pressed.
+  --tls-button-disabled-quiet-on-color: color-mix(
+    in srgb,
+    var(--color-on-surface-variant) 55%,
+    transparent
+  );
+  --tls-button-disabled-quiet-outline: var(--color-outline-variant);
 
   // Each size carries a radius per corner shape: the continuous curve needs the
   // larger of the two to read with the same weight as the circular fallback.
