@@ -11,12 +11,11 @@ import {
   InputSignalWithTransform,
   output,
   Renderer2,
-  RendererStyleFlags2,
   signal,
   Signal,
 } from '@angular/core';
 import { DEFAULT_PAN_CONFIG, PAN_CONFIG, PanDirective, PanEvent } from '../pan';
-import { registerCustomProperty } from '../../utils';
+import { registerCustomProperty, TravelPublisher } from '../../utils';
 import {
   PULL_TO_REFRESH_DEFAULT_MAX_DISTANCE,
   PULL_TO_REFRESH_DEFAULT_MIN_REFRESHING_TIME,
@@ -42,9 +41,8 @@ import { pullToRefreshState } from './pull-to-refresh.types';
  *
  * The travel is registered as a non-inheriting `<length>`: it changes on every
  * frame of a pull, and inherited it would restyle the host's whole content each
- * time. It is read on the host itself, and a descendant that needs it takes it
- * from its parent with `--tls-pull-distance: inherit` — each element on the way
- * down declaring the same.
+ * time. It is read on the host itself; a descendant that needs it is marked
+ * `tlsPullToRefreshTravel`, and is written the same value directly.
  *
  * The host's block overscroll is disabled entirely while the gesture is enabled:
  * a browser already at the top otherwise spends the drag on its own overscroll —
@@ -82,6 +80,11 @@ export class PullToRefreshDirective {
   // Injections
   private readonly _elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly _renderer = inject(Renderer2);
+  private readonly _travelPublisher = new TravelPublisher(
+    this._renderer,
+    this._elementRef.nativeElement,
+    PULL_TO_REFRESH_DISTANCE_PROPERTY.name,
+  );
 
   // Inputs
   /** Enables the gesture. Bind `[tlsPullToRefresh]="false"` to disable; the bare attribute enables. */
@@ -122,9 +125,6 @@ export class PullToRefreshDirective {
   private _refreshingSince = 0;
   // Pending deferred settle, waiting out the remainder of the minimum hold.
   private _settleTimeout: ReturnType<typeof setTimeout> | null = null;
-  // Travel last written to the host, for skipping no-op writes; `null` until the
-  // first write.
-  private _writtenDistance: number | null = null;
 
   // Computed
   /**
@@ -179,6 +179,20 @@ export class PullToRefreshDirective {
     });
   }
 
+  // Public methods
+  /**
+   * Writes the travel to `element` as well as to the host, for an element inside
+   * the host that reads it. See `tlsPullToRefreshTravel`.
+   */
+  public publishTravelTo(element: HTMLElement): void {
+    this._travelPublisher.add(element);
+  }
+
+  /** Stops writing the travel to `element`. */
+  public stopPublishingTravelTo(element: HTMLElement): void {
+    this._travelPublisher.remove(element);
+  }
+
   // Private methods
   private _onPanStart(event: PanEvent): void {
     if (!this.tlsPullToRefresh() || this._state() === 'refreshing') return;
@@ -186,7 +200,7 @@ export class PullToRefreshDirective {
     if (event.deltaY <= 0) return;
 
     this._setState('pulling');
-    this._write(this._resolveDistance(event.deltaY));
+    this._travelPublisher.write(this._resolveDistance(event.deltaY));
   }
 
   /**
@@ -199,7 +213,7 @@ export class PullToRefreshDirective {
     if (state !== 'pulling' && state !== 'armed') return;
 
     const distance = this._resolveDistance(event.deltaY);
-    this._write(distance);
+    this._travelPublisher.write(distance);
 
     this._setState(distance >= this._armingDistance() ? 'armed' : 'pulling');
   }
@@ -220,14 +234,14 @@ export class PullToRefreshDirective {
     // transition, so it must be in force when the travel snaps back.
     this._refreshingSince = Date.now();
     this._setState('refreshing');
-    this._write(this._armingDistance());
+    this._travelPublisher.write(this._armingDistance());
     this.refresh.emit();
   }
 
   private _settle(): void {
     this._clearSettleTimeout();
     this._setState('idle');
-    this._write(0);
+    this._travelPublisher.write(0);
   }
 
   private _clearSettleTimeout(): void {
@@ -254,21 +268,5 @@ export class PullToRefreshDirective {
   private _resolveDistance(deltaY: number): number {
     const pulled = Math.max(0, deltaY) * PULL_TO_REFRESH_RESISTANCE;
     return Math.min(pulled, this.maxDistance());
-  }
-
-  private _write(distance: number): void {
-    // A pull held at the cap resolves to the same travel on every following
-    // move; re-writing it would invalidate style once per frame for nothing.
-    if (distance === this._writtenDistance) return;
-    this._writtenDistance = distance;
-
-    this._renderer.setStyle(
-      this._elementRef.nativeElement,
-      PULL_TO_REFRESH_DISTANCE_PROPERTY.name,
-      `${distance}px`,
-      // A custom property only lands when it is set as one; without the flag the
-      // renderer treats the name as a camelCase style property.
-      RendererStyleFlags2.DashCase,
-    );
   }
 }

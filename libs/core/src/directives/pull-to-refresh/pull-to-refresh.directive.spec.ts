@@ -5,6 +5,7 @@ import {
   PULL_TO_REFRESH_DEFAULT_THRESHOLD,
 } from './pull-to-refresh.constants';
 import { PullToRefreshDirective } from './pull-to-refresh.directive';
+import { PullToRefreshTravelDirective } from './pull-to-refresh-travel.directive';
 
 interface PointerOptions {
   x: number;
@@ -34,7 +35,7 @@ function createPointerEvent(type: string, options: PointerOptions): PointerEvent
 }
 
 @Component({
-  imports: [PullToRefreshDirective],
+  imports: [PullToRefreshDirective, PullToRefreshTravelDirective],
   template: `
     <div
       class="scroller"
@@ -43,7 +44,9 @@ function createPointerEvent(type: string, options: PointerOptions): PointerEvent
       [refreshing]="refreshing()"
       (refresh)="refreshCount = refreshCount + 1"
     >
-      <div class="content" style="height: 1000px"></div>
+      <div class="content" style="height: 1000px" tlsPullToRefreshTravel>
+        <span class="unmarked"></span>
+      </div>
     </div>
   `,
 })
@@ -135,6 +138,24 @@ describe('PullToRefreshDirective', () => {
     // Half of 100, under both the cap and the threshold.
     expect(distanceStyle()).toBe('50px');
     expect(scroller.className).toContain('tls-pull-to-refresh--pulling');
+  });
+
+  it('writes the travel to a marked descendant, and to nothing unmarked', () => {
+    setScrollMetrics(0);
+    const content: HTMLElement = fixture.nativeElement.querySelector('.content');
+    const unmarked: HTMLElement = fixture.nativeElement.querySelector('.unmarked');
+
+    pull(100);
+    fixture.detectChanges();
+
+    expect(content.style.getPropertyValue('--tls-pull-distance')).toBe('50px');
+    expect(unmarked.style.getPropertyValue('--tls-pull-distance')).toBe('');
+
+    release(100);
+    fixture.detectChanges();
+
+    // Released short of the threshold, so the descendant returns with the host.
+    expect(content.style.getPropertyValue('--tls-pull-distance')).toBe('0px');
   });
 
   it('reports nothing for a pull released short of the threshold', () => {

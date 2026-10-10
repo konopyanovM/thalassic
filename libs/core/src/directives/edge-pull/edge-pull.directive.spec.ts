@@ -6,6 +6,7 @@ import {
   EDGE_PULL_RESISTANCE,
 } from './edge-pull.constants';
 import { EdgePullDirective } from './edge-pull.directive';
+import { EdgePullTravelDirective } from './edge-pull-travel.directive';
 import { edgePullEdge } from './edge-pull.types';
 
 interface PointerOptions {
@@ -36,7 +37,7 @@ function createPointerEvent(type: string, options: PointerOptions): PointerEvent
 }
 
 @Component({
-  imports: [EdgePullDirective],
+  imports: [EdgePullDirective, EdgePullTravelDirective],
   template: `
     <div
       class="scroller"
@@ -49,7 +50,7 @@ function createPointerEvent(type: string, options: PointerOptions): PointerEvent
       [holdOnCommit]="holdOnCommit()"
       (pulled)="pulls.push($event)"
     >
-      <div class="content" style="height: 1000px">
+      <div class="content" style="height: 1000px" tlsEdgePullTravel>
         <span class="handle"></span>
       </div>
     </div>
@@ -142,6 +143,22 @@ describe('EdgePullDirective', () => {
     expect(distanceStyle()).toBe('50px');
     expect(scroller.className).toContain('tls-edge-pull--pulling');
     expect(scroller.className).toContain('tls-edge-pull--start');
+  });
+
+  it('writes the travel to a marked descendant, and to nothing unmarked', () => {
+    setScrollMetrics(0);
+    const content: HTMLElement = fixture.nativeElement.querySelector('.content');
+    const handle: HTMLElement = fixture.nativeElement.querySelector('.handle');
+
+    drag(100);
+
+    expect(content.style.getPropertyValue('--tls-edge-pull-distance')).toBe('50px');
+    expect(handle.style.getPropertyValue('--tls-edge-pull-distance')).toBe('');
+
+    release(100);
+
+    // Released short of the threshold, so the descendant returns with the host.
+    expect(content.style.getPropertyValue('--tls-edge-pull-distance')).toBe('0px');
   });
 
   it('commits a pull released past the threshold, naming the end it left by', () => {

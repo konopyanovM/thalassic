@@ -10,12 +10,11 @@ import {
   InputSignalWithTransform,
   output,
   Renderer2,
-  RendererStyleFlags2,
   signal,
   Signal,
 } from '@angular/core';
 import { DEFAULT_PAN_CONFIG, PAN_CONFIG, PanDirective, PanEvent } from '../pan';
-import { registerCustomProperty } from '../../utils';
+import { registerCustomProperty, TravelPublisher } from '../../utils';
 import {
   EDGE_PULL_DEFAULT_MAX_DISTANCE,
   EDGE_PULL_DEFAULT_REVERSE_DEAD_ZONE,
@@ -48,9 +47,8 @@ import { edgePullEdge, edgePullState } from './edge-pull.types';
  *
  * The travel is registered as a non-inheriting `<length>`: it changes on every
  * frame of a pull, and inherited it would restyle the host's whole content each
- * time. It is read on the host itself, and a descendant that needs it takes it
- * from its parent with `--tls-edge-pull-distance: inherit` — each element on
- * the way down declaring the same.
+ * time. It is read on the host itself; a descendant that needs it is marked
+ * `tlsEdgePullTravel`, and is written the same value directly.
  *
  * A committed pull springs back as it is reported, unless `holdOnCommit` keeps
  * it where it was released until `settle()` is called — so whatever the pull
@@ -94,6 +92,11 @@ export class EdgePullDirective {
   // Injections
   private readonly _elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly _renderer = inject(Renderer2);
+  private readonly _travelPublisher = new TravelPublisher(
+    this._renderer,
+    this._elementRef.nativeElement,
+    EDGE_PULL_DISTANCE_PROPERTY.name,
+  );
 
   // Inputs
   /** Enables the gesture. Bind `[tlsEdgePull]="false"` to disable; the bare attribute enables. */
@@ -168,9 +171,6 @@ export class EdgePullDirective {
   private _reversed = false;
   // Whether a committed pull is being held for `settle()`.
   private _held = false;
-  // Travel last written to the host, for skipping no-op writes; `null` until the
-  // first write.
-  private _writtenDistance: number | null = null;
 
   // Computed
   /**
@@ -210,7 +210,20 @@ export class EdgePullDirective {
     this._tracking = false;
     this._leaveEdge();
     this._setState('idle');
-    this._write(0);
+    this._travelPublisher.write(0);
+  }
+
+  /**
+   * Writes the travel to `element` as well as to the host, for an element inside
+   * the host that reads it. See `tlsEdgePullTravel`.
+   */
+  public publishTravelTo(element: HTMLElement): void {
+    this._travelPublisher.add(element);
+  }
+
+  /** Stops writing the travel to `element`. */
+  public stopPublishingTravelTo(element: HTMLElement): void {
+    this._travelPublisher.remove(element);
   }
 
   // Protected methods
@@ -236,7 +249,7 @@ export class EdgePullDirective {
     if (!this._isOffered(edge)) return;
 
     this._begin(edge);
-    this._write(this._resolveDistance(event.deltaY));
+    this._travelPublisher.write(this._resolveDistance(event.deltaY));
   }
 
   /**
@@ -250,7 +263,7 @@ export class EdgePullDirective {
     if (this._state() === 'idle') return;
 
     const distance = this._resolveDistance(event.deltaY);
-    this._write(distance);
+    this._travelPublisher.write(distance);
 
     this._setState(distance >= this._armingDistance() ? 'armed' : 'pulling');
   }
@@ -350,21 +363,5 @@ export class EdgePullDirective {
     const origin = this._reversed ? this.reverseDeadZone() : 0;
     const pulled = Math.max(0, away - origin) * EDGE_PULL_RESISTANCE;
     return Math.min(pulled, this.maxDistance());
-  }
-
-  private _write(distance: number): void {
-    // A pull held at the cap resolves to the same travel on every following
-    // move; re-writing it would invalidate style once per frame for nothing.
-    if (distance === this._writtenDistance) return;
-    this._writtenDistance = distance;
-
-    this._renderer.setStyle(
-      this._elementRef.nativeElement,
-      EDGE_PULL_DISTANCE_PROPERTY.name,
-      `${distance}px`,
-      // A custom property only lands when it is set as one; without the flag the
-      // renderer treats the name as a camelCase style property.
-      RendererStyleFlags2.DashCase,
-    );
   }
 }
