@@ -162,6 +162,12 @@ export class ToggleButton extends CheckboxFormControl {
   });
 
   // Protected methods
+  // The host is the button itself — it carries the role and the tab stop — so
+  // focus lands there rather than on anything it renders.
+  protected override focusTarget(): HTMLElement {
+    return this.elementRef.nativeElement;
+  }
+
   protected toggle() {
     if (this.notInteractive()) return;
 

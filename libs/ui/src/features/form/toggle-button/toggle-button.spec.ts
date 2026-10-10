@@ -88,4 +88,14 @@ describe('ToggleButton', () => {
     expect(fixture.nativeElement.textContent.trim()).toBe('Muted');
     expect(fixture.nativeElement.getAttribute('aria-pressed')).toBeNull();
   });
+
+  it('should move focus to the host when asked to focus', () => {
+    fixture.detectChanges();
+    document.body.appendChild(fixture.nativeElement);
+
+    component.focus();
+
+    expect(document.activeElement).toBe(fixture.nativeElement);
+    fixture.nativeElement.remove();
+  });
 });
