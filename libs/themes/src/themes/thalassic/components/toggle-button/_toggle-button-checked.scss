@@ -28,10 +28,18 @@
     @include mixins.variant-treatment(tonal, 'tls-toggle-button');
   }
 
+  // The border is what says pressed here, so it keeps the full hue that the
+  // outlined treatment keeps only for interaction.
   &--checked.tls-toggle-button--checked-outlined {
     background-color: transparent;
 
     @include mixins.variant-treatment(outlined, 'tls-toggle-button');
+
+    // Nested so it lands after the treatment's own border rather than as a
+    // declaration trailing its nested rules.
+    & {
+      border-color: var(--tls-toggle-button-color);
+    }
   }
 
   &--checked.tls-toggle-button--checked-text {

@@ -61,7 +61,16 @@
       );
     }
   } @else if $treatment == outlined {
-    border-color: var(--#{$block}-color);
+    // A quiet hairline at rest: the label already carries the hue, so a border
+    // at full strength only doubles it — and across a row of outlined controls
+    // it draws more lines than the content. Tinted towards the hue rather than
+    // a neutral, so a danger outline still reads as danger. Interaction lifts
+    // it to the full hue.
+    border-color: color-mix(
+      in srgb,
+      var(--#{$block}-color) 30%,
+      var(--color-outline-variant)
+    );
 
     // Transparent at rest so the control sits on any backdrop (a tinted card,
     // a striped row); interaction paints a translucent state layer over it.
@@ -70,10 +79,14 @@
     color: var(--#{$block}-color);
 
     @include _hover-focus-state($block) {
+      border-color: var(--#{$block}-color);
+
       background-color: color-mix(in srgb, var(--#{$block}-color) 7.5%, transparent);
     }
 
     @include _active-state($block) {
+      border-color: var(--#{$block}-color);
+
       background-color: color-mix(in srgb, var(--#{$block}-color) 15%, transparent);
     }
   } @else if $treatment == text {
