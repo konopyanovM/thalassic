@@ -20,7 +20,9 @@
 }
 
 .tls-sheet {
-  --tls-sheet-surface: var(--color-surface-container-high);
+  // The surface every overlay shares — menu, dialog, drawer, popover — so a
+  // sheet and a menu raised from the same screen read as one material.
+  --tls-sheet-surface: var(--color-surface-container-lowest);
   --tls-sheet-color: var(--color-on-surface);
   --tls-sheet-shadow: var(--shadow-lg);
   --tls-sheet-radius: var(--radius-xl);
