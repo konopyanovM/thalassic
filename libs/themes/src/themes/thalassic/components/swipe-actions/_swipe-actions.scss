@@ -82,7 +82,9 @@ $panel-colors: primary, secondary, tertiary, success, info, warning, danger;
   }
 
   // Mid-gesture the reveal tracks the pointer directly; transitions play only
-  // for the settle after release.
+  // for the settle after release. `--dragging` is also a public state hook for
+  // styles outside the row, held for the gesture and dropped as the settle
+  // begins.
   &--dragging &__content,
   &--dragging &__panel {
     transition: none;

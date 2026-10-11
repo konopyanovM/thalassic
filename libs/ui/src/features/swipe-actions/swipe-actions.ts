@@ -34,7 +34,10 @@ import { SWIPE_ACTIONS_CONFIG } from './swipe-actions.token';
  * releasing would commit is exposed twice for the content to react to: the
  * `tls-swipe-actions__panel--armed` class on the revealed panel (for CSS
  * choreography — an icon pop, a label reveal) and the `armedChanged` output
- * (for behaviour — a haptic tick). Actions
+ * (for behaviour — a haptic tick). The host carries
+ * `tls-swipe-actions--dragging` for as long as a gesture holds the row, for
+ * whatever around the row has to give way while it is pulled aside — a line
+ * drawn through the row that would otherwise break where it leaves. Actions
  * committed by swipe must never be the only path to the behaviour — the
  * gesture is invisible and unavailable to keyboards and assistive tech, so a
  * visible control (a button, a menu item) has to offer the same actions.
