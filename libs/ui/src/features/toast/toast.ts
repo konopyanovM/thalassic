@@ -62,15 +62,19 @@ export class Toast {
 
   protected readonly icon = computed<systemIcon>(() => ICON_BY_COLOR[this.color()]);
 
-  // The countdown bar only makes sense for a toast that actually auto-dismisses.
+  /**
+   * The countdown bar only makes sense for a toast that actually auto-dismisses.
+   */
   protected readonly progressVisible = computed<boolean>(
     () => this.showProgress() && this.duration() > 0,
   );
 
-  // CSS animation duration for the countdown bar, matching the auto-dismiss delay.
+  /**
+   * CSS animation duration for the countdown bar, matching the auto-dismiss delay.
+   */
   protected readonly progressDuration = computed<string>(() => `${this.duration()}ms`);
 
-  // Urgent severities announce assertively; the rest announce politely.
+  /** Urgent severities announce assertively; the rest announce politely. */
   protected readonly role = computed<'alert' | 'status'>(() => {
     const urgent: toastColor[] = ['warning', 'danger'];
     return urgent.includes(this.color()) ? 'alert' : 'status';

@@ -1,5 +1,7 @@
-// Names registered by this bundle. Registration is permanent for the life of a
-// document and a second attempt throws, so each name is only ever tried once.
+/**
+ * Names registered by this bundle. Registration is permanent for the life of a
+ * document and a second attempt throws, so each name is only ever tried once.
+ */
 const registeredNames = new Set<string>();
 
 /**

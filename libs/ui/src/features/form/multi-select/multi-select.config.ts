@@ -25,6 +25,8 @@ export const DEFAULT_MULTI_SELECT_CONFIG: MultiSelectConfig = {
   clearLabel: 'Clear',
   selectedCountLabel: count => `${count} selected`,
   virtualScroll: false,
-  // The default option row: body-medium line-height (23px) plus block padding (2 × 8px).
+  /**
+   * The default option row: body-medium line-height (23px) plus block padding (2 × 8px).
+   */
   virtualScrollItemSize: 39,
 };

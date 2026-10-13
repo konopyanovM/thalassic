@@ -1,7 +1,9 @@
 import { buildMonthScrollPlan } from './build-month-scroll-plan';
 
-// Monday-start windows: August 2026 spans Mon Jul 27 – Sun Sep 6, September's
-// window starts Mon Aug 31 — five week rows further down.
+/**
+ * Monday-start windows: August 2026 spans Mon Jul 27 – Sun Sep 6, September's
+ * window starts Mon Aug 31 — five week rows further down.
+ */
 const MONDAY = 1;
 
 describe('buildMonthScrollPlan', () => {

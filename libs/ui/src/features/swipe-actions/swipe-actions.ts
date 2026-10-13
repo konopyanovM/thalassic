@@ -106,12 +106,16 @@ export class SwipeActions {
 
   // State
   protected readonly dragging: WritableSignal<boolean> = signal(false);
-  // Travel already spent crossing the pan slop when the gesture locked. Deltas
-  // are rebased against it so the reveal grows from zero at the lock point
-  // instead of jumping by the slop the moment the first move lands.
+  /**
+   * Travel already spent crossing the pan slop when the gesture locked. Deltas
+   * are rebased against it so the reveal grows from zero at the lock point
+   * instead of jumping by the slop the moment the first move lands.
+   */
   private _lockDelta = 0;
-  // Whether the current reveal has passed the commit threshold. Written from
-  // the move stream, so the DOM class rides along directly (see _applyOffset).
+  /**
+   * Whether the current reveal has passed the commit threshold. Written from
+   * the move stream, so the DOM class rides along directly (see _applyOffset).
+   */
   private _armed = false;
 
   // Computed

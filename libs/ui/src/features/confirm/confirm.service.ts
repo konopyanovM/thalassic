@@ -54,8 +54,10 @@ export class ConfirmService {
   private readonly _focusTrapFactory = inject(ConfigurableFocusTrapFactory);
   private readonly _router = inject(Router, { optional: true });
   private readonly _config = inject(CONFIRM_CONFIG);
-  // Optional: only apps that call `provideViewport()` register it, and without
-  // it the `modalBelow` behaviour simply stays off.
+  /**
+   * Optional: only apps that call `provideViewport()` register it, and without
+   * it the `modalBelow` behaviour simply stays off.
+   */
   private readonly _viewportService = inject(ViewportService, {
     optional: true,
   });
@@ -185,8 +187,10 @@ export class ConfirmService {
     });
   }
 
-  // Detaches the overlay so Angular's `animate.leave` plays the exit animation,
-  // then disposes the pane once that animation finishes.
+  /**
+   * Detaches the overlay so Angular's `animate.leave` plays the exit animation,
+   * then disposes the pane once that animation finishes.
+   */
   private _dismiss(overlayRef: OverlayRef): void {
     overlayRef.detach();
     disposeAfterLeaveAnimation(overlayRef);

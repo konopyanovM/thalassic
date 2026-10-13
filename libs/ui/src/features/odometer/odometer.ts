@@ -134,9 +134,11 @@ export class Odometer {
   );
 
   // Private methods
-  // Keyed by position from the end, as a number's columns are by place value,
-  // so `9:59` turning into `10:00` keeps its right-hand columns rolling in
-  // place instead of every slot being rebuilt.
+  /**
+   * Keyed by position from the end, as a number's columns are by place value,
+   * so `9:59` turning into `10:00` keeps its right-hand columns rolling in
+   * place instead of every slot being rebuilt.
+   */
   private _textTokens(text: string): OdometerToken[] {
     const characters = Array.from(text);
     const length = characters.length;

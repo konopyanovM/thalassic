@@ -152,11 +152,13 @@ export function hslToHsv(hsla: Hsla): Hsva {
   return { hue: hsla.hue, saturation, value, alpha: hsla.alpha };
 }
 
-// Luminance above which a black foreground reads better than a white one.
-// Deliberately far above the WCAG contrast tie point (≈ 0.179): by raw
-// contrast ratio black wins on almost every mid-tone saturated color, yet a
-// white mark is what reads as correct there — so black is reserved for
-// genuinely light backgrounds (yellows, pastels, near-whites).
+/**
+ * Luminance above which a black foreground reads better than a white one.
+ * Deliberately far above the WCAG contrast tie point (≈ 0.179): by raw
+ * contrast ratio black wins on almost every mid-tone saturated color, yet a
+ * white mark is what reads as correct there — so black is reserved for
+ * genuinely light backgrounds (yellows, pastels, near-whites).
+ */
 const BLACK_FOREGROUND_LUMINANCE = 0.45;
 
 /**

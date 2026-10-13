@@ -2,7 +2,9 @@ import { argsToTemplate, Meta, StoryObj } from '@storybook/angular';
 import { STORY_ORIENTATION_OPTIONS } from '../../../.storybook/constants';
 import { ImageCompare as ImageCompareComponent } from './image-compare';
 
-// Same photo in colour and grayscale, so the wipe reveals a clear difference.
+/**
+ * Same photo in colour and grayscale, so the wipe reveals a clear difference.
+ */
 const AFTER_IMAGE = 'https://picsum.photos/id/1015/1200/800';
 const BEFORE_IMAGE = 'https://picsum.photos/id/1015/1200/800?grayscale';
 

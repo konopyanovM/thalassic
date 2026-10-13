@@ -59,9 +59,11 @@ export class ToastOutlet {
   private readonly _pointerInside = signal(false);
   private readonly _focusInside = signal(false);
 
-  // Natural (untransformed) height of each toast host, aligned to `toasts()`
-  // (index 0 = front). Drives the expanded list offsets and the region's
-  // hover-catching height.
+  /**
+   * Natural (untransformed) height of each toast host, aligned to `toasts()`
+   * (index 0 = front). Drives the expanded list offsets and the region's
+   * hover-catching height.
+   */
   private readonly _heights = signal<number[]>([]);
 
   private readonly _toastElements = viewChildren('toastEl', { read: ElementRef });
@@ -80,8 +82,10 @@ export class ToastOutlet {
     () => this._service.config.stacking === 'expanded' || this._interacting(),
   );
 
-  // Auto-dismiss is frozen while interacting (when `pauseOnHover` is on); the
-  // countdown bars mirror that so they stay in lockstep with the timers.
+  /**
+   * Auto-dismiss is frozen while interacting (when `pauseOnHover` is on); the
+   * countdown bars mirror that so they stay in lockstep with the timers.
+   */
   protected readonly paused = computed<boolean>(
     () => this._service.config.pauseOnHover && this._interacting(),
   );
@@ -97,8 +101,10 @@ export class ToastOutlet {
     return classes;
   });
 
-  // Height of the hover-catching region: the full expanded list, or the collapsed
-  // pile's footprint (front toast plus the visible peeks behind it).
+  /**
+   * Height of the hover-catching region: the full expanded list, or the collapsed
+   * pile's footprint (front toast plus the visible peeks behind it).
+   */
   protected readonly regionHeight = computed<number>(() => {
     const heights = this._heights();
     if (heights.length === 0) return 0;

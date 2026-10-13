@@ -11,9 +11,11 @@ import {
 } from '@angular/core';
 import { tabValue } from '../tabs.types';
 
-// A declarative content holder: the host element itself is never rendered. `tls-tabs`
-// reads the captured content/header templates and renders them inside its own
-// `ngTabPanel`/`ngTabContent` structure, which enables lazy panel rendering.
+/**
+ * A declarative content holder: the host element itself is never rendered. `tls-tabs`
+ * reads the captured content/header templates and renders them inside its own
+ * `ngTabPanel`/`ngTabContent` structure, which enables lazy panel rendering.
+ */
 @Component({
   selector: 'tls-tab',
   templateUrl: './tab.html',

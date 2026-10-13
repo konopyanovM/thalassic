@@ -163,9 +163,11 @@ export class ColorPicker extends ValueFormControl<string> {
     return this.hex();
   });
 
-  // Readonly keeps the thumb focusable — the keydown handler blocks edits —
-  // so its value stays reachable and announcable; only disabled removes it
-  // from the tab order.
+  /**
+   * Readonly keeps the thumb focusable — the keydown handler blocks edits —
+   * so its value stays reachable and announcable; only disabled removes it
+   * from the tab order.
+   */
   protected readonly tabindex: Signal<number> = computed(() => (this.disabled() ? -1 : 0));
 
   constructor() {
@@ -209,8 +211,10 @@ export class ColorPicker extends ValueFormControl<string> {
     this._dragging.set(false);
   }
 
-  // Pointer capture is already released once the browser cancels the pointer, so
-  // this only resets drag state (calling `releasePointerCapture` here can throw).
+  /**
+   * Pointer capture is already released once the browser cancels the pointer, so
+   * this only resets drag state (calling `releasePointerCapture` here can throw).
+   */
   protected onSvPointerCancel(): void {
     this._dragging.set(false);
   }

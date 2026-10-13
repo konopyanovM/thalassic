@@ -58,20 +58,22 @@ export class Splitter {
   );
 
   // State
-  // `descendants: false` scopes the query to this splitter's own panels; without
-  // it a nested `tls-splitter`'s panels would be counted here too.
+  /**
+   * `descendants: false` scopes the query to this splitter's own panels; without
+   * it a nested `tls-splitter`'s panels would be counted here too.
+   */
   protected readonly panels: Signal<readonly SplitterPanel[]> = contentChildren(SplitterPanel, {
     descendants: false,
   });
 
   private readonly _activeSeam: WritableSignal<number | null> = signal<number | null>(null);
 
-  // Transient drag bookkeeping, captured on pointer down.
+  /** Transient drag bookkeeping, captured on pointer down. */
   private _dragContainerSize = 0;
   private _dragStartCoordinate = 0;
   private _dragStartSize = 0;
 
-  // Restore sizes for collapsed panels, keyed by the panel that owns them.
+  /** Restore sizes for collapsed panels, keyed by the panel that owns them. */
   private readonly _collapsedSizes = new WeakMap<SplitterPanel, number>();
   private readonly _collapsedFlags = new WeakMap<SplitterPanel, boolean>();
 
@@ -189,8 +191,10 @@ export class Splitter {
     this._activeSeam.set(null);
   }
 
-  // Pointer capture is already released once the browser cancels the pointer, so
-  // this only resets drag state (calling `releasePointerCapture` here can throw).
+  /**
+   * Pointer capture is already released once the browser cancels the pointer, so
+   * this only resets drag state (calling `releasePointerCapture` here can throw).
+   */
   protected onGutterPointerCancel(seamIndex: number): void {
     if (this._activeSeam() !== seamIndex) return;
     this._activeSeam.set(null);
@@ -271,9 +275,11 @@ export class Splitter {
     return Math.min(leading.max(), pairSum - trailing.min());
   }
 
-  // Sets the leading panel to `desiredSize`, clamped so both panels honour their
-  // min/max, and gives the remainder of the pair to the trailing panel. A
-  // `collapsible` panel dragged past its `min` snaps shut instead of clamping.
+  /**
+   * Sets the leading panel to `desiredSize`, clamped so both panels honour their
+   * min/max, and gives the remainder of the pair to the trailing panel. A
+   * `collapsible` panel dragged past its `min` snaps shut instead of clamping.
+   */
   private _applySeamSize(seamIndex: number, desiredSize: number): void {
     const panels = this.panels();
     const leading = panels[seamIndex];
@@ -306,8 +312,10 @@ export class Splitter {
     trailing.size.set(pairSum - leadingSize);
   }
 
-  // Collapses `panel` to zero, handing its space to `neighbour`. Expanding again
-  // restores the panel to its `min`.
+  /**
+   * Collapses `panel` to zero, handing its space to `neighbour`. Expanding again
+   * restores the panel to its `min`.
+   */
   private _collapse(panel: SplitterPanel, neighbour: SplitterPanel, pairSum: number): void {
     this._collapsedSizes.set(panel, panel.min());
     this._setCollapsedState(panel, true);
@@ -317,8 +325,10 @@ export class Splitter {
     neighbour.size.set(pairSum);
   }
 
-  // Expands a collapsed `panel` back to its restore size, taking the space from
-  // `neighbour`. Bounded by whatever the neighbour can actually give up.
+  /**
+   * Expands a collapsed `panel` back to its restore size, taking the space from
+   * `neighbour`. Bounded by whatever the neighbour can actually give up.
+   */
   private _expand(panel: SplitterPanel, neighbour: SplitterPanel): void {
     const pairSum = (panel.size() ?? 0) + (neighbour.size() ?? 0);
     const restore = Math.min(this._collapsedSizes.get(panel) ?? panel.min(), pairSum);
@@ -329,8 +339,10 @@ export class Splitter {
     neighbour.size.set(pairSum - restore);
   }
 
-  // Updates a panel's `collapsed` model from an interactive resize. Pre-syncing
-  // the flag keeps `_syncCollapsedPanels` from re-running its own size handling.
+  /**
+   * Updates a panel's `collapsed` model from an interactive resize. Pre-syncing
+   * the flag keeps `_syncCollapsedPanels` from re-running its own size handling.
+   */
   private _setCollapsedState(panel: SplitterPanel, collapsed: boolean): void {
     if (panel.collapsed() === collapsed) return;
 

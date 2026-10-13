@@ -73,8 +73,10 @@ export class Menu {
 
   private readonly _config = inject(MENU_CONFIG);
   private readonly _overlay = createOverlayManager();
-  // Optional: only apps that call `provideViewport()` register it, and without
-  // it the `sheetBelow` behaviour simply stays off.
+  /**
+   * Optional: only apps that call `provideViewport()` register it, and without
+   * it the `sheetBelow` behaviour simply stays off.
+   */
   private readonly _viewportService = inject(ViewportService, {
     optional: true,
   });
@@ -116,8 +118,10 @@ export class Menu {
     buildOverlayPositions(this.position(), this.offset()),
   );
 
-  // A `label` item opens a section that runs until the next label or divider;
-  // its items render inside a `role="group"` container named after the label.
+  /**
+   * A `label` item opens a section that runs until the next label or divider;
+   * its items render inside a `role="group"` container named after the label.
+   */
   protected readonly blocks = computed<MenuRenderBlock[]>(() => {
     const blocks: MenuRenderBlock[] = [];
     let group: MenuRenderGroup | null = null;
@@ -143,17 +147,23 @@ export class Menu {
     return blocks;
   });
 
-  // An inline menu is always "open" (rendered in place); otherwise reflect the overlay.
+  /**
+   * An inline menu is always "open" (rendered in place); otherwise reflect the overlay.
+   */
   public readonly isOpen = computed(() => this.inline() || this._overlay.isOpen());
 
-  // Whether the current open presents as a bottom sheet. Captured per open —
-  // not derived live — so a viewport resize mid-open cannot restyle a pane the
-  // overlay has already placed the other way.
+  /**
+   * Whether the current open presents as a bottom sheet. Captured per open —
+   * not derived live — so a viewport resize mid-open cannot restyle a pane the
+   * overlay has already placed the other way.
+   */
   protected readonly sheet = signal(false);
 
-  // The sheet's dismissal drag: the finger's hold on the pane, its travel out
-  // past the bottom edge and the settle after release. The scrim thins as the
-  // sheet leaves.
+  /**
+   * The sheet's dismissal drag: the finger's hold on the pane, its travel out
+   * past the bottom edge and the settle after release. The scrim thins as the
+   * sheet leaves.
+   */
   protected readonly sheetMotion = new SheetMotion({
     property: '--tls-menu-drag',
     backdropOpacity: progress => 1 - progress,
@@ -273,9 +283,11 @@ export class Menu {
     });
   }
 
-  // Fired outside the Angular zone (see `PanDirective.panMove`), so it writes
-  // to the DOM directly and never touches a signal. The sheet does not
-  // overshoot open, so upward travel is clamped away.
+  /**
+   * Fired outside the Angular zone (see `PanDirective.panMove`), so it writes
+   * to the DOM directly and never touches a signal. The sheet does not
+   * overshoot open, so upward travel is clamped away.
+   */
   protected onSheetPanMove(event: PanEvent): void {
     if (this._sheetClosing) return;
     this.sheetMotion.follow(Math.max(0, event.deltaY));
@@ -309,20 +321,24 @@ export class Menu {
     return this._viewportService.isBelow(sheetBelow)();
   }
 
-  // Resets the per-open presentation state; the pane itself is stamped fresh
-  // from the template on every open, so only the component-held state carries
-  // over.
+  /**
+   * Resets the per-open presentation state; the pane itself is stamped fresh
+   * from the template on every open, so only the component-held state carries
+   * over.
+   */
   private _prepareOpen(sheet: boolean): void {
     this.sheet.set(sheet);
     this.sheetMotion.rest();
     this._sheetClosing = false;
   }
 
-  // Continues the drag out past the bottom edge and closes on arrival. A
-  // dismissal that began as a drag must not route through the leave keyframe:
-  // that starts from the fully open position, so the pane would snap back for
-  // a frame before leaving — the stylesheet stands the keyframe down while
-  // the drag state classes are on.
+  /**
+   * Continues the drag out past the bottom edge and closes on arrival. A
+   * dismissal that began as a drag must not route through the leave keyframe:
+   * that starts from the fully open position, so the pane would snap back for
+   * a frame before leaving — the stylesheet stands the keyframe down while
+   * the drag state classes are on.
+   */
   private _sheetDragClose(extent: number): void {
     this._sheetClosing = true;
     this.sheetMotion.settle(extent, () => this._overlay.close());

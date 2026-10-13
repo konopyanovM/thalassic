@@ -51,8 +51,10 @@ export const WithIcon: Story = {
   },
 };
 
-// A projected `<ng-template>` overrides each item's inner content while the list
-// structure, links, separators, and current-page marker stay owned by the kit.
+/**
+ * A projected `<ng-template>` overrides each item's inner content while the list
+ * structure, links, separators, and current-page marker stay owned by the kit.
+ */
 export const CustomItemTemplate: Story = {
   render: args => ({
     props: args,

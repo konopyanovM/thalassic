@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { whenAnimationsFinish } from './when-animations-finish';
 
-// A stand-in for a Web Animations `Animation`, settled from the test.
+/** A stand-in for a Web Animations `Animation`, settled from the test. */
 function fakeAnimation(endTime = 250) {
   let resolve!: () => void;
   let reject!: (reason: unknown) => void;

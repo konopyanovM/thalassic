@@ -126,13 +126,17 @@ export class FileInput extends ValueFormControl<File[]> {
     this.openFilePicker();
   }
 
-  // Arrow function so it keeps `this` when passed through a custom file template context.
+  /**
+   * Arrow function so it keeps `this` when passed through a custom file template context.
+   */
   protected readonly removeFile = (fileIndex: number): void => {
     if (this.notInteractive()) return;
     this.value.update(files => files.filter((_file, index) => index !== fileIndex));
   };
 
-  // Adds what the picker or a drop hands over, keeping only what is accepted.
+  /**
+   * Adds what the picker or a drop hands over, keeping only what is accepted.
+   */
   protected addFiles(incoming: File[]): void {
     const accepted = incoming.filter(file => acceptsFile(file, this.accept()));
     if (!accepted.length) return;

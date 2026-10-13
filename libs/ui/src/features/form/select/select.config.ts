@@ -20,6 +20,8 @@ export const DEFAULT_SELECT_CONFIG: SelectConfig = {
   clearable: false,
   clearLabel: 'Clear',
   virtualScroll: false,
-  // The default option row: body-medium line-height (23px) plus block padding (2 × 8px).
+  /**
+   * The default option row: body-medium line-height (23px) plus block padding (2 × 8px).
+   */
   virtualScrollItemSize: 39,
 };

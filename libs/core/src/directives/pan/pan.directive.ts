@@ -65,8 +65,10 @@ export class PanDirective {
   private readonly _directionality = inject(Directionality);
   private readonly _destroyRef = inject(DestroyRef);
   private readonly _isBrowser: boolean = isPlatformBrowser(inject(PLATFORM_ID));
-  // Fallbacks for every input, so a host with no template to bind from can be
-  // configured through the injector instead. Declared before the inputs it seeds.
+  /**
+   * Fallbacks for every input, so a host with no template to bind from can be
+   * configured through the injector instead. Declared before the inputs it seeds.
+   */
   private readonly _config = inject(PAN_CONFIG);
 
   // Inputs
@@ -134,13 +136,17 @@ export class PanDirective {
   private _lockedAxis: 'x' | 'y' | null = null;
   private _samples: PanSample[] = [];
   private _documentListenersAttached = false;
-  // Body `user-select` value to restore after a locked gesture; `null` while no
-  // suppression is active.
+  /**
+   * Body `user-select` value to restore after a locked gesture; `null` while no
+   * suppression is active.
+   */
   private _previousBodyUserSelect: string | null = null;
 
-  // Document-level listeners live for one gesture at a time; pre-bound once so
-  // attach and detach always reference the same functions and allocate nothing
-  // per gesture.
+  /**
+   * Document-level listeners live for one gesture at a time; pre-bound once so
+   * attach and detach always reference the same functions and allocate nothing
+   * per gesture.
+   */
   private readonly _pointerMoveListener = (event: Event) =>
     this._onPointerMove(event as PointerEvent);
   private readonly _pointerUpListener = (event: Event) => this._onPointerUp(event as PointerEvent);

@@ -2,13 +2,15 @@ import { componentWrapperDecorator, type Meta, type StoryObj } from '@storybook/
 import { MediaCaptionSource } from '../media-player.types';
 import { VideoPlayer } from './video-player';
 
-// Wikimedia's Big Buck Bunny 720p transcode: true 16:9 (fills the player frame
-// edge-to-edge), a modern VP9 encode, ten minutes long, and an audio track with
-// verified audible content — the trifecta no other stable public sample offers.
-// Rejected alternatives: the W3C Sintel trailer (2.35:1 letterbox baked into
-// the pixels), the W3C bunny movie (2010-era encode that trips a decode error
-// in current Chrome), test-videos.co.uk files (no audio track at all), and
-// MDN's flower clip (its audio track decodes to digital silence).
+/**
+ * Wikimedia's Big Buck Bunny 720p transcode: true 16:9 (fills the player frame
+ * edge-to-edge), a modern VP9 encode, ten minutes long, and an audio track with
+ * verified audible content — the trifecta no other stable public sample offers.
+ * Rejected alternatives: the W3C Sintel trailer (2.35:1 letterbox baked into
+ * the pixels), the W3C bunny movie (2010-era encode that trips a decode error
+ * in current Chrome), test-videos.co.uk files (no audio track at all), and
+ * MDN's flower clip (its audio track decodes to digital silence).
+ */
 const BUNNY_MOVIE_SOURCE =
   'https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c0/Big_Buck_Bunny_4K.webm/Big_Buck_Bunny_4K.webm.720p.vp9.webm';
 const BUNNY_POSTER_SOURCE =
@@ -25,11 +27,13 @@ const ENGLISH_CAPTION_TRACK: MediaCaptionSource = {
 const meta: Meta<VideoPlayer> = {
   component: VideoPlayer,
   title: 'Media/Video Player',
-  // The player fills its container; unconstrained on a wide canvas its 16:9
-  // box grows taller than the viewport, so the stories frame it. Layout
-  // direction is stamped on the document root exactly as DirectionService does
-  // in an app — the theme's RTL overrides and CDK Directionality both read the
-  // root, so per-story direction must land there (and reset on story switch).
+  /**
+   * The player fills its container; unconstrained on a wide canvas its 16:9
+   * box grows taller than the viewport, so the stories frame it. Layout
+   * direction is stamped on the document root exactly as DirectionService does
+   * in an app — the theme's RTL overrides and CDK Directionality both read the
+   * root, so per-story direction must land there (and reset on story switch).
+   */
   decorators: [
     (story, context) => {
       document.documentElement.dir = (context.parameters['direction'] as string) ?? 'ltr';

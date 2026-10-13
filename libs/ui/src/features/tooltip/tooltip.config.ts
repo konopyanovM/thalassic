@@ -14,7 +14,9 @@ export interface TooltipConfig {
 export const DEFAULT_TOOLTIP_CONFIG: TooltipConfig = {
   positions: undefined,
   position: 'top',
-  // Clears the arrow, which protrudes `--tls-tooltip-arrow-height` past the bubble.
+  /**
+   * Clears the arrow, which protrudes `--tls-tooltip-arrow-height` past the bubble.
+   */
   offset: { x: 8, y: 8 },
   origin: 'element',
   color: 'secondary',

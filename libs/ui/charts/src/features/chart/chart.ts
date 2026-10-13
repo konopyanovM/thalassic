@@ -96,9 +96,11 @@ export class Chart implements OnDestroy {
   }
 
   // Private methods
-  // Recolors the chart when the theme changes. Reacts only to the theme signal;
-  // everything else is read untracked so unrelated option/element updates don't
-  // trigger a redundant chart update.
+  /**
+   * Recolors the chart when the theme changes. Reacts only to the theme signal;
+   * everything else is read untracked so unrelated option/element updates don't
+   * trigger a redundant chart update.
+   */
   private _initThemeSync(): void {
     if (!this._themeService) return;
 

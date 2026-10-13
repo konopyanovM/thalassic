@@ -79,9 +79,11 @@ export class ImageCompare {
     return array;
   });
 
-  // Clip the leading (before) layer to a band running from the layout-start edge
-  // to the divider. `clip-path` is physical, so resolve the inset per axis — and
-  // for RTL — explicitly, since logical properties cannot express it.
+  /**
+   * Clip the leading (before) layer to a band running from the layout-start edge
+   * to the divider. `clip-path` is physical, so resolve the inset per axis — and
+   * for RTL — explicitly, since logical properties cannot express it.
+   */
   protected readonly clipPath: Signal<string> = computed(() => {
     const remainder = 100 - this.clampedPosition();
 
@@ -118,8 +120,10 @@ export class ImageCompare {
     this._dragging.set(false);
   }
 
-  // Pointer capture is already released once the browser cancels the pointer, so
-  // this only resets drag state (calling `releasePointerCapture` here can throw).
+  /**
+   * Pointer capture is already released once the browser cancels the pointer, so
+   * this only resets drag state (calling `releasePointerCapture` here can throw).
+   */
   protected onPointerCancel(): void {
     this._dragging.set(false);
   }

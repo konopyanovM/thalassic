@@ -12,8 +12,10 @@ import { liftListItem, sinkListItem, splitListItem } from 'prosemirror-schema-li
 import { Plugin } from 'prosemirror-state';
 import { RichTextEditorHandlers } from './rich-text-editor.types';
 
-// Markdown-style typing shortcuts: `# ` for headings, `- `/`* ` for bullet lists,
-// `1. ` for ordered lists, `> ` for blockquotes, and a fenced ``` for code blocks.
+/**
+ * Markdown-style typing shortcuts: `# ` for headings, `- `/`* ` for bullet lists,
+ * `1. ` for ordered lists, `> ` for blockquotes, and a fenced ``` for code blocks.
+ */
 function buildInputRules(schema: Schema): Plugin {
   return inputRules({
     rules: [
@@ -33,9 +35,11 @@ function buildInputRules(schema: Schema): Plugin {
   });
 }
 
-// Keyboard shortcuts layered on top of the base editing keymap: inline-mark toggles,
-// history, input-rule reversal, list splitting/indentation, and a soft line break.
-// Shortcuts whose behavior lives in the host component (link editing) come from `handlers`.
+/**
+ * Keyboard shortcuts layered on top of the base editing keymap: inline-mark toggles,
+ * history, input-rule reversal, list splitting/indentation, and a soft line break.
+ * Shortcuts whose behavior lives in the host component (link editing) come from `handlers`.
+ */
 function buildKeymap(schema: Schema, handlers: RichTextEditorHandlers): Plugin {
   const hardBreak = schema.nodes['hard_break'];
   const listItem = schema.nodes['list_item'];

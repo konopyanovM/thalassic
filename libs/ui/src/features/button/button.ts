@@ -20,7 +20,9 @@ export class Button extends ButtonBase {
   private _router = inject(Router, { optional: true });
   private _locationStrategy = inject(LocationStrategy, { optional: true });
 
-  // The interactive control is the inner `button`/`a`; the host is a wrapper.
+  /**
+   * The interactive control is the inner `button`/`a`; the host is a wrapper.
+   */
   protected override HOST_IS_CONTROL = false;
 
   // Inputs

@@ -24,8 +24,10 @@ export class ImagePreviewService {
   private readonly _config = inject(IMAGE_PREVIEW_CONFIG);
 
   // State
-  // Open previews, tracked so `closeAll` can play each exit animation and so it
-  // closes previews only (the CDK `Dialog` is shared with other surfaces).
+  /**
+   * Open previews, tracked so `closeAll` can play each exit animation and so it
+   * closes previews only (the CDK `Dialog` is shared with other surfaces).
+   */
   private readonly _openPreviews = new Set<ImagePreviewRef>();
 
   // Public methods

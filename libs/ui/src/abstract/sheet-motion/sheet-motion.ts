@@ -18,7 +18,9 @@ export class SheetMotion {
   /** Bound to the surface's `--dragging` / `--settling` classes. */
   public readonly state = this._state.asReadonly();
   private _surface: SheetMotionSurface | null = null;
-  // Incremented by begin and rest; a settle belongs to the gesture that started it.
+  /**
+   * Incremented by begin and rest; a settle belongs to the gesture that started it.
+   */
   private _gesture = 0;
 
   constructor(private readonly _options: SheetMotionOptions) {}
@@ -101,8 +103,10 @@ export class SheetMotion {
   }
 
   // Private methods
-  // Only the backdrop's progress is clamped to the extent; the offset itself
-  // is written unclamped.
+  /**
+   * Only the backdrop's progress is clamped to the extent; the offset itself
+   * is written unclamped.
+   */
   private _write(surface: SheetMotionSurface, offset: number): void {
     const { property, backdropOpacity, renderer } = this._options;
     renderer.setStyle(surface.panel, property, `${offset}px`, RendererStyleFlags2.DashCase);

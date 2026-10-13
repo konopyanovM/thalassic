@@ -42,7 +42,9 @@ export class FabMenu {
 
   private readonly _elementRef = inject(ElementRef<HTMLElement>);
 
-  // The stack exists only while open, so the ref doubles as "is it rendered".
+  /**
+   * The stack exists only while open, so the ref doubles as "is it rendered".
+   */
   private readonly _itemsList = viewChild<ElementRef<HTMLElement>>('itemsList');
   private readonly _trigger = viewChild.required('trigger', {
     read: ElementRef<HTMLElement>,
@@ -104,8 +106,10 @@ export class FabMenu {
     this.close();
   }
 
-  // A tap outside the component dismisses the stack; one inside it is the
-  // trigger's own toggle or an item selection, each already handled.
+  /**
+   * A tap outside the component dismisses the stack; one inside it is the
+   * trigger's own toggle or an item selection, each already handled.
+   */
   protected onDocumentClick(event: MouseEvent): void {
     if (!this._open()) return;
     if (this._elementRef.nativeElement.contains(event.target as Node)) return;

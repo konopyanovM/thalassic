@@ -14,9 +14,11 @@ interface PointerOptions {
   button?: number;
 }
 
-// jsdom ships no full PointerEvent implementation, so pointer events are built
-// from MouseEvent with the pointer fields (and a controllable timeStamp,
-// which the velocity window depends on) defined on the instance.
+/**
+ * jsdom ships no full PointerEvent implementation, so pointer events are built
+ * from MouseEvent with the pointer fields (and a controllable timeStamp,
+ * which the velocity window depends on) defined on the instance.
+ */
 function createPointerEvent(type: string, options: PointerOptions): PointerEvent {
   const event = new MouseEvent(type, {
     bubbles: true,

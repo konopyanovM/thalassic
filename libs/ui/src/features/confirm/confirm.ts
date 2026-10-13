@@ -68,12 +68,16 @@ export class Confirm {
   // State
   public readonly isOpen = this._overlay.isOpen;
 
-  // Tracks whether the current session ended through an explicit action, so a
-  // backdrop / Escape dismissal is reported as a cancellation exactly once.
+  /**
+   * Tracks whether the current session ended through an explicit action, so a
+   * backdrop / Escape dismissal is reported as a cancellation exactly once.
+   */
   private _resolved = false;
 
-  // Element focused before opening, restored on close so keyboard focus returns
-  // to the trigger rather than being lost when the panel is removed.
+  /**
+   * Element focused before opening, restored on close so keyboard focus returns
+   * to the trigger rather than being lost when the panel is removed.
+   */
   private _previouslyFocused: HTMLElement | null = null;
 
   // Computed

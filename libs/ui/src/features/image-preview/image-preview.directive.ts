@@ -68,8 +68,10 @@ export class ImagePreviewDirective implements ImagePreviewGroupItem, OnDestroy {
     this._elementRef.nativeElement.tagName,
   );
 
-  // A host without native button semantics is given them, so the trigger is
-  // announced as a control and reachable by keyboard like any other.
+  /**
+   * A host without native button semantics is given them, so the trigger is
+   * announced as a control and reachable by keyboard like any other.
+   */
   protected readonly buttonRole: string | null = this._nativelyInteractive ? null : 'button';
   protected readonly tabIndex: string | null = this._nativelyInteractive ? null : '0';
 
@@ -141,8 +143,10 @@ export class ImagePreviewDirective implements ImagePreviewGroupItem, OnDestroy {
     }
   }
 
-  // A host given button semantics must also act on the keys a button acts on;
-  // a natively interactive host already dispatches its own click.
+  /**
+   * A host given button semantics must also act on the keys a button acts on;
+   * a natively interactive host already dispatches its own click.
+   */
   protected onKeydown(event: KeyboardEvent): void {
     if (this._nativelyInteractive) return;
     if (event.key !== 'Enter' && event.key !== ' ') return;

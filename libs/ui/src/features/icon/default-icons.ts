@@ -23,8 +23,10 @@ export const DEFAULT_ICONS: Record<systemIcon, string> = {
   star: svg(
     '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />',
   ),
-  // The same star, solid. Stroked like the outline version so the two glyphs
-  // share an identical footprint and can be layered over one another.
+  /**
+   * The same star, solid. Stroked like the outline version so the two glyphs
+   * share an identical footprint and can be layered over one another.
+   */
   'star-filled': svg(
     '<polygon fill="currentColor" points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />',
   ),
@@ -63,8 +65,10 @@ export const DEFAULT_ICONS: Record<systemIcon, string> = {
   'code-block': svg(
     '<rect x="3" y="4" width="18" height="16" rx="2" /><polyline points="10 9 8 12 10 15" /><polyline points="14 9 16 12 14 15" />',
   ),
-  // The magnifier of all three zoom glyphs is identical, so only the mark inside
-  // the lens distinguishes them.
+  /**
+   * The magnifier of all three zoom glyphs is identical, so only the mark inside
+   * the lens distinguishes them.
+   */
   'zoom-in': svg(
     '<circle cx="11" cy="11" r="7" /><line x1="20" y1="20" x2="16.65" y2="16.65" />' +
       '<line x1="11" y1="8" x2="11" y2="14" /><line x1="8" y1="11" x2="14" y2="11" />',

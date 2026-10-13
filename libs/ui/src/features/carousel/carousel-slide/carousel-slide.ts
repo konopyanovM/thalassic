@@ -1,8 +1,10 @@
 import { Component, input, InputSignal, Signal, TemplateRef, viewChild } from '@angular/core';
 
-// A declarative content holder: the host element itself is never rendered. `tls-carousel`
-// reads the captured template and renders it inside its own slide wrapper, which carries
-// the slide's ARIA semantics and sizing.
+/**
+ * A declarative content holder: the host element itself is never rendered. `tls-carousel`
+ * reads the captured template and renders it inside its own slide wrapper, which carries
+ * the slide's ARIA semantics and sizing.
+ */
 @Component({
   selector: 'tls-carousel-slide',
   templateUrl: './carousel-slide.html',

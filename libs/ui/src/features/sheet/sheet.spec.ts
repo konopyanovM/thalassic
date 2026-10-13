@@ -29,7 +29,7 @@ class HostComponent {
     { id: 'full', size: '20rem' },
   ];
   readonly modalFrom = signal<string | null>(null);
-  // A signal, so a write from the test marks this OnPush host for check.
+  /** A signal, so a write from the test marks this OnPush host for check. */
   readonly detent = signal('lip');
 }
 

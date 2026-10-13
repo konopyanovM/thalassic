@@ -159,8 +159,10 @@ export class ImagePreview {
     return `${this._uniqueId}-caption`;
   });
 
-  // The chevrons point at the physical direction travelled, which mirrors along
-  // with the layout: in RTL the previous image sits to the right of the current one.
+  /**
+   * The chevrons point at the physical direction travelled, which mirrors along
+   * with the layout: in RTL the previous image sits to the right of the current one.
+   */
   protected readonly previousIcon: Signal<systemIcon> = computed(() =>
     this._isRtl() ? 'chevron-right' : 'chevron-left',
   );
@@ -263,11 +265,13 @@ export class ImagePreview {
     else if (event.logicalDirection === 'right') this.previous();
   }
 
-  // A click that lands on the stage itself — the scrim around the image and the
-  // controls — dismisses the viewer, the full-screen equivalent of a backdrop
-  // click. Bound on the host rather than the stage because the scrim is not a
-  // control: it takes no focus and offers no keyboard path of its own, Escape
-  // being the keyboard equivalent of the gesture.
+  /**
+   * A click that lands on the stage itself — the scrim around the image and the
+   * controls — dismisses the viewer, the full-screen equivalent of a backdrop
+   * click. Bound on the host rather than the stage because the scrim is not a
+   * control: it takes no focus and offers no keyboard path of its own, Escape
+   * being the keyboard equivalent of the gesture.
+   */
   protected onSurfaceClick(event: MouseEvent): void {
     // A pan or pinch that travels off the image still ends in a click on the
     // stage, which must not be read as a dismissing click on the scrim.
@@ -365,8 +369,10 @@ export class ImagePreview {
     }
   }
 
-  // The browser has already released the capture by the time a pointer is
-  // cancelled, so this only drops the tracking state (releasing it here can throw).
+  /**
+   * The browser has already released the capture by the time a pointer is
+   * cancelled, so this only drops the tracking state (releasing it here can throw).
+   */
   protected onPointerCancel(event: PointerEvent): void {
     this._pointers.delete(event.pointerId);
     this._panning.set(false);
@@ -451,7 +457,9 @@ export class ImagePreview {
     }
   }
 
-  // An image that renders nothing occupies no box, so no point lies over it.
+  /**
+   * An image that renders nothing occupies no box, so no point lies over it.
+   */
   private _isOverImage(clientX: number, clientY: number): boolean {
     const rect = this._image().nativeElement.getBoundingClientRect();
     if (rect.width === 0 || rect.height === 0) return false;
@@ -461,8 +469,10 @@ export class ImagePreview {
     );
   }
 
-  // A press that travels past the slop is a gesture; the click it ends with is
-  // then a by-product of the gesture rather than a click on what sits under it.
+  /**
+   * A press that travels past the slop is a gesture; the click it ends with is
+   * then a by-product of the gesture rather than a click on what sits under it.
+   */
   private _trackGesture(event: PointerEvent): void {
     const origin = this._pressOrigin;
     if (!origin || this._gestured) return;
@@ -471,9 +481,11 @@ export class ImagePreview {
     if (travel > GESTURE_SLOP) this._gestured = true;
   }
 
-  // The fitted size is where the viewer opens and what a reset returns to, kept
-  // inside the configured bounds so a consumer that never zooms out below the fit
-  // (or caps zoom under it) still gets a level it allows.
+  /**
+   * The fitted size is where the viewer opens and what a reset returns to, kept
+   * inside the configured bounds so a consumer that never zooms out below the fit
+   * (or caps zoom under it) still gets a level it allows.
+   */
   private _fitZoom(): number {
     return this._clampZoom(FIT_ZOOM);
   }
@@ -482,8 +494,10 @@ export class ImagePreview {
     return this._directionality.value === 'rtl';
   }
 
-  // `deltaY` is reported in the unit named by `deltaMode`, so convert the two
-  // non-pixel modes to pixels before they drive the zoom exponent.
+  /**
+   * `deltaY` is reported in the unit named by `deltaMode`, so convert the two
+   * non-pixel modes to pixels before they drive the zoom exponent.
+   */
   private _wheelDeltaInPixels(event: WheelEvent): number {
     if (event.deltaMode === WheelEvent.DOM_DELTA_LINE) return event.deltaY * WHEEL_LINE_HEIGHT;
     if (event.deltaMode === WheelEvent.DOM_DELTA_PAGE) return event.deltaY * WHEEL_PAGE_HEIGHT;

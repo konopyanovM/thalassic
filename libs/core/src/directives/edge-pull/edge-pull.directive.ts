@@ -157,19 +157,27 @@ export class EdgePullDirective {
 
   // State
   private readonly _state = signal<edgePullState>('idle');
-  // The end the pull under way is leaving by; `null` while nothing is pulled.
+  /**
+   * The end the pull under way is leaving by; `null` while nothing is pulled.
+   */
   private _edge: edgePullEdge | null = null;
-  // Whether the finger of the gesture under way came down on something ignored.
+  /**
+   * Whether the finger of the gesture under way came down on something ignored.
+   */
   private _startedOnIgnored = false;
-  // Whether the gesture under way may pull at all: it began while enabled, off
-  // anything ignored. A reversible gesture can be one without pulling yet, when
-  // it set off towards an end with nothing past it.
+  /**
+   * Whether the gesture under way may pull at all: it began while enabled, off
+   * anything ignored. A reversible gesture can be one without pulling yet, when
+   * it set off towards an end with nothing past it.
+   */
   private _tracking = false;
-  // Whether the gesture under way has changed ends. From then on travel is
-  // measured from the dead zone's rim rather than from where the gesture began,
-  // so a pull picks up from nothing on either side of it.
+  /**
+   * Whether the gesture under way has changed ends. From then on travel is
+   * measured from the dead zone's rim rather than from where the gesture began,
+   * so a pull picks up from nothing on either side of it.
+   */
   private _reversed = false;
-  // Whether a committed pull is being held for `settle()`.
+  /** Whether a committed pull is being held for `settle()`. */
   private _held = false;
 
   // Computed
@@ -286,7 +294,7 @@ export class EdgePullDirective {
     if (state === 'armed') this.pulled.emit(edge);
   }
 
-  // A cancelled gesture puts back a pull of its own, never one being held.
+  /** A cancelled gesture puts back a pull of its own, never one being held. */
   private _onPanCancel(): void {
     if (this._held) return;
     this.settle();
@@ -324,7 +332,7 @@ export class EdgePullDirective {
     this._edge = null;
   }
 
-  // A drag down leaves by the top, a drag up by the bottom.
+  /** A drag down leaves by the top, a drag up by the bottom. */
   private _edgeFor(deltaY: number): edgePullEdge {
     return deltaY > 0 ? 'start' : 'end';
   }
@@ -333,7 +341,9 @@ export class EdgePullDirective {
     return edge === 'start' ? this.start() : this.end();
   }
 
-  // A pixel of slack either way: scroll offsets are fractional on scaled displays.
+  /**
+   * A pixel of slack either way: scroll offsets are fractional on scaled displays.
+   */
   private _sitsAt(edge: edgePullEdge): boolean {
     const element = this._elementRef.nativeElement;
     if (edge === 'start') return element.scrollTop <= 1;

@@ -14,9 +14,11 @@ interface PointerOptions {
   timeStamp?: number;
 }
 
-// jsdom ships no full PointerEvent implementation, so pointer events are built
-// from MouseEvent with the pointer fields (and a controllable timeStamp, which
-// the gesture's velocity window depends on) defined on the instance.
+/**
+ * jsdom ships no full PointerEvent implementation, so pointer events are built
+ * from MouseEvent with the pointer fields (and a controllable timeStamp, which
+ * the gesture's velocity window depends on) defined on the instance.
+ */
 function createPointerEvent(type: string, options: PointerOptions): PointerEvent {
   const event = new MouseEvent(type, {
     bubbles: true,
@@ -53,8 +55,10 @@ class TriggerHostComponent {
   public readonly trigger = viewChild.required(DrawerTriggerDirective);
 }
 
-// An animation as the Web Animations API hands one back, already over — what
-// the drawer keeps of its entrance and looks at on close.
+/**
+ * An animation as the Web Animations API hands one back, already over — what
+ * the drawer keeps of its entrance and looks at on close.
+ */
 function finishedAnimation(): Animation {
   return {
     playState: 'finished',

@@ -104,8 +104,10 @@ export class Sheet implements OnDestroy {
   });
 
   // State
-  // Numbers the instances, so each sheet's ids are unique in the document;
-  // declared first because `id` reads it.
+  /**
+   * Numbers the instances, so each sheet's ids are unique in the document;
+   * declared first because `id` reads it.
+   */
   private static _counter = 0;
   public readonly id = `tls-sheet-${++Sheet._counter}`;
   protected readonly bodyId = `${this.id}-body`;
@@ -115,14 +117,16 @@ export class Sheet implements OnDestroy {
   private readonly _backdrop = viewChild.required<ElementRef<HTMLElement>>('backdrop');
   private readonly _panel = viewChild.required<ElementRef<HTMLElement>>('panel');
   private readonly _header = viewChild.required<ElementRef<HTMLElement>>('header');
-  // The scroll container: its `scrollTop` decides whether a pan at the top
-  // detent is the sheet's or the body's. The content inside it is what is measured.
+  /**
+   * The scroll container: its `scrollTop` decides whether a pan at the top
+   * detent is the sheet's or the body's. The content inside it is what is measured.
+   */
   private readonly _body = viewChild.required<ElementRef<HTMLElement>>('body');
   private readonly _content = viewChild.required<ElementRef<HTMLElement>>('content');
   private readonly _probe = viewChild.required<ElementRef<HTMLElement>>('probe');
-  // Height in px of each detent, in `detents` order; empty until measured.
+  /** Height in px of each detent, in `detents` order; empty until measured. */
   private readonly _heights = signal<readonly number[]>([]);
-  // Annotated because its own callback reads it back for the travel.
+  /** Annotated because its own callback reads it back for the travel. */
   private readonly _motion: SheetMotion = new SheetMotion({
     property: SHEET_OFFSET_PROPERTY,
     backdropOpacity: progress => this._backdropOpacityAt(progress * this._motion.extent),
@@ -131,18 +135,24 @@ export class Sheet implements OnDestroy {
   });
   protected readonly motionState = this._motion.state;
   private _overlayRef: OverlayRef | null = null;
-  // The detent the sheet is at or moving to, so a remeasure mid-settle
-  // re-targets the settle rather than snapping back to where it started.
+  /**
+   * The detent the sheet is at or moving to, so a remeasure mid-settle
+   * re-targets the settle rather than snapping back to where it started.
+   */
   private _targetIndex = 0;
-  // The detent a drag began at, for the release decision.
+  /** The detent a drag began at, for the release decision. */
   private _dragStartIndex = 0;
-  // A pan the body's own scrolling owns; its moves and end are not the sheet's.
+  /**
+   * A pan the body's own scrolling owns; its moves and end are not the sheet's.
+   */
   private _declined = false;
   private _focusTrap: FocusTrap | null = null;
-  // Page-level elements made inert while modal, to be released as found.
+  /** Page-level elements made inert while modal, to be released as found. */
   private _inerted: Element[] = [];
-  // What had focus in the page before the sheet went modal, for a destroy
-  // that removes the header focus would otherwise return to.
+  /**
+   * What had focus in the page before the sheet went modal, for a destroy
+   * that removes the header focus would otherwise return to.
+   */
   private _focusBeforeModal: HTMLElement | null = null;
 
   // Computed
@@ -265,8 +275,10 @@ export class Sheet implements OnDestroy {
   }
 
   // Protected methods
-  // The header steps down from a modal or the largest detent — where there is
-  // nothing above to grow into — and up from any other.
+  /**
+   * The header steps down from a modal or the largest detent — where there is
+   * nothing above to grow into — and up from any other.
+   */
   protected onHeaderClick(): void {
     if (this.isModal() || this.isTop()) {
       this.collapse();
@@ -275,7 +287,7 @@ export class Sheet implements OnDestroy {
     this.expand();
   }
 
-  // The arrows would otherwise scroll the page behind the sheet.
+  /** The arrows would otherwise scroll the page behind the sheet. */
   protected onArrowUp(event: Event): void {
     event.preventDefault();
     this.expand();
@@ -297,9 +309,11 @@ export class Sheet implements OnDestroy {
     this._motion.begin(this._surface());
   }
 
-  // Fired outside the Angular zone (see `PanDirective.panMove`), so it writes
-  // to the DOM through the engine and writes no signal. The start height is
-  // read live, so a remeasure mid-drag applies at once.
+  /**
+   * Fired outside the Angular zone (see `PanDirective.panMove`), so it writes
+   * to the DOM through the engine and writes no signal. The start height is
+   * read live, so a remeasure mid-drag applies at once.
+   */
   protected onPanMove(event: PanEvent): void {
     if (this._declined || this._motion.state() !== 'dragging') return;
     const startHeight = this._heights()[this._dragStartIndex];
@@ -321,10 +335,12 @@ export class Sheet implements OnDestroy {
     this._settleFromDrag(this._dragStartIndex);
   }
 
-  // Heard at the document, so Escape works wherever focus sits while modal —
-  // the backdrop and the panel's own surface take no focus. An Escape a
-  // control already consumed, or one typed in another overlay (a drawer
-  // stacked above the sheet), keeps the sheet where it is.
+  /**
+   * Heard at the document, so Escape works wherever focus sits while modal —
+   * the backdrop and the panel's own surface take no focus. An Escape a
+   * control already consumed, or one typed in another overlay (a drawer
+   * stacked above the sheet), keeps the sheet where it is.
+   */
   protected onEscape(event: Event): void {
     if (!this.isModal() || event.defaultPrevented) return;
     const target = event.target;
@@ -343,8 +359,10 @@ export class Sheet implements OnDestroy {
   }
 
   // Private methods
-  // Moves the panel into a full-viewport pane at the end of body. The pane
-  // passes pointers through; only the panel and the backdrop take them.
+  /**
+   * Moves the panel into a full-viewport pane at the end of body. The pane
+   * passes pointers through; only the panel and the backdrop take them.
+   */
   private _attach(): void {
     const overlayRef = this._overlay.create({
       positionStrategy: this._overlay.position().global().top('0').left('0'),
@@ -401,7 +419,7 @@ export class Sheet implements OnDestroy {
     );
   }
 
-  // Displacement below the largest detent that puts the panel at `index`.
+  /** Displacement below the largest detent that puts the panel at `index`. */
   private _offsetOf(index: number): number {
     const heights = this._heights();
     return heights[heights.length - 1] - heights[index];
@@ -416,8 +434,10 @@ export class Sheet implements OnDestroy {
     };
   }
 
-  // Puts the panel at `index` at once, with no motion: after measuring, the
-  // sheet is already where it rests.
+  /**
+   * Puts the panel at `index` at once, with no motion: after measuring, the
+   * sheet is already where it rests.
+   */
   private _place(index: number): void {
     this._targetIndex = index;
     const offset = this._offsetOf(index);
@@ -436,7 +456,9 @@ export class Sheet implements OnDestroy {
     this._arrive(index);
   }
 
-  // Animates the panel to `index` from wherever it is, by a settle from rest.
+  /**
+   * Animates the panel to `index` from wherever it is, by a settle from rest.
+   */
   private _settleTo(index: number): void {
     this._targetIndex = index;
     this._motion.moveTo(this._surface(), this._offsetOf(index), () => {
@@ -445,10 +467,12 @@ export class Sheet implements OnDestroy {
     });
   }
 
-  // Whether a pan is the sheet's to move, or the body's to scroll. Only the
-  // top detent scrolls the body; there a downward pan that starts inside the
-  // body is the sheet's only when the body is already at its top. Decided
-  // once, at the start — a hand-off mid-gesture is where jank lives.
+  /**
+   * Whether a pan is the sheet's to move, or the body's to scroll. Only the
+   * top detent scrolls the body; there a downward pan that starts inside the
+   * body is the sheet's only when the body is already at its top. Decided
+   * once, at the start — a hand-off mid-gesture is where jank lives.
+   */
   private _claims(event: PanEvent): boolean {
     if (!this.isTop()) return true;
     const body = this._body().nativeElement;
@@ -459,10 +483,12 @@ export class Sheet implements OnDestroy {
     return body.scrollTop <= 1 && event.direction === 'down';
   }
 
-  // Offset for a height the finger asks for. Above the largest detent the
-  // panel holds (a lifted panel would show a gap beneath it); below the
-  // smallest it follows a third of the overshoot, capped, so the end of the
-  // travel reads as a stretch rather than a wall.
+  /**
+   * Offset for a height the finger asks for. Above the largest detent the
+   * panel holds (a lifted panel would show a gap beneath it); below the
+   * smallest it follows a third of the overshoot, capped, so the end of the
+   * travel reads as a stretch rather than a wall.
+   */
   private _offsetFor(height: number): number {
     const heights = this._heights();
     const smallest = heights[0];
@@ -474,7 +500,7 @@ export class Sheet implements OnDestroy {
     return largest - smallest + overshoot;
   }
 
-  // Ends a drag at `index`: the settle continues from the finger's offset.
+  /** Ends a drag at `index`: the settle continues from the finger's offset. */
   private _settleFromDrag(index: number): void {
     this._targetIndex = index;
     this._motion.settle(this._offsetOf(index), () => {
@@ -483,16 +509,20 @@ export class Sheet implements OnDestroy {
     });
   }
 
-  // A settle that finishes after destroy writes nothing to a destroyed model.
+  /**
+   * A settle that finishes after destroy writes nothing to a destroyed model.
+   */
   private _arrive(index: number): void {
     if (this._overlayRef === null) return;
     this.detent.set(this.detents()[index].id);
   }
 
-  // Opacity of the scrim at `offset` below the largest detent: 0 up to the
-  // detent below `modalFrom`, rising across the gap into it, 1 from there on.
-  // It takes the offset rather than a share of the travel because at rest the
-  // engine holds no surface and knows no travel.
+  /**
+   * Opacity of the scrim at `offset` below the largest detent: 0 up to the
+   * detent below `modalFrom`, rising across the gap into it, 1 from there on.
+   * It takes the offset rather than a share of the travel because at rest the
+   * engine holds no surface and knows no travel.
+   */
   private _backdropOpacityAt(offset: number): number {
     const from = this.modalFrom();
     if (from === null) return 0;
@@ -506,7 +536,9 @@ export class Sheet implements OnDestroy {
     return Math.min(1, Math.max(0, (belowOffset - offset) / (belowOffset - modalOffset)));
   }
 
-  // The highest detent that is not modal, or the lowest when `modalFrom` is it.
+  /**
+   * The highest detent that is not modal, or the lowest when `modalFrom` is it.
+   */
   private _collapseBelowModal(): void {
     const from = this.modalFrom();
     if (from === null) return;
@@ -514,16 +546,18 @@ export class Sheet implements OnDestroy {
     this._settleTo(Math.max(0, fromIndex - 1));
   }
 
-  // While modal the rest of the page is inert and focus stays in the panel,
-  // landing on the header button — the one control that explains the state
-  // and undoes it — unless a pointer made the change (see
-  // `_focusHeaderUnlessPointer`). Leaving modal releases both. When the sheet stays, focus
-  // goes back to the header only if it has nowhere better to be — nothing
-  // focused, the body, or still inside the panel; focus already elsewhere (another
-  // overlay, the page) is left where it is. When the sheet is going, focus
-  // returns to what the page had focused.
-  // Elements already inert are someone else's, so they are neither taken nor
-  // released.
+  /**
+   * While modal the rest of the page is inert and focus stays in the panel,
+   * landing on the header button — the one control that explains the state
+   * and undoes it — unless a pointer made the change (see
+   * `_focusHeaderUnlessPointer`). Leaving modal releases both. When the sheet stays, focus
+   * goes back to the header only if it has nowhere better to be — nothing
+   * focused, the body, or still inside the panel; focus already elsewhere (another
+   * overlay, the page) is left where it is. When the sheet is going, focus
+   * returns to what the page had focused.
+   * Elements already inert are someone else's, so they are neither taken nor
+   * released.
+   */
   private _applyModality(modal: boolean, restoreTo: sheetFocusRestoreTarget): void {
     if (modal) {
       if (this._focusTrap !== null) return;
@@ -566,10 +600,12 @@ export class Sheet implements OnDestroy {
     if (focusBeforeModal !== null && focusBeforeModal.isConnected) focusBeforeModal.focus();
   }
 
-  // Keyboard users, and changes made before any interaction or by code, get
-  // the header focused. After a pointer interaction focus stays put: with the
-  // page inert a pointer user's focus rests on `body`, and the first Tab lands
-  // on the header anyway, so moving focus would only paint a ring nobody asked for.
+  /**
+   * Keyboard users, and changes made before any interaction or by code, get
+   * the header focused. After a pointer interaction focus stays put: with the
+   * page inert a pointer user's focus rests on `body`, and the first Tab lands
+   * on the header anyway, so moving focus would only paint a ring nobody asked for.
+   */
   private _focusHeaderUnlessPointer(): void {
     const modality = this._inputModalityDetector.mostRecentModality;
     if (modality === 'mouse' || modality === 'touch') return;

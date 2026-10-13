@@ -57,18 +57,26 @@ export class OdometerDigit {
   // State
   protected readonly strip: readonly number[] = ODOMETER_STRIP;
 
-  // Row the strip is translated to. Starts centred on the middle repetition.
+  /**
+   * Row the strip is translated to. Starts centred on the middle repetition.
+   */
   protected readonly offset: WritableSignal<number> = signal(ODOMETER_CENTER_OFFSET);
 
-  // Whether the translation transition is armed. Disabled while re-centring so
-  // the invisible jump between repetitions never animates.
+  /**
+   * Whether the translation transition is armed. Disabled while re-centring so
+   * the invisible jump between repetitions never animates.
+   */
   protected readonly animating: WritableSignal<boolean> = signal(false);
 
-  // Digit currently settled in the viewport, tracked to derive the roll direction.
+  /**
+   * Digit currently settled in the viewport, tracked to derive the roll direction.
+   */
   private _currentDigit = 0;
   private _initialized = false;
-  // The frame that will start a pending roll. A newer value cancels it, so a
-  // roll queued for a value already replaced never lands on top of it.
+  /**
+   * The frame that will start a pending roll. A newer value cancels it, so a
+   * roll queued for a value already replaced never lands on top of it.
+   */
   private _pendingFrame: number | null = null;
 
   constructor() {
@@ -119,7 +127,7 @@ export class OdometerDigit {
     });
   }
 
-  // Shows a digit in place, with the transition disarmed.
+  /** Shows a digit in place, with the transition disarmed. */
   private _settle(target: number): void {
     this._currentDigit = target;
     this.animating.set(false);
@@ -133,9 +141,11 @@ export class OdometerDigit {
     this._pendingFrame = null;
   }
 
-  // Signed number of rows to travel from `from` to `to` around the `0-9` wheel,
-  // taking the shorter arc (range `[-5, 5]`). Positive rolls up (9→0), negative
-  // rolls down (0→9).
+  /**
+   * Signed number of rows to travel from `from` to `to` around the `0-9` wheel,
+   * taking the shorter arc (range `[-5, 5]`). Positive rolls up (9→0), negative
+   * rolls down (0→9).
+   */
   private _shortestDelta(from: number, to: number): number {
     const half = ODOMETER_DIGITS_PER_REPETITION / 2;
     let delta = (to - from) % ODOMETER_DIGITS_PER_REPETITION;

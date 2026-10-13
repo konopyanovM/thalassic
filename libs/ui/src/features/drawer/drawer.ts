@@ -47,40 +47,56 @@ export class Drawer extends CdkDialogContainer {
   private readonly _tlsConfig = inject(DRAWER_PANEL_CONFIG);
   private readonly _dialogRef = inject(DialogRef);
   private readonly _directionality = inject(Directionality);
-  // Named apart from the base container's own renderer and injector, which are
-  // private to it. Both exist solely to serve the drag gesture.
+  /**
+   * Named apart from the base container's own renderer and injector, which are
+   * private to it. Both exist solely to serve the drag gesture.
+   */
   private readonly _dragRenderer = inject(Renderer2);
   private readonly _dragInjector = inject(Injector);
   private readonly _opening = inject(DRAWER_OPENING);
   private readonly _origin = this._opening.origin;
 
   // State
-  // `open` marks an entrance that is over and must not replay: one the component
-  // finished itself (opened by a drag), or one a dismissal drag cut short. The
-  // stylesheet's slide-in keys off `enter` only.
+  /**
+   * `open` marks an entrance that is over and must not replay: one the component
+   * finished itself (opened by a drag), or one a dismissal drag cut short. The
+   * stylesheet's slide-in keys off `enter` only.
+   */
   private readonly _state = signal<'enter' | 'open' | 'leave'>('enter');
-  // Whether the panel slides out of its origin rather than from off-screen.
-  // Taken for granted while an origin is given, and dropped the moment it
-  // cannot be measured, which hands the entrance or exit back to the plain slide.
+  /**
+   * Whether the panel slides out of its origin rather than from off-screen.
+   * Taken for granted while an origin is given, and dropped the moment it
+   * cannot be measured, which hands the entrance or exit back to the plain slide.
+   */
   private readonly _slidesFromOrigin = signal(this._origin !== null);
-  // Whether the panel is still opening under a drag fed from outside; drives
-  // the scripted class. `_openPhase` is where that opening stands.
+  /**
+   * Whether the panel is still opening under a drag fed from outside; drives
+   * the scripted class. `_openPhase` is where that opening stands.
+   */
   private readonly _opensByDrag = signal(this._opening.byDrag);
   private _openPhase: drawerOpenPhase = this._opening.byDrag ? 'pending' : 'done';
   private _openGesture: DrawerOpenGesture | null = null;
-  // A drag can move, or even end, before the panel is laid out to measure;
-  // what arrived by then is applied once the gesture exists.
+  /**
+   * A drag can move, or even end, before the panel is laid out to measure;
+   * what arrived by then is applied once the gesture exists.
+   */
   private _pendingOpenTravel: number | null = null;
   private _pendingOpenRelease: { event: PanEvent | null } | null = null;
-  // A close asked for while a drag's settle open is still running, carried
-  // out once the panel has arrived.
+  /**
+   * A close asked for while a drag's settle open is still running, carried
+   * out once the panel has arrived.
+   */
   private _queuedClose: { result: unknown } | null = null;
-  // The running slide out of the origin, reversed if the drawer closes before
-  // it ends: measured mid-flight, the panel would read short of where it rests.
+  /**
+   * The running slide out of the origin, reversed if the drawer closes before
+   * it ends: measured mid-flight, the panel would read short of where it rests.
+   */
   private _entrance: Animation[] = [];
   private _closing = false;
-  // The dismissal drag: the finger's hold on the panel, its travel toward the
-  // pinned edge and the settle after release. The scrim thins as the panel leaves.
+  /**
+   * The dismissal drag: the finger's hold on the panel, its travel toward the
+   * pinned edge and the settle after release. The scrim thins as the panel leaves.
+   */
   private readonly _motion = new SheetMotion({
     property: '--tls-drawer-drag',
     backdropOpacity: progress => 1 - progress,
@@ -144,16 +160,20 @@ export class Drawer extends CdkDialogContainer {
     return this._tlsConfig;
   }
 
-  // The custom CSS length applied inline when `size` is not a named token, else
-  // `null` so the attribute is omitted and the size modifier class takes over.
+  /**
+   * The custom CSS length applied inline when `size` is not a named token, else
+   * `null` so the attribute is omitted and the size modifier class takes over.
+   */
   protected get customSize(): string | null {
     return this._isNamedSize(this._tlsConfig.size) ? null : this._tlsConfig.size;
   }
 
   // Public methods
-  // Plays the slide-out animation, then disposes the overlay once it finishes.
-  // Routed through here for every dismissal path (close button, backdrop, Escape)
-  // because `DialogRef.close()` disposes synchronously, which would skip the exit.
+  /**
+   * Plays the slide-out animation, then disposes the overlay once it finishes.
+   * Routed through here for every dismissal path (close button, backdrop, Escape)
+   * because `DialogRef.close()` disposes synchronously, which would skip the exit.
+   */
   public animatedClose(result?: unknown): void {
     if (this._closing) return;
 
@@ -242,9 +262,11 @@ export class Drawer extends CdkDialogContainer {
     this._entrance = slideFromOrigin(host, offset, pairs, readSlideTiming(host, 'enter'));
   }
 
-  // Plays a slide out of the origin that is still running back to where it
-  // began, from wherever it has got to, then closes. Held at the end, so the
-  // panel does not flash back to rest before the overlay is disposed.
+  /**
+   * Plays a slide out of the origin that is still running back to where it
+   * began, from wherever it has got to, then closes. Held at the end, so the
+   * panel does not flash back to rest before the overlay is disposed.
+   */
   private _reverseEntrance(running: Animation[], result: unknown): void {
     for (const animation of running) {
       const effect = animation.effect;
@@ -256,9 +278,11 @@ export class Drawer extends CdkDialogContainer {
     );
   }
 
-  // Ends a drag's opening, one way or the other. Settling closed is a close:
-  // nothing else may start one meanwhile. Settling open hands the panel back
-  // to the ordinary open state, then runs a close that arrived on the way.
+  /**
+   * Ends a drag's opening, one way or the other. Settling closed is a close:
+   * nothing else may start one meanwhile. Settling open hands the panel back
+   * to the ordinary open state, then runs a close that arrived on the way.
+   */
   private _settleOpenGesture(open: boolean, result: unknown): void {
     const gesture = this._openGesture;
     if (gesture === null) return;
@@ -283,9 +307,11 @@ export class Drawer extends CdkDialogContainer {
     });
   }
 
-  // Starts the scrubbed entrance a drag drives: from over the origin where the
-  // panel covers it, else from off-screen. Direct manipulation, so it runs at
-  // every motion level; only the settle after release is motion.
+  /**
+   * Starts the scrubbed entrance a drag drives: from over the origin where the
+   * panel covers it, else from off-screen. Direct manipulation, so it runs at
+   * every motion level; only the settle after release is motion.
+   */
   private _beginOpenGesture(): void {
     const host = this._elementRef.nativeElement;
     const side = this._tlsConfig.side;
@@ -317,14 +343,18 @@ export class Drawer extends CdkDialogContainer {
     if (release !== null) this.releaseOpenDrag(release.event);
   }
 
-  // Either a flick decides, whichever way it points; failing one, how far the
-  // drag got does — the same rule the drag to dismiss commits by.
+  /**
+   * Either a flick decides, whichever way it points; failing one, how far the
+   * drag got does — the same rule the drag to dismiss commits by.
+   */
   private _opensOnRelease(event: PanEvent, progress: number): boolean {
     return decideCommit(-this._dismissVelocity(event), progress);
   }
 
-  // The settle after a drag is released eases like the slide in, and jumps
-  // where the motion level allows no motion.
+  /**
+   * The settle after a drag is released eases like the slide in, and jumps
+   * where the motion level allows no motion.
+   */
   private _settleTiming(): DrawerSlideTiming {
     return this._isMotionAllowed()
       ? readSlideTiming(this._elementRef.nativeElement, 'enter')
@@ -336,10 +366,12 @@ export class Drawer extends CdkDialogContainer {
     return motion === 'essential' || motion === 'full';
   }
 
-  // Where the slide from the origin starts and ends, or null where it cannot
-  // play: no origin, one the panel does not cover, or a motion level with no
-  // entrance at all — where the plain slide stands down too, so falling back
-  // to it animates nothing either.
+  /**
+   * Where the slide from the origin starts and ends, or null where it cannot
+   * play: no origin, one the panel does not cover, or a motion level with no
+   * entrance at all — where the plain slide stands down too, so falling back
+   * to it animates nothing either.
+   */
   private _measureOriginOffset(): DrawerOffset | null {
     if (this._origin === null || !this._isMotionAllowed()) return null;
 
@@ -369,10 +401,12 @@ export class Drawer extends CdkDialogContainer {
     });
   }
 
-  // Fired outside the Angular zone (see `PanDirective.panMove`), so it writes to
-  // the DOM directly and never touches a signal.
-  // Move, end and cancel only follow a drag this panel started: one declined at
-  // its start (closing, or still opening under the trigger's drag) is not its own.
+  /**
+   * Fired outside the Angular zone (see `PanDirective.panMove`), so it writes to
+   * the DOM directly and never touches a signal.
+   * Move, end and cancel only follow a drag this panel started: one declined at
+   * its start (closing, or still opening under the trigger's drag) is not its own.
+   */
   private _onPanMove(event: PanEvent): void {
     if (this._closing || this._motion.state() !== 'dragging') return;
     this._motion.follow(Math.max(0, this._dismissTravel(event)));
@@ -397,8 +431,10 @@ export class Drawer extends CdkDialogContainer {
     this._settleBack();
   }
 
-  // Travel toward the panel's pinned edge in px. Negative while the finger moves
-  // the other way, which the caller clamps away — the panel does not overshoot open.
+  /**
+   * Travel toward the panel's pinned edge in px. Negative while the finger moves
+   * the other way, which the caller clamps away — the panel does not overshoot open.
+   */
   private _dismissTravel(event: PanEvent): number {
     switch (this._tlsConfig.side) {
       case 'top':
@@ -412,8 +448,10 @@ export class Drawer extends CdkDialogContainer {
     }
   }
 
-  // Release velocity toward the pinned edge in px/ms. Signed independently of
-  // `_dismissTravel`: a drag that reverses into a flick must read as the flick.
+  /**
+   * Release velocity toward the pinned edge in px/ms. Signed independently of
+   * `_dismissTravel`: a drag that reverses into a flick must read as the flick.
+   */
   private _dismissVelocity(event: PanEvent): number {
     switch (this._tlsConfig.side) {
       case 'top':
@@ -427,8 +465,10 @@ export class Drawer extends CdkDialogContainer {
     }
   }
 
-  // Horizontal quantities arrive physical; the inline sides are logical, so the
-  // sign flips in RTL.
+  /**
+   * Horizontal quantities arrive physical; the inline sides are logical, so the
+   * sign flips in RTL.
+   */
   private _toLogical(physicalX: number): number {
     return this._directionality.value === 'rtl' ? -physicalX : physicalX;
   }
@@ -438,15 +478,17 @@ export class Drawer extends CdkDialogContainer {
     return side === 'start' || side === 'end';
   }
 
-  // Returns the panel to rest after a drag that did not commit.
+  /** Returns the panel to rest after a drag that did not commit. */
   private _settleBack(): void {
     this._motion.settle(0, () => this._motion.rest());
   }
 
-  // Continues the drag out to the pinned edge and disposes on arrival. A dismissal
-  // that began as a drag cannot route through `animatedClose`: the slide-out
-  // keyframe starts from `transform: none`, so the panel would snap back to fully
-  // open for a frame before leaving.
+  /**
+   * Continues the drag out to the pinned edge and disposes on arrival. A dismissal
+   * that began as a drag cannot route through `animatedClose`: the slide-out
+   * keyframe starts from `transform: none`, so the panel would snap back to fully
+   * open for a frame before leaving.
+   */
   private _dragClose(extent: number): void {
     this._closing = true;
     this._motion.settle(extent, () => this._dialogRef.close());

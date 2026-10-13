@@ -81,9 +81,11 @@ export class Tabs {
     return array;
   });
 
-  // The header strip uses the shared tab-header block (also rendered by
-  // `tls-tab-nav`), so its variant/orientation/alignment modifiers live on the
-  // strip element itself rather than on the tabs container.
+  /**
+   * The header strip uses the shared tab-header block (also rendered by
+   * `tls-tab-nav`), so its variant/orientation/alignment modifiers live on the
+   * strip element itself rather than on the tabs container.
+   */
   protected headerClasses = computed(() => {
     const className = 'tls-tab-header';
 

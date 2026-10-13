@@ -35,9 +35,11 @@ export class Dialog extends CdkDialogContainer {
   }
 
   // Public methods
-  // Plays the exit animation, then disposes the overlay once it finishes. Routed
-  // through here for every dismissal path (close button, backdrop, Escape)
-  // because the CDK ref's `close()` disposes synchronously, which would skip the exit.
+  /**
+   * Plays the exit animation, then disposes the overlay once it finishes. Routed
+   * through here for every dismissal path (close button, backdrop, Escape)
+   * because the CDK ref's `close()` disposes synchronously, which would skip the exit.
+   */
   public animatedClose(result?: unknown): void {
     if (this._closing) return;
     this._closing = true;

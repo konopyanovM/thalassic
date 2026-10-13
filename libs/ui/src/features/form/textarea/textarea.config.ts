@@ -19,6 +19,8 @@ export const DEFAULT_TEXTAREA_CONFIG: TextareaConfig = {
   rows: 3,
   resize: 'vertical',
   autosize: false,
-  // Row cap while autosizing. `0` means unbounded — the textarea grows freely.
+  /**
+   * Row cap while autosizing. `0` means unbounded — the textarea grows freely.
+   */
   maxRows: 0,
 };

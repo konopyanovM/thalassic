@@ -154,9 +154,11 @@ const TAG_ICON = `
   </svg>
 `;
 
-// A leading icon on any control is composed as a projected addon inside the group —
-// no per-component icon slot is needed. The group flattens each control's own
-// border/padding so the icon and control read as one field.
+/**
+ * A leading icon on any control is composed as a projected addon inside the group —
+ * no per-component icon slot is needed. The group flattens each control's own
+ * border/padding so the icon and control read as one field.
+ */
 export const LeadingIcon: Story = {
   args: {},
   render: args => ({
@@ -215,11 +217,13 @@ export const AutocompleteWithIcon: Story = {
   }),
 };
 
-// A button projected into an addon becomes a segment of the field: the group takes
-// over its size scale and the button spans the field's full height, meeting its
-// border and rounding with it. `buttonSize` and `buttonRounded` are exposed to show
-// that they have no effect here: the group resolves the size for every control it
-// holds, and the field owns the corners of anything that reaches its edge.
+/**
+ * A button projected into an addon becomes a segment of the field: the group takes
+ * over its size scale and the button spans the field's full height, meeting its
+ * border and rounding with it. `buttonSize` and `buttonRounded` are exposed to show
+ * that they have no effect here: the group resolves the size for every control it
+ * holds, and the field owns the corners of anything that reaches its edge.
+ */
 export const WithButton: ButtonAddonStory = {
   args: {
     addonDivider: false,
@@ -267,11 +271,13 @@ export const WithButton: ButtonAddonStory = {
   }),
 };
 
-// `divider` rules an addon off from whatever sits beside it, for when the addon is a
-// region of its own — an action, a unit selector — rather than a hint attached to the
-// value. The rule lands on each edge that faces a sibling: the two addons here are at
-// either end, so each is ruled only on its inner side; one placed between two controls
-// would be ruled on both.
+/**
+ * `divider` rules an addon off from whatever sits beside it, for when the addon is a
+ * region of its own — an action, a unit selector — rather than a hint attached to the
+ * value. The rule lands on each edge that faces a sibling: the two addons here are at
+ * either end, so each is ruled only on its inner side; one placed between two controls
+ * would be ruled on both.
+ */
 export const WithDividers: Story = {
   args: {},
   render: args => ({
@@ -286,9 +292,11 @@ export const WithDividers: Story = {
   }),
 };
 
-// A field can hold more than one control. Clicking an addon reaches the control nearest
-// it — the leading icon focuses the country select, the trailing `ext.` the number —
-// rather than whichever control happens to come first in the row.
+/**
+ * A field can hold more than one control. Clicking an addon reaches the control nearest
+ * it — the leading icon focuses the country select, the trailing `ext.` the number —
+ * rather than whichever control happens to come first in the row.
+ */
 export const TwoControls: Story = {
   args: {},
   render: args => ({
@@ -307,9 +315,11 @@ export const TwoControls: Story = {
   }),
 };
 
-// An addon takes the control nearest it, which leaves an addon between two controls
-// ambiguous. Name the control with a template reference to settle it — here the middle
-// addon hands over to the amount rather than to the currency beside it.
+/**
+ * An addon takes the control nearest it, which leaves an addon between two controls
+ * ambiguous. Name the control with a template reference to settle it — here the middle
+ * addon hands over to the amount rather than to the currency beside it.
+ */
 export const NamedControl: Story = {
   args: {},
   render: args => ({

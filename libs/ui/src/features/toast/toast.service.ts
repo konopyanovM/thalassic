@@ -177,7 +177,9 @@ export class ToastService {
     this._timers.delete(id);
   }
 
-  // Drops timers whose toast was trimmed by the `max` cap without an explicit dismiss.
+  /**
+   * Drops timers whose toast was trimmed by the `max` cap without an explicit dismiss.
+   */
   private _pruneOrphanTimers(): void {
     const live = new Set(this._toasts().map(toast => toast.id));
     for (const id of this._timers.keys()) {

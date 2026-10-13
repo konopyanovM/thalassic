@@ -33,7 +33,7 @@ export default meta;
 
 type Story = StoryObj<OdometerComponent>;
 
-// Change the `value` control to watch the digits roll to the new number.
+/** Change the `value` control to watch the digits roll to the new number. */
 export const Odometer: Story = {};
 
 export const Padded: Story = {
@@ -48,7 +48,7 @@ export const Negative: Story = {
   args: { value: -128 },
 };
 
-// Text written out by the caller: the digits roll, the colon stays put.
+/** Text written out by the caller: the digits roll, the colon stays put. */
 export const Text: Story = {
   args: { text: '2:59' },
 };

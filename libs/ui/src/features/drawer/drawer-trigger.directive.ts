@@ -73,16 +73,20 @@ export class DrawerTriggerDirective {
 
   // State
   private readonly _openRef = signal<DrawerRef | null>(null);
-  // Raised only while `openRequest` is emitted for a drag, so the `open` that
-  // answers it knows to open under the drag.
+  /**
+   * Raised only while `openRequest` is emitted for a drag, so the `open` that
+   * answers it knows to open under the drag.
+   */
   private _requestedByDrag = false;
-  // The drawer following the drag in progress, if one opened for it.
+  /** The drawer following the drag in progress, if one opened for it. */
   private _draggedRef: DrawerRef | null = null;
 
   // Computed
   public readonly isOpen = computed(() => this._openRef() !== null);
 
-  // The drawer it opened, while that is open; nothing to point at otherwise.
+  /**
+   * The drawer it opened, while that is open; nothing to point at otherwise.
+   */
   protected readonly controlsId = computed(() => {
     const openRef = this._openRef();
     return openRef === null ? null : openRef.id;

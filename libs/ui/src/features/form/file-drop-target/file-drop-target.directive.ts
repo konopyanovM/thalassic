@@ -90,8 +90,10 @@ export class FileDropTargetDirective {
     this._dragState.set(rejected ? 'invalid' : 'valid');
   }
 
-  // `dragleave` also fires when the pointer crosses onto a child of the host;
-  // only a leave that balances every enter means the drag actually left.
+  /**
+   * `dragleave` also fires when the pointer crosses onto a child of the host;
+   * only a leave that balances every enter means the drag actually left.
+   */
   protected onDragLeave(): void {
     this._dragDepth = Math.max(0, this._dragDepth - 1);
     if (this._dragDepth === 0) this._dragState.set('idle');

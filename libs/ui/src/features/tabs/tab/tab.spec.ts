@@ -3,8 +3,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Tabs } from '../tabs';
 import { Tab } from './tab';
 
-// The `tls-tab` host is a declarative holder that is never rendered into the DOM,
-// so the instance is reached through a view query rather than `By.directive`.
+/**
+ * The `tls-tab` host is a declarative holder that is never rendered into the DOM,
+ * so the instance is reached through a view query rather than `By.directive`.
+ */
 @Component({
   imports: [Tabs, Tab],
   template: `

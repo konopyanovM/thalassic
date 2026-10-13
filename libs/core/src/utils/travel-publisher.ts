@@ -12,10 +12,12 @@ import { Renderer2, RendererStyleFlags2 } from '@angular/core';
  * until something else restyles it.
  */
 export class TravelPublisher {
-  // Elements carrying the travel besides the host.
+  /** Elements carrying the travel besides the host. */
   private readonly _followers = new Set<HTMLElement>();
-  // Travel last written, for skipping no-op writes; `null` until the first
-  // write.
+  /**
+   * Travel last written, for skipping no-op writes; `null` until the first
+   * write.
+   */
   private _distance: number | null = null;
 
   constructor(

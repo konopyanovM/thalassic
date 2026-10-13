@@ -108,11 +108,13 @@ export class Table<TRow = TableData> {
 
   protected readonly tableColumns = contentChildren(TableColumn);
 
-  // Merges columnDefinitions input and tls-table-column content children into a single list.
-  // Input drives order; content children override matching keys and append unmatched columns at the end.
-  // Map keyed by content column key → O(1) lookup when applying overrides to each input column.
-  // Set of input keys → O(1) membership check when finding content columns absent from input (extras).
-  // extras: content columns with no matching input entry, appended after the merged input columns.
+  /**
+   * Merges columnDefinitions input and tls-table-column content children into a single list.
+   * Input drives order; content children override matching keys and append unmatched columns at the end.
+   * Map keyed by content column key → O(1) lookup when applying overrides to each input column.
+   * Set of input keys → O(1) membership check when finding content columns absent from input (extras).
+   * extras: content columns with no matching input entry, appended after the merged input columns.
+   */
   protected readonly effectiveColumnDefinitions = computed<TableColumnDefinition[]>(() => {
     const fromContent = this._mapContentColumns(this.tableColumns());
     const fromInput = this.columnDefinitions();

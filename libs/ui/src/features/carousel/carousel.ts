@@ -76,7 +76,9 @@ export class Carousel {
   private readonly _elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly _injector = inject(Injector);
   private readonly _destroyRef = inject(DestroyRef);
-  // Optional: apps without `provideMotion()` get no motion gating and rotation stays allowed.
+  /**
+   * Optional: apps without `provideMotion()` get no motion gating and rotation stays allowed.
+   */
   private readonly _motion = inject(MotionService, { optional: true });
   private readonly _isBrowser: boolean = isPlatformBrowser(inject(PLATFORM_ID));
 
@@ -110,9 +112,11 @@ export class Carousel {
   protected readonly slides: Signal<readonly CarouselSlide[]> = contentChildren(CarouselSlide);
   protected readonly labels: CarouselLabels = this._config.labels;
 
-  // Gesture shape, bound explicitly on the viewport: `PAN_CONFIG` resolves
-  // through the element injector, so an ancestor gesture that provides it for
-  // itself would otherwise reconfigure this one.
+  /**
+   * Gesture shape, bound explicitly on the viewport: `PAN_CONFIG` resolves
+   * through the element injector, so an ancestor gesture that provides it for
+   * itself would otherwise reconfigure this one.
+   */
   protected readonly dragSlop: number = CAROUSEL_DRAG_START_SLOP;
   protected readonly dragLockRatio: number = CAROUSEL_DRAG_LOCK_RATIO;
 
@@ -126,22 +130,28 @@ export class Carousel {
 
   private readonly _dragging: WritableSignal<boolean> = signal(false);
   private readonly _hovered: WritableSignal<boolean> = signal(false);
-  // A hidden page paints nothing, so rotation there only burns the slides the
-  // user came back to see.
+  /**
+   * A hidden page paints nothing, so rotation there only burns the slides the
+   * user came back to see.
+   */
   private readonly _pageVisible: WritableSignal<boolean> = signal(true);
   /** Suppresses the slide transition for a change that would otherwise travel the whole track. */
   private readonly _instant: WritableSignal<boolean> = signal(false);
 
   // Drag bookkeeping between gesture events; not reactive.
-  // Travel already spent crossing the slop when the gesture locked. Deltas are
-  // rebased against it so the track follows the finger from where it locked
-  // instead of jumping by the slop on the first move.
+  /**
+   * Travel already spent crossing the slop when the gesture locked. Deltas are
+   * rebased against it so the track follows the finger from where it locked
+   * instead of jumping by the slop on the first move.
+   */
   private _lockDelta = 0;
   private _dragEndedAt = Number.NEGATIVE_INFINITY;
-  // Whether focus currently entering the carousel was driven by a pointer.
+  /** Whether focus currently entering the carousel was driven by a pointer. */
   private _pointerFocus = false;
 
-  // Pre-bound so attaching and detaching always reference the same function.
+  /**
+   * Pre-bound so attaching and detaching always reference the same function.
+   */
   private readonly _endPointerFocus = (): void => {
     this._pointerFocus = false;
 
@@ -181,9 +191,11 @@ export class Carousel {
     return array;
   });
 
-  // Auto-advancing content is motion the user has not asked for, so rotation
-  // requires the expressive (`full`) motion level, pauses while hovered or
-  // while the page is hidden, and stays off after the user stops it.
+  /**
+   * Auto-advancing content is motion the user has not asked for, so rotation
+   * requires the expressive (`full`) motion level, pauses while hovered or
+   * while the page is hidden, and stays off after the user stops it.
+   */
   private readonly _rotating = computed(() => {
     if (!this.autoplayEnabled()) return false;
     if (!this.playing() || this._hovered() || !this._pageVisible()) return false;

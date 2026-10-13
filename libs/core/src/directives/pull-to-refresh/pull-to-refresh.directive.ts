@@ -121,9 +121,9 @@ export class PullToRefreshDirective {
 
   // State
   private readonly _state = signal<pullToRefreshState>('idle');
-  // When the refreshing stage was entered, for measuring the minimum hold.
+  /** When the refreshing stage was entered, for measuring the minimum hold. */
   private _refreshingSince = 0;
-  // Pending deferred settle, waiting out the remainder of the minimum hold.
+  /** Pending deferred settle, waiting out the remainder of the minimum hold. */
   private _settleTimeout: ReturnType<typeof setTimeout> | null = null;
 
   // Computed

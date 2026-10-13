@@ -5,8 +5,10 @@ import { ToastService } from './toast.service';
 import { DEFAULT_TOAST_CONFIG } from './toast.config';
 import { TOAST_CONFIG } from './toast.token';
 
-// Minimal Overlay stand-in: the service only needs `create().attach()` to exist,
-// so the outlet is never rendered and no real DOM/overlay is involved.
+/**
+ * Minimal Overlay stand-in: the service only needs `create().attach()` to exist,
+ * so the outlet is never rendered and no real DOM/overlay is involved.
+ */
 function overlayStub() {
   const positionStrategy = { global: () => ({ top: () => ({ left: () => ({}) }) }) };
   return {

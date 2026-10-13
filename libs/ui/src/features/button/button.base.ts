@@ -21,9 +21,11 @@ export abstract class ButtonBase {
   // Injections
   protected _config = inject(BUTTON_CONFIG);
 
-  // Whether the host element is the interactive control itself. It is for a
-  // directive applied to a native `button`; a component that renders its own
-  // control inside places the classes and the ARIA state on that instead.
+  /**
+   * Whether the host element is the interactive control itself. It is for a
+   * directive applied to a native `button`; a component that renders its own
+   * control inside places the classes and the ARIA state on that instead.
+   */
   protected HOST_IS_CONTROL = true;
 
   public readonly disabled: InputSignalWithTransform<boolean, unknown> = input(false, {

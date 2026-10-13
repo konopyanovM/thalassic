@@ -181,7 +181,7 @@ export function slideToOrigin(
   }
 }
 
-// Which physical edge a logical side pins to.
+/** Which physical edge a logical side pins to. */
 function pinnedLeft(side: 'start' | 'end', isRtl: boolean): boolean {
   return (side === 'start') !== isRtl;
 }
@@ -190,8 +190,10 @@ function fontSizeOf(element: Element): number {
   return parseFloat(getComputedStyle(element).fontSize);
 }
 
-// A CSS time (`250ms`, `0.25s`) as milliseconds; 0 for anything unreadable,
-// which plays the slide as a jump rather than failing to open or close.
+/**
+ * A CSS time (`250ms`, `0.25s`) as milliseconds; 0 for anything unreadable,
+ * which plays the slide as a jump rather than failing to open or close.
+ */
 function toMilliseconds(time: string): number {
   const value = parseFloat(time);
   if (Number.isNaN(value)) return 0;

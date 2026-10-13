@@ -32,8 +32,10 @@ export class DialogService {
   private readonly _dialog = inject(CdkDialog);
   private readonly _config = inject(DIALOG_CONFIG);
 
-  // Currently-open dialogs, tracked so `closeAll` can play each exit animation and
-  // so it closes dialogs only (the CDK `Dialog` is shared with `tls-drawer`).
+  /**
+   * Currently-open dialogs, tracked so `closeAll` can play each exit animation and
+   * so it closes dialogs only (the CDK `Dialog` is shared with `tls-drawer`).
+   */
   private readonly _openDialogs = new Set<DialogRef>();
 
   public open<R = unknown, D = unknown, C = unknown>(

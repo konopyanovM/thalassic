@@ -14,8 +14,10 @@ const MOCK_ROWS: MockRow[] = Array.from({ length: 100000 }, (_, index) => ({
   email: `person.${index}@example.com`,
 }));
 
-// An item has to occupy exactly the extent the container assumes for it, which the
-// container publishes as --tls-virtual-scroll-item-size.
+/**
+ * An item has to occupy exactly the extent the container assumes for it, which the
+ * container publishes as --tls-virtual-scroll-item-size.
+ */
 const ROW_STYLE = [
   'box-sizing: border-box',
   'height: var(--tls-virtual-scroll-item-size)',

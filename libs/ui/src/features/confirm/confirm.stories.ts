@@ -23,17 +23,17 @@ class ConfirmServiceDemo {
 
   protected result = '—';
 
-  // Anchored popover: resolved against the clicked trigger.
+  /** Anchored popover: resolved against the clicked trigger. */
   protected deleteAnchored(event: MouseEvent): void {
     this._ask({ trigger: event });
   }
 
-  // Centered modal: no trigger, so the dialog traps focus in the viewport.
+  /** Centered modal: no trigger, so the dialog traps focus in the viewport. */
   protected deleteModal(): void {
     this._ask({});
   }
 
-  // A longer consequence reads better with more measure to run on.
+  /** A longer consequence reads better with more measure to run on. */
   protected deleteWideModal(): void {
     this._ask({ size: 'lg' });
   }

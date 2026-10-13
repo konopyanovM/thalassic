@@ -85,12 +85,14 @@ export class OverlayManager {
   private _config: ConnectedOverlayConfig | null = null;
   private readonly _isOpen = signal(false);
 
-  // Armed by `ignoreTrailingAuxClick` on open: swallow the first outside
-  // `auxclick` so the right-click gesture that opened a context menu doesn't
-  // immediately dismiss it. Consumed one-shot (not on a timer) because the user
-  // may hold the button arbitrarily long before releasing — the `auxclick`
-  // fires on release — so the guard must survive until that first `auxclick`
-  // actually arrives. Later outside pointers still dismiss.
+  /**
+   * Armed by `ignoreTrailingAuxClick` on open: swallow the first outside
+   * `auxclick` so the right-click gesture that opened a context menu doesn't
+   * immediately dismiss it. Consumed one-shot (not on a timer) because the user
+   * may hold the button arbitrarily long before releasing — the `auxclick`
+   * fires on release — so the guard must survive until that first `auxclick`
+   * actually arrives. Later outside pointers still dismiss.
+   */
   private _ignoreTrailingAuxClick = false;
 
   public readonly isOpen = this._isOpen.asReadonly();
@@ -100,8 +102,10 @@ export class OverlayManager {
     return this._overlayRef ? this._overlayRef.backdropElement : null;
   }
 
-  // Dispose the overlay with the host. Registered in a field initializer so no
-  // constructor is needed.
+  /**
+   * Dispose the overlay with the host. Registered in a field initializer so no
+   * constructor is needed.
+   */
   private readonly _teardown = this._destroyRef.onDestroy(() => this._dispose());
 
   public open(config: ConnectedOverlayConfig): void {

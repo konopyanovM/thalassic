@@ -52,11 +52,13 @@ export class Breadcrumbs {
   public readonly ariaLabel = input<string>('Breadcrumb');
   public readonly ariaLabelledby = input<string | undefined>(undefined);
 
-  // Content
-  // Optional projected template for an item's inner content (label/icon),
-  // rendered in place of the built-in label. The list structure, links,
-  // separators, and `aria-current` stay owned by the component. Bind the item
-  // with `<ng-template let-item>`; see BreadcrumbItemContext for the full context.
+  /**
+   * Content
+   * Optional projected template for an item's inner content (label/icon),
+   * rendered in place of the built-in label. The list structure, links,
+   * separators, and `aria-current` stay owned by the component. Bind the item
+   * with `<ng-template let-item>`; see BreadcrumbItemContext for the full context.
+   */
   public readonly itemTemplate = contentChild<TemplateRef<BreadcrumbItemContext>>(TemplateRef);
 
   protected readonly classes = computed(() => {

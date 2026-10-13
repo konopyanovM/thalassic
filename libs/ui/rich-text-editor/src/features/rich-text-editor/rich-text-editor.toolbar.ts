@@ -6,19 +6,25 @@ import { RichTextEditorLabels } from './rich-text-editor.config';
 import { IS_APPLE_PLATFORM } from './rich-text-editor.constants';
 import { RichTextToolbarButton, richTextToolbarItem } from './rich-text-editor.types';
 
-// Human-readable label for a `Mod-<key>` shortcut on the current platform (e.g. ⌘B / Ctrl+B).
+/**
+ * Human-readable label for a `Mod-<key>` shortcut on the current platform (e.g. ⌘B / Ctrl+B).
+ */
 function shortcutLabel(key: string): string {
   return IS_APPLE_PLATFORM ? `⌘${key}` : `Ctrl+${key}`;
 }
 
-// Whether `markType` is applied across the selection (or is queued on an empty selection).
+/**
+ * Whether `markType` is applied across the selection (or is queued on an empty selection).
+ */
 function markActive(state: EditorState, markType: MarkType): boolean {
   const { from, $from, to, empty } = state.selection;
   if (empty) return Boolean(markType.isInSet(state.storedMarks || $from.marks()));
   return state.doc.rangeHasMark(from, to, markType);
 }
 
-// Whether the selection's textblock is exactly `nodeType` (optionally matching `attrs`).
+/**
+ * Whether the selection's textblock is exactly `nodeType` (optionally matching `attrs`).
+ */
 function blockActive(
   state: EditorState,
   nodeType: NodeType,
@@ -31,7 +37,9 @@ function blockActive(
   return to <= $from.end() && $from.parent.hasMarkup(nodeType, attrs);
 }
 
-// Whether the selection sits inside a list/blockquote of `nodeType` (walks ancestors).
+/**
+ * Whether the selection sits inside a list/blockquote of `nodeType` (walks ancestors).
+ */
 function ancestorActive(state: EditorState, nodeType: NodeType): boolean {
   const { $from } = state.selection;
   for (let depth = $from.depth; depth > 0; depth--) {
@@ -40,9 +48,11 @@ function ancestorActive(state: EditorState, nodeType: NodeType): boolean {
   return false;
 }
 
-// Toggles list membership: wraps the selection in `listType`, or lifts it out one
-// level when the selection already sits inside one — so the toolbar control both
-// enters and leaves the list instead of silently failing on a wrapped selection.
+/**
+ * Toggles list membership: wraps the selection in `listType`, or lifts it out one
+ * level when the selection already sits inside one — so the toolbar control both
+ * enters and leaves the list instead of silently failing on a wrapped selection.
+ */
 function toggleList(listType: NodeType, itemType: NodeType): Command {
   return (state, dispatch, view) => {
     const command = ancestorActive(state, listType) ? liftListItem(itemType) : wrapInList(listType);
@@ -50,8 +60,10 @@ function toggleList(listType: NodeType, itemType: NodeType): Command {
   };
 }
 
-// Toggles a wrapping node (blockquote): wraps the selection, or lifts it out when
-// the selection already sits inside one.
+/**
+ * Toggles a wrapping node (blockquote): wraps the selection, or lifts it out when
+ * the selection already sits inside one.
+ */
 function toggleWrap(nodeType: NodeType): Command {
   return (state, dispatch, view) => {
     const command = ancestorActive(state, nodeType) ? lift : wrapIn(nodeType);
@@ -59,7 +71,7 @@ function toggleWrap(nodeType: NodeType): Command {
   };
 }
 
-// Toggles between a heading of the given level and a plain paragraph.
+/** Toggles between a heading of the given level and a plain paragraph. */
 function toggleHeading(headingType: NodeType, paragraphType: NodeType, level: number): Command {
   return (state, dispatch, view) => {
     const command = blockActive(state, headingType, { level })

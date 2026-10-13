@@ -85,14 +85,16 @@ export class RichTextEditor extends ValueFormControl<string> implements OnDestro
 
   protected readonly labels: RichTextEditorLabels = this._config.labels;
 
-  // The toolbar-control map, resolved once against the schema.
+  /** The toolbar-control map, resolved once against the schema. */
   private readonly _buttons: Record<string, RichTextToolbarButton> = buildToolbarButtons(
     richTextSchema,
     this._config.labels,
   );
 
   private _view: EditorView | null = null;
-  // The most recent Markdown this component emitted, used to ignore its own value writes.
+  /**
+   * The most recent Markdown this component emitted, used to ignore its own value writes.
+   */
   private _lastEmitted = '';
 
   // Computed
@@ -107,7 +109,9 @@ export class RichTextEditor extends ValueFormControl<string> implements OnDestro
     return array.concat(this.controlClasses());
   });
 
-  // The toolbar layout resolved to renderable entries (separators and controls).
+  /**
+   * The toolbar layout resolved to renderable entries (separators and controls).
+   */
   protected readonly entries: Signal<RichTextResolvedEntry[]> = computed<RichTextResolvedEntry[]>(
     () =>
       this.toolbar().map(entry => {
@@ -117,7 +121,9 @@ export class RichTextEditor extends ValueFormControl<string> implements OnDestro
       }),
   );
 
-  // ARIA/state attributes forwarded onto the contenteditable textbox managed by ProseMirror.
+  /**
+   * ARIA/state attributes forwarded onto the contenteditable textbox managed by ProseMirror.
+   */
   private readonly _contentAttributes: Signal<Record<string, string>> = computed<
     Record<string, string>
   >(() => {
@@ -325,9 +331,11 @@ export class RichTextEditor extends ValueFormControl<string> implements OnDestro
     return SAFE_LINK_SCHEMES.includes(scheme[0].toLowerCase());
   }
 
-  // Whether the document holds no content (a single empty top-level block), so the
-  // placeholder should show. ProseMirror keeps a trailing `<br>` in empty textblocks,
-  // which defeats a CSS `:empty` check, so emptiness is derived from the document model.
+  /**
+   * Whether the document holds no content (a single empty top-level block), so the
+   * placeholder should show. ProseMirror keeps a trailing `<br>` in empty textblocks,
+   * which defeats a CSS `:empty` check, so emptiness is derived from the document model.
+   */
   private _isDocumentEmpty(): boolean {
     const state = this._editorState();
     if (!state) return true;
@@ -339,7 +347,9 @@ export class RichTextEditor extends ValueFormControl<string> implements OnDestro
     return firstChild === null || firstChild.content.size === 0;
   }
 
-  // Removes the link on the current selection, or opens the link editor to add one.
+  /**
+   * Removes the link on the current selection, or opens the link editor to add one.
+   */
   private _toggleLink(): void {
     const view = this._view;
     if (!view) return;

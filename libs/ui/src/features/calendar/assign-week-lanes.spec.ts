@@ -1,7 +1,7 @@
 import { assignWeekLanes } from './assign-week-lanes';
 import { CalendarEvent } from './calendar.types';
 
-// A Sunday-start week: Jul 19–25, 2026.
+/** A Sunday-start week: Jul 19–25, 2026. */
 const weekDays = Array.from({ length: 7 }, (_, index) => new Date(2026, 6, 19 + index));
 
 const event = (id: string, startDay: number, endDay: number): CalendarEvent => ({

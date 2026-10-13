@@ -119,11 +119,13 @@ export class ColorSwatchPicker<T = unknown, V = string> extends ValueFormControl
   }
 
   // Private methods
-  // An option is the current value when it is that value, or when both are
-  // colors that only differ in notation — a picker offering `#FFF` still shows
-  // the choice when the value it was handed back reads `#ffffff`. Anything the
-  // color parser cannot read (a theme token, an id, an enum member) is compared
-  // as given, which is the only meaningful test for it.
+  /**
+   * An option is the current value when it is that value, or when both are
+   * colors that only differ in notation — a picker offering `#FFF` still shows
+   * the choice when the value it was handed back reads `#ffffff`. Anything the
+   * color parser cannot read (a theme token, an id, an enum member) is compared
+   * as given, which is the only meaningful test for it.
+   */
   private _matches(optionValue: V): boolean {
     const value = this.value();
     if (value === null) return false;

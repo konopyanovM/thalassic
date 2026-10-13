@@ -67,8 +67,10 @@ export class DrawerService {
   private readonly _directionality = inject(Directionality);
   private readonly _config = inject(DRAWER_CONFIG);
 
-  // Currently-open drawers, tracked so `closeAll` can play each slide-out and so it
-  // closes drawers only (the CDK `Dialog` is shared with `tls-dialog`).
+  /**
+   * Currently-open drawers, tracked so `closeAll` can play each slide-out and so it
+   * closes drawers only (the CDK `Dialog` is shared with `tls-dialog`).
+   */
   private readonly _openDrawers = new Set<DrawerRef>();
 
   public open<R = unknown, D = unknown, C = unknown>(
@@ -139,9 +141,11 @@ export class DrawerService {
   }
 
   // Private
-  // The drag gesture lives on the drawer container, whose inputs cannot be bound
-  // because the CDK instantiates it rather than a template, so its configuration
-  // is handed down through the injector instead.
+  /**
+   * The drag gesture lives on the drawer container, whose inputs cannot be bound
+   * because the CDK instantiates it rather than a template, so its configuration
+   * is handed down through the injector instead.
+   */
   private _buildPanConfig(config: DrawerPanelConfig): PanConfig {
     return {
       ...DEFAULT_PAN_CONFIG,
@@ -156,8 +160,10 @@ export class DrawerService {
     };
   }
 
-  // A bottom sheet is dragged down to dismiss often enough that its grabber is
-  // expected; a panel on any other side shows one only when asked.
+  /**
+   * A bottom sheet is dragged down to dismiss often enough that its grabber is
+   * expected; a panel on any other side shows one only when asked.
+   */
   private _resolveGrabber(grabber: drawerGrabber, side: drawerSide): boolean {
     if (grabber === 'auto') return side === 'bottom';
     return grabber;

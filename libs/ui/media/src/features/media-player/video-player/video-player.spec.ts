@@ -20,11 +20,13 @@ class VideoPlayerHost {
 
 let restoreTextTracks: () => void;
 
-// jsdom implements no media playback: HTMLMediaElement.prototype.play logs a
-// "not implemented" warning and returns undefined rather than a Promise,
-// which breaks MediaController.togglePlay's `.catch` on the result. Stub it
-// with a resolved Promise for the duration of this file, standing in for a
-// real browser's playback promise.
+/**
+ * jsdom implements no media playback: HTMLMediaElement.prototype.play logs a
+ * "not implemented" warning and returns undefined rather than a Promise,
+ * which breaks MediaController.togglePlay's `.catch` on the result. Stub it
+ * with a resolved Promise for the duration of this file, standing in for a
+ * real browser's playback promise.
+ */
 let originalPlay: typeof HTMLMediaElement.prototype.play;
 
 beforeAll(() => {

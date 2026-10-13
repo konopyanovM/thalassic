@@ -11,11 +11,13 @@ import { DrawerOffset, DrawerSharedPair, DrawerSlideTiming } from './drawer.type
  * the drag is exactly the frame the slide would show there.
  */
 export class DrawerOpenGesture {
-  // Paused animations whose current time the drag sets; linear, so the panel
-  // moves with the finger one to one.
+  /**
+   * Paused animations whose current time the drag sets; linear, so the panel
+   * moves with the finger one to one.
+   */
   private readonly _scrubs: Animation[];
   private readonly _distance: number;
-  // Share of the way open, 0 to 1.
+  /** Share of the way open, 0 to 1. */
   private _progress = 0;
 
   constructor(

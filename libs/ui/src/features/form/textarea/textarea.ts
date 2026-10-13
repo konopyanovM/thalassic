@@ -49,7 +49,7 @@ export class Textarea extends ValueFormControl<string> {
     this._config.autosize,
     { transform: booleanAttribute },
   );
-  // Upper bound, in rows, on the autosized height. `0` grows without a cap.
+  /** Upper bound, in rows, on the autosized height. `0` grows without a cap. */
   public readonly maxRows: InputSignalWithTransform<number, unknown> = input<number, unknown>(
     this._config.maxRows,
     { transform: numberAttribute },

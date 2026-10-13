@@ -3,12 +3,16 @@ import { inject, Injectable } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { map, Observable, shareReplay, throwError } from 'rxjs';
 
-// Elements removed from fetched SVG markup: script execution, nested browsing
-// contexts, and foreignObject (which can embed arbitrary HTML).
+/**
+ * Elements removed from fetched SVG markup: script execution, nested browsing
+ * contexts, and foreignObject (which can embed arbitrary HTML).
+ */
 const DISALLOWED_ELEMENTS = ['script', 'foreignobject', 'iframe', 'object', 'embed', 'link', 'meta'];
 
-// Attribute URLs must be same-document references (`#id`); anything else —
-// external resources, `javascript:`, `data:` — is stripped.
+/**
+ * Attribute URLs must be same-document references (`#id`); anything else —
+ * external resources, `javascript:`, `data:` — is stripped.
+ */
 const URL_ATTRIBUTES = ['href', 'xlink:href', 'src'];
 
 @Injectable({ providedIn: 'root' })
