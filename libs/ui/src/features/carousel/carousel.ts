@@ -23,7 +23,13 @@ import {
   viewChild,
   WritableSignal,
 } from '@angular/core';
-import { MotionService, PanDirective, PanEvent } from '@thalassic/core';
+import {
+  MotionService,
+  PanDirective,
+  PanEvent,
+  resistPagingDrag,
+  resolvePagingStep,
+} from '@thalassic/core';
 import { Button } from '../button';
 import { Icon } from '../icon';
 import { CarouselSlide } from './carousel-slide';
@@ -329,20 +335,21 @@ export class Carousel {
   }
 
   protected onPanEnd(event: PanEvent): void {
-    const offset = this._resistedOffset(event.deltaX - this._lockDelta);
-    // Forward travel heads toward the next slide; the physical direction flips in RTL.
-    const factor = this._isRtl() ? 1 : -1;
-    const travelled = offset * factor;
-    const velocity = event.velocityX * factor;
-    const step = travelled >= 0 ? 1 : -1;
-
-    const width = this._viewport().nativeElement.getBoundingClientRect().width;
-    const dragged = width > 0 && Math.abs(travelled) >= width * CAROUSEL_SWIPE_THRESHOLD_RATIO;
-    const flicked = velocity * step >= CAROUSEL_FLICK_VELOCITY;
+    const heading = resolvePagingStep({
+      offset: this._resistedOffset(event.deltaX - this._lockDelta),
+      velocity: event.velocityX,
+      extent: this._viewport().nativeElement.getBoundingClientRect().width,
+      commitRatio: CAROUSEL_SWIPE_THRESHOLD_RATIO,
+      flickVelocity: CAROUSEL_FLICK_VELOCITY,
+    });
 
     this._settleDrag();
 
-    if (dragged || flicked) this._advance(step, this.loop());
+    if (heading === 0) return;
+    // The track heading toward the inline start brings on the next slide; the
+    // physical direction that is flips in RTL.
+    const forward = this._isRtl() ? heading > 0 : heading < 0;
+    this._advance(forward ? 1 : -1, this.loop());
   }
 
   protected onPanCancel(): void {
@@ -399,9 +406,9 @@ export class Carousel {
    */
   private _resistedOffset(offset: number): number {
     const forward = this._isRtl() ? offset > 0 : offset < 0;
-    const blocked = forward ? !this.canNext() : !this.canPrevious();
+    const open = forward ? this.canNext() : this.canPrevious();
 
-    return blocked ? offset / CAROUSEL_EDGE_DRAG_RESISTANCE : offset;
+    return resistPagingDrag(offset, open, CAROUSEL_EDGE_DRAG_RESISTANCE);
   }
 
   private _applyDragOffset(offset: number): void {

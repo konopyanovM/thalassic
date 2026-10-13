@@ -3,5 +3,6 @@ export * from './pan.constants';
 export * from './pan.directive';
 export * from './pan.token';
 export * from './pan.types';
+export * from './paging';
 export * from './swipe.directive';
 export * from './touch-action-claims-axis';

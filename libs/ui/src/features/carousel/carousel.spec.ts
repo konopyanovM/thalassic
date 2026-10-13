@@ -394,6 +394,33 @@ describe('Carousel', () => {
       expect(host.selected()).toBe(1);
     });
 
+    it('stays on the slide when a drag carried past the threshold is flicked back', async () => {
+      const viewport = viewportElement();
+      viewport.getBoundingClientRect = () =>
+        ({
+          left: 0,
+          right: 400,
+          width: 400,
+          height: 300,
+          top: 0,
+          bottom: 300,
+          x: 0,
+          y: 0,
+          toJSON: () => ({}),
+        }) as DOMRect;
+
+      viewport.dispatchEvent(createPointerEvent('pointerdown', { x: 200, y: 150, timeStamp: 0 }));
+      viewport.dispatchEvent(createPointerEvent('pointermove', { x: 180, y: 150, timeStamp: 10 }));
+      viewport.dispatchEvent(createPointerEvent('pointermove', { x: 60, y: 150, timeStamp: 100 }));
+      // Thrown back the other way, and let go still past the threshold.
+      viewport.dispatchEvent(createPointerEvent('pointermove', { x: 70, y: 150, timeStamp: 250 }));
+      viewport.dispatchEvent(createPointerEvent('pointermove', { x: 100, y: 150, timeStamp: 270 }));
+      viewport.dispatchEvent(createPointerEvent('pointerup', { x: 100, y: 150, timeStamp: 270 }));
+      await settle();
+
+      expect(host.selected()).toBe(0);
+    });
+
     it('damps a drag at the edge of the track instead of following the finger', async () => {
       const viewport = viewportElement();
       viewport.dispatchEvent(createPointerEvent('pointerdown', { x: 200, y: 150, timeStamp: 0 }));
