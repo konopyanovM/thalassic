@@ -2,6 +2,7 @@
 @use '../../mixins' as mixins;
 @use 'compact';
 @use 'lines';
+@use 'peek';
 
 .tls-calendar-month-view {
   // Lane geometry shared by the cell height and the bar overlay. The day-number reservation
@@ -306,6 +307,21 @@
       aspect-ratio: 1;
 
       overflow: hidden;
+    }
+  }
+
+  // Peek weeks dissolve toward the grid's edge. The mask sits on the viewport rather than on
+  // the rows, so it holds still while a month-navigation scroll slides the grid beneath it:
+  // a week fades as it crosses the edge instead of carrying an opacity of its own along.
+  &--peek {
+    .tls-calendar-month-view__viewport {
+      // Share of the viewport's height that one side's peek weeks take up. Every week row is
+      // equally tall, so the row counts alone locate where the month's own weeks begin.
+      --tls-calendar-peek-extent: calc(
+        100% * var(--tls-calendar-peek-weeks) / var(--tls-calendar-week-rows)
+      );
+
+      mask-image: peek.fade(var(--tls-calendar-peek-extent));
     }
   }
 }

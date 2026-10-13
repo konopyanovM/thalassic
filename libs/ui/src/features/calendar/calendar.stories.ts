@@ -48,6 +48,7 @@ const meta: Meta<Calendar> = {
     compact: 'auto',
     squareCells: false,
     swipeNavigation: false,
+    peekWeeks: 0,
     ariaLabel: 'Calendar',
     events: SAMPLE_EVENTS,
   },
@@ -64,6 +65,7 @@ const meta: Meta<Calendar> = {
     compact: { control: { type: 'select' }, options: [true, false, 'auto'] },
     squareCells: { control: { type: 'boolean' } },
     swipeNavigation: { control: { type: 'boolean' } },
+    peekWeeks: { control: { type: 'number', min: 0 } },
     weekStartsOn: { control: { type: 'select' }, options: [0, 1, 2, 3, 4, 5, 6] },
     hourStart: { control: { type: 'number', min: 0, max: 24 } },
     hourEnd: { control: { type: 'number', min: 0, max: 24 } },
@@ -88,6 +90,14 @@ export const Default: Story = {};
 /** Vertical touch swipe over the month grid pages it: up to the next month, down to the previous. */
 export const SwipeNavigation: Story = {
   args: { swipeNavigation: true },
+};
+
+/**
+ * Peek weeks: a further week above and below the month's own six, dissolving toward the grid's
+ * edge. Navigating slides the weeks beneath the fade, so they dim and clear as they cross it.
+ */
+export const PeekWeeks: Story = {
+  args: { peekWeeks: 1 },
 };
 
 /** Week view: a time-grid with overlapping events laid into side-by-side lanes. */

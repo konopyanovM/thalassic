@@ -25,9 +25,7 @@ import {
   eachDayOfInterval,
   format,
   isSameDay,
-  isSameMonth,
-  startOfMonth,
-  startOfWeek
+  isSameMonth
 } from 'date-fns';
 import { LOCALE_CONFIG, localeFormatOptions } from '../../abstract/locale';
 import { color } from '../../types';
@@ -35,13 +33,9 @@ import { NOW_REFRESH_INTERVAL_MS } from '../../constants';
 import { createDaySignal, createNowSignal, rotateWeekDays } from '../../utils';
 import { assignWeekLanes } from './assign-week-lanes';
 import { buildMonthScrollPlan, MonthScrollPlan } from './build-month-scroll-plan';
+import { buildMonthWindow, MonthWindow } from './build-month-window';
 import { CalendarEventItem } from './calendar-event';
-import {
-  DAY_NUMBER_FORMAT,
-  DAYS_PER_WEEK,
-  MAX_DAY_MARKERS,
-  MONTH_GRID_ROWS
-} from './calendar.constants';
+import { DAY_NUMBER_FORMAT, DAYS_PER_WEEK, MAX_DAY_MARKERS } from './calendar.constants';
 import { CALENDAR_CONFIG } from './calendar.token';
 import { CalendarDayContext, CalendarEvent, CalendarEventContext } from './calendar.types';
 
@@ -88,6 +82,9 @@ interface MonthWeek {
   host: {
     class: 'tls-calendar-month-view',
     '[class.tls-calendar-month-view--square]': 'squareCells()',
+    '[class.tls-calendar-month-view--peek]': 'peekWeeks() > 0',
+    '[style.--tls-calendar-peek-weeks]': 'peekWeeks()',
+    '[style.--tls-calendar-week-rows]': 'gridWindow().weekCount',
   },
 })
 export class CalendarMonthView {
@@ -105,6 +102,11 @@ export class CalendarMonthView {
   public readonly maxEventsPerDay: InputSignal<number> = input.required<number>();
   /** Whether day cells are held to a 1:1 ratio instead of sizing to the events they hold. */
   public readonly squareCells: InputSignal<boolean> = input<boolean>(false);
+  /**
+   * Week rows rendered beyond the month's own window, above and below it alike, fading out
+   * toward the grid's edge.
+   */
+  public readonly peekWeeks: InputSignal<number> = input<number>(0);
   public readonly eventTemplate = input<TemplateRef<CalendarEventContext> | undefined>(undefined);
   /** Replaces what a day cell renders, leaving the cell's own semantics and chrome in place. */
   public readonly dayTemplate = input<TemplateRef<CalendarDayContext> | undefined>(undefined);
@@ -132,6 +134,11 @@ export class CalendarMonthView {
   private _renderedDate: Date | null = null;
 
   // Computed
+  /** The week rows the grid holds at rest: the month's window plus its peek weeks. */
+  protected readonly gridWindow: Signal<MonthWindow> = computed(() =>
+    buildMonthWindow(this.activeDate(), this.weekStartsOn(), this.peekWeeks()),
+  );
+
   protected readonly weekdayHeaders: Signal<string[]> = computed(() =>
     rotateWeekDays(this.weekDays(), this.weekStartsOn()),
   );
@@ -142,14 +149,13 @@ export class CalendarMonthView {
     const events = this.events();
     const today = this._today();
 
-    // A fixed 6-week window keeps the grid height from reflowing between months. While a
+    // A window of fixed length keeps the grid height from reflowing between months. While a
     // navigation scroll plays, the window widens to the union of the outgoing and incoming
     // grids so the rows they share stay one element travelling between them.
     const plan = this._scrollPlan();
-    const windowStart = plan
-      ? plan.unionStart
-      : startOfWeek(startOfMonth(activeDate), { weekStartsOn: this.weekStartsOn() });
-    const weekCount = plan ? plan.weekCount : MONTH_GRID_ROWS;
+    const gridWindow = this.gridWindow();
+    const windowStart = plan ? plan.unionStart : gridWindow.start;
+    const weekCount = plan ? plan.weekCount : gridWindow.weekCount;
     const days = eachDayOfInterval({
       start: windowStart,
       end: addDays(windowStart, weekCount * DAYS_PER_WEEK - 1),
@@ -253,7 +259,7 @@ export class CalendarMonthView {
    * template binding cannot express.
    */
   private _scrollBetween(from: Date, to: Date): void {
-    const plan = buildMonthScrollPlan(from, to, this.weekStartsOn());
+    const plan = buildMonthScrollPlan(from, to, this.weekStartsOn(), this.peekWeeks());
     if (!plan) return;
 
     // A navigation mid-scroll settles the previous scroll first, so the grid and viewport
@@ -264,7 +270,7 @@ export class CalendarMonthView {
     const restingHeight = grid.getBoundingClientRect().height;
     // Nothing visible to scroll (display: none, detached test DOM) — swap without ceremony.
     if (restingHeight === 0) return;
-    const rowHeight = restingHeight / MONTH_GRID_ROWS;
+    const rowHeight = restingHeight / this.gridWindow().weekCount;
 
     // The viewport wraps the resting grid, so its own height (grid plus its border) is held
     // while the widened grid overflows it; the union render, the pinned rows, and the

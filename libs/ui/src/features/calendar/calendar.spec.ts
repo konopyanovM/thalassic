@@ -72,6 +72,43 @@ describe('Calendar', () => {
     expect(latest.end.getTime()).toBeGreaterThan(new Date(2026, 7, 31).getTime());
   });
 
+  it('renders the peek weeks around the six-week grid', async () => {
+    fixture.componentRef.setInput('peekWeeks', 1);
+    await fixture.whenStable();
+
+    const cells = queryDayCells();
+    expect(cells.length).toBe((MONTH_GRID_ROWS + 2) * DAYS_PER_WEEK);
+    // Sunday-start July 2026 opens on Jun 28; the peek week above it opens on Jun 21.
+    expect((cells[0].textContent ?? '').trim()).toBe('21');
+    expect(queryMonthView()?.classList).toContain('tls-calendar-month-view--peek');
+  });
+
+  it('settles a peek that is no whole count of weeks on one that is', async () => {
+    fixture.componentRef.setInput('peekWeeks', 1.8);
+    await fixture.whenStable();
+    expect(queryDayCells().length).toBe((MONTH_GRID_ROWS + 2) * DAYS_PER_WEEK);
+
+    fixture.componentRef.setInput('peekWeeks', -2);
+    await fixture.whenStable();
+    expect(queryDayCells().length).toBe(MONTH_GRID_ROWS * DAYS_PER_WEEK);
+  });
+
+  it('leaves the grid unfaded without peek weeks', () => {
+    expect(queryMonthView()?.classList).not.toContain('tls-calendar-month-view--peek');
+  });
+
+  it('reports a range that takes in the peek weeks', async () => {
+    const ranges: CalendarRange[] = [];
+    component.rangeChange.subscribe(range => ranges.push(range));
+    fixture.componentRef.setInput('peekWeeks', 1);
+    await fixture.whenStable();
+
+    const latest = ranges[ranges.length - 1];
+    expect(latest.start).toEqual(new Date(2026, 5, 21));
+    // Half-open: eight weeks on from the start.
+    expect(latest.end).toEqual(new Date(2026, 7, 16));
+  });
+
   it('offers only the views it was given, in that order', async () => {
     fixture.componentRef.setInput('views', ['agenda', 'day']);
     await fixture.whenStable();

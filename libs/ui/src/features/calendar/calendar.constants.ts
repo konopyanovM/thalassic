@@ -3,7 +3,7 @@ import { calendarView } from './calendar.types';
 /** Days in a calendar week. */
 export const DAYS_PER_WEEK = 7;
 
-/** Fixed number of week rows in the month grid, so its height never reflows between months. */
+/** Week rows a month's own window spans, fixed so the grid's height never reflows between months. */
 export const MONTH_GRID_ROWS = 6;
 
 /** Default cap on events shown in a month day cell before a "+N more" affordance appears. */

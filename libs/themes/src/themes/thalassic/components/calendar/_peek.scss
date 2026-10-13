@@ -1,0 +1,46 @@
+@use 'sass:list';
+@use 'sass:math';
+
+// How many straight segments approximate one side's fade. A gradient only interpolates in straight
+// lines between its stops, so the curve is sampled; at this count the joins are finer than a
+// screen can show.
+$segments: 16;
+
+// How far the curve leans toward the grid's edge: 1 leaves the S-curve symmetric, less than 1
+// brings the opacity up sooner.
+$lean: 0.6;
+
+// Opacity of the fade at `$position`, running from the grid's edge (0) to the month's own first
+// row (1).
+//
+// An S-curve, level at both ends, so the fade neither starts nor stops at a visible line: it
+// leaves full transparency as gently as it settles into the solid rows. The curve leans toward
+// the edge because a row's content does not sit evenly along its height — a day's number hugs
+// the row's top — and a symmetric one would leave the upper peek week's numbers too faint to read
+// while the lower one's stayed nearly solid.
+@function opacity-at($position) {
+  $leaned: math.pow($position, $lean);
+
+  @return $leaned * $leaned * (3 - 2 * $leaned);
+}
+
+// The mask that dissolves the peek weeks: clear at both edges of the box, solid across the middle,
+// with `$extent` — the height one side's peek weeks take up — as the run each fade covers.
+@function fade($extent) {
+  $leading: ();
+  $trailing: ();
+
+  @for $index from 0 through $segments {
+    $position: math.div($index, $segments);
+    $alpha: opacity-at($position);
+    $leading: list.append($leading, rgba(0, 0, 0, $alpha) calc(#{$extent} * #{$position}), comma);
+    // Prepended, so the lower fade runs solid-to-clear as the gradient continues downward.
+    $trailing: list.join(
+      (rgba(0, 0, 0, $alpha) calc(100% - #{$extent} * #{$position})),
+      $trailing,
+      comma
+    );
+  }
+
+  @return linear-gradient(to bottom, list.join($leading, $trailing, comma));
+}

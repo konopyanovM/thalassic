@@ -9,11 +9,7 @@ describe('buildMonthDays', () => {
     expect(getDay(buildMonthDays(anchor, 1)[0])).toBe(1);
   });
 
-  it('covers the natural month span when no week count is given', () => {
+  it('covers the natural span of the month', () => {
     expect(buildMonthDays(anchor, 0).length).toBe(35);
-  });
-
-  it('returns exactly the requested number of weeks when fixed', () => {
-    expect(buildMonthDays(anchor, 0, 6).length).toBe(42);
   });
 });

@@ -1,4 +1,5 @@
-import { Day, differenceInCalendarDays, startOfMonth, startOfWeek } from 'date-fns';
+import { Day, differenceInCalendarDays } from 'date-fns';
+import { buildMonthWindow } from './build-month-window';
 import { DAYS_PER_WEEK, MONTH_GRID_ROWS } from './calendar.constants';
 
 /**
@@ -25,21 +26,24 @@ export const buildMonthScrollPlan = (
   from: Date,
   to: Date,
   weekStartsOn: Day,
+  peekWeeks: number,
 ): MonthScrollPlan | null => {
-  const fromStart = startOfWeek(startOfMonth(from), { weekStartsOn });
-  const toStart = startOfWeek(startOfMonth(to), { weekStartsOn });
+  const fromWindow = buildMonthWindow(from, weekStartsOn, peekWeeks);
+  const toWindow = buildMonthWindow(to, weekStartsOn, peekWeeks);
 
   // Calendar days, not milliseconds: a DST shift must not break the whole-week arithmetic.
-  const offsetWeeks = differenceInCalendarDays(toStart, fromStart) / DAYS_PER_WEEK;
+  const offsetWeeks = differenceInCalendarDays(toWindow.start, fromWindow.start) / DAYS_PER_WEEK;
   if (offsetWeeks === 0) return null;
-  // Beyond a full grid of distance the windows no longer touch; adjacent months always do.
+  // Measured against the months' own weeks rather than the widened windows, so how far a jump
+  // may scroll does not grow with the peek: beyond a full month grid of distance the two
+  // months no longer touch, while adjacent months always do.
   if (Math.abs(offsetWeeks) > MONTH_GRID_ROWS) return null;
 
   const distance = Math.abs(offsetWeeks);
   const forward = offsetWeeks > 0;
   return {
-    unionStart: forward ? fromStart : toStart,
-    weekCount: distance + MONTH_GRID_ROWS,
+    unionStart: forward ? fromWindow.start : toWindow.start,
+    weekCount: distance + fromWindow.weekCount,
     fromRow: forward ? 0 : distance,
     toRow: forward ? distance : 0,
   };

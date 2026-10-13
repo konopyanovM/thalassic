@@ -6,6 +6,7 @@ import {
   inject,
   input,
   InputSignal,
+  InputSignalWithTransform,
   model,
   ModelSignal,
   output,
@@ -35,14 +36,15 @@ import { Button } from '../button';
 import { ToggleGroup } from '../form/toggle-group';
 import { Icon } from '../icon';
 import { NOW_REFRESH_INTERVAL_MS } from '../../constants';
-import { buildMonthDays, createDaySignal, createNowSignal } from '../../utils';
+import { createDaySignal, createNowSignal } from '../../utils';
+import { buildMonthWindow } from './build-month-window';
 import { CalendarAgendaView } from './calendar-agenda-view';
 import { CalendarMonthView } from './calendar-month-view';
 import { CalendarTimeGrid } from './calendar-time-grid';
 import { CalendarLabels } from './calendar.config';
 import {
   DAY_TITLE_FORMAT,
-  MONTH_GRID_ROWS,
+  DAYS_PER_WEEK,
   MONTH_TITLE_FORMAT,
   SWIPE_POINTER_TYPES,
 } from './calendar.constants';
@@ -115,6 +117,16 @@ export class Calendar {
    * browser, so it belongs only on a grid that is not itself inside something it must scroll.
    */
   public readonly swipeNavigation: InputSignal<boolean> = input<boolean>(false);
+  /**
+   * Week rows the month grid shows beyond the month's own six, above and below alike, fading
+   * out toward the grid's edge so the month reads as a stretch of a continuous run of weeks.
+   * They are days like any other: selectable, and covered by the range `rangeChange` reports.
+   */
+  public readonly peekWeeks: InputSignalWithTransform<number, number> = input(0, {
+    // A count of week rows: a fraction would open the grid mid-week and a negative would cut
+    // into the month itself, so either settles on the nearest count that still draws a grid.
+    transform: (value: number) => Math.max(0, Math.trunc(value) || 0),
+  });
   /** Accessible name forwarded to the active view's grid. */
   public readonly ariaLabel = input<string | undefined>(undefined);
 
@@ -210,9 +222,9 @@ export class Calendar {
         return { start: startOfMonth(activeDate), end: startOfDay(addDays(endOfMonth(activeDate), 1)) };
       }
       default: {
-        // Mirror the month view's fixed 6-week window.
-        const days = buildMonthDays(activeDate, weekStartsOn, MONTH_GRID_ROWS);
-        return { start: days[0], end: addDays(days[days.length - 1], 1) };
+        // The month grid's whole window, peek weeks included, so every day it draws is covered.
+        const { start, weekCount } = buildMonthWindow(activeDate, weekStartsOn, this.peekWeeks());
+        return { start, end: addDays(start, weekCount * DAYS_PER_WEEK) };
       }
     }
   });
