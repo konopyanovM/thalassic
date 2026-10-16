@@ -98,6 +98,16 @@ export const CustomErrorMessage: Story = {
   }),
 };
 
+export const WithHint: Story = {
+  args: {
+    label: 'Password',
+    hint: 'Use at least 8 characters, with an uppercase letter, a lowercase letter and a number.',
+  },
+  render: renderFormItem({
+    control: `<tls-input type="password" autocomplete="new-password" />`,
+  }),
+};
+
 export const OptionalMarker: Story = {
   args: {
     showRequiredMarker: false,

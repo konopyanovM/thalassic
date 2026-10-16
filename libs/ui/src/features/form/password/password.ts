@@ -41,6 +41,12 @@ export class Password extends ValueFormControl<string> {
     this._config.fluid,
     { transform: booleanAttribute },
   );
+  /**
+   * Autofill hint forwarded to the native input's `autocomplete` attribute (`email`, `username`,
+   * `current-password`, `new-password`, …), so browsers and password managers know what the field
+   * holds. Unset, the attribute is omitted and the browser guesses.
+   */
+  public readonly autocomplete = input<AutoFill | undefined>(undefined);
 
   protected readonly startIconTemplate = contentChild<TemplateRef<unknown>>('startIcon');
   protected readonly showIconTemplate = contentChild<TemplateRef<unknown>>('showIcon');

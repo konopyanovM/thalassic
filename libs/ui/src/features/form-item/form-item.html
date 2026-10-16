@@ -17,14 +17,16 @@
     <ng-content></ng-content>
   </div>
 </div>
-@if (reserveErrorSpace() || (displayErrors() && isInvalid()) || hasCounter()) {
+@if (reserveErrorSpace() || showError() || showHint() || hasCounter()) {
   <small class="form-item-footer">
-    @if (displayErrors() && isInvalid()) {
+    @if (showError()) {
       <span class="form-item-error">
         <span class="form-item-error__text" [id]="errorId">
           {{ firstErrorMessage() }}
         </span>
       </span>
+    } @else if (showHint()) {
+      <span class="form-item-hint" [id]="hintId">{{ hint() }}</span>
     }
     @if (hasCounter()) {
       <span

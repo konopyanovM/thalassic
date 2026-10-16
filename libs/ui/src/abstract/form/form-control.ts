@@ -62,6 +62,12 @@ export abstract class FormControl<TValue = unknown> implements FormUiControl<TVa
   public readonly errorMessageId: WritableSignal<string | null> = signal<string | null>(null);
 
   /**
+   * `id` of the hint element, set by an enclosing `tls-form-item` while it renders a hint. Merged
+   * with `ariaDescribedby` so the guidance shown beneath the control is announced on focus.
+   */
+  public readonly hintMessageId: WritableSignal<string | null> = signal<string | null>(null);
+
+  /**
    * `id` of the visible `<label>` element rendered by an enclosing `tls-form-item`. Merged with
    * `ariaLabelledby` so the control's `aria-labelledby` points at the form-item label while still
    * honouring any consumer-supplied labelling.
@@ -77,12 +83,15 @@ export abstract class FormControl<TValue = unknown> implements FormUiControl<TVa
   /** Whether this control has a single native labelable element that a `<label for>` can target. */
   readonly supportsLabelFor: boolean = false;
 
-  /** Combined `aria-describedby` value (consumer description + form-item error), or null when empty. */
+  /** Combined `aria-describedby` value (consumer description + form-item hint and error), or null when empty. */
   protected readonly describedBy: Signal<string | null> = computed<string | null>(() => {
     const ids: string[] = [];
 
     const describedby = this.ariaDescribedby();
     if (describedby) ids.push(describedby);
+
+    const hintId = this.hintMessageId();
+    if (hintId) ids.push(hintId);
 
     const errorId = this.errorMessageId();
     if (errorId) ids.push(errorId);

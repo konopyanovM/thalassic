@@ -20,4 +20,15 @@ describe('Password', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('hands an autofill hint to the native field, and none when unset', async () => {
+    const inputElement: HTMLInputElement = fixture.nativeElement.querySelector('input');
+
+    expect(inputElement.hasAttribute('autocomplete')).toBe(false);
+
+    fixture.componentRef.setInput('autocomplete', 'new-password');
+    await fixture.whenStable();
+
+    expect(inputElement.getAttribute('autocomplete')).toBe('new-password');
+  });
 });

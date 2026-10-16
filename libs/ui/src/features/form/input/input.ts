@@ -55,6 +55,13 @@ export class Input extends ValueFormControl<string> {
    */
   public readonly maxLength = input<number | undefined>(undefined);
 
+  /**
+   * Autofill hint forwarded to the native input's `autocomplete` attribute (`email`, `username`,
+   * `current-password`, `new-password`, …), so browsers and password managers know what the field
+   * holds. Unset, the attribute is omitted and the browser guesses.
+   */
+  public readonly autocomplete = input<AutoFill | undefined>(undefined);
+
   protected readonly classes: Signal<string[]> = computed(() => {
     const array: string[] = [this.CLASS_NAME];
 

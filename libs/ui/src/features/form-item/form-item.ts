@@ -40,6 +40,9 @@ export class FormItem {
   /** Stable id assigned to the native control element, linked from the label via `for`. */
   protected readonly controlId = `tls-form-item-control-${FormItem._counter}`;
 
+  /** Stable id for the hint element, linked to the control via `aria-describedby`. */
+  protected readonly hintId = `tls-form-item-hint-${FormItem._counter}`;
+
   /** Stable id for the error element, linked to the control via `aria-describedby`. */
   protected readonly errorId = `tls-form-item-error-${FormItem._counter++}`;
 
@@ -65,6 +68,11 @@ export class FormItem {
    * footer's trailing edge, tracking the projected control's string value as it is typed.
    */
   public maxLength = input<number | undefined>(undefined);
+  /**
+   * Guidance rendered in the footer beneath the control — the format or rules a value must meet.
+   * A displayed validation error takes its place, so the footer holds one message at a time.
+   */
+  public hint = input<string | undefined>(undefined);
 
   protected isInvalid = computed(() => {
     const control = this.control();
@@ -72,6 +80,12 @@ export class FormItem {
 
     return control.showError();
   });
+
+  /** Whether the footer renders the control's validation error. */
+  protected showError = computed(() => this.displayErrors() && this.isInvalid());
+
+  /** Whether the footer renders the hint, which yields to a displayed error. */
+  protected showHint = computed(() => Boolean(this.hint()) && !this.showError());
 
   protected showRequired = computed(() => {
     const control = this.control();
@@ -164,10 +178,10 @@ export class FormItem {
       // Assign the stable control id so the label's `for` attribute can target the native element.
       control.formItemInputId.set(control.supportsLabelFor ? this.controlId : null);
 
-      // Point the control's aria-describedby at the rendered error element (and clear it when no
-      // error is shown) so screen readers announce the validation message on focus.
-      const describesError = this.displayErrors() && this.isInvalid();
-      control.errorMessageId.set(describesError ? this.errorId : null);
+      // Point the control's aria-describedby at the rendered hint and error elements (and clear
+      // each when it is not shown) so screen readers announce them on focus.
+      control.hintMessageId.set(this.showHint() ? this.hintId : null);
+      control.errorMessageId.set(this.showError() ? this.errorId : null);
     });
   }
 

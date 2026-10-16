@@ -48,6 +48,17 @@ describe('Input', () => {
     expect(inputElement.getAttribute('maxlength')).toBe('80');
   });
 
+  it('hands an autofill hint to the native field, and none when unset', async () => {
+    const inputElement: HTMLInputElement = fixture.nativeElement.querySelector('input');
+
+    expect(inputElement.hasAttribute('autocomplete')).toBe(false);
+
+    fixture.componentRef.setInput('autocomplete', 'email');
+    await fixture.whenStable();
+
+    expect(inputElement.getAttribute('autocomplete')).toBe('email');
+  });
+
   it('carries the autosize class only when asked to size to its content', async () => {
     const inputElement: HTMLInputElement = fixture.nativeElement.querySelector('input');
 

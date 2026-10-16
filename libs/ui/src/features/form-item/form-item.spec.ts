@@ -39,6 +39,19 @@ class CounterHostComponent {
   text = signal('Alex');
 }
 
+@Component({
+  imports: [FormItem, Input],
+  template: `
+    <tls-form-item label="Password" hint="At least 8 characters">
+      <tls-input [invalid]="invalid()" [touched]="true" [errors]="errors" />
+    </tls-form-item>
+  `,
+})
+class HintHostComponent {
+  invalid = signal(false);
+  errors = [{ kind: 'minLength', message: 'Too short' }];
+}
+
 describe('FormItem', () => {
   let component: FormItem;
   let fixture: ComponentFixture<FormItem>;
@@ -82,6 +95,32 @@ describe('FormItem', () => {
 
     it('should render no counter without a budget', () => {
       expect(fixture.nativeElement.querySelector('.form-item-counter')).toBeNull();
+    });
+  });
+
+  describe('hint', () => {
+    it('should render the hint and describe the control with it', async () => {
+      const hintFixture = TestBed.createComponent(HintHostComponent);
+      hintFixture.detectChanges();
+      await hintFixture.whenStable();
+
+      const hint: HTMLElement = hintFixture.nativeElement.querySelector('.form-item-hint');
+      const inputElement: HTMLInputElement = hintFixture.nativeElement.querySelector('input');
+      expect(hint.textContent).toBe('At least 8 characters');
+      expect(inputElement.getAttribute('aria-describedby')).toBe(hint.id);
+    });
+
+    it('should give way to a displayed error', async () => {
+      const hintFixture = TestBed.createComponent(HintHostComponent);
+      hintFixture.componentInstance.invalid.set(true);
+      hintFixture.detectChanges();
+      await hintFixture.whenStable();
+
+      const error: HTMLElement = hintFixture.nativeElement.querySelector('.form-item-error__text');
+      const inputElement: HTMLInputElement = hintFixture.nativeElement.querySelector('input');
+      expect(hintFixture.nativeElement.querySelector('.form-item-hint')).toBeNull();
+      expect(error.textContent?.trim()).toBe('Too short');
+      expect(inputElement.getAttribute('aria-describedby')).toBe(error.id);
     });
   });
 

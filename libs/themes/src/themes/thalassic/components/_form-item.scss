@@ -113,6 +113,10 @@
     letter-spacing: var(--font-label-small-letter-spacing);
   }
 
+  .form-item-hint {
+    color: var(--color-on-surface-variant);
+  }
+
   // Sits on the footer's trailing edge whether or not an error occupies the start.
   .form-item-counter {
     margin-inline-start: auto;
