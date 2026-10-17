@@ -1,7 +1,42 @@
-<h3 class="heading text-title-lg">{{ mode() === 'light' ? 'Light' : 'Dark' }}</h3>
+<div class="heading">
+  <h3 class="heading__title text-title-lg">{{ modeTitle() }}</h3>
+  @if (seedTone() !== null) {
+    <p class="heading__note text-body-sm">The seed color sits at tone {{ seedTone() }}.</p>
+  }
+</div>
 @for (group of groups(); track group.title) {
   <section class="group">
     <h4 class="group__title text-title-sm">{{ group.title }}</h4>
+    <ul class="tones">
+      @for (role of group.roles; track role) {
+        <li class="tone">
+          <span class="tone__swatch" [style.background-color]="roles()[role]" aria-hidden="true"></span>
+          <span class="tone__role text-label-md">{{ role }}</span>
+          <tls-input-number
+            #toneField
+            class="tone__input"
+            size="sm"
+            fluid
+            [min]="toneMin"
+            [max]="toneMax"
+            [value]="tones()[role]"
+            [ariaLabel]="modeTitle() + ' ' + role + ' tone'"
+            (valueChange)="setTone(role, $event)"
+            (change)="commitTone(role, toneField, $event)"
+          />
+          @if (overrides()[role] !== undefined) {
+            <tls-button
+              class="tone__reset"
+              label="Reset"
+              variant="text"
+              size="sm"
+              [ariaLabel]="'Reset ' + modeTitle() + ' ' + role + ' tone'"
+              (click)="resetTone(role)"
+            />
+          }
+        </li>
+      }
+    </ul>
     <ul class="pairs">
       @for (pair of group.pairs; track pair.background + pair.foreground) {
         <li class="pair">

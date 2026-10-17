@@ -1,4 +1,5 @@
 import { colorSpec } from './color-spec';
+import { RoleToneOverrides } from './role-tone-overrides';
 import { schemeVariant } from './scheme-variant';
 
 /** Everything a generated theme is derived from. */
@@ -20,4 +21,6 @@ export interface ThemeSource {
    * its hue and the variant decides how colorful the palette is.
    */
   colorMatch: boolean;
+  /** Tones replacing the default each color role reads from its palette, per mode. */
+  roleTones: RoleToneOverrides;
 }

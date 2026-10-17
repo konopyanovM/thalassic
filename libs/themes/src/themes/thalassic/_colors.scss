@@ -1,27 +1,7 @@
 @use 'sass:map';
 
-@use './palettes' as palettes;
+@use './roles' as roles;
 @use '../../palettes' as common-palettes;
-
-// Palettes the color roles read, by name. Each is configurable on the theme's
-// `@use … with (…)`, so a role's tone may be missing from a consumer's map.
-$-palettes: (
-  'primary': palettes.$primary,
-  'secondary': palettes.$secondary,
-  'tertiary': palettes.$tertiary,
-  'neutral': palettes.$neutral,
-  'neutral-variant': palettes.$neutral-variant,
-);
-
-// One tone of a named palette, private to the theme. A missing tone is a compile error rather than a
-// silently dropped custom property.
-@function -tone($palette, $tone) {
-  $tones: map.get($-palettes, $palette);
-  @if not map.has-key($tones, $tone) {
-    @error 'Palette `$#{$palette}` has no tone #{$tone}; every color role needs it.';
-  }
-  @return map.get($tones, $tone);
-}
 
 // Hues carrying no meaning of their own, for a surface colored by choice rather
 // than by status: a tag, a category, a tile a reader tints to tell it apart.
@@ -41,22 +21,22 @@ $accents: (
 
 :root {
   // Primary
-  --color-primary: #{-tone('primary', 40)};
-  --color-on-primary: #{-tone('primary', 100)};
-  --color-primary-container: #{-tone('primary', 90)};
-  --color-on-primary-container: #{-tone('primary', 30)};
+  --color-primary: #{roles.color('light', 'primary')};
+  --color-on-primary: #{roles.color('light', 'on-primary')};
+  --color-primary-container: #{roles.color('light', 'primary-container')};
+  --color-on-primary-container: #{roles.color('light', 'on-primary-container')};
 
   // Secondary
-  --color-secondary: #{-tone('secondary', 40)};
-  --color-on-secondary: #{-tone('secondary', 100)};
-  --color-secondary-container: #{-tone('secondary', 90)};
-  --color-on-secondary-container: #{-tone('secondary', 30)};
+  --color-secondary: #{roles.color('light', 'secondary')};
+  --color-on-secondary: #{roles.color('light', 'on-secondary')};
+  --color-secondary-container: #{roles.color('light', 'secondary-container')};
+  --color-on-secondary-container: #{roles.color('light', 'on-secondary-container')};
 
   // Tertiary
-  --color-tertiary: #{-tone('tertiary', 40)};
-  --color-on-tertiary: #{-tone('tertiary', 100)};
-  --color-tertiary-container: #{-tone('tertiary', 90)};
-  --color-on-tertiary-container: #{-tone('tertiary', 30)};
+  --color-tertiary: #{roles.color('light', 'tertiary')};
+  --color-on-tertiary: #{roles.color('light', 'on-tertiary')};
+  --color-tertiary-container: #{roles.color('light', 'tertiary-container')};
+  --color-on-tertiary-container: #{roles.color('light', 'on-tertiary-container')};
 
   // Success
   --color-success: #{map.get(common-palettes.$green, 40)};
@@ -91,42 +71,42 @@ $accents: (
   }
 
   // Surface
-  --color-surface: #{-tone('neutral', 98)};
-  --color-on-surface: #{-tone('neutral', 10)};
-  --color-surface-variant: #{-tone('neutral-variant', 90)};
-  --color-on-surface-variant: #{-tone('neutral-variant', 30)};
+  --color-surface: #{roles.color('light', 'surface')};
+  --color-on-surface: #{roles.color('light', 'on-surface')};
+  --color-surface-variant: #{roles.color('light', 'surface-variant')};
+  --color-on-surface-variant: #{roles.color('light', 'on-surface-variant')};
 
-  --color-surface-container-lowest: #{-tone('neutral', 100)};
-  --color-surface-container-low: #{-tone('neutral', 96)};
-  --color-surface-container: #{-tone('neutral', 94)};
-  --color-surface-container-high: #{-tone('neutral', 92)};
-  --color-surface-container-highest: #{-tone('neutral', 90)};
+  --color-surface-container-lowest: #{roles.color('light', 'surface-container-lowest')};
+  --color-surface-container-low: #{roles.color('light', 'surface-container-low')};
+  --color-surface-container: #{roles.color('light', 'surface-container')};
+  --color-surface-container-high: #{roles.color('light', 'surface-container-high')};
+  --color-surface-container-highest: #{roles.color('light', 'surface-container-highest')};
 
   // Outline
-  --color-outline: #{-tone('neutral-variant', 50)};
-  --color-outline-variant: #{-tone('neutral-variant', 85)};
+  --color-outline: #{roles.color('light', 'outline')};
+  --color-outline-variant: #{roles.color('light', 'outline-variant')};
 
   // Shadow
   --color-shadow: 0 0 0;
 
   &.tls-dark {
     // Primary
-    --color-primary: #{-tone('primary', 80)};
-    --color-on-primary: #{-tone('primary', 20)};
-    --color-primary-container: #{-tone('primary', 30)};
-    --color-on-primary-container: #{-tone('primary', 90)};
+    --color-primary: #{roles.color('dark', 'primary')};
+    --color-on-primary: #{roles.color('dark', 'on-primary')};
+    --color-primary-container: #{roles.color('dark', 'primary-container')};
+    --color-on-primary-container: #{roles.color('dark', 'on-primary-container')};
 
     // Secondary
-    --color-secondary: #{-tone('secondary', 80)};
-    --color-on-secondary: #{-tone('secondary', 20)};
-    --color-secondary-container: #{-tone('secondary', 30)};
-    --color-on-secondary-container: #{-tone('secondary', 90)};
+    --color-secondary: #{roles.color('dark', 'secondary')};
+    --color-on-secondary: #{roles.color('dark', 'on-secondary')};
+    --color-secondary-container: #{roles.color('dark', 'secondary-container')};
+    --color-on-secondary-container: #{roles.color('dark', 'on-secondary-container')};
 
     // Tertiary
-    --color-tertiary: #{-tone('tertiary', 80)};
-    --color-on-tertiary: #{-tone('tertiary', 20)};
-    --color-tertiary-container: #{-tone('tertiary', 30)};
-    --color-on-tertiary-container: #{-tone('tertiary', 90)};
+    --color-tertiary: #{roles.color('dark', 'tertiary')};
+    --color-on-tertiary: #{roles.color('dark', 'on-tertiary')};
+    --color-tertiary-container: #{roles.color('dark', 'tertiary-container')};
+    --color-on-tertiary-container: #{roles.color('dark', 'on-tertiary-container')};
 
     // Success
     --color-success: #{map.get(common-palettes.$green, 80)};
@@ -161,19 +141,19 @@ $accents: (
     }
 
     // Surface
-    --color-surface: #{-tone('neutral', 6)};
-    --color-on-surface: #{-tone('neutral', 90)};
-    --color-surface-variant: #{-tone('neutral-variant', 30)};
-    --color-on-surface-variant: #{-tone('neutral-variant', 80)};
+    --color-surface: #{roles.color('dark', 'surface')};
+    --color-on-surface: #{roles.color('dark', 'on-surface')};
+    --color-surface-variant: #{roles.color('dark', 'surface-variant')};
+    --color-on-surface-variant: #{roles.color('dark', 'on-surface-variant')};
 
-    --color-surface-container-lowest: #{-tone('neutral', 4)};
-    --color-surface-container-low: #{-tone('neutral', 10)};
-    --color-surface-container: #{-tone('neutral', 12)};
-    --color-surface-container-high: #{-tone('neutral', 17)};
-    --color-surface-container-highest: #{-tone('neutral', 22)};
+    --color-surface-container-lowest: #{roles.color('dark', 'surface-container-lowest')};
+    --color-surface-container-low: #{roles.color('dark', 'surface-container-low')};
+    --color-surface-container: #{roles.color('dark', 'surface-container')};
+    --color-surface-container-high: #{roles.color('dark', 'surface-container-high')};
+    --color-surface-container-highest: #{roles.color('dark', 'surface-container-highest')};
 
     // Outline
-    --color-outline: #{-tone('neutral-variant', 60)};
-    --color-outline-variant: #{-tone('neutral-variant', 20)};
+    --color-outline: #{roles.color('dark', 'outline')};
+    --color-outline-variant: #{roles.color('dark', 'outline-variant')};
   }
 }

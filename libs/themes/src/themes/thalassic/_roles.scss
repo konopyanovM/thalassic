@@ -1,0 +1,135 @@
+@use 'sass:map';
+@use 'sass:math';
+@use 'sass:meta';
+
+@use './palettes' as palettes;
+
+// Palettes the color roles read, by name.
+$-palettes: (
+  'primary': palettes.$primary,
+  'secondary': palettes.$secondary,
+  'tertiary': palettes.$tertiary,
+  'neutral': palettes.$neutral,
+  'neutral-variant': palettes.$neutral-variant,
+);
+
+// Palette every color role reads its tone from.
+$-role-palettes: (
+  'primary': 'primary',
+  'on-primary': 'primary',
+  'primary-container': 'primary',
+  'on-primary-container': 'primary',
+  'secondary': 'secondary',
+  'on-secondary': 'secondary',
+  'secondary-container': 'secondary',
+  'on-secondary-container': 'secondary',
+  'tertiary': 'tertiary',
+  'on-tertiary': 'tertiary',
+  'tertiary-container': 'tertiary',
+  'on-tertiary-container': 'tertiary',
+  'surface': 'neutral',
+  'on-surface': 'neutral',
+  'surface-variant': 'neutral-variant',
+  'on-surface-variant': 'neutral-variant',
+  'surface-container-lowest': 'neutral',
+  'surface-container-low': 'neutral',
+  'surface-container': 'neutral',
+  'surface-container-high': 'neutral',
+  'surface-container-highest': 'neutral',
+  'outline': 'neutral-variant',
+  'outline-variant': 'neutral-variant',
+);
+
+// Tone every color role reads from its palette, per mode: the Material 3
+// baseline mapping.
+$-default-tones: (
+  'light': (
+    'primary': 40,
+    'on-primary': 100,
+    'primary-container': 90,
+    'on-primary-container': 30,
+    'secondary': 40,
+    'on-secondary': 100,
+    'secondary-container': 90,
+    'on-secondary-container': 30,
+    'tertiary': 40,
+    'on-tertiary': 100,
+    'tertiary-container': 90,
+    'on-tertiary-container': 30,
+    'surface': 98,
+    'on-surface': 10,
+    'surface-variant': 90,
+    'on-surface-variant': 30,
+    'surface-container-lowest': 100,
+    'surface-container-low': 96,
+    'surface-container': 94,
+    'surface-container-high': 92,
+    'surface-container-highest': 90,
+    'outline': 50,
+    'outline-variant': 85,
+  ),
+  'dark': (
+    'primary': 80,
+    'on-primary': 20,
+    'primary-container': 30,
+    'on-primary-container': 90,
+    'secondary': 80,
+    'on-secondary': 20,
+    'secondary-container': 30,
+    'on-secondary-container': 90,
+    'tertiary': 80,
+    'on-tertiary': 20,
+    'tertiary-container': 30,
+    'on-tertiary-container': 90,
+    'surface': 6,
+    'on-surface': 90,
+    'surface-variant': 30,
+    'on-surface-variant': 80,
+    'surface-container-lowest': 4,
+    'surface-container-low': 10,
+    'surface-container': 12,
+    'surface-container-high': 17,
+    'surface-container-highest': 22,
+    'outline': 60,
+    'outline-variant': 20,
+  ),
+);
+
+// Tones overriding the defaults, by mode and role — e.g.
+// `('dark': ('primary': 70, 'on-primary': 100))`. Configurable on the theme's
+// `@use … with (…)`; every role left out keeps its default. A tone must exist in
+// the palette the role reads, so a tone outside the shipped palette steps needs
+// palettes configured alongside that carry it.
+$role-tones: () !default;
+
+@each $mode, $tones in $role-tones {
+  @if not map.has-key($-default-tones, $mode) {
+    @error 'Unknown mode `#{$mode}` in `$role-tones`; expected `light` or `dark`.';
+  }
+
+  @each $role, $tone in $tones {
+    @if not map.has-key($-role-palettes, $role) {
+      @error 'Unknown color role `#{$role}` in `$role-tones`.';
+    }
+    @if meta.type-of($tone) != 'number' or not math.is-unitless($tone) {
+      @error 'Tone of `#{$role}` in `$role-tones` must be a unitless number, got `#{$tone}`.';
+    }
+  }
+}
+
+// Default tones with the configured overrides applied.
+$-tones: map.deep-merge($-default-tones, $role-tones);
+
+// Color of a role in a mode: its tone read from its palette. A tone missing from
+// the palette is a compile error rather than a silently dropped custom property.
+@function color($mode, $role) {
+  $palette: map.get($-role-palettes, $role);
+  $tone: map.get($-tones, $mode, $role);
+  $steps: map.get($-palettes, $palette);
+
+  @if not map.has-key($steps, $tone) {
+    @error 'Palette `$#{$palette}` has no tone #{$tone}, which `#{$role}` reads in #{$mode} mode.';
+  }
+
+  @return map.get($steps, $tone);
+}

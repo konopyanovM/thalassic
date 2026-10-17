@@ -1,6 +1,8 @@
-// Palettes load first: they are configurable through this module's
-// `@use … with (…)`, and a module can only be configured on its first load.
+// Palettes and role tones load first: they are configurable through this
+// module's `@use … with (…)`, and a module can only be configured on its first
+// load. Of the role module only the configurable map is public.
 @forward 'palettes';
+@forward 'roles' show $role-tones;
 
 @forward 'components';
 @forward 'mixins';

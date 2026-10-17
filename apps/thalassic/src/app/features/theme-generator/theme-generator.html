@@ -4,8 +4,9 @@
       <div class="intro">
         <h1 class="intro__title text-headline-lg">Theme generator</h1>
         <p class="intro__text text-body-lg">
-          Pick a seed color to derive Material 3 tonal palettes, check them on real components in
-          both modes, then export them as a theme configuration for your project.
+          Pick a seed color to derive Material 3 tonal palettes, tune the tone each color role
+          reads, check the result on real components in both modes, then export it as a theme
+          configuration for your project.
         </p>
       </div>
 
@@ -94,8 +95,20 @@
 
           <tls-tab value="roles" label="Roles">
             <div class="roles">
-              <app-role-grid mode="light" [roles]="lightRoles()" />
-              <app-role-grid mode="dark" [roles]="darkRoles()" />
+              <app-role-grid
+                mode="light"
+                [roles]="lightRoles()"
+                [seedTone]="seedTone()"
+                [overrides]="roleTones().light"
+                (overridesChange)="setRoleTones('light', $event)"
+              />
+              <app-role-grid
+                mode="dark"
+                [roles]="darkRoles()"
+                [seedTone]="seedTone()"
+                [overrides]="roleTones().dark"
+                (overridesChange)="setRoleTones('dark', $event)"
+              />
             </div>
           </tls-tab>
 
@@ -112,9 +125,9 @@
               <section class="export__option" aria-labelledby="theme-export-sass">
                 <h3 id="theme-export-sass" class="export__title text-title-md">Sass</h3>
                 <p class="export__note text-body-md">
-                  Load the theme with these palettes in place of its own: use this as the theme
-                  import in your global stylesheet. Every color role, light and dark, is built from
-                  them at compile time.
+                  Load the theme with these palettes and role tones in place of its own: use this as
+                  the theme import in your global stylesheet. Every color role, light and dark, is
+                  built from them at compile time.
                 </p>
                 <app-code-file-card [file]="themeConfigFile()" />
               </section>
@@ -134,7 +147,9 @@
                 </h3>
                 <p class="export__note text-body-md">
                   Replace the theme's default palettes: each file replaces its namesake in
-                  <code>libs/themes/src/themes/thalassic/palettes/</code>.
+                  <code>libs/themes/src/themes/thalassic/palettes/</code>. Palettes only — role
+                  tones stay at the theme's defaults in <code>_roles.scss</code>; the Sass and CSS
+                  exports carry them.
                 </p>
                 @for (file of paletteFiles(); track file.fileName) {
                   <app-code-file-card [file]="file" />

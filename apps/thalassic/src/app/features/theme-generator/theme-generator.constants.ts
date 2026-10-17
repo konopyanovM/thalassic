@@ -5,7 +5,7 @@ import {
   contrastRequirement,
   paletteName,
   RoleGroup,
-  RoleTone,
+  RoleTones,
   schemeVariant,
   SelectOption,
   ThemeSource,
@@ -26,72 +26,106 @@ export const PALETTE_NAMES: paletteName[] = [
  * 92, 94, 96), so one key set serves every palette.
  */
 export const PALETTE_TONES: number[] = [
-  0, 4, 5, 6, 10, 12, 15, 17, 20, 22, 25, 30, 35, 40, 50, 60, 70, 80, 85, 90, 92, 94, 95, 96, 98, 99,
-  100,
+  0, 4, 5, 6, 10, 12, 15, 17, 20, 22, 25, 30, 35, 40, 50, 60, 70, 80, 85, 90, 92, 94, 95, 96, 98,
+  99, 100,
 ];
 
+/** Palette every color role reads its tone from. Mirrors the theme's `_roles.scss`. */
+export const ROLE_PALETTES: Record<colorRole, paletteName> = {
+  primary: 'primary',
+  'on-primary': 'primary',
+  'primary-container': 'primary',
+  'on-primary-container': 'primary',
+  secondary: 'secondary',
+  'on-secondary': 'secondary',
+  'secondary-container': 'secondary',
+  'on-secondary-container': 'secondary',
+  tertiary: 'tertiary',
+  'on-tertiary': 'tertiary',
+  'tertiary-container': 'tertiary',
+  'on-tertiary-container': 'tertiary',
+  surface: 'neutral',
+  'on-surface': 'neutral',
+  'surface-variant': 'neutral-variant',
+  'on-surface-variant': 'neutral-variant',
+  'surface-container-lowest': 'neutral',
+  'surface-container-low': 'neutral',
+  'surface-container': 'neutral',
+  'surface-container-high': 'neutral',
+  'surface-container-highest': 'neutral',
+  outline: 'neutral-variant',
+  'outline-variant': 'neutral-variant',
+};
+
 /**
- * Palette tone behind every color role, per mode. Mirrors the role mapping of
- * the theme's `_colors.scss`, so the preview shows exactly what the exported
- * palettes produce there.
+ * Tone every color role reads from its palette by default, per mode. Mirrors
+ * the theme's `_roles.scss`, so the preview shows exactly what the exported
+ * theme produces there.
  */
-export const ROLE_TONES: Record<themeType, Record<colorRole, RoleTone>> = {
+export const DEFAULT_ROLE_TONES: Record<themeType, RoleTones> = {
   light: {
-    primary: { palette: 'primary', tone: 40 },
-    'on-primary': { palette: 'primary', tone: 100 },
-    'primary-container': { palette: 'primary', tone: 90 },
-    'on-primary-container': { palette: 'primary', tone: 30 },
-    secondary: { palette: 'secondary', tone: 40 },
-    'on-secondary': { palette: 'secondary', tone: 100 },
-    'secondary-container': { palette: 'secondary', tone: 90 },
-    'on-secondary-container': { palette: 'secondary', tone: 30 },
-    tertiary: { palette: 'tertiary', tone: 40 },
-    'on-tertiary': { palette: 'tertiary', tone: 100 },
-    'tertiary-container': { palette: 'tertiary', tone: 90 },
-    'on-tertiary-container': { palette: 'tertiary', tone: 30 },
-    surface: { palette: 'neutral', tone: 98 },
-    'on-surface': { palette: 'neutral', tone: 10 },
-    'surface-variant': { palette: 'neutral-variant', tone: 90 },
-    'on-surface-variant': { palette: 'neutral-variant', tone: 30 },
-    'surface-container-lowest': { palette: 'neutral', tone: 100 },
-    'surface-container-low': { palette: 'neutral', tone: 96 },
-    'surface-container': { palette: 'neutral', tone: 94 },
-    'surface-container-high': { palette: 'neutral', tone: 92 },
-    'surface-container-highest': { palette: 'neutral', tone: 90 },
-    outline: { palette: 'neutral-variant', tone: 50 },
-    'outline-variant': { palette: 'neutral-variant', tone: 85 },
+    primary: 40,
+    'on-primary': 100,
+    'primary-container': 90,
+    'on-primary-container': 30,
+    secondary: 40,
+    'on-secondary': 100,
+    'secondary-container': 90,
+    'on-secondary-container': 30,
+    tertiary: 40,
+    'on-tertiary': 100,
+    'tertiary-container': 90,
+    'on-tertiary-container': 30,
+    surface: 98,
+    'on-surface': 10,
+    'surface-variant': 90,
+    'on-surface-variant': 30,
+    'surface-container-lowest': 100,
+    'surface-container-low': 96,
+    'surface-container': 94,
+    'surface-container-high': 92,
+    'surface-container-highest': 90,
+    outline: 50,
+    'outline-variant': 85,
   },
   dark: {
-    primary: { palette: 'primary', tone: 80 },
-    'on-primary': { palette: 'primary', tone: 20 },
-    'primary-container': { palette: 'primary', tone: 30 },
-    'on-primary-container': { palette: 'primary', tone: 90 },
-    secondary: { palette: 'secondary', tone: 80 },
-    'on-secondary': { palette: 'secondary', tone: 20 },
-    'secondary-container': { palette: 'secondary', tone: 30 },
-    'on-secondary-container': { palette: 'secondary', tone: 90 },
-    tertiary: { palette: 'tertiary', tone: 80 },
-    'on-tertiary': { palette: 'tertiary', tone: 20 },
-    'tertiary-container': { palette: 'tertiary', tone: 30 },
-    'on-tertiary-container': { palette: 'tertiary', tone: 90 },
-    surface: { palette: 'neutral', tone: 6 },
-    'on-surface': { palette: 'neutral', tone: 90 },
-    'surface-variant': { palette: 'neutral-variant', tone: 30 },
-    'on-surface-variant': { palette: 'neutral-variant', tone: 80 },
-    'surface-container-lowest': { palette: 'neutral', tone: 4 },
-    'surface-container-low': { palette: 'neutral', tone: 10 },
-    'surface-container': { palette: 'neutral', tone: 12 },
-    'surface-container-high': { palette: 'neutral', tone: 17 },
-    'surface-container-highest': { palette: 'neutral', tone: 22 },
-    outline: { palette: 'neutral-variant', tone: 60 },
-    'outline-variant': { palette: 'neutral-variant', tone: 20 },
+    primary: 80,
+    'on-primary': 20,
+    'primary-container': 30,
+    'on-primary-container': 90,
+    secondary: 80,
+    'on-secondary': 20,
+    'secondary-container': 30,
+    'on-secondary-container': 90,
+    tertiary: 80,
+    'on-tertiary': 20,
+    'tertiary-container': 30,
+    'on-tertiary-container': 90,
+    surface: 6,
+    'on-surface': 90,
+    'surface-variant': 30,
+    'on-surface-variant': 80,
+    'surface-container-lowest': 4,
+    'surface-container-low': 10,
+    'surface-container': 12,
+    'surface-container-high': 17,
+    'surface-container-highest': 22,
+    outline: 60,
+    'outline-variant': 20,
   },
 };
 
-/** Role pairs checked for contrast, grouped as they are displayed. */
+/** Lowest HCT tone, black. */
+export const TONE_MIN = 0;
+
+/** Highest HCT tone, white. */
+export const TONE_MAX = 100;
+
+/** Roles grouped as they are displayed: each group's tones, then its pairs checked for contrast. */
 export const ROLE_GROUPS: RoleGroup[] = [
   {
     title: 'Primary',
+    roles: ['primary', 'on-primary', 'primary-container', 'on-primary-container'],
     pairs: [
       { background: 'primary', foreground: 'on-primary', requirement: 'text' },
       { background: 'primary-container', foreground: 'on-primary-container', requirement: 'text' },
@@ -99,20 +133,41 @@ export const ROLE_GROUPS: RoleGroup[] = [
   },
   {
     title: 'Secondary',
+    roles: ['secondary', 'on-secondary', 'secondary-container', 'on-secondary-container'],
     pairs: [
       { background: 'secondary', foreground: 'on-secondary', requirement: 'text' },
-      { background: 'secondary-container', foreground: 'on-secondary-container', requirement: 'text' },
+      {
+        background: 'secondary-container',
+        foreground: 'on-secondary-container',
+        requirement: 'text',
+      },
     ],
   },
   {
     title: 'Tertiary',
+    roles: ['tertiary', 'on-tertiary', 'tertiary-container', 'on-tertiary-container'],
     pairs: [
       { background: 'tertiary', foreground: 'on-tertiary', requirement: 'text' },
-      { background: 'tertiary-container', foreground: 'on-tertiary-container', requirement: 'text' },
+      {
+        background: 'tertiary-container',
+        foreground: 'on-tertiary-container',
+        requirement: 'text',
+      },
     ],
   },
   {
     title: 'Surface',
+    roles: [
+      'surface',
+      'on-surface',
+      'surface-variant',
+      'on-surface-variant',
+      'surface-container-lowest',
+      'surface-container-low',
+      'surface-container',
+      'surface-container-high',
+      'surface-container-highest',
+    ],
     pairs: [
       { background: 'surface', foreground: 'on-surface', requirement: 'text' },
       { background: 'surface', foreground: 'primary', requirement: 'text' },
@@ -121,11 +176,16 @@ export const ROLE_GROUPS: RoleGroup[] = [
       { background: 'surface-container-low', foreground: 'on-surface', requirement: 'text' },
       { background: 'surface-container', foreground: 'on-surface', requirement: 'text' },
       { background: 'surface-container-high', foreground: 'on-surface', requirement: 'text' },
-      { background: 'surface-container-highest', foreground: 'on-surface-variant', requirement: 'text' },
+      {
+        background: 'surface-container-highest',
+        foreground: 'on-surface-variant',
+        requirement: 'text',
+      },
     ],
   },
   {
     title: 'Outline',
+    roles: ['outline', 'outline-variant'],
     pairs: [
       { background: 'surface', foreground: 'outline', requirement: 'non-text' },
       { background: 'surface', foreground: 'outline-variant', requirement: 'decorative' },
@@ -171,10 +231,14 @@ export const DEFAULT_THEME_SOURCE: ThemeSource = {
   variant: 'tonal-spot',
   spec: '2021',
   colorMatch: true,
+  roleTones: { light: {}, dark: {} },
 };
 
-/** Query params the theme source is mirrored into, so a theme survives a reload and can be shared. */
-export const THEME_SOURCE_PARAMS: Record<keyof ThemeSource, string> = {
+/**
+ * Query params the theme source is mirrored into, so a theme survives a reload
+ * and can be shared. Role tones take one param per mode, in `ROLE_TONE_PARAMS`.
+ */
+export const THEME_SOURCE_PARAMS: Record<Exclude<keyof ThemeSource, 'roleTones'>, string> = {
   primary: 'primary',
   secondary: 'secondary',
   tertiary: 'tertiary',
@@ -183,6 +247,18 @@ export const THEME_SOURCE_PARAMS: Record<keyof ThemeSource, string> = {
   spec: 'spec',
   colorMatch: 'match',
 };
+
+/** Query param carrying the role tone overrides of each mode, as `role:tone` entries. */
+export const ROLE_TONE_PARAMS: Record<themeType, string> = {
+  light: 'light-tones',
+  dark: 'dark-tones',
+};
+
+/** Separates the `role:tone` entries of a role tone param. */
+export const ROLE_TONE_ENTRY_SEPARATOR = ',';
+
+/** Separates a role from its tone within a role tone param entry. */
+export const ROLE_TONE_VALUE_SEPARATOR = ':';
 
 /** Quiet period before the URL is rewritten, so dragging a picker doesn't flood the history API. */
 export const THEME_SOURCE_SYNC_DELAY = 300;

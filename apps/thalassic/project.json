@@ -5,6 +5,7 @@
   "prefix": "app",
   "sourceRoot": "apps/thalassic/src",
   "tags": [],
+  "implicitDependencies": ["themes"],
   "targets": {
     "build": {
       "executor": "@angular/build:application",

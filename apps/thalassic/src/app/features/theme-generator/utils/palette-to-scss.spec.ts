@@ -4,7 +4,11 @@ import { paletteToScss } from './palette-to-scss';
 
 describe('paletteToScss', () => {
   it('writes the palette as a default tone map named after the palette file', () => {
-    const file = paletteToScss('neutral-variant', TonalPalette.fromHueAndChroma(240, 8));
+    const file = paletteToScss(
+      'neutral-variant',
+      TonalPalette.fromHueAndChroma(240, 8),
+      PALETTE_TONES,
+    );
     const lines = file.content.trimEnd().split('\n');
 
     expect(file.fileName).toBe('_neutral-variant.scss');

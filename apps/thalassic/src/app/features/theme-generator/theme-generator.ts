@@ -1,7 +1,8 @@
 import { Component, computed, DestroyRef, effect, inject, Signal, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
-import { DARK_THEME_CLASS } from '@thalassic/core';
+import { argbFromHex, Hct } from '@material/material-color-utilities';
+import { DARK_THEME_CLASS, themeType } from '@thalassic/core';
 import {
   Button,
   ColorInput,
@@ -23,26 +24,41 @@ import {
   DEFAULT_THEME_SOURCE,
   PALETTE_NAMES,
   PREVIEW_SCOPE_CLASS,
+  ROLE_TONE_PARAMS,
   SCHEME_VARIANT_OPTIONS,
   SCOPE_DERIVED_DECLARATIONS,
   THEME_SOURCE_PARAMS,
   THEME_SOURCE_SYNC_DELAY,
 } from './theme-generator.constants';
-import { CodeFile, colorSpec, schemeVariant, ThemeRoles, ThemeSource, TonalPalettes } from './types';
 import {
+  CodeFile,
+  colorSpec,
+  RoleToneOverrides,
+  RoleTones,
+  schemeVariant,
+  ThemeRoles,
+  ThemeSource,
+  TonalPalettes,
+} from './types';
+import {
+  buildThemeConfig,
+  exportTones,
   generatePalettes,
   isHexColor,
-  palettesToThemeConfig,
   paletteToScss,
+  parseRoleTones,
   resolveRoles,
+  resolveRoleTones,
   rolesToCss,
   rolesToDeclarations,
+  serializeRoleTones,
 } from './utils';
 
 /**
  * Material 3 theme generator: derives the five tonal palettes of a theme from a
- * seed color, previews them on library components in both modes, grades the
- * color roles for contrast, and exports the palettes as the theme's SCSS
+ * seed color, lets the tone each color role reads be tuned per mode, previews
+ * the result on library components in both modes, grades the color roles for
+ * contrast, and exports the theme as Sass configuration, CSS, or palette
  * partials. The source lives in the URL, so a theme survives a reload and can
  * be shared as a link.
  */
@@ -100,6 +116,8 @@ export class ThemeGenerator {
   protected readonly spec = signal<colorSpec>(this._initialSource.spec);
   /** Whether input colors keep their own chroma. */
   protected readonly colorMatch = signal<boolean>(this._initialSource.colorMatch);
+  /** Tones replacing each mode's default role tones. */
+  protected readonly roleTones = signal<RoleToneOverrides>(this._initialSource.roleTones);
   /** Whether the generated roles replace the app's own while the page is open. */
   protected readonly applyToApp = signal<boolean>(true);
 
@@ -121,6 +139,7 @@ export class ThemeGenerator {
     variant: this.variant(),
     spec: this.spec(),
     colorMatch: this.colorMatch(),
+    roleTones: this.roleTones(),
   }));
 
   /** The five generated palettes. */
@@ -130,17 +149,29 @@ export class ThemeGenerator {
 
   /** Color roles of the light mode. */
   protected readonly lightRoles: Signal<ThemeRoles> = computed(() =>
-    resolveRoles(this.palettes(), 'light'),
+    resolveRoles(this.palettes(), resolveRoleTones(this.roleTones().light, 'light')),
   );
 
   /** Color roles of the dark mode. */
   protected readonly darkRoles: Signal<ThemeRoles> = computed(() =>
-    resolveRoles(this.palettes(), 'dark'),
+    resolveRoles(this.palettes(), resolveRoleTones(this.roleTones().dark, 'dark')),
   );
 
-  /** The `@use … with (…)` loading the theme configured with the palettes. */
+  /**
+   * Tone of the seed color, rounded to the whole tones a role can read; `null`
+   * without color match, when the primary palette takes the variant's chroma
+   * and no tone of it reproduces the seed.
+   */
+  protected readonly seedTone: Signal<number | null> = computed(() => {
+    const source = this.source();
+    if (!source.colorMatch) return null;
+
+    return Math.round(Hct.fromInt(argbFromHex(source.primary)).tone);
+  });
+
+  /** The `@use … with (…)` loading the theme configured with the palettes and role tones. */
   protected readonly themeConfigFile: Signal<CodeFile> = computed(() =>
-    palettesToThemeConfig(this.palettes()),
+    buildThemeConfig(this.palettes(), this.roleTones()),
   );
 
   /** The roles of both modes as `:root` overrides. */
@@ -148,10 +179,14 @@ export class ThemeGenerator {
     rolesToCss(this.lightRoles(), this.darkRoles()),
   );
 
-  /** The palettes as the theme's own SCSS partials. */
+  /**
+   * The palettes as the theme's own SCSS partials, carrying every tone a role
+   * override reads.
+   */
   protected readonly paletteFiles: Signal<CodeFile[]> = computed(() => {
     const palettes = this.palettes();
-    return PALETTE_NAMES.map(name => paletteToScss(name, palettes[name]));
+    const tones = exportTones(this.roleTones());
+    return PALETTE_NAMES.map(name => paletteToScss(name, palettes[name], tones));
   });
 
   /**
@@ -169,9 +204,11 @@ export class ThemeGenerator {
     ];
     if (!this.applyToApp()) return scopes.join('\n');
 
-    return [`html:root {\n${light}\n}`, `html:root.${DARK_THEME_CLASS} {\n${dark}\n}`, ...scopes].join(
-      '\n',
-    );
+    return [
+      `html:root {\n${light}\n}`,
+      `html:root.${DARK_THEME_CLASS} {\n${dark}\n}`,
+      ...scopes,
+    ].join('\n');
   });
 
   constructor() {
@@ -200,6 +237,11 @@ export class ThemeGenerator {
     if (option) this.spec.set(option.value);
   }
 
+  /** Replaces the role tone overrides of one mode. */
+  protected setRoleTones(mode: themeType, overrides: Partial<RoleTones>): void {
+    this.roleTones.update(roleTones => ({ ...roleTones, [mode]: overrides }));
+  }
+
   /** Restores the shipped theme's source. */
   protected reset(): void {
     this._applySource(DEFAULT_THEME_SOURCE);
@@ -215,6 +257,7 @@ export class ThemeGenerator {
     this.variant.set(source.variant);
     this.spec.set(source.spec);
     this.colorMatch.set(source.colorMatch);
+    this.roleTones.set(source.roleTones);
   }
 
   /**
@@ -238,7 +281,7 @@ export class ThemeGenerator {
 
   /** Reads a source from query params; a missing or malformed param takes the default. */
   private _readSource(params: ParamMap): ThemeSource {
-    const color = (key: keyof ThemeSource): string | null | undefined => {
+    const color = (key: keyof typeof THEME_SOURCE_PARAMS): string | null | undefined => {
       const value = params.get(THEME_SOURCE_PARAMS[key]);
       if (value === null) return undefined;
       if (value === '') return null;
@@ -264,6 +307,10 @@ export class ThemeGenerator {
       variant: variant ? variant.value : DEFAULT_THEME_SOURCE.variant,
       spec: spec ? spec.value : DEFAULT_THEME_SOURCE.spec,
       colorMatch: colorMatch === null ? DEFAULT_THEME_SOURCE.colorMatch : colorMatch !== '0',
+      roleTones: {
+        light: parseRoleTones(params.get(ROLE_TONE_PARAMS.light) ?? ''),
+        dark: parseRoleTones(params.get(ROLE_TONE_PARAMS.dark) ?? ''),
+      },
     };
   }
 
@@ -283,6 +330,9 @@ export class ThemeGenerator {
       [THEME_SOURCE_PARAMS.variant]: source.variant,
       [THEME_SOURCE_PARAMS.spec]: source.spec,
       [THEME_SOURCE_PARAMS.colorMatch]: source.colorMatch ? '1' : '0',
+      // A mode without overrides drops its param, keeping a default-toned link short.
+      [ROLE_TONE_PARAMS.light]: serializeRoleTones(source.roleTones.light) || null,
+      [ROLE_TONE_PARAMS.dark]: serializeRoleTones(source.roleTones.dark) || null,
     };
   }
 
