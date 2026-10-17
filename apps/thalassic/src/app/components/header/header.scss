@@ -13,4 +13,23 @@
       width: 24px;
     }
   }
+
+  .navigation-list {
+    margin: 0;
+    padding: 0;
+
+    display: flex;
+    gap: var(--spacing-4);
+
+    list-style: none;
+
+    &__link {
+      color: var(--color-on-surface);
+      text-decoration: none;
+
+      &:hover {
+        color: var(--color-primary);
+      }
+    }
+  }
 }

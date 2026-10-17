@@ -71,20 +71,20 @@ $accents: (
   }
 
   // Surface
-  --color-surface: #f6fafe;
-  --color-on-surface: #181c1f;
-  --color-surface-variant: #dde3ea;
-  --color-on-surface-variant: #41484d;
+  --color-surface: #{map.get(palettes.$neutral, 98)};
+  --color-on-surface: #{map.get(palettes.$neutral, 10)};
+  --color-surface-variant: #{map.get(palettes.$neutral-variant, 90)};
+  --color-on-surface-variant: #{map.get(palettes.$neutral-variant, 30)};
 
-  --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f0f4f8;
-  --color-surface-container: #ebeef3;
-  --color-surface-container-high: #e5e8ed;
-  --color-surface-container-highest: #dfe3e7;
+  --color-surface-container-lowest: #{map.get(palettes.$neutral, 100)};
+  --color-surface-container-low: #{map.get(palettes.$neutral, 96)};
+  --color-surface-container: #{map.get(palettes.$neutral, 94)};
+  --color-surface-container-high: #{map.get(palettes.$neutral, 92)};
+  --color-surface-container-highest: #{map.get(palettes.$neutral, 90)};
 
   // Outline
-  --color-outline: #71787e;
-  --color-outline-variant: #d0d5db;
+  --color-outline: #{map.get(palettes.$neutral-variant, 50)};
+  --color-outline-variant: #{map.get(palettes.$neutral-variant, 85)};
 
   // Shadow
   --color-shadow: 0 0 0;
@@ -141,19 +141,19 @@ $accents: (
     }
 
     // Surface
-    --color-surface: #101417;
-    --color-on-surface: #dfe3e7;
-    --color-surface-variant: #41484d;
-    --color-on-surface-variant: #c1c7ce;
+    --color-surface: #{map.get(palettes.$neutral, 6)};
+    --color-on-surface: #{map.get(palettes.$neutral, 90)};
+    --color-surface-variant: #{map.get(palettes.$neutral-variant, 30)};
+    --color-on-surface-variant: #{map.get(palettes.$neutral-variant, 80)};
 
-    --color-surface-container-lowest: #0a0f12;
-    --color-surface-container-low: #181c1f;
-    --color-surface-container: #1c2024;
-    --color-surface-container-high: #262a2e;
-    --color-surface-container-highest: #313539;
+    --color-surface-container-lowest: #{map.get(palettes.$neutral, 4)};
+    --color-surface-container-low: #{map.get(palettes.$neutral, 10)};
+    --color-surface-container: #{map.get(palettes.$neutral, 12)};
+    --color-surface-container-high: #{map.get(palettes.$neutral, 17)};
+    --color-surface-container-highest: #{map.get(palettes.$neutral, 22)};
 
     // Outline
-    --color-outline: #8b9198;
-    --color-outline-variant: #2a3035;
+    --color-outline: #{map.get(palettes.$neutral-variant, 60)};
+    --color-outline-variant: #{map.get(palettes.$neutral-variant, 20)};
   }
 }

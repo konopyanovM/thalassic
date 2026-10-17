@@ -1,0 +1,31 @@
+<h3 class="heading text-title-lg">{{ mode() === 'light' ? 'Light' : 'Dark' }}</h3>
+@for (group of groups(); track group.title) {
+  <section class="group">
+    <h4 class="group__title text-title-sm">{{ group.title }}</h4>
+    <ul class="pairs">
+      @for (pair of group.pairs; track pair.background + pair.foreground) {
+        <li class="pair">
+          <div class="pair__sample" [style.background-color]="pair.backgroundHex" aria-hidden="true">
+            @if (pair.requirement === 'text') {
+              <span class="pair__glyph" [style.color]="pair.foregroundHex">Aa</span>
+            } @else {
+              <span class="pair__stroke" [style.border-color]="pair.foregroundHex"></span>
+            }
+          </div>
+          <div class="pair__meta">
+            <span class="pair__roles text-label-md">{{ pair.foreground }} on {{ pair.background }}</span>
+            <span class="pair__hex">{{ pair.foregroundHex }} / {{ pair.backgroundHex }}</span>
+            <span class="pair__score">
+              <span class="pair__ratio">{{ pair.ratio | number: '1.1-1' }}:1</span>
+              @if (pair.verdict !== 'none') {
+                <span class="verdict" [class.verdict--fail]="pair.verdict === 'fail'">
+                  {{ pair.verdict === 'fail' ? 'Fails' : pair.verdict }}
+                </span>
+              }
+            </span>
+          </div>
+        </li>
+      }
+    </ul>
+  </section>
+}

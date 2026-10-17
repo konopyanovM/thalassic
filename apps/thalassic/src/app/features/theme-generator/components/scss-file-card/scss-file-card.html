@@ -1,0 +1,11 @@
+<div class="header">
+  <code class="header__name">{{ file().fileName }}</code>
+  <tls-button
+    variant="text"
+    size="sm"
+    [label]="copyTracker.copiedKey() === file().fileName ? 'Copied' : 'Copy'"
+    [ariaLabel]="'Copy ' + file().fileName"
+    (click)="copyTracker.copy(file().fileName, file().content)"
+  />
+</div>
+<pre class="code"><code>{{ file().content }}</code></pre>

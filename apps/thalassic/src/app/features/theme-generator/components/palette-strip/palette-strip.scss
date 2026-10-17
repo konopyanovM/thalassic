@@ -1,0 +1,64 @@
+@use 'core/src/styles/tools';
+
+:host {
+  // The exported tone count (27) divides evenly into rows of 9 and of 3, so no row ends ragged.
+  --palette-strip-columns: 9;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+
+  .title {
+    margin: 0;
+  }
+
+  .tones {
+    margin: 0;
+    padding: 0;
+
+    display: grid;
+    grid-template-columns: repeat(var(--palette-strip-columns), minmax(0, 1fr));
+
+    list-style: none;
+
+    @include tools.breakpoint(sm) {
+      --palette-strip-columns: 3;
+    }
+  }
+
+  .tone {
+    width: 100%;
+    min-height: 64px;
+
+    padding: var(--spacing-2);
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    border: none;
+
+    font-family: var(--font-family-mono);
+    font-size: var(--font-label-small-size);
+    text-align: start;
+
+    cursor: pointer;
+
+    &:focus-visible {
+      position: relative;
+      z-index: 1;
+
+      outline: 2px solid var(--color-on-surface);
+      outline-offset: 2px;
+    }
+
+    &__number {
+      font-weight: var(--font-weight-semibold);
+    }
+  }
+
+  .announcement {
+    @include tools.visually-hidden;
+  }
+}

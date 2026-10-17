@@ -5,7 +5,7 @@
       <ul class="navigation-list">
         @for (item of navItems; track item.label) {
           <li class="navigation-list__item">
-            <a [routerLink]="item.link">{{ item.label }}</a>
+            <a class="navigation-list__link" [routerLink]="item.link">{{ item.label }}</a>
           </li>
         }
       </ul>

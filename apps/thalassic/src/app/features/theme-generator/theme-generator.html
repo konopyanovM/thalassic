@@ -1,0 +1,126 @@
+<app-layout>
+  <div class="tls-container-media">
+    <div class="page">
+      <div class="intro">
+        <h1 class="intro__title text-headline-lg">Theme generator</h1>
+        <p class="intro__text text-body-lg">
+          Pick a seed color to derive Material 3 tonal palettes, check them on real components in
+          both modes, then export them as the theme's palette partials.
+        </p>
+      </div>
+
+      <div class="workspace">
+        <section class="controls" aria-labelledby="theme-generator-controls">
+          <h2 id="theme-generator-controls" class="controls__title text-title-md">Source</h2>
+
+          <tls-form-item label="Primary" hint="Seed of every palette without an override.">
+            <tls-color-input [value]="primary()" (valueChange)="primary.set($event)" fluid />
+          </tls-form-item>
+
+          <tls-form-item label="Secondary" hint="Leave empty to derive from the seed.">
+            <tls-color-input
+              placeholder="Derived"
+              [value]="secondary()"
+              (valueChange)="secondary.set($event)"
+              fluid
+            />
+          </tls-form-item>
+
+          <tls-form-item label="Tertiary" hint="Leave empty to derive from the seed.">
+            <tls-color-input
+              placeholder="Derived"
+              [value]="tertiary()"
+              (valueChange)="tertiary.set($event)"
+              fluid
+            />
+          </tls-form-item>
+
+          <tls-form-item label="Neutral" hint="Tints surfaces and outlines. Leave empty to derive.">
+            <tls-color-input
+              placeholder="Derived"
+              [value]="neutral()"
+              (valueChange)="neutral.set($event)"
+              fluid
+            />
+          </tls-form-item>
+
+          <tls-form-item label="Scheme variant">
+            <tls-select
+              [options]="variantOptions"
+              optionLabel="label"
+              optionValue="value"
+              [value]="variant()"
+              (valueChange)="selectVariant($event)"
+              fluid
+            />
+          </tls-form-item>
+
+          <tls-form-item
+            label="Color spec"
+            hint="2025 derives more colorful tonal spot, neutral, vibrant and expressive palettes."
+          >
+            <tls-select
+              [options]="specOptions"
+              optionLabel="label"
+              optionValue="value"
+              [value]="spec()"
+              (valueChange)="selectSpec($event)"
+              fluid
+            />
+          </tls-form-item>
+
+          <tls-form-item
+            label="Keep input chroma"
+            labelPosition="end"
+            hint="Off, inputs set only the hue and the variant sets the colorfulness."
+          >
+            <tls-switch [checked]="colorMatch()" (checkedChange)="colorMatch.set($event)" />
+          </tls-form-item>
+
+          <tls-form-item label="Apply to the whole app" labelPosition="end">
+            <tls-switch [checked]="applyToApp()" (checkedChange)="applyToApp.set($event)" />
+          </tls-form-item>
+
+          <tls-button label="Reset to thalassic" variant="outlined" (click)="reset()" />
+        </section>
+
+        <tls-tabs class="views" tlsTabsQuerySync="view" ariaLabel="Theme views">
+          <tls-tab value="preview" label="Preview">
+            <div class="previews">
+              <app-theme-preview mode="light" />
+              <app-theme-preview mode="dark" />
+            </div>
+          </tls-tab>
+
+          <tls-tab value="roles" label="Roles">
+            <div class="roles">
+              <app-role-grid mode="light" [roles]="lightRoles()" />
+              <app-role-grid mode="dark" [roles]="darkRoles()" />
+            </div>
+          </tls-tab>
+
+          <tls-tab value="palettes" label="Palettes">
+            <div class="palettes">
+              @for (name of paletteNames; track name) {
+                <app-palette-strip [name]="name" [palette]="palettes()[name]" />
+              }
+            </div>
+          </tls-tab>
+
+          <tls-tab value="export" label="Export">
+            <div class="export">
+              <p class="export__note text-body-md">
+                Each file replaces its namesake in
+                <code>libs/themes/src/themes/thalassic/palettes/</code>; the theme's color roles
+                read their tones from these maps.
+              </p>
+              @for (file of scssFiles(); track file.fileName) {
+                <app-scss-file-card [file]="file" />
+              }
+            </div>
+          </tls-tab>
+        </tls-tabs>
+      </div>
+    </div>
+  </div>
+</app-layout>

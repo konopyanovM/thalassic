@@ -12,5 +12,8 @@ import { HeaderNavigationItem } from './types';
   host: { role: 'banner' },
 })
 export class Header {
-  public navItems: HeaderNavigationItem[] = [];
+  protected readonly navItems: HeaderNavigationItem[] = [
+    { label: 'Home', link: '/' },
+    { label: 'Theme generator', link: '/theme-generator' },
+  ];
 }

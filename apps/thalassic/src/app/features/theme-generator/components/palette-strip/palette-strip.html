@@ -1,0 +1,21 @@
+<h3 class="title text-title-md" [id]="titleId()">{{ name() }}</h3>
+<ul class="tones">
+  @for (swatch of swatches(); track swatch.tone) {
+    <li class="tones__item">
+      <button
+        type="button"
+        class="tone"
+        [style.background-color]="swatch.hex"
+        [style.color]="swatch.ink"
+        [attr.aria-label]="'Copy tone ' + swatch.tone + ', ' + swatch.hex"
+        (click)="copyTracker.copy(swatch.hex, swatch.hex)"
+      >
+        <span class="tone__number">{{ swatch.tone }}</span>
+        <span class="tone__hex">
+          {{ copyTracker.copiedKey() === swatch.hex ? 'Copied' : swatch.hex }}
+        </span>
+      </button>
+    </li>
+  }
+</ul>
+<span class="announcement" aria-live="polite">{{ copyAnnouncement() }}</span>

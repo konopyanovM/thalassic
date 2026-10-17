@@ -1,0 +1,64 @@
+<p class="eyebrow text-label-lg">{{ title() }}</p>
+
+<div class="intro">
+  <h3 class="intro__title text-headline-sm">Morning swim</h3>
+  <p class="intro__text text-body-md">
+    Six lengths of freestyle, then intervals. Tide is low until ten, so the outer lane stays calm.
+  </p>
+</div>
+
+<div class="row">
+  <tls-button label="Filled" />
+  <tls-button label="Tonal" variant="tonal" />
+  <tls-button label="Outlined" variant="outlined" />
+  <tls-button label="Text" variant="text" />
+</div>
+
+<div class="row">
+  <tls-button label="Secondary" color="secondary" />
+  <tls-button label="Tertiary" color="tertiary" />
+  <tls-button label="Secondary" color="secondary" variant="tonal" />
+  <tls-button label="Tertiary" color="tertiary" variant="tonal" />
+</div>
+
+<div class="row">
+  <tls-chip label="Primary" variant="tonal" />
+  <tls-chip label="Secondary" color="secondary" variant="tonal" />
+  <tls-chip label="Tertiary" color="tertiary" variant="tonal" />
+  <tls-chip label="Outlined" variant="outlined" />
+</div>
+
+<tls-tabs ariaLabel="Sample tabs">
+  <tls-tab value="lanes" label="Lanes">Lane bookings open at eight.</tls-tab>
+  <tls-tab value="coaches" label="Coaches">Two coaches on deck today.</tls-tab>
+  <tls-tab value="notes" label="Notes">Bring fins for the drill set.</tls-tab>
+</tls-tabs>
+
+<tls-toggle-group [options]="segments" [value]="[segments[1]]" />
+
+<div class="row">
+  <tls-form-item label="Reminders" labelPosition="end" [reserveErrorSpace]="false">
+    <tls-switch [checked]="true" />
+  </tls-form-item>
+  <tls-form-item label="Share progress" labelPosition="end" [reserveErrorSpace]="false">
+    <tls-checkbox [checked]="true" />
+  </tls-form-item>
+</div>
+
+<tls-form-item label="Distance goal" [reserveErrorSpace]="false">
+  <tls-slider [value]="40" [max]="100" fluid />
+</tls-form-item>
+
+<tls-progress [value]="64" ariaLabel="Weekly goal" />
+
+<tls-form-item label="Session name" [reserveErrorSpace]="false">
+  <tls-input placeholder="e.g. Sunrise intervals" fluid />
+</tls-form-item>
+
+<ul class="surfaces">
+  @for (role of surfaceLadder; track role) {
+    <li class="surfaces__item text-label-sm" [style.background-color]="'var(--color-' + role + ')'">
+      {{ role }}
+    </li>
+  }
+</ul>
