@@ -6,7 +6,7 @@
   --tls-form-control-border-color: var(--color-outline-variant);
 
   color: var(--color-on-surface);
-  background-color: var(--color-surface-container-lowest);
+  background-color: var(--field-background);
 
   // A field's value does not inherit alignment from the text around it, so a
   // field set in a column of figures states it through this property.
@@ -85,7 +85,7 @@
     }
 
     &:focus {
-      background-color: var(--color-surface-container-lowest);
+      background-color: var(--field-background);
     }
   }
 }

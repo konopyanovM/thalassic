@@ -30,15 +30,18 @@ if (typeof globalThis.localStorage === 'undefined') {
 }
 
 if (typeof globalThis.matchMedia === 'undefined') {
+  /** Accepts a listener and drops it: the stub's `matches` never changes, so no change event is ever dispatched. */
+  const ignoreListener = (): void => undefined;
+
   const matchMediaStub = (query: string): MediaQueryList =>
     ({
       matches: false,
       media: query,
       onchange: null,
-      addEventListener(): void {},
-      removeEventListener(): void {},
-      addListener(): void {},
-      removeListener(): void {},
+      addEventListener: ignoreListener,
+      removeEventListener: ignoreListener,
+      addListener: ignoreListener,
+      removeListener: ignoreListener,
       dispatchEvent(): boolean {
         return false;
       },

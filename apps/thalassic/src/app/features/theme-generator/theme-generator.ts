@@ -199,8 +199,8 @@ export class ThemeGenerator {
     const light = rolesToDeclarations(this.lightRoles());
     const dark = rolesToDeclarations(this.darkRoles());
     const scopes = [
-      `.${PREVIEW_SCOPE_CLASS}--light {\n${light}\n${SCOPE_DERIVED_DECLARATIONS}\n}`,
-      `.${PREVIEW_SCOPE_CLASS}--dark {\n${dark}\n${SCOPE_DERIVED_DECLARATIONS}\n}`,
+      `.${PREVIEW_SCOPE_CLASS}--light {\n${light}\n${SCOPE_DERIVED_DECLARATIONS.light}\n}`,
+      `.${PREVIEW_SCOPE_CLASS}--dark {\n${dark}\n${SCOPE_DERIVED_DECLARATIONS.dark}\n}`,
     ];
     if (!this.applyToApp()) return scopes.join('\n');
 

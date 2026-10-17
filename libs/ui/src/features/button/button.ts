@@ -1,13 +1,23 @@
 import { LocationStrategy, NgTemplateOutlet } from '@angular/common';
-import { Component, computed, inject, input, InputSignal, Signal } from '@angular/core';
+import {
+  booleanAttribute,
+  Component,
+  computed,
+  inject,
+  input,
+  InputSignal,
+  InputSignalWithTransform,
+  Signal,
+} from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { Loader } from '../loader';
 import { RippleDirective } from '../ripple';
 import { ButtonBase } from './button.base';
 import { buttonType } from './button.types';
 
 @Component({
   selector: 'tls-button',
-  imports: [NgTemplateOutlet, RippleDirective],
+  imports: [Loader, NgTemplateOutlet, RippleDirective],
   templateUrl: './button.html',
   host: {
     '[tabindex]': '-1',
@@ -26,6 +36,17 @@ export class Button extends ButtonBase {
   protected override HOST_IS_CONTROL = false;
 
   // Inputs
+  /**
+   * Marks the button as working on the action it started — a submission in flight, say. A
+   * spinner stands in for the label, which keeps its place so the button holds its size, the
+   * control reports `aria-busy`, and further activation is refused; unlike `disabled` it keeps
+   * focus and its place in the tab order, so the person who pressed it is not stranded.
+   */
+  public readonly busy: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    false,
+    { transform: booleanAttribute },
+  );
+
   /** The text label displayed inside the button. Takes priority over projected content. */
   public readonly label = input<string>();
 
@@ -77,7 +98,7 @@ export class Button extends ButtonBase {
    * be made here.
    */
   protected onControlClick(event: MouseEvent): void {
-    if (!this.inactive()) return;
+    if (!this.inactive() && !this.busy()) return;
 
     event.preventDefault();
     event.stopPropagation();
@@ -92,7 +113,7 @@ export class Button extends ButtonBase {
    *    own full-page navigation is prevented.
    */
   protected onLinkClick(event: MouseEvent): void {
-    if (this.unavailable()) {
+    if (this.unavailable() || this.busy()) {
       event.preventDefault();
       event.stopPropagation();
       return;

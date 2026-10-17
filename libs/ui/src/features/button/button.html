@@ -8,6 +8,8 @@
     [attr.aria-label]="ariaLabel() ?? null"
     [attr.aria-labelledby]="ariaLabelledby() ?? null"
     [attr.aria-disabled]="ariaDisabled()"
+    [attr.aria-busy]="busy() ? 'true' : null"
+    [class.tls-button--busy]="busy()"
     (click)="onLinkClick($event)"
   >
     <ng-container [ngTemplateOutlet]="contentTemplate"></ng-container>
@@ -23,6 +25,8 @@
     [attr.aria-labelledby]="ariaLabelledby() ?? null"
     [disabled]="disabled()"
     [attr.aria-disabled]="ariaDisabled()"
+    [attr.aria-busy]="busy() ? 'true' : null"
+    [class.tls-button--busy]="busy()"
     (click)="onControlClick($event)"
   >
     <ng-container [ngTemplateOutlet]="contentTemplate"></ng-container>
@@ -35,6 +39,10 @@
     {{ label() }}
   } @else {
     <ng-container *ngTemplateOutlet="projectedContentTemplate"></ng-container>
+  }
+  @if (busy()) {
+    <!-- The control itself reports aria-busy, so the spinner is only seen. -->
+    <tls-loader class="tls-button__spinner" size="xs" aria-hidden="true" />
   }
 </ng-template>
 

@@ -296,11 +296,21 @@ export const SURFACE_LADDER: colorRole[] = [
 export const PREVIEW_SEGMENTS: string[] = ['Day', 'Week', 'Month'];
 
 /**
- * Root-level tokens that read a color role. A custom property referencing
- * another resolves where it is declared, so a scope re-declares these for them
- * to pick up the scope's roles instead of the page's.
+ * Root-level tokens that read a color role, per mode. A custom property
+ * referencing another resolves where it is declared, so a scope re-declares
+ * these for them to pick up the scope's roles instead of the page's — with the
+ * mode's own value where a token differs by mode.
  */
-export const SCOPE_DERIVED_DECLARATIONS = '--control-focus-ring-color: var(--color-primary);';
+export const SCOPE_DERIVED_DECLARATIONS: Record<themeType, string> = {
+  light: [
+    '--control-focus-ring-color: var(--color-primary);',
+    '--field-background: var(--color-surface-container-lowest);',
+  ].join('\n'),
+  dark: [
+    '--control-focus-ring-color: var(--color-primary);',
+    '--field-background: var(--color-surface-container-high);',
+  ].join('\n'),
+};
 
 /** Module a consumer loads the theme from; its palettes are configurable on that `@use`. */
 export const THEME_MODULE = '@thalassic/themes/themes/thalassic';

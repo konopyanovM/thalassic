@@ -1,4 +1,6 @@
-@use '../../../../core/src/styles' as core;
+// Only the tools barrel: it holds mixins and functions alone, whereas the full styles barrel also
+// emits the global reset and utility classes, which would be copied into this component's styles.
+@use '../../../../core/src/styles/tools' as core;
 
 // The breakpoint names a table can collapse at — one host class is generated per name, with the
 // widths resolved by the scale's owner through the container-breakpoint mixin.

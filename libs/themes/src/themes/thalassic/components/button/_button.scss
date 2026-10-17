@@ -69,6 +69,31 @@
     --tls-ripple-opacity: 0;
   }
 
+  // Working on its action: the label and any icon keep their place, so the button
+  // holds its size, while a spinner in the label's color stands over them. Text
+  // fill rather than `color` hides the label, since `color` is what the spinner
+  // and every icon read their ink from.
+  &--busy {
+    --tls-loader-color: currentColor;
+    --tls-press-scale: 1;
+    --tls-ripple-opacity: 0;
+
+    -webkit-text-fill-color: transparent;
+
+    cursor: progress;
+
+    > :not(.tls-button__spinner) {
+      visibility: hidden;
+    }
+  }
+
+  &__spinner {
+    position: absolute;
+    inset: 0;
+
+    margin: auto;
+  }
+
   // A pill has no corner left to shape — the arc spans the whole edge, which a
   // superellipse would flatten back towards a rectangle.
   &--rounded {

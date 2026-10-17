@@ -34,7 +34,7 @@
   border-radius: var(--tls-form-control-group-border-radius);
   border: var(--tls-form-control-group-border-width) var(--tls-form-control-group-border-style) var(--tls-form-control-group-border-color);
 
-  background-color: var(--color-surface-container-lowest);
+  background-color: var(--field-background);
 
   transition: border-color var(--motion-fast) var(--motion-ease-in-out),
   background-color var(--motion-fast) var(--motion-ease-in-out),

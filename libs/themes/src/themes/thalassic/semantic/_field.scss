@@ -1,0 +1,12 @@
+// The fill of a field: a surface to type into, set off from the one it sits on.
+// The lowest container does that in light mode, where it is the brightest
+// surface; in dark mode it is the darkest and would sink a field below its page,
+// so a raised container stands in. Declared on any dark scope rather than only
+// the root, so a region themed dark on its own fills its fields to match.
+:root {
+  --field-background: var(--color-surface-container-lowest);
+}
+
+.tls-dark {
+  --field-background: var(--color-surface-container-high);
+}

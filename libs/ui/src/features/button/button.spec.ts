@@ -8,6 +8,7 @@ import { Button } from './button';
     <tls-button
       [disabled]="disabled()"
       [inactive]="inactive()"
+      [busy]="busy()"
       ariaLabel="Next"
       (click)="clicks = clicks + 1"
     >
@@ -18,6 +19,7 @@ import { Button } from './button';
 class HostComponent {
   readonly disabled = signal(false);
   readonly inactive = signal(false);
+  readonly busy = signal(false);
 
   clicks = 0;
 }
@@ -70,6 +72,23 @@ describe('Button', () => {
     expect(control().getAttribute('aria-disabled')).toBe('true');
     // Unavailability reads the same however it is enforced.
     expect(control().classList).toContain('tls-button--disabled');
+
+    control().click();
+    await settle();
+
+    expect(host.clicks).toBe(0);
+  });
+
+  it('shows a spinner on a busy control, reports it busy, and refuses its clicks', async () => {
+    host.busy.set(true);
+    await settle();
+
+    expect(control().getAttribute('aria-busy')).toBe('true');
+    expect(control().classList).toContain('tls-button--busy');
+    expect(control().querySelector('.tls-button__spinner')).not.toBeNull();
+    // Busy is not unavailability: it keeps its look and its place in the tab order.
+    expect(control().disabled).toBe(false);
+    expect(control().classList).not.toContain('tls-button--disabled');
 
     control().click();
     await settle();

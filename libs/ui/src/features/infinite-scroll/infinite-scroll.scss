@@ -1,4 +1,6 @@
-@use '../../../../core/src/styles' as core;
+// Only the tools barrel: it holds mixins and functions alone, whereas the full styles barrel also
+// emits the global reset and utility classes, which would be copied into this component's styles.
+@use '../../../../core/src/styles/tools' as core;
 
 :host {
   // The sentinel is what the observer measures, so it needs a box of its own even in the
