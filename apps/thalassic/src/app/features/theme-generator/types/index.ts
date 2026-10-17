@@ -1,3 +1,4 @@
+export * from './code-file';
 export * from './color-role';
 export * from './color-spec';
 export * from './contrast-requirement';
@@ -9,7 +10,6 @@ export * from './role-pair';
 export * from './role-pair-view';
 export * from './role-tone';
 export * from './scheme-variant';
-export * from './scss-file';
 export * from './select-option';
 export * from './theme-roles';
 export * from './theme-source';

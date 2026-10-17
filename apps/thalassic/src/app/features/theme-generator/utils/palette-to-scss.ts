@@ -1,16 +1,14 @@
-import { hexFromArgb, TonalPalette } from '@material/material-color-utilities';
-import { PALETTE_TONES } from '../theme-generator.constants';
-import { paletteName, ScssFile } from '../types';
+import { TonalPalette } from '@material/material-color-utilities';
+import { CodeFile, paletteName } from '../types';
+import { paletteEntries } from './palette-entries';
 
 /**
  * Writes a palette as the SCSS partial the theme forwards: a `$<name>` map from
- * tone to lowercase `#rrggbb`, in the theme's own file layout.
+ * tone to lowercase `#rrggbb`, `!default` so the theme stays configurable.
  */
-export function paletteToScss(name: paletteName, palette: TonalPalette): ScssFile {
-  const entries = PALETTE_TONES.map(tone => `  ${tone}: ${hexFromArgb(palette.tone(tone))},`);
-
+export function paletteToScss(name: paletteName, palette: TonalPalette): CodeFile {
   return {
     fileName: `_${name}.scss`,
-    content: [`$${name}: (`, ...entries, ');', ''].join('\n'),
+    content: [`$${name}: (`, ...paletteEntries(palette, '  '), ') !default;', ''].join('\n'),
   };
 }

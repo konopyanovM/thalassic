@@ -1,3 +1,7 @@
+// Palettes load first: they are configurable through this module's
+// `@use … with (…)`, and a module can only be configured on its first load.
+@forward 'palettes';
+
 @forward 'components';
 @forward 'mixins';
 @forward 'semantic';

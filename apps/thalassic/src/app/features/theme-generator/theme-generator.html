@@ -5,7 +5,7 @@
         <h1 class="intro__title text-headline-lg">Theme generator</h1>
         <p class="intro__text text-body-lg">
           Pick a seed color to derive Material 3 tonal palettes, check them on real components in
-          both modes, then export them as the theme's palette partials.
+          both modes, then export them as a theme configuration for your project.
         </p>
       </div>
 
@@ -109,14 +109,37 @@
 
           <tls-tab value="export" label="Export">
             <div class="export">
-              <p class="export__note text-body-md">
-                Each file replaces its namesake in
-                <code>libs/themes/src/themes/thalassic/palettes/</code>; the theme's color roles
-                read their tones from these maps.
-              </p>
-              @for (file of scssFiles(); track file.fileName) {
-                <app-scss-file-card [file]="file" />
-              }
+              <section class="export__option" aria-labelledby="theme-export-sass">
+                <h3 id="theme-export-sass" class="export__title text-title-md">Sass</h3>
+                <p class="export__note text-body-md">
+                  Load the theme with these palettes in place of its own: use this as the theme
+                  import in your global stylesheet. Every color role, light and dark, is built from
+                  them at compile time.
+                </p>
+                <app-code-file-card [file]="themeConfigFile()" />
+              </section>
+
+              <section class="export__option" aria-labelledby="theme-export-css">
+                <h3 id="theme-export-css" class="export__title text-title-md">CSS</h3>
+                <p class="export__note text-body-md">
+                  Override the color roles of the stock theme: load this file after the theme. Needs
+                  no Sass, and can be swapped in at runtime.
+                </p>
+                <app-code-file-card [file]="cssFile()" />
+              </section>
+
+              <section class="export__option" aria-labelledby="theme-export-palettes">
+                <h3 id="theme-export-palettes" class="export__title text-title-md">
+                  Palette partials
+                </h3>
+                <p class="export__note text-body-md">
+                  Replace the theme's default palettes: each file replaces its namesake in
+                  <code>libs/themes/src/themes/thalassic/palettes/</code>.
+                </p>
+                @for (file of paletteFiles(); track file.fileName) {
+                  <app-code-file-card [file]="file" />
+                }
+              </section>
             </div>
           </tls-tab>
         </tls-tabs>

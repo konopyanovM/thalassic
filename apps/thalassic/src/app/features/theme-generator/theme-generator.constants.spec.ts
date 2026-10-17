@@ -5,7 +5,7 @@ import { colorRole, RoleTone } from './types';
 
 /** Role → palette tone declarations of one block of the theme's `_colors.scss`. */
 function roleTonesOf(block: string): Partial<Record<colorRole, RoleTone>> {
-  const declaration = /--color-([a-z-]+): #\{map\.get\(palettes\.\$([a-z-]+), (\d+)\)\};/g;
+  const declaration = /--color-([a-z-]+): #\{-tone\('([a-z-]+)', (\d+)\)\};/g;
   const tones: Partial<Record<colorRole, RoleTone>> = {};
 
   for (const [, role, palette, tone] of block.matchAll(declaration)) {

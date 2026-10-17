@@ -83,11 +83,20 @@
   }
 
   .export {
-    gap: var(--spacing-4);
+    gap: var(--spacing-8);
 
+    &__option {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-3);
+    }
+
+    &__title,
     &__note {
       margin: 0;
+    }
 
+    &__note {
       overflow-wrap: anywhere;
       color: var(--color-on-surface-variant);
     }

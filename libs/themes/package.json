@@ -13,5 +13,39 @@
     "type": "git",
     "url": "https://github.com/konopyanovM/thalassic"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "exports": {
+    "./themes": {
+      "sass": "./themes/index.scss",
+      "default": "./themes/index.scss"
+    },
+    "./themes/*": {
+      "sass": "./themes/*",
+      "default": "./themes/*"
+    },
+    "./tools": {
+      "sass": "./tools/index.scss",
+      "default": "./tools/index.scss"
+    },
+    "./tools/*": {
+      "sass": "./tools/*",
+      "default": "./tools/*"
+    },
+    "./utils": {
+      "sass": "./utils/index.scss",
+      "default": "./utils/index.scss"
+    },
+    "./utils/*": {
+      "sass": "./utils/*",
+      "default": "./utils/*"
+    },
+    "./palettes": {
+      "sass": "./palettes/_index.scss",
+      "default": "./palettes/_index.scss"
+    },
+    "./palettes/*": {
+      "sass": "./palettes/*",
+      "default": "./palettes/*"
+    }
+  }
 }

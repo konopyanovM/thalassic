@@ -15,7 +15,7 @@ import {
 import { Layout } from '../../components/layout/layout';
 import { PaletteStrip } from './components/palette-strip/palette-strip';
 import { RoleGrid } from './components/role-grid/role-grid';
-import { ScssFileCard } from './components/scss-file-card/scss-file-card';
+import { CodeFileCard } from './components/code-file-card/code-file-card';
 import { ThemePreview } from './components/theme-preview/theme-preview';
 import { ThemeStylesheet } from './services';
 import {
@@ -28,12 +28,14 @@ import {
   THEME_SOURCE_PARAMS,
   THEME_SOURCE_SYNC_DELAY,
 } from './theme-generator.constants';
-import { colorSpec, schemeVariant, ScssFile, ThemeRoles, ThemeSource, TonalPalettes } from './types';
+import { CodeFile, colorSpec, schemeVariant, ThemeRoles, ThemeSource, TonalPalettes } from './types';
 import {
   generatePalettes,
   isHexColor,
+  palettesToThemeConfig,
   paletteToScss,
   resolveRoles,
+  rolesToCss,
   rolesToDeclarations,
 } from './utils';
 
@@ -48,12 +50,12 @@ import {
   selector: 'app-theme-generator',
   imports: [
     Button,
+    CodeFileCard,
     ColorInput,
     FormItem,
     Layout,
     PaletteStrip,
     RoleGrid,
-    ScssFileCard,
     Select,
     Switch,
     Tab,
@@ -136,8 +138,18 @@ export class ThemeGenerator {
     resolveRoles(this.palettes(), 'dark'),
   );
 
-  /** The palettes as the theme's SCSS partials. */
-  protected readonly scssFiles: Signal<ScssFile[]> = computed(() => {
+  /** The `@use … with (…)` loading the theme configured with the palettes. */
+  protected readonly themeConfigFile: Signal<CodeFile> = computed(() =>
+    palettesToThemeConfig(this.palettes()),
+  );
+
+  /** The roles of both modes as `:root` overrides. */
+  protected readonly cssFile: Signal<CodeFile> = computed(() =>
+    rolesToCss(this.lightRoles(), this.darkRoles()),
+  );
+
+  /** The palettes as the theme's own SCSS partials. */
+  protected readonly paletteFiles: Signal<CodeFile[]> = computed(() => {
     const palettes = this.palettes();
     return PALETTE_NAMES.map(name => paletteToScss(name, palettes[name]));
   });

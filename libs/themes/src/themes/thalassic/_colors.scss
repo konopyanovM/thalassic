@@ -3,6 +3,26 @@
 @use './palettes' as palettes;
 @use '../../palettes' as common-palettes;
 
+// Palettes the color roles read, by name. Each is configurable on the theme's
+// `@use … with (…)`, so a role's tone may be missing from a consumer's map.
+$-palettes: (
+  'primary': palettes.$primary,
+  'secondary': palettes.$secondary,
+  'tertiary': palettes.$tertiary,
+  'neutral': palettes.$neutral,
+  'neutral-variant': palettes.$neutral-variant,
+);
+
+// One tone of a named palette, private to the theme. A missing tone is a compile error rather than a
+// silently dropped custom property.
+@function -tone($palette, $tone) {
+  $tones: map.get($-palettes, $palette);
+  @if not map.has-key($tones, $tone) {
+    @error 'Palette `$#{$palette}` has no tone #{$tone}; every color role needs it.';
+  }
+  @return map.get($tones, $tone);
+}
+
 // Hues carrying no meaning of their own, for a surface colored by choice rather
 // than by status: a tag, a category, a tile a reader tints to tell it apart.
 // Named for the hue precisely so nothing reads a state into it — a red accent
@@ -21,22 +41,22 @@ $accents: (
 
 :root {
   // Primary
-  --color-primary: #{map.get(palettes.$primary, 40)};
-  --color-on-primary: #{map.get(palettes.$primary, 100)};
-  --color-primary-container: #{map.get(palettes.$primary, 90)};
-  --color-on-primary-container: #{map.get(palettes.$primary, 30)};
+  --color-primary: #{-tone('primary', 40)};
+  --color-on-primary: #{-tone('primary', 100)};
+  --color-primary-container: #{-tone('primary', 90)};
+  --color-on-primary-container: #{-tone('primary', 30)};
 
   // Secondary
-  --color-secondary: #{map.get(palettes.$secondary, 40)};
-  --color-on-secondary: #{map.get(palettes.$secondary, 100)};
-  --color-secondary-container: #{map.get(palettes.$secondary, 90)};
-  --color-on-secondary-container: #{map.get(palettes.$secondary, 30)};
+  --color-secondary: #{-tone('secondary', 40)};
+  --color-on-secondary: #{-tone('secondary', 100)};
+  --color-secondary-container: #{-tone('secondary', 90)};
+  --color-on-secondary-container: #{-tone('secondary', 30)};
 
   // Tertiary
-  --color-tertiary: #{map.get(palettes.$tertiary, 40)};
-  --color-on-tertiary: #{map.get(palettes.$tertiary, 100)};
-  --color-tertiary-container: #{map.get(palettes.$tertiary, 90)};
-  --color-on-tertiary-container: #{map.get(palettes.$tertiary, 30)};
+  --color-tertiary: #{-tone('tertiary', 40)};
+  --color-on-tertiary: #{-tone('tertiary', 100)};
+  --color-tertiary-container: #{-tone('tertiary', 90)};
+  --color-on-tertiary-container: #{-tone('tertiary', 30)};
 
   // Success
   --color-success: #{map.get(common-palettes.$green, 40)};
@@ -71,42 +91,42 @@ $accents: (
   }
 
   // Surface
-  --color-surface: #{map.get(palettes.$neutral, 98)};
-  --color-on-surface: #{map.get(palettes.$neutral, 10)};
-  --color-surface-variant: #{map.get(palettes.$neutral-variant, 90)};
-  --color-on-surface-variant: #{map.get(palettes.$neutral-variant, 30)};
+  --color-surface: #{-tone('neutral', 98)};
+  --color-on-surface: #{-tone('neutral', 10)};
+  --color-surface-variant: #{-tone('neutral-variant', 90)};
+  --color-on-surface-variant: #{-tone('neutral-variant', 30)};
 
-  --color-surface-container-lowest: #{map.get(palettes.$neutral, 100)};
-  --color-surface-container-low: #{map.get(palettes.$neutral, 96)};
-  --color-surface-container: #{map.get(palettes.$neutral, 94)};
-  --color-surface-container-high: #{map.get(palettes.$neutral, 92)};
-  --color-surface-container-highest: #{map.get(palettes.$neutral, 90)};
+  --color-surface-container-lowest: #{-tone('neutral', 100)};
+  --color-surface-container-low: #{-tone('neutral', 96)};
+  --color-surface-container: #{-tone('neutral', 94)};
+  --color-surface-container-high: #{-tone('neutral', 92)};
+  --color-surface-container-highest: #{-tone('neutral', 90)};
 
   // Outline
-  --color-outline: #{map.get(palettes.$neutral-variant, 50)};
-  --color-outline-variant: #{map.get(palettes.$neutral-variant, 85)};
+  --color-outline: #{-tone('neutral-variant', 50)};
+  --color-outline-variant: #{-tone('neutral-variant', 85)};
 
   // Shadow
   --color-shadow: 0 0 0;
 
   &.tls-dark {
     // Primary
-    --color-primary: #{map.get(palettes.$primary, 80)};
-    --color-on-primary: #{map.get(palettes.$primary, 20)};
-    --color-primary-container: #{map.get(palettes.$primary, 30)};
-    --color-on-primary-container: #{map.get(palettes.$primary, 90)};
+    --color-primary: #{-tone('primary', 80)};
+    --color-on-primary: #{-tone('primary', 20)};
+    --color-primary-container: #{-tone('primary', 30)};
+    --color-on-primary-container: #{-tone('primary', 90)};
 
     // Secondary
-    --color-secondary: #{map.get(palettes.$secondary, 80)};
-    --color-on-secondary: #{map.get(palettes.$secondary, 20)};
-    --color-secondary-container: #{map.get(palettes.$secondary, 30)};
-    --color-on-secondary-container: #{map.get(palettes.$secondary, 90)};
+    --color-secondary: #{-tone('secondary', 80)};
+    --color-on-secondary: #{-tone('secondary', 20)};
+    --color-secondary-container: #{-tone('secondary', 30)};
+    --color-on-secondary-container: #{-tone('secondary', 90)};
 
     // Tertiary
-    --color-tertiary: #{map.get(palettes.$tertiary, 80)};
-    --color-on-tertiary: #{map.get(palettes.$tertiary, 20)};
-    --color-tertiary-container: #{map.get(palettes.$tertiary, 30)};
-    --color-on-tertiary-container: #{map.get(palettes.$tertiary, 90)};
+    --color-tertiary: #{-tone('tertiary', 80)};
+    --color-on-tertiary: #{-tone('tertiary', 20)};
+    --color-tertiary-container: #{-tone('tertiary', 30)};
+    --color-on-tertiary-container: #{-tone('tertiary', 90)};
 
     // Success
     --color-success: #{map.get(common-palettes.$green, 80)};
@@ -141,19 +161,19 @@ $accents: (
     }
 
     // Surface
-    --color-surface: #{map.get(palettes.$neutral, 6)};
-    --color-on-surface: #{map.get(palettes.$neutral, 90)};
-    --color-surface-variant: #{map.get(palettes.$neutral-variant, 30)};
-    --color-on-surface-variant: #{map.get(palettes.$neutral-variant, 80)};
+    --color-surface: #{-tone('neutral', 6)};
+    --color-on-surface: #{-tone('neutral', 90)};
+    --color-surface-variant: #{-tone('neutral-variant', 30)};
+    --color-on-surface-variant: #{-tone('neutral-variant', 80)};
 
-    --color-surface-container-lowest: #{map.get(palettes.$neutral, 4)};
-    --color-surface-container-low: #{map.get(palettes.$neutral, 10)};
-    --color-surface-container: #{map.get(palettes.$neutral, 12)};
-    --color-surface-container-high: #{map.get(palettes.$neutral, 17)};
-    --color-surface-container-highest: #{map.get(palettes.$neutral, 22)};
+    --color-surface-container-lowest: #{-tone('neutral', 4)};
+    --color-surface-container-low: #{-tone('neutral', 10)};
+    --color-surface-container: #{-tone('neutral', 12)};
+    --color-surface-container-high: #{-tone('neutral', 17)};
+    --color-surface-container-highest: #{-tone('neutral', 22)};
 
     // Outline
-    --color-outline: #{map.get(palettes.$neutral-variant, 60)};
-    --color-outline-variant: #{map.get(palettes.$neutral-variant, 20)};
+    --color-outline: #{-tone('neutral-variant', 60)};
+    --color-outline-variant: #{-tone('neutral-variant', 20)};
   }
 }

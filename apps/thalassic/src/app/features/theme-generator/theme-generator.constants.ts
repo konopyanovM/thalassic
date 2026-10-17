@@ -225,3 +225,12 @@ export const PREVIEW_SEGMENTS: string[] = ['Day', 'Week', 'Month'];
  * to pick up the scope's roles instead of the page's.
  */
 export const SCOPE_DERIVED_DECLARATIONS = '--control-focus-ring-color: var(--color-primary);';
+
+/** Module a consumer loads the theme from; its palettes are configurable on that `@use`. */
+export const THEME_MODULE = '@thalassic/themes/themes/thalassic';
+
+/** Name of the generated Sass entry that configures the theme. */
+export const THEME_CONFIG_FILE_NAME = 'styles.scss';
+
+/** Name of the generated stylesheet that overrides the color roles. */
+export const THEME_CSS_FILE_NAME = 'theme.css';

@@ -12,7 +12,7 @@ export function generatePalettes(source: ThemeSource): TonalPalettes {
   const seed = Hct.fromInt(argbFromHex(source.primary));
   const scheme = createScheme(seed, source.variant, source.spec);
 
-  /** Palette for an input color: its hue, with its own chroma or the fallback palette's. */
+  // Palette for an input color: its hue, with its own chroma or the fallback palette's.
   const fromInput = (hex: string, fallback: TonalPalette): TonalPalette => {
     const color = Hct.fromInt(argbFromHex(hex));
     if (source.colorMatch) return TonalPalette.fromHct(color);
