@@ -37,6 +37,19 @@ export interface ConfirmOptions {
   position?: overlayPosition;
   offset?: Point;
   ariaLabel?: string;
+  /**
+   * Extra class(es) placed on the overlay pane, so one confirmation can carry
+   * its own treatment where the shared one does not fit. The pane carries them
+   * whether it opens anchored or as the modal.
+   *
+   * The pane sits outside every component's template and carries no style
+   * encapsulation attribute, so a consumer's scoped rules cannot otherwise reach
+   * it. A class named here is the handle they get. The panel declares its own
+   * `--tls-confirm-*` properties, which beat anything inherited from the pane, so
+   * a rule that retunes one has to name the panel too: `.<class> .tls-confirm`.
+   * The backdrop is the pane's sibling rather than its child, so it is not reached.
+   */
+  panelClass?: string | string[];
 }
 
 /**
@@ -68,7 +81,7 @@ export class ConfirmService {
     const modal = !trigger || this._prefersModal();
 
     const overlayRef = modal
-      ? this._createModalOverlay()
+      ? this._createModalOverlay(options)
       : this._createAnchoredOverlay(trigger, options);
 
     const panelRef = overlayRef.attach(new ComponentPortal(ConfirmPanel));
@@ -108,10 +121,11 @@ export class ConfirmService {
       scrollStrategy: this._overlay.scrollStrategies.reposition(),
       hasBackdrop: true,
       backdropClass: 'cdk-overlay-transparent-backdrop',
+      panelClass: options.panelClass ?? [],
     });
   }
 
-  private _createModalOverlay(): OverlayRef {
+  private _createModalOverlay(options: ConfirmOptions): OverlayRef {
     const positionStrategy = this._overlay
       .position()
       .global()
@@ -123,6 +137,7 @@ export class ConfirmService {
       scrollStrategy: this._overlay.scrollStrategies.block(),
       hasBackdrop: true,
       backdropClass: MODAL_BACKDROP_CLASS,
+      panelClass: options.panelClass ?? [],
     });
   }
 

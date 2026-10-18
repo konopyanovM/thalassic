@@ -286,6 +286,30 @@ describe('ConfirmService', () => {
     expect(document.activeElement).toBe(trigger);
   });
 
+  describe('panelClass', () => {
+    const queryPane = () => overlayContainerElement.querySelector<HTMLElement>('.cdk-overlay-pane');
+
+    it('should place a named class on the anchored overlay pane beside its own', () => {
+      service.confirm({ trigger, message: 'Delete this program?', panelClass: 'tinted' });
+      TestBed.tick();
+
+      const pane = queryPane();
+      expect(pane?.classList.contains('tinted')).toBe(true);
+      expect(pane?.classList.contains('cdk-overlay-pane')).toBe(true);
+      expect(pane?.querySelector('.tls-confirm')).not.toBeNull();
+    });
+
+    it('should place every class of a named list on the modal overlay pane', () => {
+      service.confirm({ message: 'Delete your account?', panelClass: ['tinted', 'is-wide'] });
+      TestBed.tick();
+
+      const pane = queryPane();
+      expect(pane?.classList.contains('tinted')).toBe(true);
+      expect(pane?.classList.contains('is-wide')).toBe(true);
+      expect(pane?.classList.contains('cdk-overlay-pane')).toBe(true);
+    });
+  });
+
   describe('modal (no trigger)', () => {
     it('should open a centered modal panel with aria-modal true', () => {
       service.confirm({ message: 'Delete your account?' });

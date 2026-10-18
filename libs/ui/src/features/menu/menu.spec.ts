@@ -13,7 +13,12 @@ import { MenuItemDefinition } from './menu.types';
   imports: [Menu],
   template: `
     <button #trigger type="button">Trigger</button>
-    <tls-menu [items]="items()" [inline]="inline()" [ariaLabel]="ariaLabel()" />
+    <tls-menu
+      [items]="items()"
+      [inline]="inline()"
+      [ariaLabel]="ariaLabel()"
+      [panelClass]="panelClass()"
+    />
   `,
 })
 class HostComponent {
@@ -25,6 +30,7 @@ class HostComponent {
   ]);
   public readonly inline = signal(false);
   public readonly ariaLabel = signal<string | undefined>(undefined);
+  public readonly panelClass = signal<string | string[] | undefined>(undefined);
   public readonly menu = viewChild.required(Menu);
 }
 
@@ -164,6 +170,42 @@ describe('Menu', () => {
 
       expect(host.clicks).toEqual(['First']);
       expect(getMenu().isOpen()).toBe(false);
+    });
+  });
+
+  describe('panelClass', () => {
+    const queryPane = () => overlayContainerElement.querySelector<HTMLElement>('.cdk-overlay-pane');
+
+    it('should place a named class on the anchored overlay pane beside its own', () => {
+      host.panelClass.set('tinted');
+      fixture.detectChanges();
+
+      getMenu().open(trigger);
+      fixture.detectChanges();
+
+      const pane = queryPane();
+      expect(pane?.classList.contains('tinted')).toBe(true);
+      expect(pane?.classList.contains('cdk-overlay-pane')).toBe(true);
+      expect(pane?.contains(queryPanel())).toBe(true);
+    });
+
+    it('should place every class of a named list on the overlay pane opened at a point', () => {
+      host.panelClass.set(['tinted', 'is-wide']);
+      fixture.detectChanges();
+
+      getMenu().openAtPoint(20, 40);
+      fixture.detectChanges();
+
+      const pane = queryPane();
+      expect(pane?.classList.contains('tinted')).toBe(true);
+      expect(pane?.classList.contains('is-wide')).toBe(true);
+    });
+
+    it('should add no class to the pane when none is named', () => {
+      getMenu().open(trigger);
+      fixture.detectChanges();
+
+      expect(queryPane()?.className).toBe('cdk-overlay-pane');
     });
   });
 

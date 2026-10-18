@@ -15,6 +15,7 @@ import { SheetDetent } from './sheet.types';
       [modalFrom]="modalFrom()"
       [(detent)]="detent"
       label="Session"
+      [panelClass]="panelClass()"
       [detentLabels]="{ lip: 'Collapsed', half: 'Half open', full: 'Open' }"
     >
       <ng-template tlsSheetHeader><span class="title">Now playing</span></ng-template>
@@ -31,6 +32,7 @@ class HostComponent {
   readonly modalFrom = signal<string | null>(null);
   /** A signal, so a write from the test marks this OnPush host for check. */
   readonly detent = signal('lip');
+  readonly panelClass = signal<string | string[] | undefined>('page-pane');
 }
 
 describe('Sheet', () => {
@@ -126,6 +128,32 @@ describe('Sheet', () => {
     expect(fixture.nativeElement.querySelector('.tls-sheet__panel')).toBeNull();
     expect(container.querySelector('.tls-sheet__header .title')).not.toBeNull();
     expect(container.querySelector('.tls-sheet__body .line')).not.toBeNull();
+  });
+
+  it('carries a class the page names on its pane, beside its own', () => {
+    const pane = query('.cdk-overlay-pane');
+    expect(pane.classList.contains('page-pane')).toBe(true);
+    expect(pane.classList.contains('tls-sheet-pane')).toBe(true);
+  });
+
+  it('swaps the named classes on its pane when they change and keeps its own', () => {
+    host.panelClass.set(['tinted', 'is-wide']);
+    fixture.detectChanges();
+
+    const pane = query('.cdk-overlay-pane');
+    expect(pane.classList.contains('page-pane')).toBe(false);
+    expect(pane.classList.contains('tinted')).toBe(true);
+    expect(pane.classList.contains('is-wide')).toBe(true);
+    expect(pane.classList.contains('tls-sheet-pane')).toBe(true);
+  });
+
+  it('keeps its own pane class when the page names it and then drops it', () => {
+    host.panelClass.set('tls-sheet-pane');
+    fixture.detectChanges();
+    host.panelClass.set(undefined);
+    fixture.detectChanges();
+
+    expect(query('.cdk-overlay-pane').classList.contains('tls-sheet-pane')).toBe(true);
   });
 
   it('rests at the first detent and publishes its height for the page', () => {

@@ -113,6 +113,21 @@ export class Menu {
     false,
     { transform: booleanAttribute },
   );
+  /**
+   * Extra class(es) placed on the overlay pane, so one menu can carry its own
+   * treatment where the shared one does not fit. They reach the pane however
+   * the menu opens — anchored, at a point, or as a sheet; an inline menu has no
+   * pane, so it has nowhere to put them.
+   *
+   * The pane sits outside every component's template and carries no style
+   * encapsulation attribute, so a consumer's scoped rules cannot otherwise reach
+   * it. A class named here is the handle they get. The panel declares its own
+   * `--tls-menu-*` properties, which beat anything inherited from the pane, so
+   * a rule that retunes one has to name the panel too: `.<class> .tls-menu`.
+   */
+  public readonly panelClass: InputSignal<string | string[] | undefined> = input<
+    string | string[] | undefined
+  >(undefined);
 
   private readonly _positions = computed<ConnectedPosition[]>(() =>
     buildOverlayPositions(this.position(), this.offset()),
@@ -206,6 +221,7 @@ export class Menu {
       content: this._panelRef(),
       origin,
       positions: this._positions(),
+      panelClass: this.panelClass(),
       ...(sheet && { presentation: 'sheet' as const }),
     });
   }
@@ -223,6 +239,7 @@ export class Menu {
       content: this._panelRef(),
       origin: { x, y },
       positions: this._positions(),
+      panelClass: this.panelClass(),
       ...(sheet
         ? { presentation: 'sheet' as const }
         : { scrollStrategy: 'close' as const, hasBackdrop: false }),

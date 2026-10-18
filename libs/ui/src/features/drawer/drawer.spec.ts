@@ -206,6 +206,31 @@ describe('DrawerService', () => {
     });
   });
 
+  describe('panelClass', () => {
+    function drawerPane(): Element | null {
+      const drawer = drawerElement();
+      return drawer ? drawer.closest('.cdk-overlay-pane') : null;
+    }
+
+    it('places a named class on the overlay pane beside its own', () => {
+      service.open(DrawerContentComponent, { panelClass: 'tinted' });
+      flush();
+
+      const pane = drawerPane();
+      expect(pane?.classList.contains('tinted')).toBe(true);
+      expect(pane?.classList.contains('cdk-overlay-pane')).toBe(true);
+    });
+
+    it('places every class of a named list on the overlay pane', () => {
+      service.open(DrawerContentComponent, { panelClass: ['tinted', 'is-wide'] });
+      flush();
+
+      const pane = drawerPane();
+      expect(pane?.classList.contains('tinted')).toBe(true);
+      expect(pane?.classList.contains('is-wide')).toBe(true);
+    });
+  });
+
   describe('drag gesture wiring', () => {
     it('carries no gesture without a grabber', async () => {
       const drawerRef = service.open(DrawerContentComponent, {

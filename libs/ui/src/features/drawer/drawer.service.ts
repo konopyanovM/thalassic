@@ -54,6 +54,18 @@ export interface DrawerOpenConfig<D = unknown> {
   openByDrag?: boolean;
   /** Accessible name for the close button. */
   closeLabel?: string;
+  /**
+   * Extra class(es) placed on the overlay pane, so one drawer can carry its own
+   * treatment where the shared one does not fit.
+   *
+   * The pane sits outside every component's template and carries no style
+   * encapsulation attribute, so a consumer's scoped rules cannot otherwise reach
+   * it. A class named here is the handle they get. The drawer declares its own
+   * `--tls-drawer-*` properties, which beat anything inherited from the pane, so
+   * a rule that retunes one has to name the drawer too: `.<class> .tls-drawer`.
+   * The backdrop is the pane's sibling rather than its child, so it is not reached.
+   */
+  panelClass?: string | string[];
   role?: DialogRole;
   ariaLabel?: string | null;
   ariaLabelledBy?: string | null;
@@ -113,6 +125,7 @@ export class DrawerService {
       direction: this._directionality.value,
       hasBackdrop: true,
       backdropClass: 'tls-drawer-backdrop',
+      panelClass: config?.panelClass ?? [],
       // Suppress CDK's synchronous auto-close so every dismissal routes through
       // `DrawerRef.close`, which plays the slide-out before disposal.
       disableClose: true,

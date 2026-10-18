@@ -1,4 +1,5 @@
 import { ConfigurableFocusTrapFactory, FocusTrap, InputModalityDetector } from '@angular/cdk/a11y';
+import { coerceArray } from '@angular/cdk/coercion';
 import { DOCUMENT, NgTemplateOutlet } from '@angular/common';
 import { Overlay, OverlayContainer, OverlayRef } from '@angular/cdk/overlay';
 import { DomPortal } from '@angular/cdk/portal';
@@ -102,6 +103,20 @@ export class Sheet implements OnDestroy {
   public readonly grabber: InputSignalWithTransform<boolean, unknown> = input(true, {
     transform: booleanAttribute,
   });
+  /**
+   * Extra class(es) placed on the overlay pane, so one sheet can carry its own
+   * treatment where the shared one does not fit. The pane lives as long as the
+   * sheet, so a change swaps them on it in place.
+   *
+   * The pane sits outside every component's template and carries no style
+   * encapsulation attribute, so a consumer's scoped rules cannot otherwise reach
+   * it. A class named here is the handle they get. The sheet declares its own
+   * `--tls-sheet-*` properties, which beat anything inherited from the pane, so
+   * a rule that retunes one has to name the sheet too: `.<class> .tls-sheet`.
+   */
+  public readonly panelClass: InputSignal<string | string[] | undefined> = input<
+    string | string[] | undefined
+  >(undefined);
 
   // State
   /**
@@ -147,6 +162,8 @@ export class Sheet implements OnDestroy {
    */
   private _declined = false;
   private _focusTrap: FocusTrap | null = null;
+  /** The classes `panelClass` last put on the pane, for a change to take off again. */
+  private _panelClasses: string[] = [];
   /** Page-level elements made inert while modal, to be released as found. */
   private _inerted: Element[] = [];
   /**
@@ -206,6 +223,12 @@ export class Sheet implements OnDestroy {
       untracked(() => {
         if (this._overlayRef !== null) this._applyModality(modal, 'header');
       });
+    });
+
+    // The pane is created once, so a later `panelClass` is swapped onto it.
+    effect(() => {
+      const panelClass = this.panelClass();
+      untracked(() => this._applyPanelClass(panelClass));
     });
 
     // Re-places the sheet when the detent list or the modal threshold changes:
@@ -373,6 +396,7 @@ export class Sheet implements OnDestroy {
     });
     overlayRef.attach(new DomPortal(this._root().nativeElement));
     this._overlayRef = overlayRef;
+    this._applyPanelClass(this.panelClass());
 
     // The header's and the content's sizes are two of the measures the
     // detents resolve against; the viewport, the third, is the ruler's.
@@ -380,6 +404,21 @@ export class Sheet implements OnDestroy {
     observer.observe(this._header().nativeElement);
     observer.observe(this._content().nativeElement);
     this._destroyRef.onDestroy(() => observer.disconnect());
+  }
+
+  /**
+   * Puts the named classes on the pane in place of the ones named before. The
+   * pane's own class is laid back on with them, so naming it and then dropping
+   * it cannot strip it from the pane.
+   */
+  private _applyPanelClass(panelClass: string | string[] | undefined): void {
+    const overlayRef = this._overlayRef;
+    if (overlayRef === null) return;
+
+    const classes = coerceArray(panelClass ?? []);
+    overlayRef.removePanelClass(this._panelClasses);
+    overlayRef.addPanelClass([SHEET_PANE_CLASS, ...classes]);
+    this._panelClasses = classes;
   }
 
   private _measure(): void {

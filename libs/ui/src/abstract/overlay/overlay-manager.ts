@@ -39,8 +39,8 @@ export interface ConnectedOverlayConfig {
   hasBackdrop?: boolean;
   /** Backdrop class when a backdrop is rendered. Defaults to the transparent backdrop. */
   backdropClass?: string;
-  /** Extra class(es) applied to the overlay pane. */
-  panelClass?: string | string[];
+  /** Extra class(es) applied to the overlay pane; `undefined` adds none. */
+  panelClass?: string | string[] | undefined;
   /** Close when the backdrop is clicked. Defaults to `true` when a backdrop is rendered. */
   closeOnBackdropClick?: boolean;
   /** Close on an outside pointer event. Defaults to `true` when no backdrop is rendered. */

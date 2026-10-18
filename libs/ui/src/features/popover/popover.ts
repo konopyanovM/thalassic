@@ -68,15 +68,11 @@ export class Popover {
     const origin: FlexibleConnectedPositionStrategyOrigin =
       trigger instanceof MouseEvent ? (trigger.currentTarget as HTMLElement) : trigger;
 
-    const panelClass = this.panelClass();
-
     this._overlay.open({
       content: this._templateRef(),
       origin,
       positions: this._positions(),
-      // Omitted rather than passed as undefined: the manager spreads the key in
-      // only when it is set, and CDK treats an explicit undefined as a class.
-      ...(panelClass != null && { panelClass }),
+      panelClass: this.panelClass(),
     });
   }
 
