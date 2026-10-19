@@ -61,33 +61,29 @@
       );
     }
   } @else if $treatment == outlined {
-    // A quiet hairline at rest: the label already carries the hue, so a border
-    // at full strength only doubles it — and across a row of outlined controls
-    // it draws more lines than the content. Tinted towards the hue rather than
-    // a neutral, so a danger outline still reads as danger. Interaction lifts
-    // it to the full hue.
-    border-color: color-mix(
-      in srgb,
-      var(--#{$block}-color) 30%,
-      var(--color-outline-variant)
-    );
+    // A translucent edge in the label's own color: it composites over
+    // whatever the control sits on — the page, a tinted card, a gradient, a
+    // picture — where an opaque, surface-tuned grey would muddy into the
+    // backdrop. Drawn from `currentColor`, so a label recolored for its
+    // backdrop (white over a colored field) carries its edge with it, and a
+    // danger outline still reads as danger. Half strength: the label already
+    // carries the hue, so a full-strength border only doubles it. The edge
+    // holds through interaction — feedback is the state layer alone, as on the
+    // other treatments, and keyboard focus has its own ring.
+    border-color: color-mix(in srgb, currentColor 50%, transparent);
 
-    // Transparent at rest so the control sits on any backdrop (a tinted card,
-    // a striped row); interaction paints a translucent state layer over it.
+    // Transparent at rest so the control sits on any backdrop; interaction
+    // paints a translucent state layer of the label's color over it.
     background-color: transparent;
 
     color: var(--#{$block}-color);
 
     @include _hover-focus-state($block) {
-      border-color: var(--#{$block}-color);
-
-      background-color: color-mix(in srgb, var(--#{$block}-color) 7.5%, transparent);
+      background-color: color-mix(in srgb, currentColor 7.5%, transparent);
     }
 
     @include _active-state($block) {
-      border-color: var(--#{$block}-color);
-
-      background-color: color-mix(in srgb, var(--#{$block}-color) 15%, transparent);
+      background-color: color-mix(in srgb, currentColor 15%, transparent);
     }
   } @else if $treatment == text {
     // Transparent at rest so the control sits on any backdrop (a tinted card,
