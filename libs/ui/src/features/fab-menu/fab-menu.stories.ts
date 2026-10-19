@@ -7,6 +7,7 @@ const meta: Meta<FabMenuComponent> = {
   args: {
     ariaLabel: 'Add block',
     color: 'primary',
+    variant: 'filled',
     items: [
       { label: 'Stats overview' },
       { label: 'Upcoming sessions' },

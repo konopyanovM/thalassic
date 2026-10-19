@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { DEFAULT_BUTTON_CONFIG } from '../button/button.config';
+import { BUTTON_CONFIG } from '../button/button.token';
 import { FabMenu } from './fab-menu';
 import { FabMenuItemDefinition } from './fab-menu.types';
 
@@ -68,5 +70,28 @@ describe('FabMenu', () => {
     fixture.detectChanges();
 
     expect(component.isOpen()).toBe(false);
+  });
+
+  it('fills its trigger whatever the app-wide button variant is', async () => {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      imports: [FabMenu],
+      providers: [{ provide: BUTTON_CONFIG, useValue: { ...DEFAULT_BUTTON_CONFIG, variant: 'tonal' } }],
+    }).compileComponents();
+    const tonalFixture = TestBed.createComponent(FabMenu);
+    tonalFixture.componentRef.setInput('items', items);
+    tonalFixture.componentRef.setInput('ariaLabel', 'Actions');
+    await tonalFixture.whenStable();
+
+    const trigger: HTMLElement = tonalFixture.nativeElement.querySelector('.tls-fab-menu__trigger');
+    expect(trigger.querySelector('.tls-button--filled') ?? (trigger.classList.contains('tls-button--filled') ? trigger : null)).not.toBeNull();
+  });
+
+  it('paints its trigger in the variant it is given', async () => {
+    fixture.componentRef.setInput('variant', 'tonal');
+    await fixture.whenStable();
+
+    const trigger: HTMLElement = fixture.nativeElement.querySelector('.tls-fab-menu__trigger');
+    expect(trigger.querySelector('.tls-button--tonal') ?? (trigger.classList.contains('tls-button--tonal') ? trigger : null)).not.toBeNull();
   });
 });

@@ -13,7 +13,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { color } from '../../types';
-import { Button } from '../button';
+import { Button, buttonVariant } from '../button';
 import { Icon } from '../icon';
 import { FabMenuItemDefinition } from './fab-menu.types';
 
@@ -64,6 +64,12 @@ export class FabMenu {
   /** Accessible name shared by the trigger and the menu it opens. */
   public readonly ariaLabel: InputSignal<string | undefined> = input<string | undefined>(undefined);
   public readonly color: InputSignal<color> = input<color>('primary');
+  /**
+   * Treatment of the trigger. A floating action stands for the screen's main
+   * action, so it is filled unless asked otherwise, whatever the app-wide
+   * button default is.
+   */
+  public readonly variant: InputSignal<buttonVariant> = input<buttonVariant>('filled');
 
   private readonly _open = signal(false);
   public readonly isOpen = this._open.asReadonly();
