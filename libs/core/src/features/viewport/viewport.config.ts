@@ -12,6 +12,8 @@ export interface ViewportConfig {
 
 export const DEFAULT_VIEWPORT_CONFIG: ViewportConfig = {
   breakpoints: {
+    '2xs': 320,
+    xs: 480,
     sm: 640,
     md: 768,
     lg: 1024,

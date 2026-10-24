@@ -3,9 +3,19 @@ $breakpoint-xl: 1280px;
 $breakpoint-lg: 1024px;
 $breakpoint-md: 768px;
 $breakpoint-sm: 640px;
+$breakpoint-xs: 480px;
+$breakpoint-2xs: 320px;
 
 @mixin breakpoint($size) {
-  @if $size == sm {
+  @if $size == 2xs {
+    @media (max-width: $breakpoint-2xs) {
+      @content;
+    }
+  } @else if $size == xs {
+    @media (max-width: $breakpoint-xs) {
+      @content;
+    }
+  } @else if $size == sm {
     @media (max-width: $breakpoint-sm) {
       @content;
     }

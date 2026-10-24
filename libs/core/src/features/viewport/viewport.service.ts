@@ -83,7 +83,7 @@ export class ViewportService {
    * the given breakpoint — the exact condition under which the SCSS
    * `@include breakpoint(name)` block applies.
    *
-   * @param name - The breakpoint to test against (`'sm'`, `'md'`, `'lg'`, `'xl'`, `'2xl'`).
+   * @param name - The breakpoint to test against (`'2xs'`, `'xs'`, `'sm'`, `'md'`, `'lg'`, `'xl'`, `'2xl'`).
    */
   public isBelow(name: breakpoint): Signal<boolean> {
     return this._matchesReadonly[name];

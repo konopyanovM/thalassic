@@ -1,7 +1,15 @@
 @use 'breakpoint';
 
 @mixin container-breakpoint($size, $container-name) {
-  @if $size == sm {
+  @if $size == 2xs {
+    @container #{$container-name} (max-width: #{breakpoint.$breakpoint-2xs}) {
+      @content;
+    }
+  } @else if $size == xs {
+    @container #{$container-name} (max-width: #{breakpoint.$breakpoint-xs}) {
+      @content;
+    }
+  } @else if $size == sm {
     @container #{$container-name} (max-width: #{breakpoint.$breakpoint-sm}) {
       @content;
     }

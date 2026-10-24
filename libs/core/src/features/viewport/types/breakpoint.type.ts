@@ -4,4 +4,4 @@
  * `max-width` threshold, so the semantics are desktop-first: a breakpoint
  * "matches" when the viewport is at or below its width.
  */
-export type breakpoint = 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+export type breakpoint = '2xs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
