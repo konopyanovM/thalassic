@@ -33,6 +33,19 @@ export interface ConnectedOverlayConfig {
   flexibleDimensions?: boolean;
   /** Forwarded to the position strategy. Defaults to the CDK default (true). */
   push?: boolean;
+  /**
+   * Minimum gap in px kept between the pane and the viewport's edges, both where
+   * the pane is pushed back on screen and where it is shrunk to fit. Defaults to
+   * the CDK default (0), which lets a constrained pane touch the edge.
+   */
+  viewportMargin?: number;
+  /**
+   * Cap the pane's height at the viewport's, less `viewportMargin` at either
+   * edge, so a pane too tall to fit beside the origin is pushed on screen whole
+   * instead of at full height running off it. Only for content that scrolls
+   * within the pane. Defaults to `false`.
+   */
+  shrinkToFit?: boolean;
   /** Scroll handling while open. Defaults to `'reposition'`. */
   scrollStrategy?: 'reposition' | 'close';
   /** Whether to render a backdrop. Defaults to `true`. */
@@ -129,6 +142,15 @@ export class OverlayManager {
         backdropClass:
           config.backdropClass ?? (sheet ? MODAL_BACKDROP_CLASS : TRANSPARENT_BACKDROP_CLASS),
         ...(config.panelClass != null && { panelClass: config.panelClass }),
+        // A cap rather than a CDK minimum height: CDK shrinks a pane to the room
+        // beside its origin only when a minimum is named, and applies that minimum
+        // to the pane as well, stretching short content. The cap holds wherever
+        // the pane is pushed; where a position fits, the bounding box CDK sizes to
+        // that room bounds it instead. Dynamic units track a mobile browser's
+        // toolbar, so the cap is always the height actually visible.
+        ...(config.shrinkToFit && {
+          maxHeight: `calc(100dvh - ${2 * (config.viewportMargin ?? 0)}px)`,
+        }),
       });
 
       this._wireDismissal(this._overlayRef, config);
@@ -188,6 +210,9 @@ export class OverlayManager {
 
     if (config.flexibleDimensions === false) strategy = strategy.withFlexibleDimensions(false);
     if (config.push === false) strategy = strategy.withPush(false);
+    if (config.viewportMargin != null) {
+      strategy = strategy.withViewportMargin(config.viewportMargin);
+    }
 
     return strategy;
   }

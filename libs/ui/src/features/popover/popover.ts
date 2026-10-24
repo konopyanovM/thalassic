@@ -1,8 +1,13 @@
+import { ConnectedPosition, FlexibleConnectedPositionStrategyOrigin } from '@angular/cdk/overlay';
 import {
-  ConnectedPosition,
-  FlexibleConnectedPositionStrategyOrigin,
-} from '@angular/cdk/overlay';
-import { Component, computed, inject, input, TemplateRef, viewChild } from '@angular/core';
+  booleanAttribute,
+  Component,
+  computed,
+  inject,
+  input,
+  TemplateRef,
+  viewChild,
+} from '@angular/core';
 import { Point } from '@thalassic/core';
 import { createOverlayManager } from '../../abstract/overlay';
 import { overlayPosition } from '../../types';
@@ -46,6 +51,17 @@ export class Popover {
 
   public readonly position = input<overlayPosition>(this._config.position);
   public readonly offset = input<Point>(this._config.offset);
+  /** Minimum gap in px kept between the panel and the viewport's edges. */
+  public readonly viewportMargin = input<number>(this._config.viewportMargin);
+  /**
+   * Keep the panel within the viewport, inside the viewport margin, however tall
+   * its content: it is capped at the viewport's height and shrinks to the room
+   * beside its trigger, sliding along its side where that room runs short.
+   * Without it a panel too tall to fit is pushed on screen at full height and
+   * runs off the viewport. The content that may outgrow the panel has to scroll
+   * within it.
+   */
+  public readonly shrinkToFit = input(false, { transform: booleanAttribute });
   public readonly ariaLabel = input<string | undefined>(undefined);
   /**
    * Extra class(es) placed on the overlay pane, so one popover can carry its own
@@ -72,6 +88,8 @@ export class Popover {
       content: this._templateRef(),
       origin,
       positions: this._positions(),
+      viewportMargin: this.viewportMargin(),
+      shrinkToFit: this.shrinkToFit(),
       panelClass: this.panelClass(),
     });
   }
