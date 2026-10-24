@@ -107,7 +107,7 @@
     // Clears the grabber above the slot, with the sheet's gutter at the sides.
     // The header carries the bottom safe-area inset, so a collapsed sheet —
     // whose visible part is exactly the header — clears a home indicator with
-    // its own surface.
+    // its own surface. The body always lies over that inset (see below).
     padding: calc(var(--tls-sheet-grabber-inset) * 2 + var(--tls-sheet-grabber-thickness))
       var(--tls-sheet-padding) calc(var(--spacing-3) + env(safe-area-inset-bottom));
 
@@ -134,6 +134,14 @@
     flex: 1;
     min-block-size: 0;
 
+    // Laid over the inset the header reserves for the lip, at every detent: an
+    // open sheet has no use for that gap, and a body that took it back only
+    // once open would slide by the inset each time the sheet opened or closed.
+    // Its own bottom padding keeps the last row clear of the indicator. The
+    // margin sits on the body, not on the content inside it: the body is the
+    // scroll container, and pulling its child up would only clip the child
+    // within it while the body's own box still started below the padding.
+    margin-block-start: calc(-1 * env(safe-area-inset-bottom));
     padding-block-end: env(safe-area-inset-bottom);
 
     // Below the top detent the body cannot scroll, so an upward drag always
@@ -144,10 +152,13 @@
     // panel's own managed `pan-x` already keeps the browser off vertical pans.
     overflow: hidden;
     overscroll-behavior: contain;
-    // The reclaim of the header's inset moves with the settle rather than
-    // jumping on arrival.
+
+    // Hidden comes into effect once the fade out ends, and gives way as soon as
+    // a fade in begins.
     @include mixins.motion(essential) {
-      transition: margin-block-start var(--motion-default) var(--motion-ease-out);
+      transition:
+        opacity var(--motion-default) var(--motion-ease-out),
+        visibility var(--motion-default) var(--motion-ease-out);
     }
   }
 
@@ -172,14 +183,16 @@
     touch-action: pan-y;
   }
 
-  // An open sheet reclaims the inset the header reserves for the lip; the
-  // body's own bottom padding still keeps the last row clear of the indicator.
-  // An open sheet reclaims the inset the header reserves for the lip. The
-  // margin sits on the body, not on the content inside it: the body is the
-  // scroll container, and pulling its child up would only clip the child
-  // within it while the body's own box still started below the padding.
-  &:not(&--collapsed) &__body {
-    margin-block-start: calc(-1 * env(safe-area-inset-bottom));
+  // A collapsed sheet shows only its header, and the body's top edge, lying
+  // over the header's inset, would otherwise show beneath it. Hidden rather
+  // than only transparent, so it neither takes the taps meant for the header
+  // nor reads as content while collapsed. Keyed to where the sheet is heading,
+  // so the body fades out as a collapse begins and in as an expand does; a
+  // drag from the lip reveals it at once, so what the sheet holds rises with
+  // the finger.
+  &--lip:not(&--dragging) &__body {
+    visibility: hidden;
+    opacity: 0;
   }
 
   &--modal &__backdrop {

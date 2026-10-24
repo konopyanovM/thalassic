@@ -154,7 +154,7 @@ export class Sheet implements OnDestroy {
    * The detent the sheet is at or moving to, so a remeasure mid-settle
    * re-targets the settle rather than snapping back to where it started.
    */
-  private _targetIndex = 0;
+  private readonly _targetIndex = signal(0);
   /** The detent a drag began at, for the release decision. */
   private _dragStartIndex = 0;
   /**
@@ -178,6 +178,11 @@ export class Sheet implements OnDestroy {
     return index === -1 ? 0 : index;
   });
   protected readonly isTop = computed(() => this.currentIndex() === this.detents().length - 1);
+  /**
+   * At the first detent or settling towards it: from the moment a collapse
+   * begins, not once it lands, so what reacts to it moves with the panel.
+   */
+  protected readonly isBoundForLip = computed(() => this._targetIndex() === 0);
   protected readonly isExpanded = computed(() => this.currentIndex() > 0);
   protected readonly isModal = computed(() => {
     const from = this.modalFrom();
@@ -210,7 +215,7 @@ export class Sheet implements OnDestroy {
       untracked(() => {
         const index = this.detents().findIndex(candidate => candidate.id === id);
         const target = index === -1 ? 0 : index;
-        if (this._overlayRef === null || target === this._targetIndex) return;
+        if (this._overlayRef === null || target === this._targetIndex()) return;
         this._settleTo(target);
       });
     });
@@ -258,14 +263,14 @@ export class Sheet implements OnDestroy {
   public expand(): void {
     if (this._overlayRef === null) return;
     // From where the sheet is heading, so a step during a settle goes on past it.
-    const next = this._targetIndex + 1;
+    const next = this._targetIndex() + 1;
     if (next < this.detents().length) this._settleTo(next);
   }
 
   /** Moves one detent down; a no-op at the smallest. */
   public collapse(): void {
     if (this._overlayRef === null) return;
-    const previous = this._targetIndex - 1;
+    const previous = this._targetIndex() - 1;
     if (previous >= 0) this._settleTo(previous);
   }
 
@@ -280,7 +285,7 @@ export class Sheet implements OnDestroy {
     // A shorter detent list leaves no detent at an old index past its end, so
     // the target and a drag's start fall back to the largest that remains.
     const last = this.detents().length - 1;
-    this._targetIndex = Math.min(this._targetIndex, last);
+    this._targetIndex.update(index => Math.min(index, last));
     this._dragStartIndex = Math.min(this._dragStartIndex, last);
     // At rest the sheet is re-placed at once; a settle in flight is re-aimed
     // at its target's new offset; a drag reads the heights live and settles
@@ -290,7 +295,7 @@ export class Sheet implements OnDestroy {
         this._place(this.currentIndex());
         break;
       case 'settling':
-        this._settleTo(this._targetIndex);
+        this._settleTo(this._targetIndex());
         break;
       case 'dragging':
         break;
@@ -328,7 +333,7 @@ export class Sheet implements OnDestroy {
     // At rest the target is the current detent; mid-settle it is where the
     // sheet was heading, so a grab during a move neither jumps back nor
     // resolves a flick from the detent being left.
-    this._dragStartIndex = this._targetIndex;
+    this._dragStartIndex = this._targetIndex();
     this._motion.begin(this._surface());
   }
 
@@ -478,7 +483,7 @@ export class Sheet implements OnDestroy {
    * sheet is already where it rests.
    */
   private _place(index: number): void {
-    this._targetIndex = index;
+    this._targetIndex.set(index);
     const offset = this._offsetOf(index);
     this._renderer.setStyle(
       this._panel().nativeElement,
@@ -499,7 +504,7 @@ export class Sheet implements OnDestroy {
    * Animates the panel to `index` from wherever it is, by a settle from rest.
    */
   private _settleTo(index: number): void {
-    this._targetIndex = index;
+    this._targetIndex.set(index);
     this._motion.moveTo(this._surface(), this._offsetOf(index), () => {
       this._motion.rest();
       this._arrive(index);
@@ -541,7 +546,7 @@ export class Sheet implements OnDestroy {
 
   /** Ends a drag at `index`: the settle continues from the finger's offset. */
   private _settleFromDrag(index: number): void {
-    this._targetIndex = index;
+    this._targetIndex.set(index);
     this._motion.settle(this._offsetOf(index), () => {
       this._motion.rest();
       this._arrive(index);

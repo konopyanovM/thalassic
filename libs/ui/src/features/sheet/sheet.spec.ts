@@ -279,6 +279,24 @@ describe('Sheet', () => {
     expect(root.classList.contains('tls-sheet--collapsed')).toBe(true);
   });
 
+  it('marks the root as bound for the lip from the moment a collapse begins', async () => {
+    const root = query('.tls-sheet');
+    expect(root.classList.contains('tls-sheet--lip')).toBe(true);
+
+    sheet.snapTo('half');
+    fixture.detectChanges();
+    expect(root.classList.contains('tls-sheet--lip')).toBe(false);
+    await settle();
+
+    sheet.snapTo('lip');
+    fixture.detectChanges();
+    // Still settled at `half`, already heading for the lip.
+    expect(root.classList.contains('tls-sheet--collapsed')).toBe(false);
+    expect(root.classList.contains('tls-sheet--lip')).toBe(true);
+    await settle();
+    expect(root.classList.contains('tls-sheet--lip')).toBe(true);
+  });
+
   it('removes the published height and the pane on destroy', async () => {
     fixture.destroy();
 

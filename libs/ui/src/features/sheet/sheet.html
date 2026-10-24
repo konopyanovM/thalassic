@@ -6,6 +6,7 @@
   [class.tls-sheet--modal]="isModal()"
   [class.tls-sheet--top]="isTop()"
   [class.tls-sheet--collapsed]="currentIndex() === 0"
+  [class.tls-sheet--lip]="isBoundForLip()"
 >
   <div class="tls-sheet__backdrop" #backdrop aria-hidden="true" (click)="onBackdropClick()"></div>
   <div
