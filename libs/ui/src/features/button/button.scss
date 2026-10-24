@@ -1,7 +1,9 @@
 :host {
+  // Sized to the control by default; a layout that gives the host a width of
+  // its own (a stretched column, a share of a row) has the control fill it.
   width: fit-content;
 
-  display: inline-block;
+  display: inline-flex;
 
   &:focus-visible {
     outline: none;
@@ -15,5 +17,9 @@
   // has taken first.
   &:has(.tls-button.tls-button--stretch) {
     height: 100%;
+  }
+
+  .tls-button {
+    flex-grow: 1;
   }
 }
