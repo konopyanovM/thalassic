@@ -2,7 +2,9 @@ import type { Meta, StoryObj } from '@storybook/angular';
 import { STORY_FORM_CONTROL_ARGS, STORY_SIZE_OPTIONS } from '../../../../.storybook/constants';
 import { MultiSelect as MultiSelectComponent } from './multi-select';
 
-const meta: Meta<MultiSelectComponent<{ label: string; value: string; disabled?: boolean }>> = {
+const meta: Meta<
+  MultiSelectComponent<{ label: string; value: string; disabled?: boolean; group?: string }>
+> = {
   component: MultiSelectComponent,
   title: 'Form/MultiSelect',
   args: {
@@ -37,6 +39,24 @@ export default meta;
 type Story = StoryObj<MultiSelectComponent<unknown>>;
 
 export const MultiSelect: Story = {};
+
+export const OptionGroups: StoryObj<
+  MultiSelectComponent<{ label: string; value: string; group: string }>
+> = {
+  args: {
+    placeholder: 'Select equipment',
+    optionGroup: 'group',
+    options: [
+      { label: 'Barbell', value: 'barbell', group: 'Free weights' },
+      { label: 'Dumbbell', value: 'dumbbell', group: 'Free weights' },
+      { label: 'Kettlebell', value: 'kettlebell', group: 'Free weights' },
+      { label: 'Flat bench', value: 'flat-bench', group: 'Benches' },
+      { label: 'Adjustable bench', value: 'adjustable-bench', group: 'Benches' },
+      { label: 'Treadmill', value: 'treadmill', group: 'Cardio' },
+      { label: 'Rowing machine', value: 'rowing-machine', group: 'Cardio' },
+    ],
+  },
+};
 
 export const VirtualScroll: Story = {
   args: {

@@ -18,7 +18,14 @@ import {
 import { VirtualScroll } from '../../features/virtual-scroll';
 import { createOverlayManager } from '../overlay';
 import { selectTemplateContext } from './abstract-select.types';
-import { normalizeOptions, Option, optionInput } from './options';
+import {
+  collectOptionGroups,
+  groupOptions,
+  normalizeOptions,
+  Option,
+  OptionGroup,
+  optionInput,
+} from './options';
 import { ValueFormControl } from './value-form-control';
 import { controlSize } from '../../types';
 
@@ -113,6 +120,13 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
   public readonly optionLabel = input<keyof T | undefined>(undefined);
   public readonly optionValue = input<keyof T | undefined>(undefined);
   public readonly optionDisabled = input<keyof T | undefined>(undefined);
+  /**
+   * Key of the option property naming the group it is listed under. The panel lists each group
+   * under its own heading, as a `role="group"` named by that heading, in the order the groups
+   * first appear; options naming no group are listed bare. A virtualized panel keeps the grouped
+   * order but draws no headings, as its rows all share one fixed height.
+   */
+  public readonly optionGroup = input<keyof T | undefined>(undefined);
   public readonly tabindex = input<string | number>(0);
 
   // Config-defaulted inputs are declared by each concrete control.
@@ -132,16 +146,26 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
       label: this.optionLabel(),
       value: this.optionValue(),
       disabled: this.optionDisabled(),
+      group: this.optionGroup(),
     }),
   );
 
   /**
-   * Options actually shown in the panel and traversed by keyboard navigation. Defaults to the full
-   * normalized list; a filtering control (an editable combobox) narrows it via
-   * {@link filterVisibleOptions}. `activeIndex` always indexes into this list, never the raw one.
+   * Options actually shown in the panel and traversed by keyboard navigation, in the order they
+   * are listed — each group's options gathered together. Defaults to the full normalized list; a
+   * filtering control (an editable combobox) narrows it via {@link filterVisibleOptions}.
+   * `activeIndex` always indexes into this list, never the raw one.
    */
   protected readonly visibleOptions: Signal<Option<V>[]> = computed(() =>
-    this.filterVisibleOptions(this.normalizedOptions()),
+    this.filterVisibleOptions(groupOptions(this.normalizedOptions())),
+  );
+
+  /**
+   * The visible options split into the groups the panel lists them under. A group the filter has
+   * emptied is not listed at all, so no heading ever stands over nothing.
+   */
+  protected readonly optionGroups: Signal<OptionGroup<V>[]> = computed(() =>
+    collectOptionGroups(this.visibleOptions()),
   );
 
   /**
@@ -352,6 +376,11 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
 
   protected optionId(index: number): string {
     return `${this.uniqueId}-option-${index}`;
+  }
+
+  /** Id of the heading that names the group at `groupIndex`. */
+  protected groupLabelId(groupIndex: number): string {
+    return `${this.uniqueId}-group-${groupIndex}`;
   }
 
   /** Context handed to the consumer's option template for the option at `index`. */

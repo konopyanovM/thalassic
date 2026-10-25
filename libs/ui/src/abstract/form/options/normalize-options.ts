@@ -5,6 +5,8 @@ export interface OptionKeys<T> {
   label: keyof T | undefined;
   value: keyof T | undefined;
   disabled: keyof T | undefined;
+  /** Key naming the group an option is listed under; without it every option is ungrouped. */
+  group?: keyof T | undefined;
 }
 
 export function normalizeOptions<T, V = unknown>(
@@ -13,7 +15,13 @@ export function normalizeOptions<T, V = unknown>(
 ): Option<V>[] {
   return options.map(option => {
     if (typeof option === 'string' || typeof option === 'number') {
-      return { value: option as V, label: String(option), disabled: false, source: option };
+      return {
+        value: option as V,
+        label: String(option),
+        disabled: false,
+        group: null,
+        source: option,
+      };
     }
 
     const typed = option as T;
@@ -22,7 +30,17 @@ export function normalizeOptions<T, V = unknown>(
       value: (keys.value ? typed[keys.value] : typed) as V,
       label: String(keys.label ? typed[keys.label] : typed),
       disabled: Boolean(keys.disabled ? typed[keys.disabled] : false),
+      group: readGroup(typed, keys.group),
       source: typed,
     };
   });
+}
+
+/** The group label an option names under `key`, or `null` when it names none. */
+function readGroup<T>(option: T, key: keyof T | undefined): string | null {
+  if (key === undefined) return null;
+
+  const group = option[key];
+  if (group === null || group === undefined || group === '') return null;
+  return String(group);
 }

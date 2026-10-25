@@ -70,6 +70,21 @@
     </button>
   </ng-template>
 
+  <ng-template #optionItem let-entry>
+    <li
+      class="tls-multi-select__option"
+      role="presentation"
+      [class.tls-multi-select__option--selected]="isSelected(entry.option)"
+      [class.tls-multi-select__option--active]="entry.index === activeIndex()"
+      [class.tls-multi-select__option--disabled]="entry.option.disabled"
+    >
+      <ng-container
+        [ngTemplateOutlet]="optionButton"
+        [ngTemplateOutletContext]="{ $implicit: entry.option, index: entry.index, setsize: null }"
+      />
+    </li>
+  </ng-template>
+
   @if (virtualScroll()) {
     <div
       class="tls-multi-select__panel tls-multi-select__panel--virtual"
@@ -111,18 +126,23 @@
       aria-multiselectable="true"
       [id]="listboxId"
     >
-      @for (option of visibleOptions(); track option.value; let index = $index) {
-        <li
-          class="tls-multi-select__option"
-          [class.tls-multi-select__option--selected]="isSelected(option)"
-          [class.tls-multi-select__option--active]="index === activeIndex()"
-          [class.tls-multi-select__option--disabled]="option.disabled"
-        >
-          <ng-container
-            [ngTemplateOutlet]="optionButton"
-            [ngTemplateOutletContext]="{ $implicit: option, index: index, setsize: null }"
-          />
-        </li>
+      @for (group of optionGroups(); track group.label; let groupIndex = $index) {
+        @if (group.label === null) {
+          @for (entry of group.options; track entry.option.value) {
+            <ng-container [ngTemplateOutlet]="optionItem" [ngTemplateOutletContext]="{ $implicit: entry }" />
+          }
+        } @else {
+          <li class="tls-multi-select__group" role="presentation">
+            <ul class="tls-multi-select__group-options" role="group" [attr.aria-labelledby]="groupLabelId(groupIndex)">
+              <li class="tls-multi-select__group-label" role="presentation" [id]="groupLabelId(groupIndex)">
+                {{ group.label }}
+              </li>
+              @for (entry of group.options; track entry.option.value) {
+                <ng-container [ngTemplateOutlet]="optionItem" [ngTemplateOutletContext]="{ $implicit: entry }" />
+              }
+            </ul>
+          </li>
+        }
       }
     </ul>
   }

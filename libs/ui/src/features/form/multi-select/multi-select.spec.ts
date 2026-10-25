@@ -7,6 +7,7 @@ interface Option {
   label: string;
   value: number;
   disabled: boolean;
+  group?: string;
 }
 
 // jsdom does not implement Element.scrollTo, which the CDK virtual-scroll viewport
@@ -32,6 +33,7 @@ if (!Element.prototype.scrollTo) {
       optionLabel="label"
       optionValue="value"
       optionDisabled="disabled"
+      [optionGroup]="optionGroup()"
     />
   `,
 })
@@ -46,6 +48,7 @@ class HostComponent {
   public readonly disabled = signal(false);
   public readonly maxLabels = signal(2);
   public readonly virtualScroll = signal(false);
+  public readonly optionGroup = signal<keyof Option | undefined>(undefined);
   public readonly multiSelect = viewChild.required(MultiSelect);
 }
 
@@ -104,6 +107,60 @@ describe('MultiSelect', () => {
 
   it('should create', () => {
     expect(host.multiSelect()).toBeTruthy();
+  });
+
+  describe('option groups', () => {
+    // Listed interleaved, so the panel has to gather each group itself.
+    beforeEach(() => {
+      host.options.set([
+        { label: 'Barbell', value: 1, disabled: false, group: 'Free weights' },
+        { label: 'Treadmill', value: 2, disabled: false, group: 'Cardio' },
+        { label: 'Dumbbell', value: 3, disabled: false, group: 'Free weights' },
+        { label: 'Towel', value: 4, disabled: false },
+      ]);
+      host.optionGroup.set('group');
+      fixture.detectChanges();
+      trigger.click();
+      fixture.detectChanges();
+    });
+
+    const queryGroups = () =>
+      Array.from(overlayContainerElement.querySelectorAll<HTMLElement>('[role="group"]'));
+
+    it('should gather each group in the order its first option appears', () => {
+      expect(queryOptions().map(option => option.textContent?.trim())).toEqual([
+        'Barbell',
+        'Dumbbell',
+        'Treadmill',
+        'Towel',
+      ]);
+    });
+
+    it('should name each group by its heading', () => {
+      const names = queryGroups().map(group => {
+        const headingId = group.getAttribute('aria-labelledby') ?? '';
+        return overlayContainerElement.querySelector(`[id="${headingId}"]`)?.textContent?.trim();
+      });
+
+      expect(names).toEqual(['Free weights', 'Cardio']);
+    });
+
+    it('should list an option that names no group outside every group', () => {
+      const towel = queryOptions().find(option => option.textContent?.trim() === 'Towel');
+
+      expect(towel?.closest('[role="group"]')).toBeNull();
+      expect(towel?.closest('[role="listbox"]')).not.toBeNull();
+    });
+
+    it('should navigate across groups as one list', () => {
+      keydown('ArrowDown');
+      keydown('ArrowDown');
+
+      expect(queryActiveOption()?.textContent?.trim()).toBe('Treadmill');
+      expect(trigger.getAttribute('aria-activedescendant')).toBe(
+        queryOptions()[2].getAttribute('id'),
+      );
+    });
   });
 
   it('should start closed', () => {

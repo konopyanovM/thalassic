@@ -52,6 +52,8 @@
   }
 }
 
+@include mixins.option-group('tls-autocomplete');
+
 .tls-autocomplete__option {
   --tls-autocomplete-option-color: var(--color-on-surface);
   --tls-autocomplete-option-background: transparent;

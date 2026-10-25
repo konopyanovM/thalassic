@@ -9,6 +9,7 @@ interface Option {
   label: string;
   value: number;
   disabled: boolean;
+  group?: string;
 }
 
 // jsdom does not implement Element.scrollTo, which the CDK virtual-scroll viewport
@@ -37,6 +38,7 @@ if (!Element.prototype.scrollTo) {
       optionLabel="label"
       optionValue="value"
       optionDisabled="disabled"
+      [optionGroup]="optionGroup()"
     />
   `,
 })
@@ -54,6 +56,7 @@ class HostComponent {
   public readonly virtualScroll = signal(false);
   public readonly loading = signal(false);
   public readonly minQueryLength = signal(0);
+  public readonly optionGroup = signal<keyof Option | undefined>(undefined);
   public readonly queries: string[] = [];
   public readonly autocomplete = viewChild.required(Autocomplete);
 
@@ -118,6 +121,25 @@ describe('Autocomplete', () => {
 
   it('should create', () => {
     expect(host.autocomplete()).toBeTruthy();
+  });
+
+  describe('option groups', () => {
+    it('should drop the heading of a group the query has emptied', () => {
+      host.options.set([
+        { label: 'Apple', value: 1, disabled: false, group: 'Fruit' },
+        { label: 'Carrot', value: 2, disabled: false, group: 'Vegetables' },
+      ]);
+      host.optionGroup.set('group');
+      fixture.detectChanges();
+
+      type('Ap');
+
+      const headings = Array.from(
+        overlayContainerElement.querySelectorAll<HTMLElement>('.tls-autocomplete__group-label'),
+      ).map(heading => heading.textContent?.trim());
+      expect(headings).toEqual(['Fruit']);
+      expect(queryOptions().map(option => option.textContent?.trim())).toEqual(['Apple']);
+    });
   });
 
   it('should start closed', () => {

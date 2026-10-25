@@ -1,0 +1,44 @@
+/// The headings and nested lists a listbox panel draws for grouped options, for
+/// the control whose BEM block is `$block`. A heading names its group rather
+/// than offering a choice, so it reads as quieter, smaller text than the
+/// options beneath it and never takes the pointer cursor.
+@mixin option-group($block) {
+  .#{$block}__group,
+  .#{$block}__group-options {
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+  }
+
+  .#{$block}__group-label {
+    padding-block: var(--spacing-2) var(--spacing-1);
+    padding-inline: var(--spacing-3);
+
+    font-size: var(--font-label-small-size);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--font-label-small-line-height);
+    letter-spacing: var(--font-label-small-letter-spacing);
+    color: var(--color-on-surface-variant);
+
+    cursor: default;
+  }
+
+  // Keyboard navigation scrolls the active option to the panel's edge, which on
+  // a group's first option would leave its heading just out of view. The margin
+  // is the heading's height (line plus padding) and the gap that sets the group
+  // apart, so the heading always scrolls in with the option.
+  .#{$block}__group-label + .#{$block}__option .#{$block}__option-button {
+    scroll-margin-block-start: calc(
+      var(--font-label-small-line-height) + var(--spacing-2) + var(--spacing-1) + var(--spacing-1)
+    );
+  }
+
+  // Each group after the first is set apart by a rule, so the run of options
+  // above a heading never reads as belonging to it.
+  .#{$block}__group + .#{$block}__group {
+    margin-block-start: var(--spacing-1);
+
+    border-block-start: 1px solid var(--color-outline-variant);
+  }
+}

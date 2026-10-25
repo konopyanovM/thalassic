@@ -52,6 +52,8 @@
   }
 }
 
+@include mixins.option-group('tls-select');
+
 .tls-select__option {
   --tls-select-option-color: var(--color-on-surface);
   --tls-select-option-background: transparent;
