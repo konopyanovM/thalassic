@@ -6,6 +6,7 @@ import { toggleButtonVariant } from '../../src/features/form/toggle-button/toggl
 import { toggleGroupVariant } from '../../src/features/form/toggle-group/toggle-group.types';
 import { fileInputVariant } from '../../src/features/form/file-input/file-input.types';
 import { pinInputType } from '../../src/features/form/pin-input';
+import { odometerDirection } from '../../src/features/odometer/odometer.types';
 import { tabsHeaderAlign, tabsItemsAlign, tabsVariant } from '../../src/features/tabs/tabs.types';
 import { color, controlSize, orientation, overlayPosition } from '../../src/types';
 
@@ -77,6 +78,12 @@ export const STORY_TABS_ITEMS_ALIGN_OPTIONS: tabsItemsAlign[] = [
 ] as const;
 
 export const STORY_PIN_INPUT_TYPE_OPTIONS: pinInputType[] = ['numeric', 'alphanumeric'] as const;
+
+export const STORY_ODOMETER_DIRECTION_OPTIONS: odometerDirection[] = [
+  'shortest',
+  'up',
+  'down',
+] as const;
 
 export const STORY_FILE_INPUT_VARIANT_OPTIONS: fileInputVariant[] = ['dropzone', 'button'] as const;
 

@@ -1,16 +1,19 @@
 <span class="tls-odometer__value">{{ ariaLabel() ?? formattedValue() }}</span>
 
 <span class="tls-odometer__row" aria-hidden="true">
-  @for (token of tokens(); track token.key) {
-    @if (token.digit === null) {
-      <span class="tls-odometer__symbol">{{ token.symbol }}</span>
+  @for (slot of slots(); track slot.token.key) {
+    @if (slot.token.digit === null) {
+      <span class="tls-odometer__symbol">{{ slot.token.symbol }}</span>
     } @else {
       <tls-odometer-digit
         class="tls-odometer__digit"
-        [digit]="token.digit"
-        [duration]="duration()"
+        [digit]="slot.token.digit"
+        [duration]="slot.duration"
         [delay]="delay()"
         [animated]="animated()"
+        [revolutions]="revolutions()"
+        [direction]="direction()"
+        [rollIn]="rollIn()"
       />
     }
   }

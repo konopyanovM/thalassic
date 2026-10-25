@@ -1,3 +1,5 @@
+import { odometerDirection } from './odometer.types';
+
 export interface OdometerConfig {
   /** Duration of a single digit roll, in milliseconds. */
   duration: number;
@@ -9,6 +11,12 @@ export interface OdometerConfig {
   fractionDigits: number;
   /** Character rendered between the integer and fraction parts. */
   decimalSeparator: string;
+  /** Full turns of the wheel a roll makes before it lands, at the `full` motion level. */
+  revolutions: number;
+  /** Which way a digit column turns on its way to a new digit. */
+  direction: odometerDirection;
+  /** Milliseconds added to each successive digit column's roll, left to right. */
+  stagger: number;
 }
 
 export const DEFAULT_ODOMETER_CONFIG: OdometerConfig = {
@@ -17,4 +25,7 @@ export const DEFAULT_ODOMETER_CONFIG: OdometerConfig = {
   minIntegerDigits: 1,
   fractionDigits: 0,
   decimalSeparator: '.',
+  revolutions: 0,
+  direction: 'shortest',
+  stagger: 0,
 };

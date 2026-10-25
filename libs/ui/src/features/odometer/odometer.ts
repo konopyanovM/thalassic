@@ -12,12 +12,13 @@ import { OdometerDigit } from './odometer-digit';
 import { OdometerConfig } from './odometer.config';
 import { ODOMETER_DIGIT_PATTERN, ODOMETER_MINUS_SIGN } from './odometer.constants';
 import { ODOMETER_CONFIG } from './odometer.token';
-import { OdometerToken } from './odometer.types';
+import { odometerDirection, OdometerSlot, OdometerToken } from './odometer.types';
 
 /**
  * Animated number whose digits roll to the new value, like a mechanical
  * odometer. Each digit column rolls through the values between the old and the
- * new one by the shortest path, so counting up or down reads naturally.
+ * new one — by the shortest path by default, so counting up or down reads
+ * naturally, or always one way with `direction`.
  *
  * Shows either a number (`value`, formatted by the inputs below) or text
  * written out by the caller (`text`), whose digits roll while every other
@@ -28,6 +29,12 @@ import { OdometerToken } from './odometer.types';
  * cue on the `essential` motion tier, so it is replaced by an instant swap when
  * the user has reduced motion. `animated` turns it off per change, for a value
  * that moves on its own and should roll only when someone moves it.
+ *
+ * `revolutions`, `stagger` and `rollIn` turn the roll into a spin, like a slot
+ * machine's reels: extra full turns, columns that come to rest in turn, and a
+ * first value that spins in rather than appearing. Extra turns and rolling in
+ * are expressive motion, so they play only at the `full` motion level; below
+ * it the value still rolls, or appears, as it otherwise would.
  *
  * @example
  * <!-- a live score -->
@@ -40,6 +47,10 @@ import { OdometerToken } from './odometer.types';
  * @example
  * <!-- a countdown that ticks in place and rolls only when adjusted -->
  * <tls-odometer [text]="clock()" [animated]="adjusted()" />
+ *
+ * @example
+ * <!-- reels that spin in and stop one after another -->
+ * <tls-odometer text="777" rollIn direction="down" [revolutions]="2" [stagger]="400" />
  */
 @Component({
   selector: 'tls-odometer',
@@ -69,10 +80,34 @@ export class Odometer {
   public readonly animated: InputSignalWithTransform<boolean, unknown> = input(true, {
     transform: booleanAttribute,
   });
-  /** Duration of a single-digit roll, in milliseconds. */
+  /**
+   * Whether a column's first digit rolls in from `0` instead of appearing in
+   * place. Plays only at the `full` motion level.
+   */
+  public readonly rollIn: InputSignalWithTransform<boolean, unknown> = input(false, {
+    transform: booleanAttribute,
+  });
+  /**
+   * Duration of a digit's roll, in milliseconds, whatever distance it covers —
+   * give a roll with `revolutions` the longer time a spin needs.
+   */
   public readonly duration: InputSignal<number> = input<number>(this._config.duration);
   /** Delay before a digit roll starts, in milliseconds. */
   public readonly delay: InputSignal<number> = input<number>(this._config.delay);
+  /**
+   * Milliseconds added to each successive digit column's roll, left to right,
+   * so columns that start together come to rest in turn.
+   */
+  public readonly stagger: InputSignal<number> = input<number>(this._config.stagger);
+  /**
+   * Full turns of the wheel a roll makes before it lands. Applies to every
+   * column that rolls, and plays only at the `full` motion level.
+   */
+  public readonly revolutions: InputSignal<number> = input<number>(this._config.revolutions);
+  /** Which way a digit column turns on its way to a new digit. */
+  public readonly direction: InputSignal<odometerDirection> = input<odometerDirection>(
+    this._config.direction,
+  );
   /** Minimum number of integer digits, left-padded with zeros (`007`). */
   public readonly minIntegerDigits: InputSignal<number> = input<number>(
     this._config.minIntegerDigits,
@@ -125,6 +160,21 @@ export class Odometer {
     }
 
     return tokens;
+  });
+
+  /** The tokens with each roll's duration, lengthened by `stagger` per digit column. */
+  protected readonly slots: Signal<OdometerSlot[]> = computed(() => {
+    const duration = this.duration();
+    const stagger = this.stagger();
+    let column = 0;
+
+    return this.tokens().map(token => {
+      if (token.digit === null) return { token, duration: 0 };
+
+      const slot = { token, duration: duration + stagger * column };
+      column++;
+      return slot;
+    });
   });
 
   protected readonly formattedValue: Signal<string> = computed(() =>

@@ -1,4 +1,5 @@
 import { argsToTemplate, Meta, StoryObj } from '@storybook/angular';
+import { STORY_ODOMETER_DIRECTION_OPTIONS } from '../../../.storybook/constants';
 import { Odometer as OdometerComponent } from './odometer';
 import { DEFAULT_ODOMETER_CONFIG } from './odometer.config';
 
@@ -13,6 +14,10 @@ const meta: Meta<OdometerComponent> = {
     fractionDigits: DEFAULT_ODOMETER_CONFIG.fractionDigits,
     decimalSeparator: DEFAULT_ODOMETER_CONFIG.decimalSeparator,
     animated: true,
+    rollIn: false,
+    revolutions: DEFAULT_ODOMETER_CONFIG.revolutions,
+    direction: DEFAULT_ODOMETER_CONFIG.direction,
+    stagger: DEFAULT_ODOMETER_CONFIG.stagger,
   },
   argTypes: {
     value: { control: { type: 'number' } },
@@ -23,6 +28,10 @@ const meta: Meta<OdometerComponent> = {
     decimalSeparator: { control: { type: 'text' } },
     text: { control: { type: 'text' } },
     animated: { control: { type: 'boolean' } },
+    rollIn: { control: { type: 'boolean' } },
+    revolutions: { control: { type: 'number', min: 0 } },
+    direction: { control: { type: 'select' }, options: STORY_ODOMETER_DIRECTION_OPTIONS },
+    stagger: { control: { type: 'number', min: 0, step: 50 } },
   },
   render: args => ({
     props: args,
@@ -51,4 +60,20 @@ export const Negative: Story = {
 /** Text written out by the caller: the digits roll, the colon stays put. */
 export const Text: Story = {
   args: { text: '2:59' },
+};
+
+/**
+ * Slot-machine reels: every column spins in from zero with two extra turns and
+ * comes to rest in turn. Remount the story to replay the spin.
+ */
+export const Spin: Story = {
+  args: {
+    value: null,
+    text: '404',
+    rollIn: true,
+    revolutions: 2,
+    direction: 'down',
+    duration: 1100,
+    stagger: 450,
+  },
 };

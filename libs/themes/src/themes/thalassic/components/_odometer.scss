@@ -20,6 +20,10 @@
   &__row {
     display: inline-flex;
     align-items: baseline;
+
+    // The row holds every digit of each column's strip, so a selection across
+    // it would copy the whole wheel rather than the value shown.
+    user-select: none;
   }
 
   &__symbol {
