@@ -6,12 +6,18 @@ import { dateTimePickerMode } from './date-time-picker.types';
 
 @Component({
   imports: [DateTimePicker],
-  template: `<tls-date-time-picker [value]="value()" [mode]="mode()" [inline]="inline()" />`,
+  template: `<tls-date-time-picker
+    [value]="value()"
+    [mode]="mode()"
+    [inline]="inline()"
+    [minDate]="minDate()"
+  />`,
 })
 class HostComponent {
   public readonly value = signal<Date | null>(null);
   public readonly mode = signal<dateTimePickerMode>('calendar');
   public readonly inline = signal(false);
+  public readonly minDate = signal<Date | null>(null);
   public readonly picker = viewChild.required(DateTimePicker);
 }
 
@@ -35,6 +41,16 @@ describe('DateTimePicker', () => {
   const queryPopover = () => overlayContainerElement.querySelector<HTMLElement>('.tls-popover');
   const queryBackdrop = () =>
     overlayContainerElement.querySelector<HTMLElement>('.cdk-overlay-backdrop');
+  const queryHeader = (root: HTMLElement = overlayContainerElement) =>
+    root.querySelector<HTMLButtonElement>(
+      '.tls-date-picker-calendar__header-button, .tls-month-picker__header-button, .tls-year-picker__header-button',
+    );
+  const queryNavigation = (root: HTMLElement = overlayContainerElement) =>
+    Array.from(root.querySelectorAll<HTMLButtonElement>('.tls-date-picker-calendar__nav'));
+  const toggle = () => {
+    queryTrigger()?.click();
+    fixture.detectChanges();
+  };
   const queryDays = () =>
     Array.from(overlayContainerElement.querySelectorAll<HTMLButtonElement>('.tls-date-picker-calendar__day'));
 
@@ -124,6 +140,52 @@ describe('DateTimePicker', () => {
     });
   });
 
+  describe('view on open', () => {
+    beforeEach(setup);
+
+    it('should open on the month of the selected date, not the current one', () => {
+      host.value.set(new Date(2017, 2, 15));
+      fixture.detectChanges();
+      toggle();
+
+      expect(queryHeader()?.textContent?.trim()).toBe('March 2017');
+    });
+
+    it('should discard browsing when closed, reopening on the selected month', () => {
+      host.value.set(new Date(2017, 2, 15));
+      fixture.detectChanges();
+      toggle();
+      queryNavigation()[1].click();
+      fixture.detectChanges();
+      expect(queryHeader()?.textContent?.trim()).toBe('April 2017');
+
+      toggle();
+      toggle();
+
+      expect(queryHeader()?.textContent?.trim()).toBe('March 2017');
+    });
+
+    it('should reopen on the day grid after drilling up to the month list', () => {
+      toggle();
+      queryHeader()?.click();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelector('.tls-month-picker__grid')).not.toBeNull();
+
+      toggle();
+      toggle();
+
+      expect(overlayContainerElement.querySelector('.tls-date-picker-calendar__grid')).not.toBeNull();
+    });
+
+    it('should open an empty picker on the earliest selectable month when today falls before it', () => {
+      host.minDate.set(new Date(2099, 5, 1));
+      fixture.detectChanges();
+      toggle();
+
+      expect(queryHeader()?.textContent?.trim()).toBe('June 2099');
+    });
+  });
+
   describe('inline mode', () => {
     beforeEach(async () => {
       await setup();
@@ -135,6 +197,13 @@ describe('DateTimePicker', () => {
       expect(queryTrigger()).toBeNull();
       expect(fixture.nativeElement.querySelector('.tls-date-time-picker__panel')).not.toBeNull();
       expect(queryPopover()).toBeNull();
+    });
+
+    it('should move the view to a value set from outside', () => {
+      host.value.set(new Date(2017, 2, 15));
+      fixture.detectChanges();
+
+      expect(queryHeader(fixture.nativeElement)?.textContent?.trim()).toBe('March 2017');
     });
   });
 });

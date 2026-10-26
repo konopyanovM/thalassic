@@ -85,7 +85,7 @@
     [attr.aria-describedby]="describedBy()"
     [attr.aria-expanded]="popoverRef.isOpen()"
     [disabled]="disabled()"
-    (click)="popoverRef.toggle($event)"
+    (click)="onTriggerClick($event)"
     (blur)="touched.set(true)"
   >
     <span [class.tls-form-control__placeholder]="!value()">{{ triggerLabel() }}</span>

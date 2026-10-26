@@ -3,20 +3,19 @@ import {
   booleanAttribute,
   Component,
   computed,
-  effect,
   forwardRef,
   inject,
   input,
   InputSignal,
   InputSignalWithTransform,
+  linkedSignal,
   model,
   ModelSignal,
   Signal,
-  signal,
   viewChild,
   WritableSignal,
 } from '@angular/core';
-import { Day, format } from 'date-fns';
+import { Day, format, isAfter, isBefore } from 'date-fns';
 import { FORM_CONTROL, ValueFormControl } from '../../../abstract/form';
 import { isHour12, localeFormatOptions, LOCALE_CONFIG } from '../../../abstract/locale';
 import { controlSize } from '../../../types';
@@ -90,8 +89,16 @@ export class DateTimePicker extends ValueFormControl<Date | null> {
   public readonly maxDate: InputSignal<Date | null> = input<Date | null>(null);
 
   // State
-  protected readonly viewDate: WritableSignal<Date> = signal(new Date());
-  protected readonly activeView: WritableSignal<ActiveView> = signal(this.config.mode);
+  /**
+   * The period the panel shows. Browsing moves it; a new value, and every opening of
+   * the popover, bring it back to the home date — the panel always opens on what the
+   * field holds, never on wherever an earlier visit left it.
+   */
+  protected readonly viewDate: WritableSignal<Date> = linkedSignal(() => this._homeDate());
+  /** The drill-down level shown; each opening starts again at the mode's own level. */
+  protected readonly activeView: WritableSignal<ActiveView> = linkedSignal<ActiveView>(() =>
+    this.mode(),
+  );
 
   // Computed
   protected readonly hostClasses: Signal<string[]> = computed(() => {
@@ -117,14 +124,6 @@ export class DateTimePicker extends ValueFormControl<Date | null> {
     return format(value, `${DATE_LABEL_FORMAT} ${this._timeFormat}`, this._dateOptions);
   });
 
-  constructor() {
-    super();
-
-    effect(() => {
-      this.activeView.set(this.mode());
-    });
-  }
-
   // Public methods
   /**
    * Focus lands on the trigger and the picker opens with it: a date is chosen in the
@@ -138,12 +137,21 @@ export class DateTimePicker extends ValueFormControl<Date | null> {
 
     const popover: Popover | undefined = this.popoverComponent();
     const trigger: HTMLElement | null = this.focusTarget();
-    if (!popover || !trigger) return;
+    if (!popover || !trigger || popover.isOpen()) return;
 
+    this._resetView();
     popover.open(trigger);
   }
 
   // Protected methods
+  /** Opens on the home date, or closes; browsing from an earlier visit never carries over. */
+  protected onTriggerClick(event: MouseEvent): void {
+    const popover: Popover | undefined = this.popoverComponent();
+    if (!popover) return;
+    if (!popover.isOpen()) this._resetView();
+    popover.toggle(event);
+  }
+
   protected onViewDateChange(date: Date): void {
     this.viewDate.set(date);
   }
@@ -183,5 +191,29 @@ export class DateTimePicker extends ValueFormControl<Date | null> {
   protected onTimeChange(date: Date): void {
     if (this.notInteractive()) return;
     this.value.set(date);
+  }
+
+  // Private methods
+  /** Returns the panel to the home date at the mode's own level. */
+  private _resetView(): void {
+    this.viewDate.set(this._homeDate());
+    this.activeView.set(this.mode());
+  }
+
+  /**
+   * The date the panel opens on: the selected one, or else today moved into the
+   * selectable range, so an empty picker never opens on a page of disabled days.
+   * Read fresh on every call rather than cached, so a page left open past midnight
+   * still opens on the new day.
+   */
+  private _homeDate(): Date {
+    const value = this.value();
+    if (value) return value;
+    const today = new Date();
+    const minDate = this.minDate();
+    if (minDate && isBefore(today, minDate)) return minDate;
+    const maxDate = this.maxDate();
+    if (maxDate && isAfter(today, maxDate)) return maxDate;
+    return today;
   }
 }
