@@ -25,7 +25,11 @@
       }
 
       @if (!isLastItem) {
-        <span class="tls-breadcrumbs__separator" aria-hidden="true">
+        <span
+          class="tls-breadcrumbs__separator"
+          aria-hidden="true"
+          [style.view-transition-name]="item.separatorTransitionName"
+        >
           <tls-icon [name]="separatorIcon()" />
         </span>
       }

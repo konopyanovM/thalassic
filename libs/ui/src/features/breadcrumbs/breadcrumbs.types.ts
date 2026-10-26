@@ -13,6 +13,13 @@ export interface BreadcrumbItem {
    * the marked ones do, so a short crumb after a long one keeps its label whole.
    */
   truncate?: boolean;
+  /**
+   * `view-transition-name` of the separator that follows the crumb, so a
+   * transition can carry it along with the crumb it belongs to rather than
+   * leaving it to jump to its new place. Unique per trail, like any transition
+   * name; the trailing crumb has no separator, so its name goes unused.
+   */
+  separatorTransitionName?: string;
 }
 
 /**

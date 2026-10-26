@@ -69,6 +69,22 @@ describe('Breadcrumbs', () => {
     expect(truncating()).toEqual([false, false, true]);
   });
 
+  it('names each separator after the crumb it follows', async () => {
+    fixture.componentRef.setInput('items', [
+      { label: 'Home', link: '/', separatorTransitionName: 'home-separator' },
+      { label: 'Data', separatorTransitionName: 'data-separator' },
+    ]);
+    await fixture.whenStable();
+
+    const separators = Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLElement>(
+        '.tls-breadcrumbs__separator',
+      ),
+      separator => separator.style.getPropertyValue('view-transition-name'),
+    );
+    expect(separators).toEqual(['home-separator']);
+  });
+
   it('lets only the marked crumbs give way once one is marked', async () => {
     fixture.componentRef.setInput('items', [
       { label: 'Home', link: '/' },
