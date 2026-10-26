@@ -61,6 +61,19 @@ export class Breadcrumbs {
    */
   public readonly itemTemplate = contentChild<TemplateRef<BreadcrumbItemContext>>(TemplateRef);
 
+  /**
+   * Whether each crumb gives way in a `nowrap` trail, in trail order: the marked
+   * ones, or the trailing crumb while none is marked.
+   */
+  protected readonly truncatingItems = computed<boolean[]>(() => {
+    const items = this.items();
+    const hasMarkedItem = items.some(item => item.truncate === true);
+
+    return items.map((item, index) =>
+      hasMarkedItem ? item.truncate === true : index === items.length - 1,
+    );
+  });
+
   protected readonly classes = computed(() => {
     const className = 'tls-breadcrumbs';
     const array: string[] = [className];

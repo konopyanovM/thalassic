@@ -67,3 +67,31 @@ export const CustomItemTemplate: Story = {
     `,
   }),
 };
+
+/**
+ * On a single line, a crumb marked `truncate` gives way in place of the trailing
+ * one — a long name in the middle of the trail ellipsizes while the short crumb
+ * after it stays whole.
+ */
+export const NowrapTruncate: Story = {
+  args: {
+    nowrap: true,
+    items: [
+      { label: 'Workouts', link: '/workouts' },
+      {
+        label: 'Upper body hypertrophy with supersets and drop sets',
+        link: '/workouts/8',
+        truncate: true,
+      },
+      { label: 'Edit' },
+    ],
+  },
+  render: args => ({
+    props: args,
+    template: `
+      <div style="width: 240px;">
+        <tls-breadcrumbs ${argsToTemplate(args)}></tls-breadcrumbs>
+      </div>
+    `,
+  }),
+};

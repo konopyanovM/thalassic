@@ -6,6 +6,13 @@ export interface BreadcrumbItem {
   link?: string | unknown[];
   /** Icon source rendered before the label (see tls-icon's iconSrc). */
   icon?: string;
+  /**
+   * Whether the crumb gives way when a `nowrap` trail runs out of room — for a
+   * crumb whose label has no bound on its length, such as a name someone typed.
+   * With no crumb marked, the trailing one gives way; once any is marked, only
+   * the marked ones do, so a short crumb after a long one keeps its label whole.
+   */
+  truncate?: boolean;
 }
 
 /**

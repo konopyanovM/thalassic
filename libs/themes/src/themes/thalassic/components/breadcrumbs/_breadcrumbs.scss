@@ -124,17 +124,17 @@
       min-width: 0;
     }
 
-    // Only the trailing crumb gives way: ancestors are short, stable route
-    // names kept legible at full width, while the current page's crumb
-    // carries the longest label — one the page below already displays in
-    // full. Ancestors are exempted outright rather than given a small shrink
-    // factor: even a fraction of a pixel of shrink makes text-overflow paint
-    // an ellipsis over an otherwise whole label.
+    // Only the crumbs the component marks give way — by default the trailing
+    // one, which carries the longest label and one the page below already
+    // displays in full; otherwise the crumbs an item marks as unbounded. The
+    // rest are exempted outright rather than given a small shrink factor: even
+    // a fraction of a pixel of shrink makes text-overflow paint an ellipsis
+    // over an otherwise whole label.
     .tls-breadcrumbs__item {
       flex-shrink: 0;
     }
 
-    .tls-breadcrumbs__item:last-child {
+    .tls-breadcrumbs__item--truncate {
       flex-shrink: 1;
     }
 

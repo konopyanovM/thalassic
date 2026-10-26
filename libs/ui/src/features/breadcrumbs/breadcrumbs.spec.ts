@@ -57,6 +57,28 @@ describe('Breadcrumbs', () => {
     const separators = host.querySelectorAll('.tls-breadcrumbs__separator');
     expect(separators.length).toBe(items.length - 1);
   });
+
+  /** Whether each rendered crumb is marked to give way, in trail order. */
+  const truncating = (): boolean[] =>
+    Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll('.tls-breadcrumbs__item'),
+      item => item.classList.contains('tls-breadcrumbs__item--truncate'),
+    );
+
+  it('lets the trailing crumb give way while no crumb is marked', () => {
+    expect(truncating()).toEqual([false, false, true]);
+  });
+
+  it('lets only the marked crumbs give way once one is marked', async () => {
+    fixture.componentRef.setInput('items', [
+      { label: 'Home', link: '/' },
+      { label: 'A name of any length', link: '/library', truncate: true },
+      { label: 'Data' },
+    ]);
+    await fixture.whenStable();
+
+    expect(truncating()).toEqual([false, true, false]);
+  });
 });
 
 @Component({
