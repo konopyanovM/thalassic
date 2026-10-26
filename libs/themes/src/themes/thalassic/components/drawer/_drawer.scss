@@ -141,9 +141,11 @@
     // target on touch without growing it.
     @include mixins.touch-target(var(--tls-drawer-close-size));
 
-    &:hover {
-      background-color: var(--color-surface-container-high);
-      color: var(--color-on-surface);
+    @include mixins.hover-capable {
+      &:hover {
+        background-color: var(--color-surface-container-high);
+        color: var(--color-on-surface);
+      }
     }
 
     &:focus-visible {

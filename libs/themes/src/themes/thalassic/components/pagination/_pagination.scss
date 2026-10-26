@@ -37,8 +37,10 @@
 
     @include mixins.touch-target(var(--tls-pagination-button-height));
 
-    &:hover {
-      outline: var(--tls-pagination-hover-outline);
+    @include mixins.hover-capable {
+      &:hover {
+        outline: var(--tls-pagination-hover-outline);
+      }
     }
 
     &-icon {
@@ -82,8 +84,10 @@
 
     @include mixins.touch-target(var(--tls-pagination-item-size));
 
-    &:hover {
-      outline: var(--tls-pagination-hover-outline);
+    @include mixins.hover-capable {
+      &:hover {
+        outline: var(--tls-pagination-hover-outline);
+      }
     }
 
     &--active {

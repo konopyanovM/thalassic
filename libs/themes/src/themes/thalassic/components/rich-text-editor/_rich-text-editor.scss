@@ -6,8 +6,10 @@
 
     overflow: hidden;
 
-    &:not(.tls-form-control--disabled):not(.tls-form-control--show-error):hover {
-      --tls-form-control-border-color: var(--color-outline-variant);
+    @include mixins.hover-capable {
+      &:not(.tls-form-control--disabled):not(.tls-form-control--show-error):hover {
+        --tls-form-control-border-color: var(--color-outline-variant);
+      }
     }
   }
 
@@ -44,10 +46,12 @@
 
     // The neutral hover excludes the active control so its pressed tint stays
     // readable under the cursor; the active control hovers within its own hue below.
-    &:not(:disabled):hover:not(.tls-rich-text-editor__button--active) {
-      background-color: var(--color-surface-container-highest);
+    @include mixins.hover-capable {
+      &:not(:disabled):hover:not(.tls-rich-text-editor__button--active) {
+        background-color: var(--color-surface-container-highest);
 
-      color: var(--color-on-surface);
+        color: var(--color-on-surface);
+      }
     }
 
     &:not(:disabled):active {
@@ -68,12 +72,14 @@
       // text threshold, not the 3:1 one that would suffice for an icon.
       color: var(--color-on-primary-container);
 
-      &:not(:disabled):hover {
-        background-color: color-mix(
-          in srgb,
-          var(--color-primary-container) 85%,
-          var(--color-surface)
-        );
+      @include mixins.hover-capable {
+        &:not(:disabled):hover {
+          background-color: color-mix(
+            in srgb,
+            var(--color-primary-container) 85%,
+            var(--color-surface)
+          );
+        }
       }
 
       &:not(:disabled):active {
@@ -138,8 +144,10 @@
 
     @include mixins.touch-target(var(--tls-rich-text-editor-button-size));
 
-    &:hover {
-      background-color: color-mix(in srgb, var(--color-primary) 90%, var(--color-on-primary));
+    @include mixins.hover-capable {
+      &:hover {
+        background-color: color-mix(in srgb, var(--color-primary) 90%, var(--color-on-primary));
+      }
     }
 
     &:active {
@@ -155,8 +163,10 @@
 
       color: var(--color-on-surface-variant);
 
-      &:hover {
-        background-color: var(--color-surface-container-highest);
+      @include mixins.hover-capable {
+        &:hover {
+          background-color: var(--color-surface-container-highest);
+        }
       }
 
       &:active {

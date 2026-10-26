@@ -1,3 +1,5 @@
+@use '@thalassic/core/styles' as core;
+
 .tls-tab-header {
   // Horizontal
   &.tls-tab-header--horizontal {
@@ -28,8 +30,10 @@
 
         // See the flat variant's own hover rule for why this is needed:
         // it keeps the divider line visible under the hover fill.
-        &:hover:not(.tls-tab-header__item--active) {
-          border-inline-end-color: var(--tls-tab-header-border-color);
+        @include core.hover-capable {
+          &:hover:not(.tls-tab-header__item--active) {
+            border-inline-end-color: var(--tls-tab-header-border-color);
+          }
         }
       }
     }

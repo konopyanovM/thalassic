@@ -1,3 +1,5 @@
+@use '@thalassic/core/styles' as core;
+
 .tls-table {
   --tls-table-background: var(--color-surface-container-lowest);
   --tls-table-color: var(--color-on-surface);
@@ -70,8 +72,10 @@
       border-bottom: 1px solid var(--tls-table-border-color);
     }
 
-    &:hover {
-      background: var(--tls-table-row-hover-bg);
+    @include core.hover-capable {
+      &:hover {
+        background: var(--tls-table-row-hover-bg);
+      }
     }
   }
 

@@ -42,8 +42,10 @@
 
     @include mixins.touch-target(var(--tls-breadcrumbs-link-height));
 
-    &:hover {
-      text-decoration: underline;
+    @include mixins.hover-capable {
+      &:hover {
+        text-decoration: underline;
+      }
     }
 
     &[aria-current='page'] {

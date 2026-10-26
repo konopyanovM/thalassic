@@ -81,8 +81,10 @@
       @include mixins.focus-ring;
     }
 
-    &:not(.tls-toggle-group__option--disabled):not(:disabled):hover::before {
-      opacity: 0.075;
+    @include mixins.hover-capable {
+      &:not(.tls-toggle-group__option--disabled):not(:disabled):hover::before {
+        opacity: 0.075;
+      }
     }
 
     &:not(.tls-toggle-group__option--disabled):not(:disabled):active::before {
@@ -96,8 +98,10 @@
         opacity: 1;
       }
 
-      &:not(.tls-toggle-group__option--disabled):not(:disabled):hover::before {
-        opacity: 0.85;
+      @include mixins.hover-capable {
+        &:not(.tls-toggle-group__option--disabled):not(:disabled):hover::before {
+          opacity: 0.85;
+        }
       }
 
       &:not(.tls-toggle-group__option--disabled):not(:disabled):active::before {

@@ -1,6 +1,14 @@
 @use '@thalassic/core/styles' as core;
 @use '../mixins' as mixins;
 
+// The drop zone's invitation, shown while a pointer hovers it and while a file
+// is dragged over it.
+@mixin -drop-target {
+  --tls-file-input-border-color: var(--color-primary);
+
+  background-color: core.tint(var(--color-primary), 8%);
+}
+
 .tls-file-input {
   --tls-file-input-border-color: var(--color-outline-variant);
   --tls-file-input-border-radius: var(--radius-md);
@@ -71,11 +79,14 @@
       @include mixins.focus-ring;
     }
 
-    &:hover:not(&--disabled),
-    &--dragging {
-      --tls-file-input-border-color: var(--color-primary);
+    @include mixins.hover-capable {
+      &:hover:not(&--disabled) {
+        @include -drop-target;
+      }
+    }
 
-      background-color: core.tint(var(--color-primary), 8%);
+    &--dragging {
+      @include -drop-target;
     }
 
     &--rejected {
@@ -156,8 +167,10 @@
 
     transition: color var(--motion-fast) var(--motion-ease-in-out);
 
-    &:not(:disabled):hover {
-      color: var(--color-danger);
+    @include mixins.hover-capable {
+      &:not(:disabled):hover {
+        color: var(--color-danger);
+      }
     }
 
     &:disabled {

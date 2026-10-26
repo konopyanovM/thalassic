@@ -1,3 +1,4 @@
+@use '@thalassic/core/styles' as core;
 @use '@thalassic/core/styles/tools/motion';
 @use 'focus-ring';
 
@@ -26,9 +27,11 @@
     transition: background-color var(--motion-fast) var(--motion-ease-in-out);
   }
 
-  &:hover {
-    // currentColor keeps the wash visible on light and dark surfaces alike.
-    background-color: color-mix(in srgb, currentColor 12%, transparent);
+  @include core.hover-capable {
+    &:hover {
+      // currentColor keeps the wash visible on light and dark surfaces alike.
+      background-color: color-mix(in srgb, currentColor 12%, transparent);
+    }
   }
 
   &:focus-visible {

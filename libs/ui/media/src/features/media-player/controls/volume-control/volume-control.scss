@@ -1,4 +1,4 @@
-@use '../../../../../../../core/src/styles/tools/motion' as mixins;
+@use '../../../../../../../core/src/styles/tools' as mixins;
 
 // The expanded slider carries its own inline margins (there is no host gap or
 // padding), so the collapsed control is exactly the square mute button — a
@@ -110,11 +110,14 @@
     }
   }
 
-  &:hover,
-  &:focus-within {
-    .track {
+  @include mixins.hover-capable {
+    &:hover .track {
       @include track-expanded;
     }
+  }
+
+  &:focus-within .track {
+    @include track-expanded;
   }
 }
 

@@ -119,8 +119,10 @@
   // Grows the star under the pointer. The scale itself is ungated so the state
   // still reads at every motion level; only the easing into it is (see the
   // icons rule above).
-  &:not(.tls-rating--disabled):not(.tls-rating--readonly) .tls-rating-star:hover .tls-rating-icons {
-    transform: scale(var(--tls-rating-hover-scale));
+  @include mixins.hover-capable {
+    &:not(.tls-rating--disabled):not(.tls-rating--readonly) .tls-rating-star:hover .tls-rating-icons {
+      transform: scale(var(--tls-rating-hover-scale));
+    }
   }
 
   // Form control

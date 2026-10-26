@@ -79,9 +79,11 @@
       }
     }
 
-    &:hover {
-      .tls-image-compare__grip {
-        border-color: var(--color-primary);
+    @include mixins.hover-capable {
+      &:hover {
+        .tls-image-compare__grip {
+          border-color: var(--color-primary);
+        }
       }
     }
 

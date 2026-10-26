@@ -133,8 +133,10 @@
       gap: var(--spacing-1);
     }
 
-    &:hover {
-      background-color: var(--color-surface-container-low);
+    @include mixins.hover-capable {
+      &:hover {
+        background-color: var(--color-surface-container-low);
+      }
     }
 
     &:focus-visible {

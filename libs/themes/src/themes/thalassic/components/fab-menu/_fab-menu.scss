@@ -77,8 +77,10 @@
 
     cursor: pointer;
 
-    &:hover:not(:disabled) {
-      background-color: var(--color-surface-container-high);
+    @include mixins.hover-capable {
+      &:hover:not(:disabled) {
+        background-color: var(--color-surface-container-high);
+      }
     }
 
     &:focus-visible {

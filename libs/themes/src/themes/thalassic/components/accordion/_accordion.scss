@@ -90,8 +90,10 @@
       transition: background-color var(--motion-fast) var(--motion-ease-in-out);
     }
 
-    &:hover {
-      background-color: var(--tls-accordion-trigger-hover-background-color);
+    @include mixins.hover-capable {
+      &:hover {
+        background-color: var(--tls-accordion-trigger-hover-background-color);
+      }
     }
 
     // Drawn inside the control's box: an item may be clipped by a variant that

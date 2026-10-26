@@ -36,7 +36,12 @@
 
   // The thumb rests slightly shrunken and grows to full size while the slider
   // is hovered or holds focus, signalling that the line is grabbable.
-  &:hover .track__thumb,
+  @include mixins.hover-capable {
+    &:hover .track__thumb {
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+
   &:focus-visible .track__thumb,
   &:focus-within .track__thumb {
     transform: translate(-50%, -50%) scale(1);
@@ -83,10 +88,15 @@
   transform: translate(50%, -50%) scale(0.75);
 }
 
-:root[dir='rtl'] .tls-media-scrubber:hover .track__thumb,
+@include mixins.hover-capable {
+  :root[dir='rtl'] .tls-media-scrubber:hover .track__thumb,
+  :root[dir='rtl'] .tls-media-volume-control:hover .track__thumb {
+    transform: translate(50%, -50%) scale(1);
+  }
+}
+
 :root[dir='rtl'] .tls-media-scrubber:focus-visible .track__thumb,
 :root[dir='rtl'] .tls-media-scrubber:focus-within .track__thumb,
-:root[dir='rtl'] .tls-media-volume-control:hover .track__thumb,
 :root[dir='rtl'] .tls-media-volume-control:focus-within .track__thumb {
   transform: translate(50%, -50%) scale(1);
 }

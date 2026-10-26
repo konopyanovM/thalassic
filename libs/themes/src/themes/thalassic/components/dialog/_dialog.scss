@@ -114,8 +114,10 @@
       --tls-button-color: var(--color-outline);
     }
 
-    &:hover .tls-button {
-      --tls-button-color: var(--color-on-surface);
+    @include mixins.hover-capable {
+      &:hover .tls-button {
+        --tls-button-color: var(--color-on-surface);
+      }
     }
 
     .tls-icon {

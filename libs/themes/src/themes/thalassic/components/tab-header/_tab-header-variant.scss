@@ -21,8 +21,10 @@
       &.tls-tab-header__item--active {
         background-color: var(--tls-tab-header-active-background-color);
 
-        &:hover {
-          background-color: var(--tls-tab-header-active-hover-background-color);
+        @include core.hover-capable {
+          &:hover {
+            background-color: var(--tls-tab-header-active-hover-background-color);
+          }
         }
       }
 
@@ -37,9 +39,11 @@
       // fill and keeps that shared pixel visible instead of the
       // fill covering it. The active item already has an opaque
       // border, so it needs neither of these.
-      &:hover:not(.tls-tab-header__item--active) {
-        background-color: var(--color-surface-container);
-        border-bottom-color: var(--tls-tab-header-border-color);
+      @include core.hover-capable {
+        &:hover:not(.tls-tab-header__item--active) {
+          background-color: var(--color-surface-container);
+          border-bottom-color: var(--tls-tab-header-border-color);
+        }
       }
     }
   }
@@ -64,8 +68,10 @@
       border-inline-end-width: var(--tls-tab-header-active-border-width);
       border-style: solid;
 
-      &:hover {
-        color: var(--tls-tab-header-active-label-color);
+      @include core.hover-capable {
+        &:hover {
+          color: var(--tls-tab-header-active-label-color);
+        }
       }
 
       &:first-child {
@@ -106,8 +112,10 @@
       border: none;
       border-radius: var(--tls-tab-header-pill-radius);
 
-      &:hover:not(.tls-tab-header__item--active) {
-        background-color: var(--color-surface-container-high);
+      @include core.hover-capable {
+        &:hover:not(.tls-tab-header__item--active) {
+          background-color: var(--color-surface-container-high);
+        }
       }
 
       &.tls-tab-header__item--active {

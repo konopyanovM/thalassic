@@ -62,9 +62,11 @@
       }
     }
 
-    &:hover {
-      .tls-splitter-gutter__handle {
-        background-color: var(--tls-splitter-handle-hover-color);
+    @include mixins.hover-capable {
+      &:hover {
+        .tls-splitter-gutter__handle {
+          background-color: var(--tls-splitter-handle-hover-color);
+        }
       }
     }
 

@@ -97,8 +97,10 @@
       transition: border-color var(--motion-fast) var(--motion-ease-in-out);
     }
 
-    &:hover {
-      border-color: var(--color-on-surface);
+    @include mixins.hover-capable {
+      &:hover {
+        border-color: var(--color-on-surface);
+      }
     }
 
     &:focus-visible {

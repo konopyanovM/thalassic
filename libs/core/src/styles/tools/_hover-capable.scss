@@ -1,0 +1,18 @@
+// Gates its content on a primary pointer that can hover — a mouse or trackpad,
+// not a finger. Wrap every `:hover` rule in it.
+//
+// A touchscreen has no resting pointer, yet mobile browsers still apply `:hover`
+// to whatever was last tapped and keep it there until something else is tapped.
+// An ungated hover state therefore outlives the tap that caused it: a menu
+// trigger stays tinted after its menu closes, a list row stays lit after the
+// finger lifts. Touch keeps its own feedback through `:active` (and a ripple or
+// press), so gating hover costs a touch device nothing.
+//
+// Gate the `:hover` selector alone. A selector list that pairs hover with
+// another state (`&:hover, &:focus-visible`) is split so the other state stays
+// ungated — keyboard focus and a held press apply on every device.
+@mixin hover-capable {
+  @media (hover: hover) {
+    @content;
+  }
+}

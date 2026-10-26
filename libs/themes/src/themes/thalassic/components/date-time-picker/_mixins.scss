@@ -20,8 +20,10 @@
 
   cursor: pointer;
 
-  &:hover {
-    background-color: var(--color-surface-container-high);
+  @include mixins.hover-capable {
+    &:hover {
+      background-color: var(--color-surface-container-high);
+    }
   }
 
   &:focus-visible {
@@ -37,9 +39,11 @@
     background-color: var(--color-primary);
     color: var(--color-on-primary);
 
-    &:hover {
-      background-color: var(--color-primary);
-      filter: brightness(0.9);
+    @include mixins.hover-capable {
+      &:hover {
+        background-color: var(--color-primary);
+        filter: brightness(0.9);
+      }
     }
   }
 }
@@ -63,8 +67,10 @@
 
   cursor: pointer;
 
-  &:hover {
-    background-color: var(--color-surface-container-high);
+  @include mixins.hover-capable {
+    &:hover {
+      background-color: var(--color-surface-container-high);
+    }
   }
 
   &:focus-visible {
@@ -93,8 +99,10 @@
     height: 18px;
   }
 
-  &:hover {
-    background-color: var(--color-surface-container-high);
+  @include mixins.hover-capable {
+    &:hover {
+      background-color: var(--color-surface-container-high);
+    }
   }
 
   &:focus-visible {

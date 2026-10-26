@@ -1,3 +1,5 @@
+@use '@thalassic/core/styles' as core;
+
 // Header-position styles are a tabs-composite concern (the header's order and
 // divider edge relative to the content panel), so they stay here and reach
 // into the shared tab-header block from the container.
@@ -30,8 +32,10 @@
 
         // See the flat variant's own hover rule for why this is needed:
         // it keeps the divider line visible under the hover fill.
-        &:hover:not(.tls-tab-header__item--active) {
-          border-top-color: var(--tls-tab-header-border-color);
+        @include core.hover-capable {
+          &:hover:not(.tls-tab-header__item--active) {
+            border-top-color: var(--tls-tab-header-border-color);
+          }
         }
       }
     }
@@ -66,8 +70,10 @@
 
         // See the flat variant's own hover rule for why this is needed:
         // it keeps the divider line visible under the hover fill.
-        &:hover:not(.tls-tab-header__item--active) {
-          border-inline-start-color: var(--tls-tab-header-border-color);
+        @include core.hover-capable {
+          &:hover:not(.tls-tab-header__item--active) {
+            border-inline-start-color: var(--tls-tab-header-border-color);
+          }
         }
       }
     }

@@ -83,8 +83,10 @@
     line-height: var(--font-body-medium-line-height);
     letter-spacing: var(--font-body-medium-letter-spacing);
 
-    &:hover:not(:disabled):not(&--disabled) {
-      background-color: var(--tls-menu-item-background-hover);
+    @include mixins.hover-capable {
+      &:hover:not(:disabled):not(&--disabled) {
+        background-color: var(--tls-menu-item-background-hover);
+      }
     }
 
     &:focus-visible {

@@ -62,8 +62,10 @@
 
     @include mixins.touch-target(var(--tls-multi-select-clear-size));
 
-    &:hover {
-      color: var(--color-on-surface);
+    @include mixins.hover-capable {
+      &:hover {
+        color: var(--color-on-surface);
+      }
     }
 
     .tls-multi-select__clear-icon {

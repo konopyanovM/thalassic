@@ -1,5 +1,12 @@
 @use '../../mixins' as mixins;
 
+// The value bubble at full size, shown while the slider is hovered, pressed or
+// focused.
+@mixin -tooltip-shown {
+  opacity: 1;
+  transform: translateX(var(--tls-slider-tooltip-translate)) scale(1);
+}
+
 .tls-slider {
   --tls-slider-track-height: 4px;
   --tls-slider-thumb-size: 16px;
@@ -162,19 +169,27 @@
     }
   }
 
-  &:hover .tls-slider-tooltip,
+  @include mixins.hover-capable {
+    &:hover .tls-slider-tooltip {
+      @include -tooltip-shown;
+    }
+  }
+
   &:active .tls-slider-tooltip,
   &:focus-within .tls-slider-tooltip {
-    opacity: 1;
-    transform: translateX(var(--tls-slider-tooltip-translate)) scale(1);
+    @include -tooltip-shown;
   }
 
-  &:not(.tls-slider--disabled) .tls-slider-input:hover::-webkit-slider-thumb {
-    box-shadow: var(--shadow-sm);
+  @include mixins.hover-capable {
+    &:not(.tls-slider--disabled) .tls-slider-input:hover::-webkit-slider-thumb {
+      box-shadow: var(--shadow-sm);
+    }
   }
 
-  &:not(.tls-slider--disabled) .tls-slider-input:hover::-moz-range-thumb {
-    box-shadow: var(--shadow-sm);
+  @include mixins.hover-capable {
+    &:not(.tls-slider--disabled) .tls-slider-input:hover::-moz-range-thumb {
+      box-shadow: var(--shadow-sm);
+    }
   }
 
   // Grows the thumb under the finger/cursor while the value is being dragged.

@@ -1,3 +1,5 @@
+@use '@thalassic/core/styles' as core;
+
 // Appearance of a button-like control's variant treatment (filled / tonal /
 // outlined / text / elevated), shared across controls (tls-button,
 // tls-toggle-button). Maps the treatment onto the block's color token pair
@@ -9,8 +11,15 @@
 // reads the container pair directly rather than relying on tonal-swap, so it
 // is safe for blocks with a second variant layer.
 
+// Hover answers a pointer that can rest over the control, so it is gated on a
+// hover-capable device; keyboard focus shows the same state everywhere.
 @mixin _hover-focus-state($block) {
-  &:not(.#{$block}--disabled):hover,
+  @include core.hover-capable {
+    &:not(.#{$block}--disabled):hover {
+      @content;
+    }
+  }
+
   &:not(.#{$block}--disabled):focus-visible {
     @content;
   }

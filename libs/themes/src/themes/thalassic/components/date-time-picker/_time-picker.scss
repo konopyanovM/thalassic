@@ -52,8 +52,10 @@
 
     @include mixins.touch-target(var(--spacing-7));
 
-    &:hover {
-      background-color: var(--color-surface-container-highest);
+    @include mixins.hover-capable {
+      &:hover {
+        background-color: var(--color-surface-container-highest);
+      }
     }
 
     &:focus-visible {
@@ -78,9 +80,11 @@
       height: 18px;
     }
 
-    &:hover {
-      background-color: var(--color-surface-container-high);
-      color: var(--color-on-surface);
+    @include mixins.hover-capable {
+      &:hover {
+        background-color: var(--color-surface-container-high);
+        color: var(--color-on-surface);
+      }
     }
 
     &:focus-visible {

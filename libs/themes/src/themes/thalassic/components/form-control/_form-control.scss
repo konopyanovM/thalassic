@@ -29,8 +29,10 @@
     background-color var(--motion-fast) var(--motion-ease-in-out),
     box-shadow var(--motion-fast) var(--motion-ease-in-out);
 
-  &:not(.tls-form-control--disabled):hover {
-    --tls-form-control-border-color: var(--color-primary);
+  @include mixins.hover-capable {
+    &:not(.tls-form-control--disabled):hover {
+      --tls-form-control-border-color: var(--color-primary);
+    }
   }
 
   &:focus {
@@ -78,10 +80,12 @@
     // A refused value keeps its outline: only a field with nothing to report
     // hides its border under the pointer. A focused field is excluded too, so
     // a pointer left resting on it cannot tint the surface being typed on.
-    &:not(.tls-form-control--disabled):not(.tls-form-control--show-error):not(:focus):hover {
-      --tls-form-control-border-color: transparent;
+    @include mixins.hover-capable {
+      &:not(.tls-form-control--disabled):not(.tls-form-control--show-error):not(:focus):hover {
+        --tls-form-control-border-color: transparent;
 
-      background-color: var(--color-surface-container);
+        background-color: var(--color-surface-container);
+      }
     }
 
     &:focus {

@@ -40,8 +40,10 @@
   background-color var(--motion-fast) var(--motion-ease-in-out),
   box-shadow var(--motion-fast) var(--motion-ease-in-out);
 
-  &:hover {
-    --tls-form-control-group-border-color: var(--color-primary);
+  @include mixins.hover-capable {
+    &:hover {
+      --tls-form-control-group-border-color: var(--color-primary);
+    }
   }
 
   &:has(input.tls-form-control:focus),
