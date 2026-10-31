@@ -31,7 +31,7 @@
 // Each section is its own card, spaced from its neighbours.
 .tls-accordion--separated {
   --tls-accordion-gap: var(--spacing-3);
-  --tls-accordion-item-background-color: var(--color-surface-container-lowest);
+  --tls-accordion-item-background-color: var(--surface-raised);
 
   .tls-accordion__item {
     border: var(--tls-accordion-border-width) solid var(--tls-accordion-border-color);

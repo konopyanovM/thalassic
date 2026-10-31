@@ -88,8 +88,22 @@
   &.tls-tab-header--segmented {
     --tls-tab-header-border-radius: var(--radius-lg);
     --tls-tab-header-pill-radius: var(--radius-md);
-    --tls-tab-header-background-color: var(--color-surface-container);
-    --tls-tab-header-pill-background-color: var(--color-surface);
+    // The track, the selected pill and the hover fill each yield to an
+    // inherited `--tls-tab-header-segmented-*` hook, so a consumer can recolour
+    // them from any ancestor: these declarations sit on the header element
+    // itself, where a value set by an ancestor would otherwise lose to them.
+    --tls-tab-header-background-color: var(
+      --tls-tab-header-segmented-track,
+      var(--color-surface-container)
+    );
+    --tls-tab-header-pill-background-color: var(
+      --tls-tab-header-segmented-pill,
+      var(--color-surface)
+    );
+    --tls-tab-header-hover-background-color: var(
+      --tls-tab-header-segmented-hover,
+      var(--color-surface-container-high)
+    );
     --tls-tab-header-padding: var(--spacing-2);
     --tls-tab-header-active-label-color: var(--color-on-surface);
 
@@ -98,7 +112,10 @@
     // track's container color, so raise the pill above the track (and above the
     // inactive hover's container-high) instead.
     .tls-dark & {
-      --tls-tab-header-pill-background-color: var(--color-surface-container-highest);
+      --tls-tab-header-pill-background-color: var(
+        --tls-tab-header-segmented-pill,
+        var(--color-surface-container-highest)
+      );
     }
 
     padding: var(--tls-tab-header-padding);
@@ -114,7 +131,7 @@
 
       @include core.hover-capable {
         &:hover:not(.tls-tab-header__item--active) {
-          background-color: var(--color-surface-container-high);
+          background-color: var(--tls-tab-header-hover-background-color);
         }
       }
 

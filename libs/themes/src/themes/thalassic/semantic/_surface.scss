@@ -1,0 +1,14 @@
+// A surface lifted above the page: a panel on it, or a layer floating over it.
+// Lifted surfaces are lighter than the page in both modes, as though catching
+// more light. The lowest container does that in light mode, where it is the
+// brightest surface; in dark mode it is the darkest and would sink a panel
+// below its page into a hole, so the middle container stands in. Declared on
+// any dark scope rather than only the root, so a region themed dark on its own
+// lifts its surfaces to match.
+:root {
+  --surface-raised: var(--color-surface-container-lowest);
+}
+
+.tls-dark {
+  --surface-raised: var(--color-surface-container);
+}

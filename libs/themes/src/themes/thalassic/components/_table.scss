@@ -1,10 +1,10 @@
 @use '@thalassic/core/styles' as core;
 
 .tls-table {
-  --tls-table-background: var(--color-surface-container-lowest);
+  --tls-table-background: var(--surface-raised);
   --tls-table-color: var(--color-on-surface);
 
-  --tls-table-header-background: var(--color-surface-container-lowest);
+  --tls-table-header-background: var(--surface-raised);
   --tls-table-header-color: var(--color-on-surface-variant);
   --tls-table-header-weight: var(--font-weight-medium);
 
@@ -12,6 +12,12 @@
 
   --tls-table-row-hover-bg: var(--color-surface-container);
   --tls-table-stripe-background: var(--color-surface-container-low);
+
+  // The middle container is the table's own surface in dark mode, so the
+  // hover steps one further from the page instead.
+  .tls-dark & {
+    --tls-table-row-hover-bg: var(--color-surface-container-high);
+  }
 
   --tls-table-cell-padding-x: var(--spacing-4);
   --tls-table-cell-padding-y: var(--spacing-3);

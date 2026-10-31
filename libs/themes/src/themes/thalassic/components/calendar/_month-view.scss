@@ -16,6 +16,15 @@
   --tls-calendar-marker-size: 6px;
   --tls-calendar-marker-gap: var(--spacing-1);
 
+  // A day outside the month, set back from the days in it. The middle
+  // container is the day cell's own surface in dark mode, so there an outside
+  // day sinks to the page instead.
+  --tls-calendar-outside-background: var(--color-surface-container);
+
+  .tls-dark & {
+    --tls-calendar-outside-background: var(--color-surface);
+  }
+
   display: flex;
   flex-direction: column;
   gap: var(--spacing-2);
@@ -107,7 +116,7 @@
     border-block-end: lines.horizontal();
     border-inline-end: lines.vertical();
 
-    background-color: var(--color-surface-container-lowest);
+    background-color: var(--surface-raised);
 
     color: var(--color-on-surface);
 
@@ -150,7 +159,7 @@
     }
 
     &--outside {
-      background-color: var(--color-surface-container);
+      background-color: var(--tls-calendar-outside-background);
 
       color: var(--color-on-surface-variant);
     }
