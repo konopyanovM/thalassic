@@ -1,8 +1,29 @@
+@use 'sass:meta';
+
+// The kit ships no font file, so each family defaults to the platform's own UI
+// face. An app that loads a web font names it first in the family it replaces,
+// configured on the theme's `@use … with (…)`, and keeps a fallback stack
+// behind it for the moment before the font arrives.
+$font-family-base: (system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif) !default;
+$font-family-heading: $font-family-base !default;
+$font-family-mono: (ui-monospace, 'SF Mono', Menlo, Consolas, 'Roboto Mono', monospace) !default;
+
+// The scale follows one rule per property, so a variant's place on it decides
+// how it is set:
+// - tracking tightens as type grows (display −0.03em, headlines −0.02em,
+//   titles −0.01em) and stays at zero from body size down; spaced-out capitals
+//   are a property of uppercase text, so an uppercase label adds its own wide
+//   tracking rather than every label carrying it;
+// - line height tightens as type grows: about 1.1 for display, 1.2 for
+//   headlines, 1.3 for titles, a full 1.5 for body copy read line after line,
+//   and about 1.25 for single-line labels;
+// - weight ranks three roles with a clear step between each: 400 for reading,
+//   600 for UI and emphasis (titles, labels), 700 for display and headlines.
 :root {
-  // Font families
-  --font-family-base: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-  --font-family-heading: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-  --font-family-mono: 'Roboto Mono', 'Courier New', monospace;
+  // Font families — `inspect` keeps the quotes a family name with a space needs.
+  --font-family-base: #{meta.inspect($font-family-base)};
+  --font-family-heading: #{meta.inspect($font-family-heading)};
+  --font-family-mono: #{meta.inspect($font-family-mono)};
 
   // Font weights
   --font-weight-light: 300;
@@ -17,88 +38,90 @@
   --line-height-relaxed: 1.75;
 
   // Letter spacing
+  --letter-spacing-tighter: -0.03em;
   --letter-spacing-tight: -0.02em;
+  --letter-spacing-snug: -0.01em;
   --letter-spacing-normal: 0;
   --letter-spacing-wide: 0.025em;
   --letter-spacing-wider: 0.05em;
 
   // Display styles (large marketing text)
   --font-display-large-size: 4rem;
-  --font-display-large-weight: var(--font-weight-regular);
-  --font-display-large-line-height: 4.5625rem;
-  --font-display-large-letter-spacing: var(--letter-spacing-tight);
+  --font-display-large-weight: var(--font-weight-bold);
+  --font-display-large-line-height: 4.375rem;
+  --font-display-large-letter-spacing: var(--letter-spacing-tighter);
 
   --font-display-medium-size: 3.1875rem;
-  --font-display-medium-weight: var(--font-weight-regular);
-  --font-display-medium-line-height: 3.6875rem;
-  --font-display-medium-letter-spacing: var(--letter-spacing-normal);
+  --font-display-medium-weight: var(--font-weight-bold);
+  --font-display-medium-line-height: 3.5rem;
+  --font-display-medium-letter-spacing: var(--letter-spacing-tighter);
 
   --font-display-small-size: 2.5625rem;
-  --font-display-small-weight: var(--font-weight-regular);
-  --font-display-small-line-height: 3.125rem;
-  --font-display-small-letter-spacing: var(--letter-spacing-normal);
+  --font-display-small-weight: var(--font-weight-bold);
+  --font-display-small-line-height: 2.875rem;
+  --font-display-small-letter-spacing: var(--letter-spacing-tighter);
 
   // Headline styles (page titles)
   --font-headline-large-size: 2.3125rem;
-  --font-headline-large-weight: var(--font-weight-regular);
-  --font-headline-large-line-height: 2.875rem;
-  --font-headline-large-letter-spacing: var(--letter-spacing-normal);
+  --font-headline-large-weight: var(--font-weight-bold);
+  --font-headline-large-line-height: 2.75rem;
+  --font-headline-large-letter-spacing: var(--letter-spacing-tight);
 
   --font-headline-medium-size: 2rem;
-  --font-headline-medium-weight: var(--font-weight-regular);
-  --font-headline-medium-line-height: 2.5625rem;
-  --font-headline-medium-letter-spacing: var(--letter-spacing-normal);
+  --font-headline-medium-weight: var(--font-weight-bold);
+  --font-headline-medium-line-height: 2.375rem;
+  --font-headline-medium-letter-spacing: var(--letter-spacing-tight);
 
   --font-headline-small-size: 1.6875rem;
-  --font-headline-small-weight: var(--font-weight-regular);
-  --font-headline-small-line-height: 2.3125rem;
-  --font-headline-small-letter-spacing: var(--letter-spacing-normal);
+  --font-headline-small-weight: var(--font-weight-bold);
+  --font-headline-small-line-height: 2.0625rem;
+  --font-headline-small-letter-spacing: var(--letter-spacing-tight);
 
   // Title styles (section headers)
   --font-title-large-size: 1.5625rem;
-  --font-title-large-weight: var(--font-weight-medium);
+  --font-title-large-weight: var(--font-weight-semibold);
   --font-title-large-line-height: 2rem;
-  --font-title-large-letter-spacing: var(--letter-spacing-normal);
+  --font-title-large-letter-spacing: var(--letter-spacing-snug);
 
   --font-title-medium-size: 1.125rem;
-  --font-title-medium-weight: var(--font-weight-medium);
+  --font-title-medium-weight: var(--font-weight-semibold);
   --font-title-medium-line-height: 1.4375rem;
-  --font-title-medium-letter-spacing: var(--letter-spacing-wide);
+  --font-title-medium-letter-spacing: var(--letter-spacing-snug);
 
   --font-title-small-size: 1rem;
-  --font-title-small-weight: var(--font-weight-medium);
+  --font-title-small-weight: var(--font-weight-semibold);
   --font-title-small-line-height: 1.3125rem;
-  --font-title-small-letter-spacing: var(--letter-spacing-wide);
+  --font-title-small-letter-spacing: var(--letter-spacing-snug);
 
   // Body styles (main content)
   --font-body-large-size: 1.125rem;
   --font-body-large-weight: var(--font-weight-regular);
-  --font-body-large-line-height: 1.6875rem;
+  --font-body-large-line-height: 1.75rem;
   --font-body-large-letter-spacing: var(--letter-spacing-normal);
 
   --font-body-medium-size: 1rem;
   --font-body-medium-weight: var(--font-weight-regular);
-  --font-body-medium-line-height: 1.4375rem;
+  --font-body-medium-line-height: 1.5rem;
   --font-body-medium-letter-spacing: var(--letter-spacing-normal);
 
   --font-body-small-size: 0.875rem;
   --font-body-small-weight: var(--font-weight-regular);
-  --font-body-small-line-height: 1.125rem;
+  --font-body-small-line-height: 1.3125rem;
   --font-body-small-letter-spacing: var(--letter-spacing-normal);
 
   // Label styles (buttons, tabs, form labels)
   --font-label-large-size: 1rem;
-  --font-label-large-weight: var(--font-weight-medium);
+  --font-label-large-weight: var(--font-weight-semibold);
   --font-label-large-line-height: 1.25rem;
-  --font-label-large-letter-spacing: var(--letter-spacing-wide);
+  --font-label-large-letter-spacing: var(--letter-spacing-normal);
 
   --font-label-medium-size: 0.875rem;
-  --font-label-medium-weight: var(--font-weight-medium);
+  --font-label-medium-weight: var(--font-weight-semibold);
   --font-label-medium-line-height: 1.125rem;
-  --font-label-medium-letter-spacing: var(--letter-spacing-wider);
+  --font-label-medium-letter-spacing: var(--letter-spacing-normal);
 
   --font-label-small-size: 0.8125rem;
-  --font-label-small-weight: var(--font-weight-medium);
+  --font-label-small-weight: var(--font-weight-semibold);
   --font-label-small-line-height: 1rem;
-  --font-label-small-letter-spacing: var(--letter-spacing-wider);
+  --font-label-small-letter-spacing: var(--letter-spacing-normal);
 }

@@ -176,7 +176,8 @@
     font-size: var(--font-label-small-size);
     font-weight: var(--font-label-small-weight);
     line-height: var(--font-label-small-line-height);
-    letter-spacing: var(--font-label-small-letter-spacing);
+    // Capitals need room the sentence-case label scale doesn't give them.
+    letter-spacing: var(--letter-spacing-wider);
 
     text-transform: uppercase;
   }

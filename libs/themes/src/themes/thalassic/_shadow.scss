@@ -1,13 +1,52 @@
-:root {
-  --shadow-xs: 0 1px 2px 0 rgb(var(--color-shadow) / 0.25);
+@use 'sass:map';
+
+// Shadow strength per mode, by elevation. On a light surface a shadow is the
+// darkest thing near the element, so a soft one already reads as lift; on a
+// dark surface there is little left to darken, so the same lift needs a denser
+// shadow.
+$-opacities: (
+  'light': (
+    'xs': 0.05,
+    'sm': 0.1,
+    'md': 0.1,
+    'lg': 0.1,
+    'xl': 0.1,
+    '2xl': 0.25,
+  ),
+  'dark': (
+    'xs': 0.25,
+    'sm': 0.35,
+    'md': 0.35,
+    'lg': 0.35,
+    'xl': 0.35,
+    '2xl': 0.35,
+  ),
+);
+
+/// Declares every elevation token at the strengths `$mode` gives them.
+@mixin -shadows($mode) {
+  $opacity: map.get($-opacities, $mode);
+
+  --shadow-xs: 0 1px 2px 0 rgb(var(--color-shadow) / #{map.get($opacity, 'xs')});
   --shadow-sm:
-    0 1px 3px 0 rgb(var(--color-shadow) / 0.35), 0 1px 2px -1px rgb(var(--color-shadow) / 0.35);
+    0 1px 3px 0 rgb(var(--color-shadow) / #{map.get($opacity, 'sm')}),
+    0 1px 2px -1px rgb(var(--color-shadow) / #{map.get($opacity, 'sm')});
   --shadow-md:
-    0 4px 6px -1px rgb(var(--color-shadow) / 0.35), 0 2px 4px -2px rgb(var(--color-shadow) / 0.35);
+    0 4px 6px -1px rgb(var(--color-shadow) / #{map.get($opacity, 'md')}),
+    0 2px 4px -2px rgb(var(--color-shadow) / #{map.get($opacity, 'md')});
   --shadow-lg:
-    0 10px 35px -3px rgb(var(--color-shadow) / 0.35), 0 4px 6px -4px rgb(var(--color-shadow) / 0.35);
+    0 10px 35px -3px rgb(var(--color-shadow) / #{map.get($opacity, 'lg')}),
+    0 4px 6px -4px rgb(var(--color-shadow) / #{map.get($opacity, 'lg')});
   --shadow-xl:
-    0 20px 25px -5px rgb(var(--color-shadow) / 0.35),
-    0 8px 10px -6px rgb(var(--color-shadow) / 0.35);
-  --shadow-2xl: 0 25px 50px -12px rgb(var(--color-shadow) / 0.35);
+    0 20px 25px -5px rgb(var(--color-shadow) / #{map.get($opacity, 'xl')}),
+    0 8px 10px -6px rgb(var(--color-shadow) / #{map.get($opacity, 'xl')});
+  --shadow-2xl: 0 25px 50px -12px rgb(var(--color-shadow) / #{map.get($opacity, '2xl')});
+}
+
+:root {
+  @include -shadows('light');
+
+  &.tls-dark {
+    @include -shadows('dark');
+  }
 }
