@@ -11,12 +11,14 @@ import {
   computed,
   contentChildren,
   effect,
+  ElementRef,
   inject,
   input,
   InputSignal,
   model,
   ModelSignal,
   Signal,
+  viewChildren,
 } from '@angular/core';
 import { Tab } from './tab';
 import { TabsConfig } from './tabs.config';
@@ -67,6 +69,10 @@ export class Tabs {
 
   // State
   protected tabs: Signal<readonly Tab[]> = contentChildren(Tab);
+
+  // Queries
+  /** Each tab's header control, in the order of the projected tabs. */
+  private readonly _tabControls = viewChildren<ElementRef<HTMLButtonElement>>('tabControl');
 
   // Computed
   protected hostClasses = computed(() => {
@@ -121,5 +127,20 @@ export class Tabs {
     const match = this.tabs().find(tab => tab.value() === text);
     if (!match) return undefined;
     return match.value();
+  }
+
+  /**
+   * Moves keyboard focus to the header control of the tab holding `value`.
+   * Meant for a control inside a panel that switches to another tab: the
+   * switch hides the panel and, with it, the element that had focus, which
+   * would otherwise fall back to the document. Takes the value rather than
+   * reading the selection, so a caller can focus the tab it has just selected
+   * before the selection reaches this component.
+   */
+  public focusTab(value: tabValue): void {
+    const index = this.tabs().findIndex(tab => tab.value() === value);
+    const control = this._tabControls()[index];
+    if (!control) return;
+    control.nativeElement.focus();
   }
 }

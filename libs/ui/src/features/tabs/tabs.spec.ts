@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Tab } from './tab/tab';
@@ -81,5 +81,50 @@ describe('Tabs alignment', () => {
 
     expect(host.className).not.toContain('--align-');
     expect(host.className).not.toContain('--items-');
+  });
+});
+
+@Component({
+  imports: [Tabs, Tab],
+  template: `
+    <tls-tabs #tabs>
+      <tls-tab value="tab-1" label="Tab 1">Content 1</tls-tab>
+      <tls-tab value="tab-2" label="Tab 2">Content 2</tls-tab>
+    </tls-tabs>
+  `,
+})
+class FocusTestHostComponent {
+  readonly tabs = viewChild.required(Tabs);
+}
+
+describe('Tabs focusTab', () => {
+  let fixture: ComponentFixture<FocusTestHostComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [FocusTestHostComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(FocusTestHostComponent);
+    document.body.append(fixture.nativeElement);
+    await fixture.whenStable();
+  });
+
+  afterEach(() => {
+    fixture.nativeElement.remove();
+  });
+
+  it('should focus the header control of the named tab', () => {
+    fixture.componentInstance.tabs().focusTab('tab-2');
+
+    expect(document.activeElement?.textContent?.trim()).toBe('Tab 2');
+  });
+
+  it('should leave focus alone for a value no tab holds', () => {
+    const before = document.activeElement;
+
+    fixture.componentInstance.tabs().focusTab('missing');
+
+    expect(document.activeElement).toBe(before);
   });
 });
