@@ -1,3 +1,54 @@
+## 22.22.0 (2026-11-01)
+
+### 🚀 Features
+
+- **core:** paging-gesture helpers, with the carousel built on them ([46e0ab6](https://github.com/konopyanovM/thalassic/commit/46e0ab6))
+- **core:** 2xs and xs breakpoints for phones ([1a509aa](https://github.com/konopyanovM/thalassic/commit/1a509aa))
+- **core:** relative time pipe ([43eb41b](https://github.com/konopyanovM/thalassic/commit/43eb41b))
+- **front:** preload route chunks in the background after startup ([1f00922](https://github.com/konopyanovM/thalassic/commit/1f00922))
+- **thalassic:** material 3 theme generator, with theme surfaces read from the neutral palettes ([ec3a161](https://github.com/konopyanovM/thalassic/commit/ec3a161))
+- **themes:** configurable palettes, with sass and css theme exports in the generator ([f6cda5e](https://github.com/konopyanovM/thalassic/commit/f6cda5e))
+- **themes:** configurable role tones, editable per mode in the theme generator ([2533ec0](https://github.com/konopyanovM/thalassic/commit/2533ec0))
+- **themes:** outlined edge as a steady translucent tint of the label colour ([d769911](https://github.com/konopyanovM/thalassic/commit/d769911))
+- **themes:** retune the type scale, make font families configurable, soften light-mode shadows ([364a2f1](https://github.com/konopyanovM/thalassic/commit/364a2f1))
+- **themes/progress:** let a bar set how a change of value travels ([192d39f](https://github.com/konopyanovM/thalassic/commit/192d39f))
+- **ui:** form-item hint wired to aria-describedby, autocomplete on input and password ([037d9a0](https://github.com/konopyanovM/thalassic/commit/037d9a0))
+- **ui:** panelClass on sheet, menu, dialog, drawer and confirm ([cae4d45](https://github.com/konopyanovM/thalassic/commit/cae4d45))
+- **ui:** variant input on fab-menu, filled by default ([40eeba5](https://github.com/konopyanovM/thalassic/commit/40eeba5))
+- **ui:** button control fills the width its host is given ([8fb2c1e](https://github.com/konopyanovM/thalassic/commit/8fb2c1e))
+- **ui:** popover viewport margin and shrink-to-fit ([55fc865](https://github.com/konopyanovM/thalassic/commit/55fc865))
+- **ui:** sheet body fades in and out instead of sliding by the safe-area inset ([acbb4e0](https://github.com/konopyanovM/thalassic/commit/acbb4e0))
+- **ui:** option groups for select, multi-select and autocomplete ([9299bbe](https://github.com/konopyanovM/thalassic/commit/9299bbe))
+- **ui:** let breadcrumb items mark which crumb gives way on a single line ([eff4790](https://github.com/konopyanovM/thalassic/commit/eff4790))
+- **ui:** let breadcrumb separators carry a transition name of their own ([b4d52a2](https://github.com/konopyanovM/thalassic/commit/b4d52a2))
+- **ui:** let tabs move focus to a tab by value ([a0918f8](https://github.com/konopyanovM/thalassic/commit/a0918f8))
+- **ui,themes:** busy button state, raised dark field token, and tools-only imports in table and infinite scroll ([590a9c0](https://github.com/konopyanovM/thalassic/commit/590a9c0))
+- **ui/calendar:** peek weeks that fade out above and below the month grid ([dd64074](https://github.com/konopyanovM/thalassic/commit/dd64074))
+- **ui/odometer:** show caller-written text and let a change swap in place ([4dc25ef](https://github.com/konopyanovM/thalassic/commit/4dc25ef))
+
+### 🩹 Fixes
+
+- tls-sheet background color changed ([7f3395e](https://github.com/konopyanovM/thalassic/commit/7f3395e))
+- **core:** write pull travel onto marked descendants so safari follows the drag ([de5261c](https://github.com/konopyanovM/thalassic/commit/de5261c))
+- **themes:** quiet the outlined variant border at rest ([50d2060](https://github.com/konopyanovM/thalassic/commit/50d2060))
+- **themes:** gate hover states on pointers that can hover ([5d7aab3](https://github.com/konopyanovM/thalassic/commit/5d7aab3))
+- **themes:** lift raised and floating surfaces above the page in dark mode ([fe9873f](https://github.com/konopyanovM/thalassic/commit/fe9873f))
+- **themes/button:** quiet an unavailable text or outlined button instead of filling it ([9437761](https://github.com/konopyanovM/thalassic/commit/9437761))
+- **ui:** open the date picker on the selected date and reset its view on every open ([c823681](https://github.com/konopyanovM/thalassic/commit/c823681))
+- **ui/drawer:** stop a dismissal drag let go short from replaying the entrance ([0d6d905](https://github.com/konopyanovM/thalassic/commit/0d6d905))
+- **ui/toggle-button:** focus the host, which is the button itself ([21d8afc](https://github.com/konopyanovM/thalassic/commit/21d8afc))
+
+### 🔥 Performance
+
+- register per-frame drag properties as non-inheriting ([3a6db18](https://github.com/konopyanovM/thalassic/commit/3a6db18))
+- **themes:** run the toast countdown on scale instead of width ([2c560bc](https://github.com/konopyanovM/thalassic/commit/2c560bc))
+- **ui:** bind ripple and tooltip pointer moves only while they are in use ([a35db18](https://github.com/konopyanovM/thalassic/commit/a35db18))
+- **ui:** rebuild calendar grids only when the day changes ([15e4f51](https://github.com/konopyanovM/thalassic/commit/15e4f51))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.21.0 (2026-09-27)
 
 ### 🚀 Features
