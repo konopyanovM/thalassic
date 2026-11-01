@@ -305,10 +305,12 @@ export const SCOPE_DERIVED_DECLARATIONS: Record<themeType, string> = {
   light: [
     '--control-focus-ring-color: var(--color-primary);',
     '--field-background: var(--color-surface-container-lowest);',
+    '--surface-raised: var(--color-surface-container-lowest);',
   ].join('\n'),
   dark: [
     '--control-focus-ring-color: var(--color-primary);',
     '--field-background: var(--color-surface-container-high);',
+    '--surface-raised: var(--color-surface-container);',
   ].join('\n'),
 };
 
