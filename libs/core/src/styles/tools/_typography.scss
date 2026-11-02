@@ -3,13 +3,29 @@
 $-heading-variants: display-lg, display-md, display-sm, headline-lg, headline-md, headline-sm, title-lg, title-md,
   title-sm;
 $-running-text-variants: body-lg, body-md, body-sm;
+/// The variants set in the heading family: the display and headline steps,
+/// where a theme's display face carries the page. Titles and everything below
+/// them stay in the base family, so section headings read with the interface.
+$-heading-family-variants: display-lg, display-md, display-sm, headline-lg, headline-md, headline-sm;
 
-/// A type-scale variant's full style. Headings also even out the lengths of
-/// their lines, and running text keeps its last line from holding a lone word.
-/// Both set only the wrap style (`text-wrap-style`, not the `text-wrap`
-/// shorthand), so text a component keeps on one line with `white-space: nowrap`
-/// stays on one line.
+/// A type-scale variant's full style, its family included. Display and
+/// headline variants take the heading family and its variation settings, which
+/// match the base family's until a theme configures its own; every other
+/// variant states the base family, so restyling a heading element (an `h2` set
+/// as a title) leaves none of the heading face behind. Headings also even out
+/// the lengths of their lines, and running text keeps its last line from
+/// holding a lone word. Both set only the wrap style (`text-wrap-style`, not
+/// the `text-wrap` shorthand), so text a component keeps on one line with
+/// `white-space: nowrap` stays on one line.
 @mixin typography($variant) {
+  @if list.index($-heading-family-variants, $variant) {
+    font-family: var(--font-family-heading);
+    font-variation-settings: var(--font-variation-heading);
+  } @else {
+    font-family: var(--font-family-base);
+    font-variation-settings: normal;
+  }
+
   @if list.index($-heading-variants, $variant) {
     text-wrap-style: balance;
   } @else if list.index($-running-text-variants, $variant) {

@@ -3,10 +3,17 @@
 // The kit ships no font file, so each family defaults to the platform's own UI
 // face. An app that loads a web font names it first in the family it replaces,
 // configured on the theme's `@use … with (…)`, and keeps a fallback stack
-// behind it for the moment before the font arrives.
+// behind it for the moment before the font arrives. The heading family sets the
+// display and headline steps of the scale; titles and everything below them
+// stay in the base family.
 $font-family-base: (system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif) !default;
 $font-family-heading: $font-family-base !default;
 $font-family-mono: (ui-monospace, 'SF Mono', Menlo, Consolas, 'Roboto Mono', monospace) !default;
+// Variation settings for a variable heading face whose character lives on a
+// custom axis (a sharpness or softness axis, say), written as a
+// `font-variation-settings` value. Registered axes such as weight follow
+// `font-weight` and need no entry here.
+$font-variation-heading: normal !default;
 
 // The scale follows one rule per property, so a variant's place on it decides
 // how it is set:
@@ -24,6 +31,7 @@ $font-family-mono: (ui-monospace, 'SF Mono', Menlo, Consolas, 'Roboto Mono', mon
   --font-family-base: #{meta.inspect($font-family-base)};
   --font-family-heading: #{meta.inspect($font-family-heading)};
   --font-family-mono: #{meta.inspect($font-family-mono)};
+  --font-variation-heading: #{meta.inspect($font-variation-heading)};
 
   // Font weights
   --font-weight-light: 300;
