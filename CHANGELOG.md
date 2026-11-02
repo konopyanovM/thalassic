@@ -1,3 +1,17 @@
+## 22.23.0 (2026-11-02)
+
+### 🚀 Features
+
+- **core:** apply the heading family to display and headline variants ([599347c](https://github.com/konopyanovM/thalassic/commit/599347c))
+
+### 🩹 Fixes
+
+- **theme:** surface raised was added in scope derived declarations ([cec5e92](https://github.com/konopyanovM/thalassic/commit/cec5e92))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.22.0 (2026-11-01)
 
 ### 🚀 Features
