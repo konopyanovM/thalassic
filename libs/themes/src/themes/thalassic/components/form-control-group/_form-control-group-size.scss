@@ -53,11 +53,16 @@
   // The group is the single source of size: each inner control renders its own
   // size class, so map the group's resolved size onto the control's own vars.
   // This lets a consumer set size once on the group instead of on every child.
+  // The group's border surrounds its controls, so each control is the group's
+  // height less that border: a grouped field stands exactly as tall as a plain
+  // field of the same size.
   &.tls-form-control-group--sm,
   &.tls-form-control-group--md,
   &.tls-form-control-group--lg {
     .tls-form-control {
-      --tls-form-control-height: var(--tls-form-control-group-height);
+      --tls-form-control-height: calc(
+        var(--tls-form-control-group-height) - 2 * var(--tls-form-control-group-border-width)
+      );
       --tls-form-control-padding-inline: var(--tls-form-control-group-padding-inline);
 
       --tls-form-control-font-size: var(--tls-form-control-group-font-size);
@@ -75,6 +80,11 @@
   @each $size in ('sm', 'md', 'lg') {
     &.tls-form-control-group--#{$size} .tls-form-control-addon .tls-button {
       @include button.size-vars($size);
+
+      // Inside the border, like the controls beside it.
+      --tls-button-height: calc(
+        var(--tls-form-control-group-height) - 2 * var(--tls-form-control-group-border-width)
+      );
     }
   }
 }

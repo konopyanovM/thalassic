@@ -156,3 +156,45 @@ describe('FormControlGroup with a control inside an addon', () => {
     );
   });
 });
+
+describe('FormControlGroup panel frame', () => {
+  @Component({
+    imports: [FormControlGroup, FormControlAddon, Select],
+    template: `
+      <tls-form-control-group>
+        <tls-form-control-addon>@</tls-form-control-addon>
+        <tls-select [options]="options" />
+      </tls-form-control-group>
+    `,
+  })
+  class HostComponent {
+    public readonly options: string[] = ['One', 'Two'];
+  }
+
+  let fixture: ComponentFixture<HostComponent>;
+
+  /** jsdom lays nothing out, so each element reports the width it would have on a page. */
+  const stubWidth = (element: HTMLElement, width: number): void => {
+    element.getBoundingClientRect = () => new DOMRect(0, 0, width, 36);
+  };
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({ imports: [HostComponent] }).compileComponents();
+
+    fixture = TestBed.createComponent(HostComponent);
+    await fixture.whenStable();
+  });
+
+  // The group draws the border around the addon and the select alike, so the list the
+  // select opens spans the whole field rather than the select's segment of it.
+  it('should size a grouped control panel to the group, addons included', async () => {
+    stubWidth(fixture.nativeElement.querySelector('tls-form-control-group'), 249);
+    stubWidth(fixture.nativeElement.querySelector('tls-select'), 137);
+
+    fixture.nativeElement.querySelector('.tls-select__trigger').click();
+    await fixture.whenStable();
+
+    const pane = document.querySelector<HTMLElement>('.cdk-overlay-pane');
+    expect(pane?.style.minWidth).toBe('249px');
+  });
+});

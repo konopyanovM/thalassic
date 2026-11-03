@@ -19,11 +19,16 @@
 
     &.tls-form-control--disabled {
       cursor: not-allowed;
+
+      // The chevron recedes with the value instead of keeping its own color.
+      .#{$block}__chevron {
+        color: inherit;
+      }
     }
 
     &:focus-within {
-      border: var(--tls-form-control-border-width) solid var(--color-primary);
-      box-shadow: 0 0 3px -1px var(--color-primary);
+      border: var(--tls-form-control-border-width) solid var(--field-border-color-focus);
+      box-shadow: 0 0 3px -1px var(--field-border-color-focus);
     }
   }
 
@@ -64,7 +69,11 @@
     text-overflow: ellipsis;
   }
 
+  // Furniture of the field rather than its value, so it takes the secondary
+  // color an icon inside a field carries.
   .#{$block}__chevron {
+    color: var(--color-on-surface-variant);
+
     transition: transform var(--motion-fast) var(--motion-ease-in-out);
   }
 }

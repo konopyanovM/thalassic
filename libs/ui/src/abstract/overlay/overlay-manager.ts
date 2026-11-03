@@ -70,6 +70,8 @@ export interface ConnectedOverlayConfig {
   closeOnEscape?: boolean;
   /** Minimum width applied to the pane on every open (e.g. to match a trigger). */
   minWidth?: number | string;
+  /** Exact width applied to the pane on every open, for a pane that never outgrows its origin. */
+  width?: number | string;
   /**
    * Keep the overlay alive across open/close (detach instead of dispose), so the
    * same instance is reused on the next open. Defaults to `false`.
@@ -162,8 +164,11 @@ export class OverlayManager {
 
     if (sheet) {
       this._overlayRef.updateSize({ width: '100%' } satisfies OverlaySizeConfig);
-    } else if (config.minWidth != null) {
-      this._overlayRef.updateSize({ minWidth: config.minWidth } satisfies OverlaySizeConfig);
+    } else if (config.width != null || config.minWidth != null) {
+      this._overlayRef.updateSize({
+        ...(config.width != null && { width: config.width }),
+        ...(config.minWidth != null && { minWidth: config.minWidth }),
+      } satisfies OverlaySizeConfig);
     }
 
     this._overlayRef.attach(new TemplatePortal(config.content, this._viewContainerRef));

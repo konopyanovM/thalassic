@@ -31,8 +31,8 @@
       box-shadow var(--motion-fast) var(--motion-ease-in-out);
 
     &:focus {
-      border-color: var(--color-primary);
-      box-shadow: 0 0 3px -1px var(--color-primary);
+      border-color: var(--field-border-color-focus);
+      box-shadow: 0 0 3px -1px var(--field-border-color-focus);
 
       &::placeholder {
         opacity: 0;
@@ -46,21 +46,19 @@
 
   &.tls-pin-input--disabled {
     .tls-pin-input__cell {
-      background-color: var(--color-surface-variant);
+      background-color: var(--field-background-disabled);
+
+      color: var(--field-color-disabled);
 
       cursor: not-allowed;
+
+      &::placeholder {
+        color: var(--field-placeholder-color-disabled);
+      }
     }
   }
 
   &:not(.tls-pin-input--disabled).tls-pin-input--show-error {
     --tls-pin-input-border-color: var(--color-danger);
-
-    .tls-pin-input__cell {
-      color: var(--color-danger);
-
-      &::placeholder {
-        color: var(--color-danger);
-      }
-    }
   }
 }

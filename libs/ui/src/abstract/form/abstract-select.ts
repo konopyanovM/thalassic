@@ -224,6 +224,12 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
   protected abstract readonly hostClassBase: string;
   protected abstract readonly panelClass: string;
   /**
+   * Whether the panel takes exactly the field's width instead of starting at it. A list of
+   * fixed choices may grow past the field so a long option reads whole, as a native select's
+   * does; a list of suggestions for typed text stays as wide as the text it completes.
+   */
+  protected readonly panelMatchesFieldWidth: boolean = false;
+  /**
    * Prefix of the control's panel custom properties; `<prefix>-max-height` and
    * `<prefix>-padding-block` must exist under it, as they size the virtualized viewport.
    */
@@ -284,9 +290,14 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
     const panelTemplate = this.panelTemplate();
     if (this.notInteractive() || this.isOpen() || !triggerElement || !panelTemplate) return;
 
+    // Anchored to the frame rather than the trigger inside it, so the panel lines up with
+    // the field's outer edges. Measured unrounded: a fluid field's width is fractional.
+    const frameElement = this.frameElement();
+    const fieldWidth = frameElement.getBoundingClientRect().width;
+
     this.overlay.open({
       content: panelTemplate,
-      origin: triggerElement,
+      origin: frameElement,
       positions: [
         { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 4 },
         { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom', offsetY: -4 },
@@ -296,7 +307,7 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
       panelClass: this.panelClass,
       // The control handles Escape itself via the trigger's keydown handler.
       closeOnEscape: false,
-      minWidth: triggerElement.nativeElement.offsetWidth,
+      ...(this.panelMatchesFieldWidth ? { width: fieldWidth } : { minWidth: fieldWidth }),
       reuse: true,
       onClose: () => {
         this.activeIndex.set(-1);
@@ -365,9 +376,11 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
     } else if (event.key === 'Tab') {
       if (this.isOpen()) this.close();
     } else if (
+      // A read-only trigger keeps focus but offers no clear button, so the keys refuse too.
       (event.key === 'Delete' || event.key === 'Backspace') &&
       this.clearable() &&
-      this.hasValue()
+      this.hasValue() &&
+      !this.notInteractive()
     ) {
       event.preventDefault();
       this.clear();

@@ -2,7 +2,6 @@ import {
   booleanAttribute,
   Component,
   computed,
-  ElementRef,
   forwardRef,
   inject,
   input,
@@ -79,8 +78,6 @@ export class ColorInput extends ValueFormControl<string> {
   // View children
   private readonly _popoverComponent: Signal<Popover | undefined> =
     viewChild<Popover>('popoverRef');
-  private readonly _trigger: Signal<ElementRef<HTMLElement>> =
-    viewChild.required<ElementRef<HTMLElement>>('triggerRef');
 
   // State
   protected readonly labels = this._config.labels;
@@ -112,10 +109,20 @@ export class ColorInput extends ValueFormControl<string> {
 
     const popover = this._popoverComponent();
     if (!popover) return;
-    popover.open(this._trigger().nativeElement);
+    popover.open(this.frameElement());
   }
 
   // Protected methods
+  /**
+   * Opens the picker, or closes it. The panel is anchored to the field's frame rather than
+   * the swatch inside it, so it starts at the field's outer edge.
+   */
+  protected onTriggerClick(): void {
+    const popover = this._popoverComponent();
+    if (!popover) return;
+    popover.toggle(this.frameElement());
+  }
+
   protected onPickerValueChange(next: string): void {
     this.value.set(next);
   }
@@ -150,7 +157,7 @@ export class ColorInput extends ValueFormControl<string> {
 
     const popover = this._popoverComponent();
     if (!popover) return;
-    popover.open(this._trigger().nativeElement);
+    popover.open(this.frameElement());
   }
 
   private _commitField(field: HTMLInputElement): void {

@@ -31,14 +31,14 @@
 
   @include mixins.hover-capable {
     &:not(.tls-form-control--disabled):hover {
-      --tls-form-control-border-color: var(--color-primary);
+      --tls-form-control-border-color: var(--field-border-color-hover);
     }
   }
 
   &:focus {
     outline: none;
-    border: var(--tls-form-control-border-width) solid var(--color-primary);
-    box-shadow: 0 0 3px -1px var(--color-primary);
+    border: var(--tls-form-control-border-width) solid var(--field-border-color-focus);
+    box-shadow: 0 0 3px -1px var(--field-border-color-focus);
   }
 
   &::placeholder,
@@ -47,21 +47,26 @@
   }
 
   // Form control
+  // A plain field keeps its transparent fill through the rule below, so the
+  // quieted value alone tells it apart from an editable one.
   &.tls-form-control--disabled {
-    background-color: var(--color-surface-variant);
+    background-color: var(--field-background-disabled);
+
+    color: var(--field-color-disabled);
 
     cursor: not-allowed;
-  }
-
-  &:not(.tls-form-control--disabled).tls-form-control--show-error {
-    --tls-form-control-border-color: var(--color-danger);
-
-    color: var(--color-danger);
 
     &::placeholder,
     .tls-form-control__placeholder {
-      color: var(--color-danger);
+      color: var(--field-placeholder-color-disabled);
     }
+  }
+
+  // A refused value is marked by the border and the message beneath the field;
+  // the value and placeholder keep their own colors, so what was typed stays as
+  // legible as before and reads as needing attention rather than as wrong text.
+  &:not(.tls-form-control--disabled).tls-form-control--show-error {
+    --tls-form-control-border-color: var(--color-danger);
   }
 
   // Plain: the field is dressed as the text around it and only reveals itself

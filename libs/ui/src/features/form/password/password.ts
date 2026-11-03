@@ -71,8 +71,6 @@ export class Password extends ValueFormControl<string> {
   }
 
   protected toggle() {
-    if (this.notInteractive()) return;
-
     this.visible.update(prev => !prev);
   }
 }

@@ -85,7 +85,7 @@
     [attr.aria-describedby]="describedBy()"
     [attr.aria-expanded]="popoverRef.isOpen()"
     [disabled]="disabled()"
-    (click)="onTriggerClick($event)"
+    (click)="onTriggerClick()"
     (blur)="touched.set(true)"
   >
     <span [class.tls-form-control__placeholder]="!value()">{{ triggerLabel() }}</span>
@@ -93,7 +93,7 @@
       <tls-loader class="tls-date-time-picker__spinner" size="xs" aria-hidden="true" />
     }
   </button>
-  <tls-popover #popoverRef position="bottom-start">
+  <tls-popover #popoverRef position="bottom-start" panelClass="tls-field-popover">
     <ng-container [ngTemplateOutlet]="pickerTemplate" />
   </tls-popover>
 }

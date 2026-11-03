@@ -27,7 +27,7 @@
   (blur)="touched.set(true)"
   (keydown)="onKeydown($event)"
 />
-@if (clearable() && hasValue()) {
+@if (clearable() && hasValue() && !notInteractive()) {
   <button
     type="button"
     class="tls-autocomplete__clear"

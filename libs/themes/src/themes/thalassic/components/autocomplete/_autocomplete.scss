@@ -20,15 +20,16 @@
 
     &.tls-form-control--disabled {
       cursor: not-allowed;
+
+      // Restated to outrank the trigger's own placeholder rule below.
+      .tls-autocomplete__trigger::placeholder {
+        color: var(--field-placeholder-color-disabled);
+      }
     }
 
     &:focus-within {
-      border: var(--tls-form-control-border-width) solid var(--color-primary);
-      box-shadow: 0 0 3px -1px var(--color-primary);
-    }
-
-    &.tls-form-control--show-error:not(.tls-form-control--disabled) .tls-autocomplete__trigger::placeholder {
-      color: var(--color-danger);
+      border: var(--tls-form-control-border-width) solid var(--field-border-color-focus);
+      box-shadow: 0 0 3px -1px var(--field-border-color-focus);
     }
 
     .tls-autocomplete__trigger {

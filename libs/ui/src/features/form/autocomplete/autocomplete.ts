@@ -44,6 +44,7 @@ export class Autocomplete<T, V = unknown> extends AbstractSelect<T, V, V | null>
   protected readonly uniqueId = `tls-autocomplete-${Autocomplete._nextUniqueId++}`;
   protected readonly hostClassBase = 'tls-autocomplete';
   protected readonly panelClass = 'tls-autocomplete-panel';
+  protected override readonly panelMatchesFieldWidth = true;
   protected readonly panelCssVariablePrefix = '--tls-autocomplete-panel';
 
   public readonly value: ModelSignal<V | null> = model<V | null>(null);

@@ -27,6 +27,7 @@ if (!Element.prototype.scrollTo) {
       [value]="value()"
       [clearable]="clearable()"
       [disabled]="disabled()"
+      [readonly]="readonly()"
       [virtualScroll]="virtualScroll()"
       optionLabel="label"
       optionValue="value"
@@ -43,6 +44,7 @@ class HostComponent {
   public readonly value = signal<number | null>(null);
   public readonly clearable = signal(false);
   public readonly disabled = signal(false);
+  public readonly readonly = signal(false);
   public readonly virtualScroll = signal(false);
   public readonly select = viewChild.required(Select);
 }
@@ -213,6 +215,15 @@ describe('Select', () => {
 
       expect(selectedValue()).toBeNull();
     });
+
+    it('should offer no clear button while disabled', () => {
+      host.clearable.set(true);
+      host.value.set(1);
+      host.disabled.set(true);
+      fixture.detectChanges();
+
+      expect(queryClear()).toBeNull();
+    });
   });
 
   describe('keyboard', () => {
@@ -287,6 +298,16 @@ describe('Select', () => {
 
       keydown('Backspace');
       expect(selectedValue()).toBeNull();
+    });
+
+    it('should keep the value on Backspace while read-only', () => {
+      host.clearable.set(true);
+      host.value.set(1);
+      host.readonly.set(true);
+      fixture.detectChanges();
+
+      keydown('Backspace');
+      expect(selectedValue()).toBe(1);
     });
   });
 

@@ -16,6 +16,7 @@ import {
 import { FormUiControl, ValidationError, WithOptionalFieldTree } from '@angular/forms/signals';
 import { FOCUSABLE_CONTROL_SELECTOR } from './form-control.constants';
 import { FORM_CONTROL_CONFIG } from './form-control.config.token';
+import { FORM_CONTROL_FRAME } from './form-control-frame.token';
 
 @Directive()
 export abstract class FormControl<TValue = unknown> implements FormUiControl<TValue> {
@@ -28,6 +29,11 @@ export abstract class FormControl<TValue = unknown> implements FormUiControl<TVa
    * layout before it can hand anything to it.
    */
   public readonly elementRef: ElementRef<HTMLElement> = inject(ElementRef);
+
+  /** The frame a wrapper above the control provides, if any; read through `frameElement()`. */
+  private readonly _providedFrame: ElementRef<HTMLElement> | null = inject(FORM_CONTROL_FRAME, {
+    optional: true,
+  });
 
   // Models
   public readonly touched: ModelSignal<boolean> = model<boolean>(false);
@@ -204,6 +210,22 @@ export abstract class FormControl<TValue = unknown> implements FormUiControl<TVa
    */
   protected focusTarget(): HTMLElement | null {
     return this.elementRef.nativeElement.querySelector<HTMLElement>(FOCUSABLE_CONTROL_SELECTOR);
+  }
+
+  /**
+   * The element that draws the field's border: the wrapper framing the control when it sits
+   * in one, otherwise the control's own host. A panel the control opens is aligned to it, so
+   * the panel lines up with the field as drawn, its addons included, rather than with an
+   * element inside the border. A provided frame counts only while it contains the control: a
+   * control rendered in a panel that a grouped control opens inherits the group's frame
+   * through injection, yet sits outside it on the page and frames itself.
+   */
+  protected frameElement(): HTMLElement {
+    const hostElement = this.elementRef.nativeElement;
+    const frame = this._providedFrame;
+    if (frame && frame.nativeElement.contains(hostElement)) return frame.nativeElement;
+
+    return hostElement;
   }
 
   protected baseControlClasses() {

@@ -31,4 +31,15 @@ describe('Password', () => {
 
     expect(inputElement.getAttribute('autocomplete')).toBe('new-password');
   });
+
+  it('disables the reveal toggle along with the field', async () => {
+    const toggleElement: HTMLButtonElement = fixture.nativeElement.querySelector('.tls-password-toggle');
+
+    expect(toggleElement.disabled).toBe(false);
+
+    fixture.componentRef.setInput('disabled', true);
+    await fixture.whenStable();
+
+    expect(toggleElement.disabled).toBe(true);
+  });
 });

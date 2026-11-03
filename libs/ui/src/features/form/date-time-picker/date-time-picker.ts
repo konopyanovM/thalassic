@@ -136,20 +136,23 @@ export class DateTimePicker extends ValueFormControl<Date | null> {
     if (this.notInteractive()) return;
 
     const popover: Popover | undefined = this.popoverComponent();
-    const trigger: HTMLElement | null = this.focusTarget();
-    if (!popover || !trigger || popover.isOpen()) return;
+    if (!popover || popover.isOpen()) return;
 
     this._resetView();
-    popover.open(trigger);
+    popover.open(this.frameElement());
   }
 
   // Protected methods
-  /** Opens on the home date, or closes; browsing from an earlier visit never carries over. */
-  protected onTriggerClick(event: MouseEvent): void {
+  /**
+   * Opens on the home date, or closes; browsing from an earlier visit never carries over.
+   * The calendar is anchored to the field's frame rather than the trigger inside it, so it
+   * starts at the field's outer edge.
+   */
+  protected onTriggerClick(): void {
     const popover: Popover | undefined = this.popoverComponent();
     if (!popover) return;
     if (!popover.isOpen()) this._resetView();
-    popover.toggle(event);
+    popover.toggle(this.frameElement());
   }
 
   protected onViewDateChange(date: Date): void {

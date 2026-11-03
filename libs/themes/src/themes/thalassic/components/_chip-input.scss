@@ -15,9 +15,21 @@ tls-chip-input.tls-form-control {
   }
 
   &:has(.tls-chip-input__field:focus) {
-    border-color: var(--color-primary);
+    border-color: var(--field-border-color-focus);
 
-    box-shadow: 0 0 3px -1px var(--color-primary);
+    box-shadow: 0 0 3px -1px var(--field-border-color-focus);
+  }
+
+  // The chips recede with the field's text, at the opacity an unavailable chip
+  // takes; the placeholder is restated here to outrank the field's own rule below.
+  &.tls-form-control--disabled {
+    .tls-chip {
+      opacity: 0.5;
+    }
+
+    .tls-chip-input__field::placeholder {
+      color: var(--field-placeholder-color-disabled);
+    }
   }
 
   .tls-chip-input__field {
@@ -34,12 +46,6 @@ tls-chip-input.tls-form-control {
 
     &::placeholder {
       color: var(--color-outline);
-    }
-  }
-
-  &:not(.tls-form-control--disabled).tls-form-control--show-error {
-    .tls-chip-input__field::placeholder {
-      color: var(--color-danger);
     }
   }
 

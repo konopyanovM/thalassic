@@ -28,7 +28,7 @@
     <tls-icon class="tls-select__chevron" name="chevron-down" aria-hidden="true" />
   </div>
 </button>
-@if (clearable() && hasValue()) {
+@if (clearable() && hasValue() && !notInteractive()) {
   <button
     type="button"
     class="tls-select__clear"

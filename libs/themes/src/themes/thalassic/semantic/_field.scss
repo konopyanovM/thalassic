@@ -10,3 +10,33 @@
 .tls-dark {
   --field-background: var(--color-surface-container-high);
 }
+
+// The border of a field through pointer and focus, a ladder of three steps from
+// the resting outline variant. Hover goes halfway to the outline role, so the
+// field answers the pointer; focus goes halfway from the outline role to the
+// primary, firm enough to hold 3:1 against the resting border and the surface
+// yet short of the primary's full ink, so the field holding the caret is never
+// confused with the one the pointer rests on and does not outweigh the text
+// typed into it. Redeclared on a dark scope so each mix resolves against that
+// scope's colors rather than the root's.
+:root,
+.tls-dark {
+  --field-border-color-hover: color-mix(in srgb, var(--color-outline-variant), var(--color-outline));
+  --field-border-color-focus: color-mix(in srgb, var(--color-outline), var(--color-primary));
+}
+
+// A disabled field recedes on every part at once. Its fill is a faint wash of the
+// content color over whatever the field sits on rather than a surface role of its
+// own: relative to the surface beneath, it sits below an enabled field in either
+// mode, where any fixed surface light enough to show in dark mode would sit above
+// one and read as raised. Its value and placeholder are quieted the way the label
+// of an unavailable text button is — still legible, but receding beside the
+// fields that take input — each keeping its own step, so an empty disabled field
+// still reads as empty. Redeclared on a dark scope so each mix resolves against
+// that scope's colors rather than the root's.
+:root,
+.tls-dark {
+  --field-background-disabled: color-mix(in srgb, var(--color-on-surface) 4%, transparent);
+  --field-color-disabled: color-mix(in srgb, var(--color-on-surface-variant) 55%, transparent);
+  --field-placeholder-color-disabled: color-mix(in srgb, var(--color-outline) 55%, transparent);
+}

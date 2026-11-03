@@ -42,7 +42,7 @@
 
   @include mixins.hover-capable {
     &:hover {
-      --tls-form-control-group-border-color: var(--color-primary);
+      --tls-form-control-group-border-color: var(--field-border-color-hover);
     }
   }
 
@@ -51,8 +51,8 @@
   &:has(.tls-multi-select__trigger:focus),
   &:has(.tls-autocomplete__trigger:focus),
   &:has(.tls-date-time-picker__trigger:focus) {
-    border: 1px solid var(--color-primary);
-    box-shadow: 0 0 3px -1px var(--color-primary);
+    border: 1px solid var(--field-border-color-focus);
+    box-shadow: 0 0 3px -1px var(--field-border-color-focus);
   }
 
   // The wrapper component (e.g. tls-input) is the flex item, so it must stretch.
@@ -183,13 +183,24 @@
     border-end-end-radius: var(--tls-form-control-group-inner-radius);
   }
 
-  // Form control
+  // A disabled group keeps the resting border a plain disabled field keeps,
+  // stated here so it also outranks the hover rule: an inactive field neither
+  // stands out from the enabled fields around it nor answers the pointer. The
+  // quieted color reaches the addons too, so an icon or a unit beside the value
+  // recedes with it.
   &.tls-form-control.tls-form-control--disabled,
   &:has(.tls-form-control.tls-form-control.tls-form-control--disabled) {
-    --tls-form-control-group-border-color: var(--color-outline);
-    background-color: var(--color-surface-variant);
+    --tls-form-control-group-border-color: var(--color-outline-variant);
+
+    background-color: var(--field-background-disabled);
+
+    color: var(--field-color-disabled);
 
     cursor: not-allowed;
+
+    .tls-form-control-addon {
+      color: inherit;
+    }
   }
 
   &:not(.tls-form-control--disabled).tls-form-control--show-error,
@@ -197,12 +208,5 @@
     .tls-form-control:not(.tls-form-control--disabled).tls-form-control--show-error
   ) {
     --tls-form-control-group-border-color: var(--color-danger);
-
-    color: var(--color-danger);
-
-    .tls-form-control::placeholder,
-    .tls-form-control__placeholder {
-      color: var(--color-danger);
-    }
   }
 }

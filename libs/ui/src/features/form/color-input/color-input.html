@@ -1,12 +1,11 @@
 <button
-  #triggerRef
   type="button"
   class="tls-color-input__trigger"
   aria-haspopup="dialog"
   [attr.aria-label]="labels.openPicker"
   [attr.aria-expanded]="popoverRef.isOpen()"
   [disabled]="disabled()"
-  (click)="popoverRef.toggle($event)"
+  (click)="onTriggerClick()"
   (blur)="touched.set(true)"
 >
   <tls-color-swatch [value]="swatchColor()" size="xs" aria-hidden="true" />
@@ -39,7 +38,7 @@
   (keydown)="onFieldKeydown($event)"
   (blur)="onFieldBlur($event)"
 />
-<tls-popover #popoverRef position="bottom-start" [ariaLabel]="labels.panel">
+<tls-popover #popoverRef position="bottom-start" panelClass="tls-field-popover" [ariaLabel]="labels.panel">
   <tls-color-picker
     [value]="pickerValue()"
     (valueChange)="onPickerValueChange($event)"

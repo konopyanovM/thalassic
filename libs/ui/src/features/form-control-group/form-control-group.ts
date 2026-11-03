@@ -10,7 +10,12 @@ import {
   InputSignalWithTransform,
   Signal,
 } from '@angular/core';
-import { FOCUSABLE_CONTROL_SELECTOR, FORM_CONTROL, FormControl } from '../../abstract/form';
+import {
+  FOCUSABLE_CONTROL_SELECTOR,
+  FORM_CONTROL,
+  FORM_CONTROL_FRAME,
+  FormControl,
+} from '../../abstract/form';
 import { controlSize } from '../../types';
 import { FormControlGroupConfig } from './form-control-group.config';
 import { FORM_CONTROL_ADDON_SELECTOR } from './form-control-group.constants';
@@ -21,6 +26,9 @@ import { ActivatableControl } from './form-control-group.types';
   selector: 'tls-form-control-group',
   imports: [],
   template: '<ng-content></ng-content>',
+  // The group draws the border around every control and addon it holds, so it is the
+  // frame each of those controls aligns its panel to.
+  providers: [{ provide: FORM_CONTROL_FRAME, useFactory: () => inject(ElementRef) }],
   host: {
     '[class]': 'hostClasses()',
   },

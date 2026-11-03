@@ -31,3 +31,15 @@
 
   @include mixins.panel-open;
 }
+
+// A popover a field opens (a calendar, a color picker) takes the corners of the
+// list panels the other fields open, so every panel that drops from a field has
+// one shape; a popover holding free content keeps the larger radius above. The
+// class goes on the overlay pane, so the rule names the panel beneath it.
+.tls-field-popover .tls-popover {
+  --tls-popover-border-radius: var(--radius-md);
+
+  @include mixins.squircle {
+    --tls-popover-border-radius: var(--radius-xl);
+  }
+}
