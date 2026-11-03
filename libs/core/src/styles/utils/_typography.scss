@@ -67,3 +67,6 @@ small,
 .text-label-sm {
   @include tools.typography(label-sm);
 }
+.text-caption {
+  @include tools.typography(caption);
+}

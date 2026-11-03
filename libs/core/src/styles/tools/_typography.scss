@@ -2,7 +2,7 @@
 
 $-heading-variants: display-lg, display-md, display-sm, headline-lg, headline-md, headline-sm, title-lg, title-md,
   title-sm;
-$-running-text-variants: body-lg, body-md, body-sm;
+$-running-text-variants: body-lg, body-md, body-sm, caption;
 /// The variants set in the heading family: the display and headline steps,
 /// where a theme's display face carries the page. Titles and everything below
 /// them stay in the base family, so section headings read with the interface.
@@ -107,7 +107,12 @@ $-heading-family-variants: display-lg, display-md, display-sm, headline-lg, head
     font-weight: var(--font-label-small-weight);
     line-height: var(--font-label-small-line-height);
     letter-spacing: var(--font-label-small-letter-spacing);
+  } @else if $variant == caption {
+    font-size: var(--font-caption-size);
+    font-weight: var(--font-caption-weight);
+    line-height: var(--font-caption-line-height);
+    letter-spacing: var(--font-caption-letter-spacing);
   } @else {
-    @warn "Typography mixin supports: display-lg, display-md, display-sm, headline-lg, headline-md, headline-sm, title-lg, title-md, title-sm, body-lg, body-md, body-sm, label-lg, label-md, label-sm";
+    @warn "Typography mixin supports: display-lg, display-md, display-sm, headline-lg, headline-md, headline-sm, title-lg, title-md, title-sm, body-lg, body-md, body-sm, label-lg, label-md, label-sm, caption";
   }
 }

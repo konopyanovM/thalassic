@@ -23,9 +23,13 @@ $font-variation-heading: normal !default;
 //   tracking rather than every label carrying it;
 // - line height tightens as type grows: about 1.1 for display, 1.2 for
 //   headlines, 1.3 for titles, a full 1.5 for body copy read line after line,
-//   and about 1.25 for single-line labels;
-// - weight ranks three roles with a clear step between each: 400 for reading,
-//   600 for UI and emphasis (titles, labels), 700 for display and headlines.
+//   about 1.25 for single-line labels, and about 1.4 for captions, which are
+//   short but may wrap;
+// - weight ranks four roles, one step apart: 400 for reading and for the
+//   values a person enters, 500 for interface labels (buttons, tabs, chips,
+//   field labels), 600 for titles, 700 for display and headlines. Labels sit
+//   one step above the text around them so a control reads as a control,
+//   without matching the weight of the titles that rank the page.
 :root {
   // Font families — `inspect` keeps the quotes a family name with a space needs.
   --font-family-base: #{meta.inspect($font-family-base)};
@@ -119,17 +123,25 @@ $font-variation-heading: normal !default;
 
   // Label styles (buttons, tabs, form labels)
   --font-label-large-size: 1rem;
-  --font-label-large-weight: var(--font-weight-semibold);
+  --font-label-large-weight: var(--font-weight-medium);
   --font-label-large-line-height: 1.25rem;
   --font-label-large-letter-spacing: var(--letter-spacing-normal);
 
   --font-label-medium-size: 0.875rem;
-  --font-label-medium-weight: var(--font-weight-semibold);
+  --font-label-medium-weight: var(--font-weight-medium);
   --font-label-medium-line-height: 1.125rem;
   --font-label-medium-letter-spacing: var(--letter-spacing-normal);
 
   --font-label-small-size: 0.8125rem;
-  --font-label-small-weight: var(--font-weight-semibold);
+  --font-label-small-weight: var(--font-weight-medium);
   --font-label-small-line-height: 1rem;
   --font-label-small-letter-spacing: var(--letter-spacing-normal);
+
+  // Caption (supporting text: hints, descriptions, metadata, timestamps). It
+  // shares the smallest label's size but reads at body weight, since it is
+  // text about a control or an item rather than the label of one.
+  --font-caption-size: 0.8125rem;
+  --font-caption-weight: var(--font-weight-regular);
+  --font-caption-line-height: 1.125rem;
+  --font-caption-letter-spacing: var(--letter-spacing-normal);
 }

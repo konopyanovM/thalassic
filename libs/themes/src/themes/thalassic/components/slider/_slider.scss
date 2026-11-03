@@ -152,7 +152,7 @@
     background-color: var(--tls-slider-tooltip-color);
 
     font-size: var(--font-label-small-size);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     line-height: 1;
     white-space: nowrap;
     color: var(--tls-slider-tooltip-on-color);

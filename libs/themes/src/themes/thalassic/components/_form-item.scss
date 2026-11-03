@@ -93,24 +93,24 @@
     &__optional {
       color: var(--color-on-surface-variant);
 
-      font-size: var(--font-label-small-size);
-      font-weight: var(--font-label-small-weight);
-      letter-spacing: var(--font-label-small-letter-spacing);
+      font-size: var(--font-caption-size);
+      font-weight: var(--font-caption-weight);
+      letter-spacing: var(--font-caption-letter-spacing);
     }
   }
 
   .form-item-footer {
-    min-height: var(--font-label-small-line-height);
+    min-height: var(--font-caption-line-height);
     margin-top: 0.125rem;
 
     display: flex;
     align-items: baseline;
     gap: var(--spacing-2);
 
-    font-size: var(--font-label-small-size);
-    font-weight: var(--font-label-small-weight);
-    line-height: var(--font-label-small-line-height);
-    letter-spacing: var(--font-label-small-letter-spacing);
+    font-size: var(--font-caption-size);
+    font-weight: var(--font-caption-weight);
+    line-height: var(--font-caption-line-height);
+    letter-spacing: var(--font-caption-letter-spacing);
   }
 
   .form-item-hint {

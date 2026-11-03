@@ -141,7 +141,7 @@
 
   background-color: rgb(0 0 0 / 0.45);
 
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
 
   .tls-icon {
     width: 20px;
