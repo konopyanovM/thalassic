@@ -14,6 +14,13 @@ import { MODAL_BACKDROP_CLASS } from './overlay.constants';
 
 const TRANSPARENT_BACKDROP_CLASS = 'cdk-overlay-transparent-backdrop';
 
+/**
+ * What closed an overlay: a press outside it, its backdrop, Escape, or the owner asking. A
+ * consumer that hands focus back on close tells them apart, since after an outside press
+ * focus already belongs to whatever was pressed.
+ */
+export type overlayCloseCause = 'outside-pointer' | 'backdrop' | 'escape' | 'requested';
+
 export interface ConnectedOverlayConfig {
   /** Template projected into the overlay. */
   content: TemplateRef<unknown>;
@@ -59,6 +66,12 @@ export interface ConnectedOverlayConfig {
   /** Close on an outside pointer event. Defaults to `true` when no backdrop is rendered. */
   closeOnOutsidePointer?: boolean;
   /**
+   * An element outside the pane whose presses count as inside it, so they never dismiss the
+   * overlay: the field that opened it handles its own presses, and a trigger that toggles the
+   * overlay is not first closed by the press and then reopened by its own handler.
+   */
+  insideElement?: HTMLElement;
+  /**
    * Ignore the first outside `auxclick` after opening. Set when the overlay is
    * opened by a right-click gesture (a context menu): that same gesture ends
    * with an `auxclick`, which CDK would otherwise treat as an outside pointer
@@ -68,6 +81,13 @@ export interface ConnectedOverlayConfig {
   ignoreTrailingAuxClick?: boolean;
   /** Close when Escape is pressed. Defaults to `true`. */
   closeOnEscape?: boolean;
+  /**
+   * Leave focus where it is when the pane is pressed. For a control that keeps focus on its
+   * own trigger while the overlay is open and points at the pane's items rather than focusing
+   * them, as a combobox does with its options: a press would otherwise pull focus into the
+   * pane, away from the trigger whose keyboard handling drives the list. Defaults to `false`.
+   */
+  keepFocusOnPanePress?: boolean;
   /** Minimum width applied to the pane on every open (e.g. to match a trigger). */
   minWidth?: number | string;
   /** Exact width applied to the pane on every open, for a pane that never outgrows its origin. */
@@ -77,8 +97,8 @@ export interface ConnectedOverlayConfig {
    * same instance is reused on the next open. Defaults to `false`.
    */
   reuse?: boolean;
-  /** Invoked after the overlay closes, from any cause (explicit, backdrop, outside, Escape). */
-  onClose?: () => void;
+  /** Invoked after the overlay closes, from any cause, which it is told. */
+  onClose?: (cause: overlayCloseCause) => void;
 }
 
 /**
@@ -156,6 +176,13 @@ export class OverlayManager {
       });
 
       this._wireDismissal(this._overlayRef, config);
+
+      // The pane outlives every attach, so its listener is added once, with the pane.
+      if (config.keepFocusOnPanePress) {
+        this._overlayRef.overlayElement.addEventListener('mousedown', event =>
+          event.preventDefault(),
+        );
+      }
     } else {
       // Reused ref (`reuse: true`): re-apply the position strategy so a new
       // origin/point takes effect instead of reopening at the previous spot.
@@ -178,6 +205,12 @@ export class OverlayManager {
   }
 
   public close(): void {
+    this._close('requested');
+  }
+
+  // Private
+  /** Closes the overlay and tells the owner what closed it. */
+  private _close(cause: overlayCloseCause): void {
     if (!this._isOpen()) return;
     this._isOpen.set(false);
     this._ignoreTrailingAuxClick = false;
@@ -199,10 +232,9 @@ export class OverlayManager {
       }
     }
 
-    if (config && config.onClose) config.onClose();
+    if (config && config.onClose) config.onClose(cause);
   }
 
-  // Private
   private _buildPositionStrategy(config: ConnectedOverlayConfig) {
     if (config.presentation === 'sheet') {
       return this._overlay.position().global().centerHorizontally().bottom('0');
@@ -229,7 +261,7 @@ export class OverlayManager {
       overlayRef
         .backdropClick()
         .pipe(takeUntilDestroyed(this._destroyRef))
-        .subscribe(() => this.close());
+        .subscribe(() => this._close('backdrop'));
     }
 
     if (config.closeOnOutsidePointer ?? !hasBackdrop) {
@@ -238,6 +270,11 @@ export class OverlayManager {
         .pipe(
           takeUntilDestroyed(this._destroyRef),
           filter(event => event.type === 'click' || event.type === 'auxclick'),
+          filter(event => {
+            const insideElement = config.insideElement;
+            if (!insideElement || !(event.target instanceof Node)) return true;
+            return !insideElement.contains(event.target);
+          }),
           filter(event => {
             // Swallow exactly the first outside `auxclick` after an armed open —
             // the release of the right-click that opened a context menu — then
@@ -249,7 +286,7 @@ export class OverlayManager {
             return true;
           }),
         )
-        .subscribe(() => this.close());
+        .subscribe(() => this._close('outside-pointer'));
     }
 
     if (config.closeOnEscape ?? true) {
@@ -259,7 +296,7 @@ export class OverlayManager {
           takeUntilDestroyed(this._destroyRef),
           filter(event => event.key === 'Escape'),
         )
-        .subscribe(() => this.close());
+        .subscribe(() => this._close('escape'));
     }
   }
 

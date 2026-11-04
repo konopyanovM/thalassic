@@ -70,8 +70,6 @@ describe('MultiSelect', () => {
     );
   const queryActiveOption = () =>
     overlayContainerElement.querySelector<HTMLElement>('.tls-multi-select__option--active');
-  const queryBackdrop = () =>
-    overlayContainerElement.querySelector<HTMLElement>('.cdk-overlay-backdrop');
   const queryClear = () =>
     (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>(
       '.tls-multi-select__clear',
@@ -197,14 +195,29 @@ describe('MultiSelect', () => {
       expect(document.activeElement).toBe(trigger);
     });
 
-    it('should close on backdrop click', () => {
+    it('should close on a press elsewhere and leave focus where it landed', () => {
+      const elsewhere = document.createElement('button');
+      document.body.append(elsewhere);
       trigger.click();
       fixture.detectChanges();
 
-      queryBackdrop()?.click();
+      elsewhere.focus();
+      elsewhere.click();
       fixture.detectChanges();
 
       expect(queryPanel()).toBeNull();
+      expect(document.activeElement).toBe(elsewhere);
+      elsewhere.remove();
+    });
+
+    it('should keep focus on the trigger while an option is pressed', () => {
+      trigger.click();
+      fixture.detectChanges();
+
+      const press = new MouseEvent('mousedown', { bubbles: true, cancelable: true });
+      queryOptions()[0].dispatchEvent(press);
+
+      expect(press.defaultPrevented).toBe(true);
     });
 
     it('should not open when disabled', () => {

@@ -305,14 +305,23 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
       flexibleDimensions: false,
       push: false,
       panelClass: this.panelClass,
+      // No backdrop: a press elsewhere closes the list and lands where it was aimed, focusing
+      // another field on the first press rather than only dismissing the list, as the WAI-ARIA
+      // combobox pattern and a native autocomplete do. Presses on the field itself stay with
+      // the field, and presses in the list leave focus on the trigger, which drives the list
+      // from the keyboard while its options are only pointed at.
+      hasBackdrop: false,
+      insideElement: frameElement,
+      keepFocusOnPanePress: true,
       // The control handles Escape itself via the trigger's keydown handler.
       closeOnEscape: false,
       ...(this.panelMatchesFieldWidth ? { width: fieldWidth } : { minWidth: fieldWidth }),
       reuse: true,
-      onClose: () => {
+      onClose: cause => {
         this.activeIndex.set(-1);
+        // After a press elsewhere, focus already belongs to what was pressed.
         const trigger = this.triggerElement();
-        if (trigger) trigger.nativeElement.focus();
+        if (trigger && cause !== 'outside-pointer') trigger.nativeElement.focus();
         this.onClosed();
       },
     });
