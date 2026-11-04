@@ -319,9 +319,7 @@ export abstract class AbstractSelect<T, V, ValueType> extends ValueFormControl<V
       reuse: true,
       onClose: cause => {
         this.activeIndex.set(-1);
-        // After a press elsewhere, focus already belongs to what was pressed.
-        const trigger = this.triggerElement();
-        if (trigger && cause !== 'outside-pointer') trigger.nativeElement.focus();
+        this.restoreFocusAfterPanel(cause);
         this.onClosed();
       },
     });

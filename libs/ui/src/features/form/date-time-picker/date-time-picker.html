@@ -93,7 +93,14 @@
       <tls-loader class="tls-date-time-picker__spinner" size="xs" aria-hidden="true" />
     }
   </button>
-  <tls-popover #popoverRef position="bottom-start" panelClass="tls-field-popover">
+  <tls-popover
+    #popoverRef
+    position="bottom-start"
+    panelClass="tls-field-popover"
+    [backdrop]="false"
+    keepFocusOnPress
+    (closed)="restoreFocusAfterPanel($event)"
+  >
     <ng-container [ngTemplateOutlet]="pickerTemplate" />
   </tls-popover>
 }

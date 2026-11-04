@@ -17,6 +17,7 @@ import { FormUiControl, ValidationError, WithOptionalFieldTree } from '@angular/
 import { FOCUSABLE_CONTROL_SELECTOR } from './form-control.constants';
 import { FORM_CONTROL_CONFIG } from './form-control.config.token';
 import { FORM_CONTROL_FRAME } from './form-control-frame.token';
+import { overlayCloseCause } from '../overlay';
 
 @Directive()
 export abstract class FormControl<TValue = unknown> implements FormUiControl<TValue> {
@@ -226,6 +227,16 @@ export abstract class FormControl<TValue = unknown> implements FormUiControl<TVa
     if (frame && frame.nativeElement.contains(hostElement)) return frame.nativeElement;
 
     return hostElement;
+  }
+
+  /**
+   * Hands focus back to the control once a panel it opened has closed, unless a press
+   * elsewhere closed it: focus then already belongs to whatever was pressed, and taking it
+   * back would make that press only dismiss the panel.
+   */
+  protected restoreFocusAfterPanel(cause: overlayCloseCause): void {
+    if (cause === 'outside-pointer') return;
+    this.focus();
   }
 
   protected baseControlClasses() {

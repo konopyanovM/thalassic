@@ -1,15 +1,16 @@
-import { ConnectedPosition, FlexibleConnectedPositionStrategyOrigin } from '@angular/cdk/overlay';
+import { ConnectedPosition } from '@angular/cdk/overlay';
 import {
   booleanAttribute,
   Component,
   computed,
   inject,
   input,
+  output,
   TemplateRef,
   viewChild,
 } from '@angular/core';
 import { Point } from '@thalassic/core';
-import { createOverlayManager } from '../../abstract/overlay';
+import { createOverlayManager, overlayCloseCause } from '../../abstract/overlay';
 import { overlayPosition } from '../../types';
 import { buildOverlayPositions } from '../../utils';
 import { POPOVER_CONFIG } from './popover.token';
@@ -74,6 +75,22 @@ export class Popover {
    * a rule that retunes one has to name the panel too: `.<class> .tls-popover`.
    */
   public readonly panelClass = input<string | string[] | undefined>(undefined);
+  /**
+   * Whether a backdrop covers the page while the panel is open, so the press that dismisses
+   * the panel goes no further. Without one, a press elsewhere closes the panel and lands where
+   * it was aimed, focusing another field on the first press, while presses on the element the
+   * panel opened from are left to that element.
+   */
+  public readonly backdrop = input(true, { transform: booleanAttribute });
+  /**
+   * Leave focus where it is when the panel is pressed, for a panel that is only pointed at
+   * while its owner keeps focus: picking from it then never blurs the field it belongs to.
+   * Leave it off for a panel holding a text field, which a press has to be able to focus.
+   */
+  public readonly keepFocusOnPress = input(false, { transform: booleanAttribute });
+
+  /** Emits after the panel closes, with what closed it. */
+  public readonly closed = output<overlayCloseCause>();
 
   private readonly _positions = computed<ConnectedPosition[]>(() =>
     buildOverlayPositions(this.position(), this.offset()),
@@ -81,16 +98,20 @@ export class Popover {
 
   // Public methods
   public open(trigger: MouseEvent | HTMLElement): void {
-    const origin: FlexibleConnectedPositionStrategyOrigin =
+    const originElement: HTMLElement =
       trigger instanceof MouseEvent ? (trigger.currentTarget as HTMLElement) : trigger;
 
     this._overlay.open({
       content: this._templateRef(),
-      origin,
+      origin: originElement,
       positions: this._positions(),
       viewportMargin: this.viewportMargin(),
       shrinkToFit: this.shrinkToFit(),
       panelClass: this.panelClass(),
+      hasBackdrop: this.backdrop(),
+      insideElement: originElement,
+      keepFocusOnPanePress: this.keepFocusOnPress(),
+      onClose: cause => this.closed.emit(cause),
     });
   }
 

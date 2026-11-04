@@ -38,7 +38,14 @@
   (keydown)="onFieldKeydown($event)"
   (blur)="onFieldBlur($event)"
 />
-<tls-popover #popoverRef position="bottom-start" panelClass="tls-field-popover" [ariaLabel]="labels.panel">
+<tls-popover
+  #popoverRef
+  position="bottom-start"
+  panelClass="tls-field-popover"
+  [backdrop]="false"
+  [ariaLabel]="labels.panel"
+  (closed)="restoreFocusAfterPanel($event)"
+>
   <tls-color-picker
     [value]="pickerValue()"
     (valueChange)="onPickerValueChange($event)"

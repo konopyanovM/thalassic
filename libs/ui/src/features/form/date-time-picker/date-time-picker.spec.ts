@@ -39,8 +39,6 @@ describe('DateTimePicker', () => {
       '.tls-date-time-picker__trigger',
     );
   const queryPopover = () => overlayContainerElement.querySelector<HTMLElement>('.tls-popover');
-  const queryBackdrop = () =>
-    overlayContainerElement.querySelector<HTMLElement>('.cdk-overlay-backdrop');
   const queryHeader = (root: HTMLElement = overlayContainerElement) =>
     root.querySelector<HTMLButtonElement>(
       '.tls-date-picker-calendar__header-button, .tls-month-picker__header-button, .tls-year-picker__header-button',
@@ -106,14 +104,19 @@ describe('DateTimePicker', () => {
       expect(queryPopover()).toBeNull();
     });
 
-    it('should close the popover on backdrop click', () => {
+    it('should close the popover on a press elsewhere and leave focus where it landed', () => {
+      const elsewhere = document.createElement('button');
+      document.body.append(elsewhere);
       queryTrigger()?.click();
       fixture.detectChanges();
 
-      queryBackdrop()?.click();
+      elsewhere.focus();
+      elsewhere.click();
       fixture.detectChanges();
 
       expect(queryPopover()).toBeNull();
+      expect(document.activeElement).toBe(elsewhere);
+      elsewhere.remove();
     });
 
     it('should close the popover on Escape', () => {
@@ -137,6 +140,7 @@ describe('DateTimePicker', () => {
 
       expect(host.picker().value()).toBeInstanceOf(Date);
       expect(queryPopover()).toBeNull();
+      expect(document.activeElement).toBe(queryTrigger());
     });
   });
 
