@@ -19,6 +19,7 @@ import { Day, format, isAfter, isBefore } from 'date-fns';
 import { FORM_CONTROL, ValueFormControl } from '../../../abstract/form';
 import { isHour12, localeFormatOptions, LOCALE_CONFIG } from '../../../abstract/locale';
 import { controlSize } from '../../../types';
+import { Icon, systemIcon } from '../../icon';
 import { Loader } from '../../loader';
 import { Popover } from '../../popover';
 import { DatePickerCalendar } from './calendar';
@@ -46,6 +47,7 @@ type ActiveView = 'calendar' | 'month-picker' | 'year-picker' | 'time-picker' | 
     TimePicker,
     Popover,
     NgTemplateOutlet,
+    Icon,
     Loader,
   ],
   templateUrl: './date-time-picker.html',
@@ -123,6 +125,14 @@ export class DateTimePicker extends ValueFormControl<Date | null> {
     if (mode === 'time-picker') return format(value, this._timeFormat, this._dateOptions);
     return format(value, `${DATE_LABEL_FORMAT} ${this._timeFormat}`, this._dateOptions);
   });
+
+  /**
+   * The icon at the trigger's end names what the panel holds, as the select's chevron says a
+   * list will drop: a clock for a time alone, a calendar for anything with a date in it.
+   */
+  protected readonly triggerIcon: Signal<systemIcon> = computed(() =>
+    this.mode() === 'time-picker' ? 'clock' : 'calendar',
+  );
 
   // Public methods
   /**

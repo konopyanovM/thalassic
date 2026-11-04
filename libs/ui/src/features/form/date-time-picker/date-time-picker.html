@@ -88,9 +88,15 @@
     (click)="onTriggerClick()"
     (blur)="touched.set(true)"
   >
-    <span [class.tls-form-control__placeholder]="!value()">{{ triggerLabel() }}</span>
+    <span class="tls-date-time-picker__value" [class.tls-form-control__placeholder]="!value()">
+      {{ triggerLabel() }}
+    </span>
     @if (pending()) {
       <tls-loader class="tls-date-time-picker__spinner" size="xs" aria-hidden="true" />
+    } @else {
+      <span class="tls-date-time-picker__icon" aria-hidden="true">
+        <tls-icon class="tls-date-time-picker__glyph" [name]="triggerIcon()" aria-hidden="true" />
+      </span>
     }
   </button>
   <tls-popover

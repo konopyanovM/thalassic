@@ -1,6 +1,7 @@
 // The field-shaped trigger anatomy shared by panel-holding controls
 // (tls-select, tls-picker-field): the form-control frame arranged around a
-// start-aligned value and an end chevron that turns while the panel is open.
+// start-aligned value and an end glyph — a chevron that turns while the panel
+// is open, or an icon naming what the panel holds (a calendar), which keeps still.
 // Emitted per block so each control keeps its own class namespace and extras
 // (a clear button, a spinner, an icon box) while the shared anatomy cannot
 // drift between them. Expects `--#{$block}-gap` declared on the block, and a
@@ -20,8 +21,9 @@
     &.tls-form-control--disabled {
       cursor: not-allowed;
 
-      // The chevron recedes with the value instead of keeping its own color.
-      .#{$block}__chevron {
+      // The end glyph recedes with the value instead of keeping its own color.
+      .#{$block}__chevron,
+      .#{$block}__glyph {
         color: inherit;
       }
     }
@@ -71,9 +73,12 @@
 
   // Furniture of the field rather than its value, so it takes the secondary
   // color an icon inside a field carries.
-  .#{$block}__chevron {
+  .#{$block}__chevron,
+  .#{$block}__glyph {
     color: var(--color-on-surface-variant);
+  }
 
+  .#{$block}__chevron {
     transition: transform var(--motion-fast) var(--motion-ease-in-out);
   }
 }

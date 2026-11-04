@@ -1,6 +1,8 @@
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { Component, signal, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { Icon } from '../../icon';
 import { DateTimePicker } from './date-time-picker';
 import { dateTimePickerMode } from './date-time-picker.types';
 
@@ -187,6 +189,24 @@ describe('DateTimePicker', () => {
       toggle();
 
       expect(queryHeader()?.textContent?.trim()).toBe('June 2099');
+    });
+  });
+
+  describe('trigger icon', () => {
+    beforeEach(setup);
+
+    // The panel is closed, so the trigger's glyph is the only icon rendered.
+    const queryGlyph = (): Icon => fixture.debugElement.query(By.directive(Icon)).injector.get(Icon);
+
+    it('should show a calendar for a date', () => {
+      expect(queryGlyph().name()).toBe('calendar');
+    });
+
+    it('should show a clock for a time alone', () => {
+      host.mode.set('time-picker');
+      fixture.detectChanges();
+
+      expect(queryGlyph().name()).toBe('clock');
     });
   });
 

@@ -43,4 +43,6 @@ export type systemIcon =
   | 'picture-in-picture'
   | 'captions'
   | 'settings'
-  | 'eyedropper';
+  | 'eyedropper'
+  | 'calendar'
+  | 'clock';

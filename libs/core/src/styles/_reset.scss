@@ -45,6 +45,15 @@ textarea {
   border: 0;
 }
 
+// iOS Safari alone fades a disabled text field, textarea, slider or color well to 0.4
+// opacity on top of whatever the page draws for the disabled state, fading its value
+// below legibility along with its border and fill; every other engine leaves opacity
+// alone, so a disabled control is styled by the page and looks the same on every device.
+input:disabled,
+textarea:disabled {
+  opacity: 1;
+}
+
 table {
   border-spacing: 0;
 }
