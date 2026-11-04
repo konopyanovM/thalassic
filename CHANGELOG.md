@@ -1,3 +1,26 @@
+## 22.24.0 (2026-11-04)
+
+### 🚀 Features
+
+- **themes:** set labels in medium, field values in regular, and add a caption variant ([036af47](https://github.com/konopyanovM/thalassic/commit/036af47))
+- **ui:** wait out scrolls before inking a touch, hold the ink while pressed, and ink every tappable control ([c3ab5d8](https://github.com/konopyanovM/thalassic/commit/c3ab5d8))
+- **ui:** ink a stretched link across the row its hit area covers ([805b273](https://github.com/konopyanovM/thalassic/commit/805b273))
+- **ui:** ink calendar parts, toggle-group options and fab-menu items ([56670d0](https://github.com/konopyanovM/thalassic/commit/56670d0))
+
+### 🩹 Fixes
+
+- **core:** stop ios safari fading disabled fields on its own, and give the date field an end icon ([b3defc8](https://github.com/konopyanovM/thalassic/commit/b3defc8))
+- **themes:** let unavailable buttons recede like fields, step filled feedback away from its label, and raise elevated buttons in dark mode ([8403532](https://github.com/konopyanovM/thalassic/commit/8403532))
+- **themes:** centre icon-only glyphs and lay unavailable floating buttons flat ([b392908](https://github.com/konopyanovM/thalassic/commit/b392908))
+- **ui:** settle field states, quiet disabled fields and open field panels from the field's frame ([fc6ac81](https://github.com/konopyanovM/thalassic/commit/fc6ac81))
+- **ui:** let a press outside a select land where it was aimed and keep option presses from taking focus ([c5aeece](https://github.com/konopyanovM/thalassic/commit/c5aeece))
+- **ui:** let a press outside the date picker and color input land where it was aimed ([d9a1766](https://github.com/konopyanovM/thalassic/commit/d9a1766))
+- **ui:** flip an overlay to the opposite side before recentring it ([f2984ea](https://github.com/konopyanovM/thalassic/commit/f2984ea))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.23.0 (2026-11-02)
 
 ### 🚀 Features
