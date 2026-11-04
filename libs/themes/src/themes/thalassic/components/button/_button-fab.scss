@@ -38,8 +38,9 @@ $-scales: (
   // translucent by design, which suits an inline chip sitting on its surface
   // but lets scrolling content bleed through a FAB. Compositing the same wash
   // over the surface keeps the tint identical while making the fill opaque;
-  // feedback deepens the hue's share over the same backing.
-  &.tls-button--tonal {
+  // feedback deepens the hue's share over the same backing. An unavailable FAB
+  // takes the shared disabled fill instead, so it is excluded here.
+  &.tls-button--tonal:not(.tls-button--disabled) {
     background-color: color-mix(in srgb, var(--tls-button-color) 15%, var(--color-surface));
 
     @include core.hover-capable {
@@ -55,6 +56,13 @@ $-scales: (
     &:not(.tls-button--disabled):active {
       background-color: color-mix(in srgb, var(--tls-button-color) 31%, var(--color-surface));
     }
+  }
+
+  // An unavailable FAB lies flat: it has nothing to lift, and a shadow under
+  // the faint disabled fill would float an outline of a control that cannot be
+  // pressed.
+  &.tls-button--disabled {
+    box-shadow: none;
   }
 
   @include core.hover-capable {

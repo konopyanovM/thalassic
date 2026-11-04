@@ -18,6 +18,15 @@
     padding-inline: 0;
 
     aspect-ratio: 1 / 1;
+
+    // A projected icon wraps its glyph in an inline box, which sits the glyph on
+    // a line of text — lowered to a baseline, often nudged further by the icon
+    // library for alignment beside a label. With no label to align with, that
+    // lifts it visibly off the centre of a square control; as a flex container
+    // the wrapper holds no line, so the glyph centres exactly.
+    > * {
+      display: flex;
+    }
   }
 
   &.tls-button--fluid {
