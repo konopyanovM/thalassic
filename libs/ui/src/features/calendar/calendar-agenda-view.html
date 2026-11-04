@@ -3,6 +3,7 @@
     <button
       type="button"
       class="tls-calendar-agenda-view__date"
+      tlsRipple
       [class.tls-calendar-agenda-view__date--today]="day.isToday"
       (click)="dateSelect.emit(day.date)"
     >

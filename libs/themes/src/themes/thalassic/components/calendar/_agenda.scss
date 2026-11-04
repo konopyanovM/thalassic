@@ -18,6 +18,9 @@
   }
 
   &__date {
+    // Positions the touch ink laid over it.
+    position: relative;
+
     padding: 0;
 
     display: flex;
@@ -36,6 +39,10 @@
     &:focus-visible {
       @include mixins.focus-ring;
     }
+
+    // The date sits flush with the agenda's edge and the box hugs its two lines, so the ink
+    // bleeds past it rather than ending at the letters.
+    @include mixins.ripple($bleed: var(--spacing-2), $radius: var(--radius-md));
 
     &--today {
       color: var(--color-primary);

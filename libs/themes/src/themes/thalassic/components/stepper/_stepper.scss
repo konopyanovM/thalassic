@@ -149,7 +149,9 @@
           @include core.visually-hidden;
         }
 
-        @include mixins.ripple;
+        // The button hugs its index and text with no padding — the index sits exactly where the
+        // connectors meet it — so the ink bleeds past the box rather than ending at the letters.
+        @include mixins.ripple($bleed: var(--spacing-2), $radius: var(--radius-md));
       }
 
       .tls-stepper-header__divider {

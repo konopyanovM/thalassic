@@ -51,6 +51,10 @@
     // is sized by its own content.
     > .tls-tab-header__item-control {
       width: 100%;
+
+      // The slot's own corners — a segmented pill's, say — so the ink and focus
+      // ring drawn on the control follow the shape the slot is painted in.
+      border-radius: inherit;
     }
 
     &.tls-tab-header__item--active {

@@ -15,6 +15,7 @@ import {
 import { color } from '../../types';
 import { Button, buttonVariant } from '../button';
 import { Icon } from '../icon';
+import { RippleDirective } from '../ripple';
 import { FabMenuItemDefinition } from './fab-menu.types';
 
 /**
@@ -29,7 +30,7 @@ import { FabMenuItemDefinition } from './fab-menu.types';
  */
 @Component({
   selector: 'tls-fab-menu',
-  imports: [NgTemplateOutlet, AriaMenu, AriaMenuItem, Button, Icon],
+  imports: [NgTemplateOutlet, AriaMenu, AriaMenuItem, Button, Icon, RippleDirective],
   templateUrl: './fab-menu.html',
   host: {
     class: 'tls-fab-menu',

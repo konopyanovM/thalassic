@@ -29,6 +29,16 @@
 // a tile, a picture — would hide ink drawn there, so `$over-content` lays it over
 // the content instead, as a press on a card washes over its picture.
 //
+// The ink covers the control's own box unless `$bleed` reaches it past those
+// edges, for a control whose box hugs its content — a label or a stack of text
+// set flush with the layout around it — where ink cut to that box would end at
+// the letters. The layer extends by `$bleed` on every side instead, the way a
+// state layer outgrows the glyph of an icon button, and takes `$radius` as its
+// corners, since corners inherited from a box it no longer matches would be
+// wrong. The layout is untouched: the bleed paints over the space around the
+// control without claiming it. The directive measures the layer it is drawn in,
+// so the ink is still struck under the finger and still reaches every corner.
+//
 // Requires the theme, which registers `--tls-ripple-size` and defines the
 // `tls-ripple` keyframes once for the whole document, and the `tlsRipple`
 // directive on the same element, which writes the contact point and strikes and
@@ -38,7 +48,9 @@
   $color: currentColor,
   $duration: var(--motion-slow),
   $fade: var(--motion-default),
-  $over-content: false
+  $over-content: false,
+  $bleed: null,
+  $radius: inherit
 ) {
   // An unavailable control answers no press, so it strikes no ink — whether the
   // platform disabled it or it only reports itself unavailable.
@@ -56,10 +68,10 @@
       content: '';
 
       position: absolute;
-      inset: 0;
+      inset: if($bleed, calc(-1 * #{$bleed}), 0);
       z-index: if($over-content, 1, -1);
 
-      border-radius: inherit;
+      border-radius: $radius;
       corner-shape: inherit;
 
       background: radial-gradient(

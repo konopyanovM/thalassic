@@ -4,6 +4,7 @@
     <button
       type="button"
       class="tls-calendar-time-grid__heading"
+      tlsRipple
       [class.tls-calendar-time-grid__heading--today]="column.isToday"
       (click)="dateSelect.emit(column.date)"
     >

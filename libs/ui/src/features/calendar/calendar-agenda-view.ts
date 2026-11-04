@@ -13,6 +13,7 @@ import { eachDayOfInterval, endOfMonth, format, isSameDay, startOfMonth } from '
 import { localeFormatOptions, LOCALE_CONFIG } from '../../abstract/locale';
 import { NOW_REFRESH_INTERVAL_MS } from '../../constants';
 import { createDaySignal, createNowSignal } from '../../utils';
+import { RippleDirective } from '../ripple';
 import { CalendarEventItem } from './calendar-event';
 import {
   AGENDA_DATE_FORMAT,
@@ -38,7 +39,7 @@ interface AgendaDay {
 @Component({
   selector: 'tls-calendar-agenda-view',
   templateUrl: './calendar-agenda-view.html',
-  imports: [CalendarEventItem],
+  imports: [CalendarEventItem, RippleDirective],
   host: {
     class: 'tls-calendar-agenda-view',
     role: 'list',

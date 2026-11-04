@@ -56,6 +56,9 @@
   }
 
   &__item {
+    // Positions the touch ink laid over it.
+    position: relative;
+
     height: var(--tls-fab-menu-item-height);
     padding-inline: var(--spacing-4);
 
@@ -86,6 +89,8 @@
     &:focus-visible {
       @include mixins.focus-ring;
     }
+
+    @include mixins.ripple;
 
     &:disabled {
       color: var(--color-outline);

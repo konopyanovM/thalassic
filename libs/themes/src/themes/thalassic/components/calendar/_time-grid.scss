@@ -18,6 +18,9 @@
   }
 
   &__heading {
+    // Positions the touch ink laid over it.
+    position: relative;
+
     width: 100%;
 
     padding: var(--spacing-2);
@@ -36,6 +39,8 @@
     &:focus-visible {
       @include mixins.focus-ring;
     }
+
+    @include mixins.ripple;
 
     &--today {
       color: var(--color-primary);

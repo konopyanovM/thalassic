@@ -1,9 +1,14 @@
+@use '../../mixins' as mixins;
+
 .tls-calendar-event {
   display: block;
 
   height: 100%;
 
   &__button {
+    // Positions the touch ink laid over it.
+    position: relative;
+
     box-sizing: border-box;
     width: 100%;
     height: 100%;
@@ -23,6 +28,8 @@
     color: var(--tls-calendar-event-on-color, var(--color-on-primary-container));
 
     cursor: pointer;
+
+    @include mixins.ripple;
 
     &--primary {
       --tls-calendar-event-color: var(--color-primary-container);

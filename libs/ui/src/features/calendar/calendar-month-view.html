@@ -25,6 +25,7 @@
           <div
             ngGridCell
             class="tls-calendar-month-view__day"
+            tlsRipple
             [class.tls-calendar-month-view__day--outside]="!cell.inCurrentMonth"
             [class.tls-calendar-month-view__day--today]="cell.isToday"
             (click)="dateSelect.emit(cell.date)"

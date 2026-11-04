@@ -13,6 +13,7 @@ import { addHours, differenceInMinutes, format, isSameDay, startOfDay } from 'da
 import { isHour12, localeFormatOptions, LOCALE_CONFIG } from '../../abstract/locale';
 import { NOW_REFRESH_INTERVAL_MS } from '../../constants';
 import { createDaySignal, createNowSignal } from '../../utils';
+import { RippleDirective } from '../ripple';
 import { assignEventLanes } from './assign-event-lanes';
 import { CalendarEventItem } from './calendar-event';
 import {
@@ -53,7 +54,7 @@ interface TimeGridColumn {
 @Component({
   selector: 'tls-calendar-time-grid',
   templateUrl: './calendar-time-grid.html',
-  imports: [CalendarEventItem],
+  imports: [CalendarEventItem, RippleDirective],
   host: {
     class: 'tls-calendar-time-grid',
     role: 'group',

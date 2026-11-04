@@ -49,8 +49,9 @@ import {
  * takes nothing away — the press underneath is pure CSS and is what a host shows
  * without it.
  *
- * Requires the theme's `ripple` mixin on the same element, which draws the ink
- * from the values written here.
+ * Requires the theme's `ripple` mixin on the element the ink is drawn on — the
+ * host, or the `rippleSurface` it names — which draws the ink from the values
+ * written there.
  *
  * @example
  * ```html
@@ -91,6 +92,16 @@ export class RippleDirective {
     pointerType[] | undefined
   >(undefined);
 
+  /**
+   * The element the ink is drawn on, when it is not the host itself: a part of the control
+   * that carries its shape, such as a navigation item's indicator pill around its icon. The
+   * whole host still answers the press, and still stands its own press down. Unset draws on
+   * the host.
+   */
+  public readonly rippleSurface: InputSignal<HTMLElement | undefined> = input<
+    HTMLElement | undefined
+  >(undefined);
+
   // Computed
   private readonly _pointerTypes: Signal<pointerType[]> = computed(
     () => this.ripplePointerTypes() ?? this._config.pointerTypes,
@@ -115,6 +126,7 @@ export class RippleDirective {
   // Protected methods
   protected onPointerDown(event: PointerEvent): void {
     const host = this._elementRef.nativeElement;
+    const surface = this._surface();
     this._stopTracking();
 
     // Anything this directive does not ink is the press's to acknowledge, so the
@@ -124,21 +136,21 @@ export class RippleDirective {
     // settles after the finger has already gone. Restoring it as a press begins
     // leaves no window to flash in.
     if (this.rippleDisabled() || !this._inksFor(event.pointerType) || !this._isFullMotion()) {
-      host.classList.remove(RIPPLE_ACTIVE_CLASS, RIPPLE_RELEASED_CLASS);
+      surface.classList.remove(RIPPLE_ACTIVE_CLASS, RIPPLE_RELEASED_CLASS);
       host.style.removeProperty(PRESS_SCALE_PROPERTY);
       return;
     }
 
-    const bounds = this._inkSurface(host).getBoundingClientRect();
+    const bounds = this._inkLayerBounds(surface);
     const x = event.clientX - bounds.left;
     const y = event.clientY - bounds.top;
 
     this._origin = { x: event.clientX, y: event.clientY };
     this._trackContact(host, event.pointerId);
 
-    host.style.setProperty(RIPPLE_X_PROPERTY, `${x}px`);
-    host.style.setProperty(RIPPLE_Y_PROPERTY, `${y}px`);
-    host.style.setProperty(RIPPLE_DIAMETER_PROPERTY, `${this._radiusToCover(bounds, x, y)}px`);
+    surface.style.setProperty(RIPPLE_X_PROPERTY, `${x}px`);
+    surface.style.setProperty(RIPPLE_Y_PROPERTY, `${y}px`);
+    surface.style.setProperty(RIPPLE_DIAMETER_PROPERTY, `${this._radiusToCover(bounds, x, y)}px`);
 
     // Press and ink both answer the same contact; the ink is the louder of the
     // two, so the press stands down rather than playing underneath it — from the
@@ -146,28 +158,28 @@ export class RippleDirective {
     host.style.setProperty(PRESS_SCALE_PROPERTY, '1');
 
     if (event.pointerType !== 'touch') {
-      this._restartInk(host);
+      this._restartInk(surface);
       return;
     }
 
     this._pendingInk = setTimeout(() => {
       this._pendingInk = null;
-      this._restartInk(host);
+      this._restartInk(surface);
     }, RIPPLE_TOUCH_DELAY_MS);
   }
 
   // Private methods
   /** A tap lifted before its ink was struck inks now, and every ink lets go with the contact. */
   private _onPointerRelease(): void {
-    const host = this._elementRef.nativeElement;
+    const surface = this._surface();
 
     if (this._pendingInk) {
       this._clearPendingInk();
-      this._restartInk(host);
+      this._restartInk(surface);
     }
 
     this._stopTracking();
-    this._release(host);
+    this._release(surface);
   }
 
   /**
@@ -178,7 +190,7 @@ export class RippleDirective {
     const struck = !this._pendingInk;
 
     this._stopTracking();
-    if (struck) this._release(this._elementRef.nativeElement);
+    if (struck) this._release(this._surface());
   }
 
   private _onPointerMove(event: PointerEvent): void {
@@ -193,7 +205,7 @@ export class RippleDirective {
     // the contact ends: restoring it here would depress the control mid-scroll,
     // which is what the ink was cancelled for.
     this._stopTracking();
-    this._elementRef.nativeElement.classList.remove(RIPPLE_ACTIVE_CLASS, RIPPLE_RELEASED_CLASS);
+    this._surface().classList.remove(RIPPLE_ACTIVE_CLASS, RIPPLE_RELEASED_CLASS);
   }
 
   /**
@@ -259,16 +271,36 @@ export class RippleDirective {
     return this._document.documentElement.getAttribute(MOTION_ATTRIBUTE) === 'full';
   }
 
-  /**
-   * The box the ink is laid over, which the contact point and the ink's reach are measured
-   * against. That is the host, unless the host is not positioned: its ink layer is then laid
-   * out against the nearest positioned ancestor instead — a stretched link inks the whole row
-   * its hit area covers, not just its own text — so that ancestor is what the ink covers.
-   */
-  private _inkSurface(host: HTMLElement): Element {
-    if (POSITIONED_VALUES.has(getComputedStyle(host).position)) return host;
+  /** The element the ink is drawn on. */
+  private _surface(): HTMLElement {
+    return this.rippleSurface() ?? this._elementRef.nativeElement;
+  }
 
-    return host.offsetParent ?? host;
+  /**
+   * The box the ink layer occupies, which the contact point and the ink's reach are measured
+   * against. The layer is laid out against the surface, unless the surface is not positioned:
+   * it is then laid out against the nearest positioned ancestor instead — a stretched link
+   * inks the whole row its hit area covers, not just its own text. Its insets are read back
+   * rather than assumed to be zero, so a layer that bleeds past that box is measured as drawn.
+   */
+  private _inkLayerBounds(surface: HTMLElement): DOMRect {
+    const container = POSITIONED_VALUES.has(getComputedStyle(surface).position)
+      ? surface
+      : (surface.offsetParent ?? surface);
+    const bounds = container.getBoundingClientRect();
+    const layer = getComputedStyle(surface, '::before');
+    // An inset that does not resolve to a length — the layer is not laid out — reads as none.
+    const top = parseFloat(layer.top) || 0;
+    const right = parseFloat(layer.right) || 0;
+    const bottom = parseFloat(layer.bottom) || 0;
+    const left = parseFloat(layer.left) || 0;
+
+    return new DOMRect(
+      bounds.left + left,
+      bounds.top + top,
+      bounds.width - left - right,
+      bounds.height - top - bottom,
+    );
   }
 
   /**
@@ -289,10 +321,10 @@ export class RippleDirective {
    * otherwise be swallowed; reading back a layout property between the removal
    * and the addition forces the two to land as separate states.
    */
-  private _restartInk(host: HTMLElement): void {
-    host.classList.remove(RIPPLE_ACTIVE_CLASS, RIPPLE_RELEASED_CLASS);
-    void host.offsetWidth;
-    host.classList.add(RIPPLE_ACTIVE_CLASS);
+  private _restartInk(surface: HTMLElement): void {
+    surface.classList.remove(RIPPLE_ACTIVE_CLASS, RIPPLE_RELEASED_CLASS);
+    void surface.offsetWidth;
+    surface.classList.add(RIPPLE_ACTIVE_CLASS);
   }
 
   /**
@@ -300,11 +332,11 @@ export class RippleDirective {
    * that strength, and an ink struck and released in one go — a quick tap — would otherwise
    * have no style at full strength to fade from, and vanish without being seen.
    */
-  private _release(host: HTMLElement): void {
-    if (!host.classList.contains(RIPPLE_ACTIVE_CLASS)) return;
+  private _release(surface: HTMLElement): void {
+    if (!surface.classList.contains(RIPPLE_ACTIVE_CLASS)) return;
 
-    void getComputedStyle(host, '::before').opacity;
-    host.classList.add(RIPPLE_RELEASED_CLASS);
+    void getComputedStyle(surface, '::before').opacity;
+    surface.classList.add(RIPPLE_RELEASED_CLASS);
   }
 
   private _clearPendingInk(): void {

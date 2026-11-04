@@ -106,6 +106,9 @@
   }
 
   &__day {
+    // Positions the touch ink laid over it.
+    position: relative;
+
     min-width: 0;
 
     padding: var(--spacing-1) var(--spacing-2);
@@ -151,6 +154,8 @@
     &:focus-visible {
       @include mixins.focus-ring;
     }
+
+    @include mixins.ripple;
 
     // Seven day cells precede the bar overlay in a week, so this is the last column — its line
     // would otherwise land on top of the grid's own border.

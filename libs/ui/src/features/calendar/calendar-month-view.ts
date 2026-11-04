@@ -31,6 +31,7 @@ import { LOCALE_CONFIG, localeFormatOptions } from '../../abstract/locale';
 import { color } from '../../types';
 import { NOW_REFRESH_INTERVAL_MS } from '../../constants';
 import { createDaySignal, createNowSignal, rotateWeekDays } from '../../utils';
+import { RippleDirective } from '../ripple';
 import { assignWeekLanes } from './assign-week-lanes';
 import { buildMonthScrollPlan, MonthScrollPlan } from './build-month-scroll-plan';
 import { buildMonthWindow, MonthWindow } from './build-month-window';
@@ -78,7 +79,7 @@ interface MonthWeek {
 @Component({
   selector: 'tls-calendar-month-view',
   templateUrl: './calendar-month-view.html',
-  imports: [Grid, GridRow, GridCell, CalendarEventItem, NgTemplateOutlet],
+  imports: [Grid, GridRow, GridCell, CalendarEventItem, NgTemplateOutlet, RippleDirective],
   host: {
     class: 'tls-calendar-month-view',
     '[class.tls-calendar-month-view--square]': 'squareCells()',

@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { format } from 'date-fns';
 import { isHour12, LOCALE_CONFIG, localeFormatOptions } from '../../abstract/locale';
+import { RippleDirective } from '../ripple';
 import { EVENT_TIME_FORMAT_12, EVENT_TIME_FORMAT_24, TIME_AWARE_VIEWS } from './calendar.constants';
 import { CalendarEvent, CalendarEventContext, calendarView } from './calendar.types';
 
@@ -23,7 +24,7 @@ import { CalendarEvent, CalendarEventContext, calendarView } from './calendar.ty
 @Component({
   selector: 'tls-calendar-event',
   templateUrl: './calendar-event.html',
-  imports: [NgTemplateOutlet],
+  imports: [NgTemplateOutlet, RippleDirective],
   host: { class: 'tls-calendar-event' },
 })
 export class CalendarEventItem {

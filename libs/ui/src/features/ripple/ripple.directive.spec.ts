@@ -68,6 +68,7 @@ describe('RippleDirective', () => {
   afterEach(() => {
     document.documentElement.removeAttribute(MOTION_ATTRIBUTE);
     vi.useRealTimers();
+    vi.restoreAllMocks();
   });
 
   beforeEach(async () => {
@@ -278,6 +279,28 @@ describe('RippleDirective', () => {
     expect(host.style.getPropertyValue(RIPPLE_X_PROPERTY)).toBe('50px');
   });
 
+  it('measures an ink layer that bleeds past the host as it is drawn', () => {
+    host.style.position = 'relative';
+    // jsdom lays out no pseudo-element, so the layer's 8px bleed on every side is reported here.
+    const computedStyle = window.getComputedStyle;
+    vi.spyOn(window, 'getComputedStyle').mockImplementation((element, pseudo) => {
+      const style = computedStyle(element, pseudo);
+      if (pseudo !== '::before') return style;
+
+      return new Proxy(style, {
+        get: (target, key) => (['top', 'right', 'bottom', 'left'].includes(String(key)) ? '-8px' : Reflect.get(target, key)),
+      });
+    });
+
+    // Struck 50px into the 200×50 host: 58px into its 216×66 layer, whose far corner is 158
+    // across and 33 down.
+    pointerDown({ pointerType: 'pen', clientX: 50, clientY: 25 });
+
+    expect(host.style.getPropertyValue(RIPPLE_X_PROPERTY)).toBe('58px');
+    expect(host.style.getPropertyValue(RIPPLE_Y_PROPERTY)).toBe('33px');
+    expect(parseFloat(host.style.getPropertyValue(RIPPLE_DIAMETER_PROPERTY))).toBeCloseTo(Math.hypot(158, 33), 3);
+  });
+
   it('releases the ink of a pen lifted after sliding off the host', () => {
     pointerDown({ pointerType: 'pen', pointerId: 3 });
     document.body.dispatchEvent(new PointerEvent('pointerup', { pointerId: 3, bubbles: true }));
@@ -315,6 +338,76 @@ describe('RippleDirective', () => {
     pointerDown();
 
     expect(host.classList.contains(RIPPLE_ACTIVE_CLASS)).toBe(false);
+  });
+});
+
+@Component({
+  imports: [RippleDirective],
+  template: `<a tlsRipple href="#" [rippleSurface]="indicator">
+    <span #indicator class="indicator" style="position: relative">icon</span>
+    <span class="label">label</span>
+  </a>`,
+})
+class RippleSurfaceHost {}
+
+describe('RippleDirective surface', () => {
+  let host: HTMLAnchorElement;
+  let indicator: HTMLSpanElement;
+
+  afterEach(() => {
+    document.documentElement.removeAttribute(MOTION_ATTRIBUTE);
+  });
+
+  beforeEach(async () => {
+    document.documentElement.setAttribute(MOTION_ATTRIBUTE, 'full');
+
+    await TestBed.configureTestingModule({
+      imports: [RippleSurfaceHost],
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(RippleSurfaceHost);
+    await fixture.whenStable();
+
+    host = fixture.nativeElement.querySelector('a');
+    indicator = fixture.nativeElement.querySelector('.indicator');
+    // A 64×32 pill centred 16px in from a wider item's left edge.
+    indicator.getBoundingClientRect = () => ({ left: 16, top: 8, width: 64, height: 32 }) as DOMRect;
+  });
+
+  function pointerDownOn(target: HTMLElement, clientX: number, clientY: number): void {
+    target.dispatchEvent(
+      new PointerEvent('pointerdown', { pointerType: 'pen', clientX, clientY, bubbles: true }),
+    );
+  }
+
+  it('draws the ink on the surface for a press anywhere on the host', () => {
+    pointerDownOn(host.querySelector('.label') as HTMLElement, 48, 60);
+
+    expect(indicator.classList.contains(RIPPLE_ACTIVE_CLASS)).toBe(true);
+    expect(host.classList.contains(RIPPLE_ACTIVE_CLASS)).toBe(false);
+  });
+
+  it('measures the contact against the surface', () => {
+    // Struck at the pill's centre: 32 across and 16 down its 64×32 box.
+    pointerDownOn(host, 48, 24);
+
+    expect(indicator.style.getPropertyValue(RIPPLE_X_PROPERTY)).toBe('32px');
+    expect(indicator.style.getPropertyValue(RIPPLE_Y_PROPERTY)).toBe('16px');
+    expect(parseFloat(indicator.style.getPropertyValue(RIPPLE_DIAMETER_PROPERTY))).toBeCloseTo(Math.hypot(32, 16), 3);
+  });
+
+  it('stands the press down on the host, which is what is pressed', () => {
+    pointerDownOn(host, 48, 24);
+
+    expect(host.style.getPropertyValue(PRESS_SCALE_PROPERTY)).toBe('1');
+    expect(indicator.style.getPropertyValue(PRESS_SCALE_PROPERTY)).toBe('');
+  });
+
+  it('lets the surface\'s ink go on release', () => {
+    pointerDownOn(host, 48, 24);
+    document.body.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
+
+    expect(indicator.classList.contains(RIPPLE_RELEASED_CLASS)).toBe(true);
   });
 });
 
