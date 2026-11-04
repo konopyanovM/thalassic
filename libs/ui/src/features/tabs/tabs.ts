@@ -31,10 +31,11 @@ import {
   tabsVariant,
   tabValue,
 } from './tabs.types';
+import { RippleDirective } from '../ripple';
 
 @Component({
   selector: 'tls-tabs',
-  imports: [TabList, AriaTab, TabPanel, TabContent, NgTemplateOutlet],
+  imports: [TabList, AriaTab, TabPanel, TabContent, NgTemplateOutlet, RippleDirective],
   templateUrl: './tabs.html',
   hostDirectives: [AriaTabs],
   host: {

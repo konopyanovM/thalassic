@@ -12,10 +12,11 @@ import { format, getHours, getMinutes, setHours, setMinutes, startOfDay } from '
 import { isHour12, localeFormatOptions, LOCALE_CONFIG } from '../../../../abstract/locale';
 import { Icon } from '../../../icon';
 import { DAY_PERIOD_FORMAT, HOURS_PER_HALF_DAY } from '../date-time-picker.constants';
+import { RippleDirective } from '../../../ripple';
 
 @Component({
   selector: 'tls-time-picker',
-  imports: [Icon],
+  imports: [Icon, RippleDirective],
   templateUrl: './time-picker.html',
   host: { class: 'tls-time-picker' },
 })

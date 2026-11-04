@@ -1,11 +1,11 @@
 <div class="tls-month-picker__header">
-  <button type="button" class="tls-month-picker__nav" (click)="prevYear()">
+  <button type="button" class="tls-month-picker__nav" tlsRipple (click)="prevYear()">
     <tls-icon name="chevron-left" aria-hidden="true" />
   </button>
-  <button type="button" class="tls-month-picker__header-button" (click)="navigateUp.emit()">
+  <button type="button" class="tls-month-picker__header-button" tlsRipple (click)="navigateUp.emit()">
     {{ yearLabel() }}
   </button>
-  <button type="button" class="tls-month-picker__nav" (click)="nextYear()">
+  <button type="button" class="tls-month-picker__nav" tlsRipple (click)="nextYear()">
     <tls-icon name="chevron-right" aria-hidden="true" />
   </button>
 </div>
@@ -14,6 +14,7 @@
     <button
       type="button"
       class="tls-month-picker__cell"
+      tlsRipple
       [class.tls-month-picker__cell--selected]="isSelectedMonth(month)"
       [class.tls-month-picker__cell--current]="isCurrentMonth(month)"
       (click)="selectMonth(month)"

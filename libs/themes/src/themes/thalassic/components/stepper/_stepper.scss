@@ -148,6 +148,8 @@
         &__state {
           @include core.visually-hidden;
         }
+
+        @include mixins.ripple;
       }
 
       .tls-stepper-header__divider {

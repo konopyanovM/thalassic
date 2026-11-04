@@ -74,6 +74,9 @@
   }
 
   .tls-autocomplete__option-button {
+    // The ink is laid over the control, positioned against it.
+    position: relative;
+
     width: 100%;
     padding-block: var(--tls-autocomplete-option-padding-block);
     padding-inline: var(--tls-autocomplete-option-padding-inline);
@@ -97,6 +100,8 @@
     &:focus-visible {
       outline: none;
     }
+
+    @include mixins.ripple;
   }
 }
 

@@ -60,6 +60,9 @@
   @include mixins.panel-open;
 
   &__item {
+    // The ink is laid over the control, positioned against it.
+    position: relative;
+
     width: 100%;
     padding-block: var(--tls-menu-item-padding-block);
     padding-inline: var(--tls-menu-item-padding-inline);
@@ -93,6 +96,8 @@
       outline: none;
       background-color: var(--tls-menu-item-background-hover);
     }
+
+    @include mixins.ripple;
 
     &:disabled,
     &--disabled {

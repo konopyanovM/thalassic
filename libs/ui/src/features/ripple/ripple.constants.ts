@@ -1,6 +1,22 @@
 /** Marks a host while its ink is expanding; the theme's `ripple` mixin animates on it. */
 export const RIPPLE_ACTIVE_CLASS = 'tls-rippling';
 
+/**
+ * Marks a host whose contact has ended, so its ink fades out. Ink spreads and holds for as
+ * long as the finger stays down — a held control keeps showing that it is pressed — and only
+ * lets go when the contact does.
+ */
+export const RIPPLE_RELEASED_CLASS = 'tls-ripple-released';
+
+/**
+ * How long a touch waits before it inks. A finger landing on a control may be starting a
+ * scroll, and ink struck at once would flash under every flick that happens to begin on
+ * one; waiting out the first moments lets a scroll declare itself first. A tap lifted
+ * sooner inks at once, so no tap goes unanswered. The value sits with Android's tap timeout
+ * and MUI's touch-ripple delay, short enough not to read as lag.
+ */
+export const RIPPLE_TOUCH_DELAY_MS = 80;
+
 /** Contact point of the press, relative to the host's own box. */
 export const RIPPLE_X_PROPERTY = '--tls-ripple-x';
 export const RIPPLE_Y_PROPERTY = '--tls-ripple-y';

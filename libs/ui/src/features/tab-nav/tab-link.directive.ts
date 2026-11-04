@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLinkActive } from '@angular/router';
+import { RippleDirective } from '../ripple';
 
 /**
  * One link inside a `nav[tlsTabNav]` strip. The anchor plays both tab-header
@@ -21,6 +22,7 @@ import { RouterLinkActive } from '@angular/router';
  * link is exposed to assistive technology via `aria-current="page"`.
  */
 @Directive({
+  hostDirectives: [RippleDirective],
   selector: 'a[tlsTabLink]',
   host: {
     class: 'tls-tab-header__item tls-tab-header__item-control',

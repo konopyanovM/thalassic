@@ -24,11 +24,12 @@ import { Loader } from '../../loader';
 import { VirtualScroll } from '../../virtual-scroll';
 import { autocompleteFilterMode } from './autocomplete-filter-mode';
 import { AUTOCOMPLETE_CONFIG } from './autocomplete.token';
+import { RippleDirective } from '../../ripple';
 
 @Component({
   selector: 'tls-autocomplete',
   templateUrl: './autocomplete.html',
-  imports: [Loader, Icon, NgTemplateOutlet, VirtualScroll],
+  imports: [Loader, Icon, NgTemplateOutlet, VirtualScroll, RippleDirective],
   host: {
     '[class]': 'hostClasses()',
   },

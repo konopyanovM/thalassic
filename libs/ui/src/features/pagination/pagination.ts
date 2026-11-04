@@ -4,10 +4,11 @@ import { Icon } from '../icon';
 import { PaginationLabels } from './pagination.config';
 import { PAGINATION_CONFIG } from './pagination.token';
 import { paginationItem } from './pagination.types';
+import { RippleDirective } from '../ripple';
 
 @Component({
   selector: 'tls-pagination',
-  imports: [Icon],
+  imports: [Icon, RippleDirective],
   templateUrl: './pagination.html',
   host: {
     role: 'navigation',

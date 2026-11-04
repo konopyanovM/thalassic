@@ -22,6 +22,7 @@ import { AccordionItem } from './accordion-item/accordion-item';
 import { AccordionConfig } from './accordion.config';
 import { ACCORDION_CONFIG } from './accordion.token';
 import { accordionHeadingLevel, accordionVariant } from './accordion.types';
+import { RippleDirective } from '../ripple';
 
 /**
  * A stack of collapsible sections. The container owns the policy shared by the
@@ -38,6 +39,7 @@ import { accordionHeadingLevel, accordionVariant } from './accordion.types';
     AccordionContent,
     Icon,
     NgTemplateOutlet,
+    RippleDirective,
   ],
   templateUrl: './accordion.html',
   host: {

@@ -1,9 +1,9 @@
 <div class="tls-time-picker__column">
-  <button type="button" class="tls-time-picker__arrow" (click)="incrementHours()">
+  <button type="button" class="tls-time-picker__arrow" tlsRipple (click)="incrementHours()">
     <tls-icon name="chevron-up" aria-hidden="true" />
   </button>
   <span class="tls-time-picker__value">{{ hoursLabel() }}</span>
-  <button type="button" class="tls-time-picker__arrow" (click)="decrementHours()">
+  <button type="button" class="tls-time-picker__arrow" tlsRipple (click)="decrementHours()">
     <tls-icon name="chevron-down" aria-hidden="true" />
   </button>
 </div>
@@ -11,17 +11,17 @@
 <span class="tls-time-picker__separator">:</span>
 
 <div class="tls-time-picker__column">
-  <button type="button" class="tls-time-picker__arrow" (click)="incrementMinutes()">
+  <button type="button" class="tls-time-picker__arrow" tlsRipple (click)="incrementMinutes()">
     <tls-icon name="chevron-up" aria-hidden="true" />
   </button>
   <span class="tls-time-picker__value">{{ minutesLabel() }}</span>
-  <button type="button" class="tls-time-picker__arrow" (click)="decrementMinutes()">
+  <button type="button" class="tls-time-picker__arrow" tlsRipple (click)="decrementMinutes()">
     <tls-icon name="chevron-down" aria-hidden="true" />
   </button>
 </div>
 
 @if (hour12) {
-  <button type="button" class="tls-time-picker__day-period" (click)="toggleDayPeriod()">
+  <button type="button" class="tls-time-picker__day-period" tlsRipple (click)="toggleDayPeriod()">
     {{ dayPeriodLabel() }}
   </button>
 }

@@ -68,6 +68,9 @@
     }
 
     &-control {
+      // The ink is laid over the control, positioned against it.
+      position: relative;
+
       padding: var(--spacing-3) var(--spacing-6);
 
       display: flex;
@@ -95,6 +98,18 @@
       // is consumer-provided, so no class is available to hook.
       svg {
         pointer-events: none;
+      }
+
+      // A control inside its tab slot inks freely. A nav anchor is the slot
+      // itself, and a divided strip draws its rule on the slot's `::before` —
+      // the layer the ink would take — so an anchor inks only in a strip
+      // without rules.
+      &:not(.tls-tab-header__item) {
+        @include mixins.ripple;
+      }
+
+      .tls-tab-header:not(.tls-tab-header--divided) &.tls-tab-header__item {
+        @include mixins.ripple;
       }
 
       // Focus is distinct from selection here: the strip is a roving-tabindex

@@ -41,10 +41,11 @@ import { Kbd } from '../kbd';
 import { MenuItemComponent } from './menu-item';
 import { MENU_CONFIG } from './menu.token';
 import { MenuActionItem, MenuItemDefinition, MenuRenderBlock, MenuRenderGroup } from './menu.types';
+import { RippleDirective } from '../ripple';
 
 @Component({
   selector: 'tls-menu',
-  imports: [NgTemplateOutlet, Icon, Kbd, RouterLink, AriaMenu, AriaMenuItem, PanDirective],
+  imports: [NgTemplateOutlet, Icon, Kbd, RouterLink, AriaMenu, AriaMenuItem, PanDirective, RippleDirective],
   providers: [
     // The sheet's dismissal drag runs down the vertical axis only, from the
     // pointers that drag panels shut anywhere else; whether the gesture is

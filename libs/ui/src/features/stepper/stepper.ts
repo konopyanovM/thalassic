@@ -24,10 +24,11 @@ import {
   StepperSelectEvent,
   stepperValue,
 } from './stepper.types';
+import { RippleDirective } from '../ripple';
 
 @Component({
   selector: 'tls-stepper',
-  imports: [NgTemplateOutlet, TabList, AriaTab],
+  imports: [NgTemplateOutlet, TabList, AriaTab, RippleDirective],
   templateUrl: './stepper.html',
   hostDirectives: [AriaTabs],
   host: {

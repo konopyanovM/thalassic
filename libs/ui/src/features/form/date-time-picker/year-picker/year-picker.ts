@@ -9,10 +9,11 @@ import {
 } from '@angular/core';
 import { addYears, getYear, setYear, subYears } from 'date-fns';
 import { Icon } from '../../../icon';
+import { RippleDirective } from '../../../ripple';
 
 @Component({
   selector: 'tls-year-picker',
-  imports: [Icon],
+  imports: [Icon, RippleDirective],
   templateUrl: './year-picker.html',
   host: { class: 'tls-year-picker' },
 })

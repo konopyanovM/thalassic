@@ -19,11 +19,12 @@ import { Icon } from '../../icon';
 import { Loader } from '../../loader';
 import { VirtualScroll } from '../../virtual-scroll';
 import { MULTI_SELECT_CONFIG } from './multi-select.token';
+import { RippleDirective } from '../../ripple';
 
 @Component({
   selector: 'tls-multi-select',
   templateUrl: './multi-select.html',
-  imports: [Loader, Icon, NgTemplateOutlet, VirtualScroll],
+  imports: [Loader, Icon, NgTemplateOutlet, VirtualScroll, RippleDirective],
   host: {
     '[class]': 'hostClasses()',
   },

@@ -2,6 +2,7 @@
   <button
     id="tls-pagination-first"
     class="tls-pagination__button"
+    tlsRipple
     [attr.aria-label]="labels.first"
     [disabled]="value() === 1"
     (click)="firstPage()"
@@ -15,6 +16,7 @@
 <button
   id="tls-pagination-prev"
   class="tls-pagination__button"
+  tlsRipple
   [attr.aria-label]="labels.previous"
   [disabled]="value() === 1"
   (click)="prevPage()"
@@ -32,6 +34,7 @@
       } @else {
         <button
           class="tls-pagination__item-button"
+          tlsRipple
           [class.tls-pagination__item-button--active]="value() === item"
           [attr.aria-label]="labels.page(item)"
           [attr.aria-current]="value() === item ? 'page' : null"
@@ -47,6 +50,7 @@
 <button
   id="tls-pagination-next"
   class="tls-pagination__button"
+  tlsRipple
   [attr.aria-label]="labels.next"
   [disabled]="value() === pageCount()"
   (click)="nextPage()"
@@ -60,6 +64,7 @@
   <button
     id="tls-pagination-last"
     class="tls-pagination__button"
+    tlsRipple
     [attr.aria-label]="labels.last"
     [disabled]="value() === pageCount()"
     (click)="lastPage()"

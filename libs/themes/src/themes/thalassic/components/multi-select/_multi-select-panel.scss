@@ -74,6 +74,9 @@
   }
 
   .tls-multi-select__option-button {
+    // The ink is laid over the control, positioned against it.
+    position: relative;
+
     width: 100%;
     padding-block: var(--tls-multi-select-option-padding-block);
     padding-inline: var(--tls-multi-select-option-padding-inline);
@@ -112,5 +115,7 @@
       height: 0.75rem;
       flex-shrink: 0;
     }
+
+    @include mixins.ripple;
   }
 }

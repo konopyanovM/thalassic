@@ -30,10 +30,11 @@ import {
 } from '../../../../utils';
 import { Icon } from '../../../icon';
 import { DatePickerDay } from './date-picker-calendar.types';
+import { RippleDirective } from '../../../ripple';
 
 @Component({
   selector: 'tls-date-picker-calendar',
-  imports: [Icon],
+  imports: [Icon, RippleDirective],
   templateUrl: './date-picker-calendar.html',
   host: { class: 'tls-date-picker-calendar' },
 })

@@ -1,0 +1,93 @@
+@use 'motion';
+
+// Ink spreading from the point of contact, for the duration of one press.
+//
+// The ink is painted as a gradient inside a pseudo-element covering the control,
+// rather than as a circle that outgrows it. A circle would have to be clipped by
+// `overflow: hidden` on the control, and that clip also cuts the `::after` the
+// touch-target expansion overflows — silently returning a 44px tap target to its
+// visual size on exactly the touch input this effect is for. A background is
+// clipped by its own element's corner, so nothing overflowing the control is
+// affected. That corner is inherited, so the ink follows a squircle where one is
+// drawn.
+//
+// The contact point, the radius the ink must reach to cover the control, and the
+// press it stands in for are all supplied by the host: the position of a pointer
+// is not expressible in CSS.
+//
+// The ink spreads across `$duration` and holds at full strength for as long as
+// the contact lasts, so a held control keeps showing that it is pressed; it fades
+// across `$fade` once the contact ends, still spreading if a quick tap released
+// it early.
+//
+// Belongs to the `full` tier. Unlike a press, the ink keeps expanding after the
+// finger lifts, so it is expressive rather than functional — under reduced motion
+// the press is the acknowledgement instead.
+//
+// The ink is drawn beneath the control's content, so labels and icons stay crisp
+// over it. A control whose content covers it with a surface of its own — a card,
+// a tile, a picture — would hide ink drawn there, so `$over-content` lays it over
+// the content instead, as a press on a card washes over its picture.
+//
+// Requires the theme, which registers `--tls-ripple-size` and defines the
+// `tls-ripple` keyframes once for the whole document, and the `tlsRipple`
+// directive on the same element, which writes the contact point and strikes and
+// releases the ink. This file emits nothing of its own, so every stylesheet can
+// include the mixin without repeating those globals.
+@mixin ripple(
+  $color: currentColor,
+  $duration: var(--motion-slow),
+  $fade: var(--motion-default),
+  $over-content: false
+) {
+  // An unavailable control answers no press, so it strikes no ink — whether the
+  // platform disabled it or it only reports itself unavailable.
+  &:disabled,
+  &[aria-disabled='true'] {
+    --tls-ripple-opacity: 0;
+  }
+
+  @include motion.motion(full) {
+    // Beneath the content, the ink sits between the control's own background and
+    // the content, which requires a stacking context to order against.
+    isolation: isolate;
+
+    &::before {
+      content: '';
+
+      position: absolute;
+      inset: 0;
+      z-index: if($over-content, 1, -1);
+
+      border-radius: inherit;
+      corner-shape: inherit;
+
+      background: radial-gradient(
+        circle var(--tls-ripple-size) at var(--tls-ripple-x) var(--tls-ripple-y),
+        #{$color} 0 100%,
+        transparent 100%
+      );
+      opacity: 0;
+
+      // The ink must never intercept the press that spawned it.
+      pointer-events: none;
+    }
+
+    // The strength is read through a property with a fallback and never declared
+    // as a value of its own: the tier gate wraps these rules in
+    // `:root[data-motion='full'] &`, so a declared value would outweigh the plain
+    // modifier selector a state writes its suppression on. A control that must not
+    // ink sets `--tls-ripple-opacity` to 0.
+    &.tls-rippling::before {
+      opacity: var(--tls-ripple-opacity, 0.24);
+
+      animation: tls-ripple $duration var(--motion-ease-out) forwards;
+    }
+
+    &.tls-rippling.tls-ripple-released::before {
+      opacity: 0;
+
+      transition: opacity $fade var(--motion-ease-out);
+    }
+  }
+}

@@ -8,6 +8,9 @@
 }
 
 @mixin cell {
+  // The ink is laid over the control, positioned against it.
+  position: relative;
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -46,9 +49,14 @@
       }
     }
   }
+
+  @include mixins.ripple;
 }
 
 @mixin header-button {
+  // The ink is laid over the control, positioned against it.
+  position: relative;
+
   align-self: stretch;
 
   flex-grow: 1;
@@ -76,9 +84,14 @@
   &:focus-visible {
     @include mixins.focus-ring;
   }
+
+  @include mixins.ripple;
 }
 
 @mixin nav {
+  // The ink is laid over the control, positioned against it.
+  position: relative;
+
   width: var(--spacing-7);
   height: var(--spacing-7);
 
@@ -108,4 +121,6 @@
   &:focus-visible {
     @include mixins.focus-ring;
   }
+
+  @include mixins.ripple;
 }

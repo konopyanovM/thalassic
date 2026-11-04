@@ -36,6 +36,9 @@
   }
 
   &__day {
+    // The ink is laid over the control, positioned against it.
+    position: relative;
+
     width: var(--spacing-9);
     height: var(--spacing-9);
 
@@ -96,5 +99,7 @@
 
       cursor: not-allowed;
     }
+
+    @include mixins.ripple;
   }
 }

@@ -1,4 +1,5 @@
 import { Component, signal } from '@angular/core';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { pointerType } from '../../types';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MOTION_ATTRIBUTE, motionLevel } from '@thalassic/core';
@@ -10,6 +11,8 @@ import {
   RIPPLE_ACTIVE_CLASS,
   RIPPLE_DIAMETER_PROPERTY,
   RIPPLE_MOVE_SLOP_PX,
+  RIPPLE_RELEASED_CLASS,
+  RIPPLE_TOUCH_DELAY_MS,
   RIPPLE_X_PROPERTY,
   RIPPLE_Y_PROPERTY,
 } from './ripple.constants';
@@ -48,11 +51,24 @@ describe('RippleDirective', () => {
     );
   }
 
+  /**
+   * A touch held past the wait, so its ink has been struck. Timers are faked only from the
+   * first press on: settling the fixture waits on a real timer, which a fake one would stall.
+   */
+  function press(overrides: Partial<PointerEventInit> = {}): void {
+    vi.useFakeTimers();
+    pointerDown(overrides);
+    vi.advanceTimersByTime(RIPPLE_TOUCH_DELAY_MS);
+  }
+
   function setMotion(level: motionLevel): void {
     document.documentElement.setAttribute(MOTION_ATTRIBUTE, level);
   }
 
-  afterEach(() => document.documentElement.removeAttribute(MOTION_ATTRIBUTE));
+  afterEach(() => {
+    document.documentElement.removeAttribute(MOTION_ATTRIBUTE);
+    vi.useRealTimers();
+  });
 
   beforeEach(async () => {
     setMotion('full');
@@ -70,7 +86,7 @@ describe('RippleDirective', () => {
   });
 
   it('inks from the contact point on touch', () => {
-    pointerDown({ clientX: 50, clientY: 25 });
+    press({ clientX: 50, clientY: 25 });
 
     expect(host.classList.contains(RIPPLE_ACTIVE_CLASS)).toBe(true);
     expect(host.style.getPropertyValue(RIPPLE_X_PROPERTY)).toBe('50px');
@@ -79,7 +95,7 @@ describe('RippleDirective', () => {
 
   it('reaches the farthest corner from an off-centre contact', () => {
     // Struck 50px in on a 200×50 box: the far corner is 150 across and 25 down.
-    pointerDown({ clientX: 50, clientY: 25 });
+    press({ clientX: 50, clientY: 25 });
 
     const expected = Math.hypot(150, 25);
     expect(parseFloat(host.style.getPropertyValue(RIPPLE_DIAMETER_PROPERTY))).toBeCloseTo(expected, 3);
@@ -122,7 +138,7 @@ describe('RippleDirective', () => {
 
   it('leaves reduced motion to the press effect', () => {
     // A touch that inked at `full` must hand the press back if the level drops.
-    pointerDown();
+    press();
     setMotion('essential');
     pointerDown();
 
@@ -139,7 +155,7 @@ describe('RippleDirective', () => {
   });
 
   it('cancels the ink once the press travels far enough to be a scroll', () => {
-    pointerDown({ clientX: 50, clientY: 25 });
+    press({ clientX: 50, clientY: 25 });
     expect(host.classList.contains(RIPPLE_ACTIVE_CLASS)).toBe(true);
 
     host.dispatchEvent(
@@ -167,7 +183,7 @@ describe('RippleDirective', () => {
   });
 
   it('keeps the ink through a tremor inside the slop threshold', () => {
-    pointerDown({ clientX: 50, clientY: 25 });
+    press({ clientX: 50, clientY: 25 });
     host.dispatchEvent(
       new PointerEvent('pointermove', {
         clientX: 50,
@@ -177,6 +193,79 @@ describe('RippleDirective', () => {
     );
 
     expect(host.classList.contains(RIPPLE_ACTIVE_CLASS)).toBe(true);
+  });
+
+  it('waits before inking a touch, so a scroll can declare itself first', () => {
+    vi.useFakeTimers();
+    pointerDown();
+    expect(host.classList.contains(RIPPLE_ACTIVE_CLASS)).toBe(false);
+
+    vi.advanceTimersByTime(RIPPLE_TOUCH_DELAY_MS);
+    expect(host.classList.contains(RIPPLE_ACTIVE_CLASS)).toBe(true);
+  });
+
+  it('never inks a touch that turns into a scroll during the wait', () => {
+    vi.useFakeTimers();
+    pointerDown({ clientX: 50, clientY: 25 });
+    host.dispatchEvent(
+      new PointerEvent('pointermove', {
+        clientX: 50,
+        clientY: 25 + RIPPLE_MOVE_SLOP_PX + 1,
+        bubbles: true,
+      }),
+    );
+    vi.advanceTimersByTime(RIPPLE_TOUCH_DELAY_MS);
+
+    expect(host.classList.contains(RIPPLE_ACTIVE_CLASS)).toBe(false);
+  });
+
+  it('never inks a touch the browser takes over during the wait', () => {
+    vi.useFakeTimers();
+    pointerDown();
+    host.dispatchEvent(new PointerEvent('pointercancel', { bubbles: true }));
+    vi.advanceTimersByTime(RIPPLE_TOUCH_DELAY_MS);
+
+    expect(host.classList.contains(RIPPLE_ACTIVE_CLASS)).toBe(false);
+  });
+
+  it('inks a tap lifted before the wait passes, and lets it go', () => {
+    vi.useFakeTimers();
+    pointerDown();
+    host.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
+
+    expect(host.classList.contains(RIPPLE_ACTIVE_CLASS)).toBe(true);
+    expect(host.classList.contains(RIPPLE_RELEASED_CLASS)).toBe(true);
+  });
+
+  it('holds the ink while the contact lasts and lets it go on release', () => {
+    press();
+    expect(host.classList.contains(RIPPLE_RELEASED_CLASS)).toBe(false);
+
+    host.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
+    expect(host.classList.contains(RIPPLE_RELEASED_CLASS)).toBe(true);
+  });
+
+  it('strikes fresh ink for the next press after a release', () => {
+    press();
+    host.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
+    press();
+
+    expect(host.classList.contains(RIPPLE_ACTIVE_CLASS)).toBe(true);
+    expect(host.classList.contains(RIPPLE_RELEASED_CLASS)).toBe(false);
+  });
+
+  it('releases the ink of a pen lifted after sliding off the host', () => {
+    pointerDown({ pointerType: 'pen', pointerId: 3 });
+    document.body.dispatchEvent(new PointerEvent('pointerup', { pointerId: 3, bubbles: true }));
+
+    expect(host.classList.contains(RIPPLE_RELEASED_CLASS)).toBe(true);
+  });
+
+  it('keeps the ink held through the end of another pointer', () => {
+    pointerDown({ pointerType: 'pen', pointerId: 3 });
+    document.body.dispatchEvent(new PointerEvent('pointerup', { pointerId: 4, bubbles: true }));
+
+    expect(host.classList.contains(RIPPLE_RELEASED_CLASS)).toBe(false);
   });
 
   it('inks nothing in an app that never configured motion', () => {

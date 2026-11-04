@@ -61,9 +61,14 @@
     &:focus-visible {
       @include mixins.focus-ring;
     }
+
+    @include mixins.ripple;
   }
 
   &__arrow {
+    // The ink is laid over the control, positioned against it.
+    position: relative;
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -90,5 +95,7 @@
     &:focus-visible {
       @include mixins.focus-ring;
     }
+
+    @include mixins.ripple;
   }
 }

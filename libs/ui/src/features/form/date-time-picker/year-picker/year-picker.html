@@ -1,9 +1,9 @@
 <div class="tls-year-picker__header">
-  <button type="button" class="tls-year-picker__nav" (click)="prevPage()">
+  <button type="button" class="tls-year-picker__nav" tlsRipple (click)="prevPage()">
     <tls-icon name="chevron-left" aria-hidden="true" />
   </button>
   <span class="tls-year-picker__range">{{ rangeLabel() }}</span>
-  <button type="button" class="tls-year-picker__nav" (click)="nextPage()">
+  <button type="button" class="tls-year-picker__nav" tlsRipple (click)="nextPage()">
     <tls-icon name="chevron-right" aria-hidden="true" />
   </button>
 </div>
@@ -12,6 +12,7 @@
     <button
       type="button"
       class="tls-year-picker__cell"
+      tlsRipple
       [class.tls-year-picker__cell--selected]="isSelectedYear(year)"
       [class.tls-year-picker__cell--current]="isCurrentYear(year)"
       (click)="selectYear(year)"
