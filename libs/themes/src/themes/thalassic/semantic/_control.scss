@@ -10,3 +10,30 @@
   --control-focus-ring-offset: 2px;
   --control-focus-ring-color: var(--color-primary);
 }
+
+// Any control that cannot be used recedes the same way, so unavailability reads
+// alike on a field, a button or anything else that takes input. Its fill is a
+// faint wash of the content color over whatever the control sits on, rather than
+// a surface role of its own: relative to the surface beneath, it sits below an
+// enabled control in either mode, where any fixed surface light enough to show in
+// dark mode would sit above one and read as raised. Its ink is quieted rather
+// than faded out — still legible, but receding beside the controls that can be
+// used. Redeclared on a dark scope so each mix resolves against that scope's
+// colors rather than the root's.
+:root,
+.tls-dark {
+  --control-background-disabled: color-mix(in srgb, var(--color-on-surface) 4%, transparent);
+  --control-color-disabled: color-mix(in srgb, var(--color-on-surface-variant) 55%, transparent);
+}
+
+// Which way a filled control's hover and press step its fill's lightness: away
+// from its label, so feedback deepens the contrast the label reads against. A
+// light theme sets light labels on its fills, so the step darkens (-1); a dark
+// theme sets dark labels on lighter fills, so it lightens (1).
+:root {
+  --control-filled-state-direction: -1;
+}
+
+.tls-dark {
+  --control-filled-state-direction: 1;
+}

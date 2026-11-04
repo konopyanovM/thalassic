@@ -25,6 +25,38 @@
   }
 }
 
+// A filled control's feedback steps its fill's lightness away from its label —
+// the theme's `--control-filled-state-direction` — so a hover or a press deepens
+// the contrast its label reads against rather than washing it out. A fill too
+// close to the end it would step towards to show the step (a near-black fill that
+// would darken, a near-white one that would lighten) steps the other way instead;
+// its label is far above body-text contrast either way. Lightness in OKLCH, where
+// an equal step reads as an equal change across hues. The bounds keep the deepest
+// step, the press, clear of either end.
+$-filled-darken-floor: 0.3;
+$-filled-lighten-ceiling: 0.85;
+$-filled-hover-step: 0.05;
+$-filled-active-step: 0.09;
+
+// The fill one `$step` of lightness from where it rests, in the direction above.
+// Each `round(down, …, 1)` is 1 where the fill has room to step its way and 0
+// where it has none; the direction picks which of the two applies, and the sign
+// that results is the direction itself or, without room, its reverse.
+//
+// @example
+//   light theme (direction -1): fill l 0.60 → 0.55 on hover   // darkens, label is light
+//                               fill l 0.20 → 0.25 on hover   // no room below, lightens
+//   dark theme (direction 1):   fill l 0.75 → 0.80 on hover   // lightens, label is dark
+//                               fill l 0.95 → 0.90 on hover   // no room above, darkens
+@function _filled-state($block, $step) {
+  $direction: 'var(--control-filled-state-direction)';
+  $room-to-darken: 'round(down, l + #{1 - $-filled-darken-floor}, 1)';
+  $room-to-lighten: 'round(down, #{1 + $-filled-lighten-ceiling} - l, 1)';
+  $has-room: '((1 - #{$direction}) / 2 * #{$room-to-darken} + (1 + #{$direction}) / 2 * #{$room-to-lighten})';
+
+  @return unquote('oklch(from var(--#{$block}-color) calc(l + #{$direction} * #{$step} * (2 * #{$has-room} - 1)) c h)');
+}
+
 @mixin _active-state($block) {
   &:not(.#{$block}--disabled):active {
     @content;
@@ -37,12 +69,17 @@
 
     color: var(--#{$block}-on-color);
 
+    // The mix towards the surface stands in where relative colors are not
+    // supported: the declaration after it is dropped there, and wins everywhere
+    // else.
     @include _hover-focus-state($block) {
-      background-color: color-mix(in srgb, var(--#{$block}-color) 85%, var(--color-surface));
+      background-color: color-mix(in srgb, var(--#{$block}-color) 92%, var(--color-surface));
+      background-color: _filled-state($block, $-filled-hover-step);
     }
 
     @include _active-state($block) {
-      background-color: color-mix(in srgb, var(--#{$block}-color) 75%, var(--color-surface));
+      background-color: color-mix(in srgb, var(--#{$block}-color) 88%, var(--color-surface));
+      background-color: _filled-state($block, $-filled-active-step);
     }
   } @else if $treatment == tonal {
     background-color: var(--#{$block}-color-container);
@@ -65,7 +102,7 @@
     @include _active-state($block) {
       background-color: color-mix(
         in srgb,
-        var(--#{$block}-on-color-container) 16%,
+        var(--#{$block}-on-color-container) 12%,
         var(--#{$block}-color-container)
       );
     }
@@ -109,18 +146,21 @@
       background-color: color-mix(in srgb, var(--#{$block}-color) 15%, transparent);
     }
   } @else if $treatment == elevated {
+    // Raised on the surface a lifted panel takes, not only by its shadow: a shadow
+    // barely registers on a dark page, where the fill is what lifts the control.
+    background-color: var(--surface-raised);
     box-shadow: var(--shadow-sm);
 
     color: var(--#{$block}-color);
 
     @include _hover-focus-state($block) {
-      background-color: color-mix(in srgb, var(--#{$block}-color) 7.5%, var(--color-surface));
+      background-color: color-mix(in srgb, var(--#{$block}-color) 7.5%, var(--surface-raised));
     }
 
     @include _active-state($block) {
       box-shadow: var(--shadow-xs);
 
-      background-color: color-mix(in srgb, var(--#{$block}-color) 15%, var(--color-surface));
+      background-color: color-mix(in srgb, var(--#{$block}-color) 15%, var(--surface-raised));
     }
   } @else {
     @error "Unknown variant treatment `#{$treatment}`.";

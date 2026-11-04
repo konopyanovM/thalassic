@@ -25,18 +25,13 @@
   --field-border-color-focus: color-mix(in srgb, var(--color-outline), var(--color-primary));
 }
 
-// A disabled field recedes on every part at once. Its fill is a faint wash of the
-// content color over whatever the field sits on rather than a surface role of its
-// own: relative to the surface beneath, it sits below an enabled field in either
-// mode, where any fixed surface light enough to show in dark mode would sit above
-// one and read as raised. Its value and placeholder are quieted the way the label
-// of an unavailable text button is — still legible, but receding beside the
-// fields that take input — each keeping its own step, so an empty disabled field
-// still reads as empty. Redeclared on a dark scope so each mix resolves against
-// that scope's colors rather than the root's.
+// A disabled field recedes on every part at once, with the fill and ink every
+// unavailable control takes. Its placeholder is quieted by the same step from its
+// own color, so an empty disabled field still reads as empty. Redeclared on a dark
+// scope so each value resolves against that scope's colors rather than the root's.
 :root,
 .tls-dark {
-  --field-background-disabled: color-mix(in srgb, var(--color-on-surface) 4%, transparent);
-  --field-color-disabled: color-mix(in srgb, var(--color-on-surface-variant) 55%, transparent);
+  --field-background-disabled: var(--control-background-disabled);
+  --field-color-disabled: var(--control-color-disabled);
   --field-placeholder-color-disabled: color-mix(in srgb, var(--color-outline) 55%, transparent);
 }

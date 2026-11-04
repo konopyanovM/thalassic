@@ -23,11 +23,10 @@
   }
 
   // Unavailability overrides the treatment: a variant with a container of its
-  // own collapses to the same neutral one, so the state reads identically
-  // wherever it appears rather than asking the reader to recognise faded
-  // silhouettes. A variant without one gains none — a fill would make the
-  // control that cannot be pressed the heaviest in its row — and quiets its
-  // label instead.
+  // own collapses to the same faint one, so the state reads identically wherever
+  // it appears rather than asking the reader to recognise a faded version of each
+  // hue. A variant without one gains none — a fill would make the control that
+  // cannot be pressed the heaviest in its row — and only quiets its label.
   &--disabled {
     border-color: transparent;
 
@@ -41,8 +40,6 @@
     &.tls-button--text,
     &.tls-button--outlined {
       background-color: transparent;
-
-      color: var(--tls-button-disabled-quiet-on-color);
     }
 
     &.tls-button--outlined {
