@@ -34,3 +34,9 @@ export const PRESS_SCALE_PROPERTY = '--tls-press-scale';
  * with the contact.
  */
 export const RIPPLE_MOVE_SLOP_PX = 8;
+
+/**
+ * The `position` values that make an element positioned — the box its absolutely placed
+ * descendants, the ink layer among them, are laid out against.
+ */
+export const POSITIONED_VALUES: ReadonlySet<string> = new Set(['relative', 'absolute', 'fixed', 'sticky']);

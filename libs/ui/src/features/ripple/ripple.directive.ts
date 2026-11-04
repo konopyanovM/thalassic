@@ -17,6 +17,7 @@ import { pointerType } from '../../types';
 import { RippleConfig } from './ripple.config';
 import { RIPPLE_CONFIG } from './ripple.token';
 import {
+  POSITIONED_VALUES,
   PRESS_SCALE_PROPERTY,
   RIPPLE_ACTIVE_CLASS,
   RIPPLE_DIAMETER_PROPERTY,
@@ -128,7 +129,7 @@ export class RippleDirective {
       return;
     }
 
-    const bounds = host.getBoundingClientRect();
+    const bounds = this._inkSurface(host).getBoundingClientRect();
     const x = event.clientX - bounds.left;
     const y = event.clientY - bounds.top;
 
@@ -256,6 +257,18 @@ export class RippleDirective {
    */
   private _isFullMotion(): boolean {
     return this._document.documentElement.getAttribute(MOTION_ATTRIBUTE) === 'full';
+  }
+
+  /**
+   * The box the ink is laid over, which the contact point and the ink's reach are measured
+   * against. That is the host, unless the host is not positioned: its ink layer is then laid
+   * out against the nearest positioned ancestor instead — a stretched link inks the whole row
+   * its hit area covers, not just its own text — so that ancestor is what the ink covers.
+   */
+  private _inkSurface(host: HTMLElement): Element {
+    if (POSITIONED_VALUES.has(getComputedStyle(host).position)) return host;
+
+    return host.offsetParent ?? host;
   }
 
   /**

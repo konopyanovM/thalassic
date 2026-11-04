@@ -254,6 +254,30 @@ describe('RippleDirective', () => {
     expect(host.classList.contains(RIPPLE_RELEASED_CLASS)).toBe(false);
   });
 
+  it('measures an unpositioned host against the box its ink is laid over', () => {
+    // A stretched link inks the row its hit area covers: a 300×60 row whose link text sits
+    // 40px in, struck 100px across the row.
+    const row = document.createElement('div');
+    row.getBoundingClientRect = () => ({ left: 0, top: 0, width: 300, height: 60 }) as DOMRect;
+    Object.defineProperty(host, 'offsetParent', { configurable: true, get: () => row });
+    host.getBoundingClientRect = () => ({ left: 40, top: 20, width: 80, height: 20 }) as DOMRect;
+
+    pointerDown({ pointerType: 'pen', clientX: 100, clientY: 30 });
+
+    expect(host.style.getPropertyValue(RIPPLE_X_PROPERTY)).toBe('100px');
+    expect(host.style.getPropertyValue(RIPPLE_Y_PROPERTY)).toBe('30px');
+    expect(parseFloat(host.style.getPropertyValue(RIPPLE_DIAMETER_PROPERTY))).toBeCloseTo(Math.hypot(200, 30), 3);
+  });
+
+  it('measures a positioned host against its own box', () => {
+    host.style.position = 'relative';
+    Object.defineProperty(host, 'offsetParent', { configurable: true, get: () => document.body });
+
+    pointerDown({ pointerType: 'pen', clientX: 50, clientY: 25 });
+
+    expect(host.style.getPropertyValue(RIPPLE_X_PROPERTY)).toBe('50px');
+  });
+
   it('releases the ink of a pen lifted after sliding off the host', () => {
     pointerDown({ pointerType: 'pen', pointerId: 3 });
     document.body.dispatchEvent(new PointerEvent('pointerup', { pointerId: 3, bubbles: true }));
