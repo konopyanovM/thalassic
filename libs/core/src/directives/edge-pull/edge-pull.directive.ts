@@ -14,6 +14,7 @@ import {
   Signal,
 } from '@angular/core';
 import { DEFAULT_PAN_CONFIG, PAN_CONFIG, PanDirective, PanEvent } from '../pan';
+import { HAPTIC_FEEDBACK } from '../../features';
 import { registerCustomProperty, TravelPublisher } from '../../utils';
 import {
   EDGE_PULL_DEFAULT_MAX_DISTANCE,
@@ -92,6 +93,7 @@ export class EdgePullDirective {
   // Injections
   private readonly _elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly _renderer = inject(Renderer2);
+  private readonly _hapticFeedback = inject(HAPTIC_FEEDBACK);
   private readonly _travelPublisher = new TravelPublisher(
     this._renderer,
     this._elementRef.nativeElement,
@@ -359,6 +361,10 @@ export class EdgePullDirective {
     const element = this._elementRef.nativeElement;
     this._renderer.removeClass(element, `tls-edge-pull--${previous}`);
     this._renderer.addClass(element, `tls-edge-pull--${state}`);
+
+    // A tap as the pull arms, so the finger feels the point past which letting
+    // go commits it.
+    if (state === 'armed') this._hapticFeedback.impact('light');
   }
 
   /**

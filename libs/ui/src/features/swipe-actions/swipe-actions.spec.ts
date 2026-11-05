@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PanEvent } from '@thalassic/core';
+import { HAPTIC_FEEDBACK, PanEvent } from '@thalassic/core';
 import { SwipeActions } from './swipe-actions';
 
 /** A row whose end side is always offered and whose start side is optional. */
@@ -28,11 +28,11 @@ class SwipeActionsHost {
 
 describe('SwipeActions', () => {
   let fixture: ComponentFixture<SwipeActionsHost>;
+  let hapticImpact: ReturnType<typeof vi.fn>;
 
-  /** A release after travelling `deltaX`, carried at `velocityX` px/ms. */
-  function release(deltaX: number, velocityX: number): void {
-    const swipe = fixture.debugElement.children[0].componentInstance as SwipeActions;
-    const event = {
+  /** A pan event that has travelled `deltaX`, carried at `velocityX` px/ms. */
+  function panEvent(deltaX: number, velocityX: number): PanEvent {
+    return {
       deltaX,
       deltaY: 0,
       distance: Math.abs(deltaX),
@@ -42,13 +42,26 @@ describe('SwipeActions', () => {
       logicalDirection: deltaX < 0 ? 'left' : 'right',
       pointerType: 'touch',
     } as PanEvent;
+  }
 
-    (swipe as unknown as { onPanEnd: (event: PanEvent) => void }).onPanEnd(event);
+  /** The row's pan handlers, which the template binds to its pan directive. */
+  function panHandlers(): Record<'onPanStart' | 'onPanMove' | 'onPanEnd', (event: PanEvent) => void> {
+    return fixture.debugElement.children[0].componentInstance as unknown as Record<
+      'onPanStart' | 'onPanMove' | 'onPanEnd',
+      (event: PanEvent) => void
+    >;
+  }
+
+  /** A release after travelling `deltaX`, carried at `velocityX` px/ms. */
+  function release(deltaX: number, velocityX: number): void {
+    panHandlers().onPanEnd(panEvent(deltaX, velocityX));
   }
 
   beforeEach(async () => {
+    hapticImpact = vi.fn();
     await TestBed.configureTestingModule({
       imports: [SwipeActionsHost],
+      providers: [{ provide: HAPTIC_FEEDBACK, useValue: { impact: hapticImpact } }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SwipeActionsHost);
@@ -86,5 +99,21 @@ describe('SwipeActions', () => {
     release(200, 3);
 
     expect(fixture.componentInstance.startCommitted()).toBe(1);
+  });
+
+  it('taps once as a reveal arms, and again only after it disarms', () => {
+    const handlers = panHandlers();
+    handlers.onPanStart(panEvent(0, 0));
+
+    handlers.onPanMove(panEvent(-40, 0));
+    expect(hapticImpact).not.toHaveBeenCalled();
+
+    handlers.onPanMove(panEvent(-96, 0));
+    handlers.onPanMove(panEvent(-110, 0));
+    expect(hapticImpact).toHaveBeenCalledExactlyOnceWith('light');
+
+    handlers.onPanMove(panEvent(-40, 0));
+    handlers.onPanMove(panEvent(-96, 0));
+    expect(hapticImpact).toHaveBeenCalledTimes(2);
   });
 });

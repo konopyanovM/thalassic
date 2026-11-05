@@ -1,8 +1,14 @@
+<!-- Text rather than `type="number"`: the field reads the number itself (see
+     the component's documentation). `autocorrect` and `spellcheck` are off so
+     the keyboard never rewrites a figure as a word. -->
 <input
-  type="number"
+  type="text"
+  autocorrect="off"
+  spellcheck="false"
   [name]="name()"
   [class]="classes()"
   [attr.id]="effectiveInputId()"
+  [attr.inputmode]="effectiveInputMode()"
   [attr.aria-label]="ariaLabel() ?? null"
   [attr.aria-labelledby]="labelledBy()"
   [attr.aria-invalid]="invalid() ? 'true' : null"
@@ -12,12 +18,11 @@
   [placeholder]="placeholder()"
   [disabled]="disabled()"
   [readonly]="readonly()"
-  [value]="value() ?? ''"
-  [attr.min]="min() ?? null"
-  [attr.max]="max() ?? null"
-  [step]="step()"
+  [value]="text()"
+  (beforeinput)="onBeforeInput($event)"
   (input)="onInput($event)"
-  (change)="onChange($event)"
+  (change)="onChange()"
+  (keydown)="onKeydown($event)"
   (blur)="touched.set(true)"
 />
 @if (pending()) {

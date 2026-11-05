@@ -7,7 +7,6 @@ export interface InputNumberConfig {
   placeholder: string;
   fluid: boolean;
   step: number;
-  hideArrows: boolean;
 }
 
 export const DEFAULT_INPUT_NUMBER_CONFIG: InputNumberConfig = {
@@ -16,5 +15,4 @@ export const DEFAULT_INPUT_NUMBER_CONFIG: InputNumberConfig = {
   placeholder: '',
   fluid: false,
   step: 1,
-  hideArrows: true,
 };

@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HAPTIC_FEEDBACK } from '../../features';
 import {
   EDGE_PULL_DEFAULT_REVERSE_DEAD_ZONE,
   EDGE_PULL_DEFAULT_THRESHOLD,
@@ -70,6 +71,7 @@ describe('EdgePullDirective', () => {
   let fixture: ComponentFixture<HostComponent>;
   let host: HostComponent;
   let scroller: HTMLElement;
+  let hapticImpact: ReturnType<typeof vi.fn>;
 
   // A finger has to travel the threshold over the resistance for the pull to
   // reach it; a little more clears it.
@@ -117,7 +119,11 @@ describe('EdgePullDirective', () => {
   const distanceStyle = (): string => scroller.style.getPropertyValue('--tls-edge-pull-distance');
 
   beforeEach(() => {
-    TestBed.configureTestingModule({ imports: [HostComponent] });
+    hapticImpact = vi.fn();
+    TestBed.configureTestingModule({
+      imports: [HostComponent],
+      providers: [{ provide: HAPTIC_FEEDBACK, useValue: { impact: hapticImpact } }],
+    });
     fixture = TestBed.createComponent(HostComponent);
     host = fixture.componentInstance;
     fixture.detectChanges();
@@ -169,6 +175,8 @@ describe('EdgePullDirective', () => {
     drag(-ARMING_TRAVEL);
     expect(scroller.className).toContain('tls-edge-pull--armed');
     expect(scroller.className).toContain('tls-edge-pull--end');
+
+    expect(hapticImpact).toHaveBeenCalledExactlyOnceWith('light');
 
     release(-ARMING_TRAVEL);
 

@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HAPTIC_FEEDBACK } from '../../features';
 import {
   PULL_TO_REFRESH_DEFAULT_MIN_REFRESHING_TIME,
   PULL_TO_REFRESH_DEFAULT_THRESHOLD,
@@ -79,6 +80,7 @@ describe('PullToRefreshDirective', () => {
   let fixture: ComponentFixture<HostComponent>;
   let host: HostComponent;
   let scroller: HTMLElement;
+  let hapticImpact: ReturnType<typeof vi.fn>;
 
   // jsdom lays nothing out, so the scroll metrics the gesture reads are defined
   // on the element directly.
@@ -110,7 +112,11 @@ describe('PullToRefreshDirective', () => {
   const distanceStyle = (): string => scroller.style.getPropertyValue('--tls-pull-distance');
 
   beforeEach(() => {
-    TestBed.configureTestingModule({ imports: [HostComponent] });
+    hapticImpact = vi.fn();
+    TestBed.configureTestingModule({
+      imports: [HostComponent],
+      providers: [{ provide: HAPTIC_FEEDBACK, useValue: { impact: hapticImpact } }],
+    });
     fixture = TestBed.createComponent(HostComponent);
     host = fixture.componentInstance;
     fixture.detectChanges();
@@ -188,6 +194,20 @@ describe('PullToRefreshDirective', () => {
     fixture.detectChanges();
 
     expect(host.refreshCount).toBe(1);
+  });
+
+  it('taps once as the pull arms, and not for a pull short of the threshold', () => {
+    setScrollMetrics(0);
+
+    pull(40);
+    expect(hapticImpact).not.toHaveBeenCalled();
+
+    scroller.dispatchEvent(createPointerEvent('pointermove', { x: 50, y: 250, timeStamp: 48 }));
+    scroller.dispatchEvent(createPointerEvent('pointermove', { x: 50, y: 260, timeStamp: 64 }));
+
+    // Further travel past the threshold is the same armed pull.
+    expect(hapticImpact).toHaveBeenCalledTimes(1);
+    expect(hapticImpact).toHaveBeenCalledWith('light');
   });
 
   it('holds the released pull at the arming distance, not where the finger let go', () => {

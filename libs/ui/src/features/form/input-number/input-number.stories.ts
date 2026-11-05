@@ -12,7 +12,6 @@ const meta: Meta<InputNumber> = {
     variant: 'outlined',
     fluid: false,
     step: 1,
-    hideArrows: true,
     ...STORY_FORM_CONTROL_ARGS,
   },
   argTypes: {
@@ -37,4 +36,9 @@ export const InputNumberStory: Story = {
 
 export const Plain: Story = {
   args: { variant: 'plain', value: 60 },
+};
+
+/** A fractional step takes decimals, typed with either separator and shown in the page's locale. */
+export const Decimal: Story = {
+  args: { value: 62.5, step: 0.5, min: 0 },
 };

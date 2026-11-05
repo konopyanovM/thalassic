@@ -18,7 +18,7 @@ import {
   viewChild,
   WritableSignal,
 } from '@angular/core';
-import { PanDirective, PanEvent } from '@thalassic/core';
+import { HAPTIC_FEEDBACK, PanDirective, PanEvent } from '@thalassic/core';
 import { color } from '../../types';
 import { SWIPE_ACTIONS_CONFIG } from './swipe-actions.token';
 
@@ -63,6 +63,7 @@ export class SwipeActions {
   // Injections
   private readonly _config = inject(SWIPE_ACTIONS_CONFIG);
   private readonly _directionality = inject(Directionality);
+  private readonly _hapticFeedback = inject(HAPTIC_FEEDBACK);
 
   // View children
   private readonly contentElement =
@@ -231,8 +232,10 @@ export class SwipeActions {
 
   /**
    * Tracks whether releasing at this reveal would commit, mirroring the answer
-   * onto the panels as a class and onto `armedChanged`. Both writes bypass
-   * bindings: this runs on the move stream, outside the Angular zone.
+   * onto the panels as a class and onto `armedChanged`, and marking the moment
+   * it arms with a light haptic tap, as a native list's full swipe does. The
+   * writes bypass bindings: this runs on the move stream, outside the Angular
+   * zone.
    */
   private _updateArmed(offset: number): void {
     const armed = Math.abs(offset) >= this.commitThreshold();
@@ -255,6 +258,7 @@ export class SwipeActions {
         armed && offset < 0,
       );
     }
+    if (armed) this._hapticFeedback.impact('light');
     this.armedChanged.emit(armed);
   }
 }

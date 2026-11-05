@@ -15,6 +15,7 @@ import {
   Signal,
 } from '@angular/core';
 import { DEFAULT_PAN_CONFIG, PAN_CONFIG, PanDirective, PanEvent } from '../pan';
+import { HAPTIC_FEEDBACK } from '../../features';
 import { registerCustomProperty, TravelPublisher } from '../../utils';
 import {
   PULL_TO_REFRESH_DEFAULT_MAX_DISTANCE,
@@ -80,6 +81,7 @@ export class PullToRefreshDirective {
   // Injections
   private readonly _elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly _renderer = inject(Renderer2);
+  private readonly _hapticFeedback = inject(HAPTIC_FEEDBACK);
   private readonly _travelPublisher = new TravelPublisher(
     this._renderer,
     this._elementRef.nativeElement,
@@ -259,6 +261,10 @@ export class PullToRefreshDirective {
     const element = this._elementRef.nativeElement;
     this._renderer.removeClass(element, `tls-pull-to-refresh--${previous}`);
     this._renderer.addClass(element, `tls-pull-to-refresh--${state}`);
+
+    // A tap as the pull arms, so the finger feels the point past which letting
+    // go refreshes — the moment a native refresh control marks the same way.
+    if (state === 'armed') this._hapticFeedback.impact('light');
   }
 
   /**
