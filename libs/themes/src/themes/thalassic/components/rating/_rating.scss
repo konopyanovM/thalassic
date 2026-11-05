@@ -99,7 +99,7 @@
     // the inline axis would overlap the adjacent option's hit area and steal its
     // edge taps, so the inline extent stays the option's own slice.
     @media (pointer: coarse) {
-      :root:not([data-touch-targets='off']) & {
+      :root[data-touch-targets='expanded'] & {
         inset-block: min(
           0px,
           calc((var(--tls-rating-star-size) - var(--control-touch-target)) / 2)

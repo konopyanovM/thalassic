@@ -8,9 +8,9 @@
 // overflow is symmetric and `min(0px, …)` never shrinks a control already at or above
 // the target.
 //
-// Gated on a coarse pointer and on the app-level opt-out reflected onto `:root`
-// (`data-touch-targets='off'`). Absent that attribute the expansion is active — touch
-// targets are accessible by default; disabling is opt-in through the UI config.
+// Gated on a coarse pointer and on the app-level opt-in reflected onto `:root`
+// (`data-touch-targets='expanded'`, from `accessibility.expandTouchTargets` in the UI
+// config). Absent that attribute controls keep their own tap area.
 //
 // Spacing constraint: the overflow reaches (`--control-touch-target` − visual size) / 2
 // beyond each edge. Adjacent expandable controls must be separated by at least that much
@@ -20,7 +20,7 @@
 // with target spacing — space clustered controls rather than packing them tight.
 @mixin touch-target($height) {
   @media (pointer: coarse) {
-    :root:not([data-touch-targets='off']) &::after {
+    :root[data-touch-targets='expanded'] &::after {
       content: '';
 
       position: absolute;

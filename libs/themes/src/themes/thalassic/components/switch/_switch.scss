@@ -2,7 +2,10 @@
 
 .tls-switch {
   --tls-switch-width: 48px;
-  --tls-switch-height: var(--control-height-sm);
+  // A fixed size of its own rather than a step of the control height scale: the
+  // track's proportions are set against its fixed width, and the touch scale
+  // would stretch it past the platforms' own switches (31–32px tall).
+  --tls-switch-height: 28px;
   --tls-switch-handle-gap: 4px;
   --tls-switch-handle-size: calc(
     var(--tls-switch-height) - (var(--tls-switch-handle-gap) * 2) -

@@ -169,13 +169,22 @@ export const provideThalassicUIConfig = (
       provide: RIPPLE_CONFIG,
       useValue: deepMerge(DEFAULT_RIPPLE_CONFIG, config.ripple),
     },
-    // Reflect the touch-target opt-out onto the document root. Absent the attribute the
-    // expansion is active (accessible by default); this only disables it. The overflow is
-    // transparent, so a late (browser-only) reflection causes no visual flash.
+    // Reflect the touch-target opt-in onto the document root, where the expansion reads
+    // it. The overflow is transparent, so a late (browser-only) reflection causes no
+    // visual flash.
     provideEnvironmentInitializer(() => {
-      if (accessibility.expandTouchTargets) return;
+      if (!accessibility.expandTouchTargets) return;
       if (!isPlatformBrowser(inject(PLATFORM_ID))) return;
-      inject(DOCUMENT).documentElement.setAttribute('data-touch-targets', 'off');
+      inject(DOCUMENT).documentElement.setAttribute('data-touch-targets', 'expanded');
+    }),
+    // Reflect the touch-control opt-in onto the document root, where the control height
+    // scale reads it. Unlike the transparent hit area, the larger controls change layout,
+    // so a page rendered on the server keeps the base heights until the browser reflects
+    // the attribute.
+    provideEnvironmentInitializer(() => {
+      if (!accessibility.enlargeTouchControls) return;
+      if (!isPlatformBrowser(inject(PLATFORM_ID))) return;
+      inject(DOCUMENT).documentElement.setAttribute('data-touch-controls', 'large');
     }),
     // Cross-cutting form defaults
     {

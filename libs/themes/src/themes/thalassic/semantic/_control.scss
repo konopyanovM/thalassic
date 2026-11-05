@@ -11,6 +11,20 @@
   --control-focus-ring-color: var(--color-primary);
 }
 
+// The touch scale: each size takes the next step up, so md reaches the 44px
+// minimum touch target as a visible control rather than only as an invisible hit
+// area. Keyed to the primary pointer, so a touch-capable laptop driven by its
+// trackpad keeps the base scale. Opt-in through the UI config
+// (`accessibility.enlargeTouchControls`), reflected onto `:root` as
+// `data-touch-controls='large'`, because it changes layout.
+@media (pointer: coarse) {
+  :root[data-touch-controls='large'] {
+    --control-height-sm: 36px;
+    --control-height-md: 44px;
+    --control-height-lg: 52px;
+  }
+}
+
 // Any control that cannot be used recedes the same way, so unavailability reads
 // alike on a field, a button or anything else that takes input. Its fill is a
 // faint wash of the content color over whatever the control sits on, rather than
