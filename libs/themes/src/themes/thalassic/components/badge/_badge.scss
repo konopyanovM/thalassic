@@ -64,6 +64,12 @@
     --tls-badge-offset: 0px;
   }
 
+  // In the flow of the content rather than pinned over a corner of it, so the
+  // position and inset modifiers have nothing to act on.
+  &--inline &__indicator {
+    position: static;
+  }
+
   &--bordered &__indicator {
     --tls-badge-border-width: 2px;
     --tls-badge-border-color: var(--color-surface);

@@ -35,6 +35,7 @@ const meta: Meta<BadgeComponent> = {
     hidden: false,
     inset: false,
     bordered: false,
+    inline: false,
   },
   argTypes: {
     color: {
@@ -95,4 +96,22 @@ export const Bordered: Story = {
   args: {
     bordered: true,
   },
+};
+
+/** A count standing on its own in a line of content, with nothing to decorate. */
+export const Inline: Story = {
+  args: {
+    inline: true,
+    value: 2,
+    ariaLabel: '2 unread replies',
+  },
+  render: args => ({
+    props: args,
+    template: `
+      <span style="display: inline-flex; align-items: center; gap: 8px">
+        Help and support
+        <tls-badge ${argsToTemplate(args)} />
+      </span>
+    `,
+  }),
 };

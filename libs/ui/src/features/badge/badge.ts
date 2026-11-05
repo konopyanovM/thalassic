@@ -45,6 +45,15 @@ export class Badge {
   public readonly bordered: InputSignalWithTransform<boolean, unknown> = input(false, {
     transform: booleanAttribute,
   });
+  /**
+   * Sets the indicator in the flow of the content instead of over a corner of
+   * it — a standalone count, such as one at the end of a list row or beside a
+   * label, where there is no element for it to decorate. `position` and
+   * `inset` have nothing to place it against then and are ignored.
+   */
+  public readonly inline: InputSignalWithTransform<boolean, unknown> = input(false, {
+    transform: booleanAttribute,
+  });
   public readonly ariaLabel = input<string | undefined>(undefined);
 
   // Computed
@@ -86,6 +95,7 @@ export class Badge {
     if (this.dot()) array.push(`${className}--dot`);
     if (this.inset()) array.push(`${className}--inset`);
     if (this.bordered()) array.push(`${className}--bordered`);
+    if (this.inline()) array.push(`${className}--inline`);
 
     return array;
   });
