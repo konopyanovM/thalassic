@@ -110,6 +110,25 @@ describe('FormItem', () => {
       expect(inputElement.getAttribute('aria-describedby')).toBe(hint.id);
     });
 
+    it('should mark the item as carrying a hint only when one is set', async () => {
+      const hintFixture = TestBed.createComponent(HintHostComponent);
+      await hintFixture.whenStable();
+      const item: HTMLElement = hintFixture.nativeElement.querySelector('tls-form-item');
+
+      expect(item.classList).toContain('tls-form-item--has-hint');
+      expect(fixture.nativeElement.classList).not.toContain('tls-form-item--has-hint');
+    });
+
+    it('should keep the hint mark while an error takes the hint\'s place', async () => {
+      const hintFixture = TestBed.createComponent(HintHostComponent);
+      hintFixture.componentInstance.invalid.set(true);
+      await hintFixture.whenStable();
+      const item: HTMLElement = hintFixture.nativeElement.querySelector('tls-form-item');
+
+      expect(hintFixture.nativeElement.querySelector('.form-item-hint')).toBeNull();
+      expect(item.classList).toContain('tls-form-item--has-hint');
+    });
+
     it('should give way to a displayed error', async () => {
       const hintFixture = TestBed.createComponent(HintHostComponent);
       hintFixture.componentInstance.invalid.set(true);

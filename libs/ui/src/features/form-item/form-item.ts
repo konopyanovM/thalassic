@@ -128,6 +128,9 @@ export class FormItem {
       array.push(`${className}--label-${this.labelPosition()}`);
       if (this.spread()) array.push(`${className}--spread`);
     }
+    // Set by whether a hint is configured, never by what the footer shows now: an
+    // error taking the hint's place must not change the row's layout.
+    if (this.hint()) array.push(`${className}--has-hint`);
     if (this.reserveErrorSpace()) array.push(`${className}--error-space-reserved`);
     if (this.reserveLabelSpace()) array.push(`${className}--label-space-reserved`);
 

@@ -41,6 +41,51 @@
     }
   }
 
+  // A spread row whose inline label carries a hint reads the label and the hint
+  // as one block of text, so the control is centred against all of it, as a
+  // trailing switch in a platform list is, rather than against the label's line
+  // alone. Keyed off the hint being configured rather than off the footer being
+  // shown: the footer also carries errors, and a row that rearranged itself as
+  // one appeared would move the control while it is being corrected. An error
+  // taking a hint's place leaves the layout as it was. The main row dissolves
+  // into the grid so its label and control can take their own cells; the markup,
+  // and with it the control's description, is untouched.
+  &.tls-form-item--spread.tls-form-item--has-hint:is(
+      .tls-form-item--label-start,
+      .tls-form-item--label-end
+    ) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'label control'
+      'footer control';
+    column-gap: var(--spacing-2);
+
+    .form-item-main {
+      display: contents;
+    }
+
+    .form-item-label {
+      grid-area: label;
+    }
+
+    .form-item-control {
+      grid-area: control;
+      align-self: center;
+    }
+
+    .form-item-footer {
+      grid-area: footer;
+    }
+  }
+
+  &.tls-form-item--spread.tls-form-item--has-hint.tls-form-item--label-end {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      'control label'
+      'control footer';
+  }
+
   &:not(.tls-form-item--error-space-reserved) {
     .form-item-footer {
       min-height: auto;
