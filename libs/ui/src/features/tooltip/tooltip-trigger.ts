@@ -1,3 +1,4 @@
+import { InputModalityDetector } from '@angular/cdk/a11y';
 import { TOUCH_HANDOVER_WINDOW_MS } from './tooltip.constants';
 import { ConnectedPosition, FlexibleConnectedPositionStrategyOrigin } from '@angular/cdk/overlay';
 import {
@@ -49,6 +50,7 @@ export abstract class TooltipTrigger implements TooltipOwner, OnDestroy {
   protected readonly _tooltipService = inject(TooltipService);
   protected readonly _renderer = inject(Renderer2);
   protected readonly _config = inject(TOOLTIP_CONFIG);
+  private readonly _inputModalityDetector = inject(InputModalityDetector);
 
   // Inputs
   public readonly tooltipDisabled: InputSignal<boolean> = input<boolean>(false);
@@ -163,6 +165,21 @@ export abstract class TooltipTrigger implements TooltipOwner, OnDestroy {
   /** Whether a focus arriving now was handed over by a pointer rather than a keyboard. */
   protected _followsPointer(): boolean {
     return Date.now() - this._lastPointerAt < TOUCH_HANDOVER_WINDOW_MS;
+  }
+
+  /**
+   * Whether a focus arriving now came from the keyboard — the one reader the
+   * focus trigger serves. Focus handed over by a press on the control is not it:
+   * a tap's tooltip was already told not to claim the activation, and a click's
+   * would outlive the hover that click just retired. Neither is focus a script
+   * moves while a pointer is in use, such as a closing dialog returning it to its
+   * opener after a tap on the backdrop: the latest input says which it was.
+   */
+  protected _isKeyboardFocus(): boolean {
+    if (this._followsPointer()) return false;
+
+    const modality = this._inputModalityDetector.mostRecentModality;
+    return modality !== 'mouse' && modality !== 'touch';
   }
 
   /** Whether the element is, or wraps, a control a tap activates. */

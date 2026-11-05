@@ -28,6 +28,11 @@
   --tls-dialog-backdrop: rgb(0 0 0 / 0.4);
 
   background-color: var(--tls-dialog-backdrop);
+
+  // Fades in with the dialog and out with it on close, at the dialog's own pace.
+  @include mixins.motion(essential) {
+    transition: opacity var(--motion-default) var(--motion-ease-out);
+  }
 }
 
 .tls-dialog {

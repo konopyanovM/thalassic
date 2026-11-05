@@ -1,5 +1,6 @@
 export * from './after-leave-animation';
 export * from './dispose-after-leave-animation';
+export * from './fade-out-backdrop';
 export * from './overlay-manager';
 export * from './overlay.constants';
 export * from './settle-after-render';

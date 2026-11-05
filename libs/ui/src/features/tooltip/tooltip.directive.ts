@@ -106,11 +106,7 @@ export class TooltipDirective extends TooltipTrigger {
     // is for. `focusin` does, and the control that took focus is what the tooltip describes.
     const focused = event.target;
 
-    // The focus trigger serves readers who reach the control without a pointer;
-    // focus handed over by a tap or a click is not that reader — a tap's
-    // tooltip was already told not to claim the activation, and a click's
-    // would outlive the hover that click just retired.
-    if (this._followsPointer()) return;
+    if (!this._isKeyboardFocus()) return;
 
     // No cursor to anchor to; a focus-triggered tooltip always anchors to the element.
     this._showHost('focus', null, focused instanceof HTMLElement ? focused : null);

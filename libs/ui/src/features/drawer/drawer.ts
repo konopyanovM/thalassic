@@ -12,7 +12,7 @@ import {
   signal,
 } from '@angular/core';
 import { MOTION_ATTRIBUTE, PanDirective, PanEvent } from '@thalassic/core';
-import { afterLeaveAnimation, whenAnimationsFinish } from '../../abstract/overlay';
+import { afterLeaveAnimation, fadeOutBackdrop, whenAnimationsFinish } from '../../abstract/overlay';
 import { decideCommit, SheetMotion } from '../../abstract/sheet-motion';
 import { Icon } from '../icon';
 import { DrawerPanelConfig } from './drawer.config';
@@ -197,6 +197,9 @@ export class Drawer extends CdkDialogContainer {
 
     this._closing = true;
     const host = this._elementRef.nativeElement;
+    // Every exit from here on — reversing an entrance, sliding off-screen or
+    // back into the origin — takes the dimming with it.
+    fadeOutBackdrop(this._dialogRef.overlayRef.backdropElement, this._dragRenderer);
 
     const running = this._entrance.filter(animation => animation.playState === 'running');
     if (running.length) {

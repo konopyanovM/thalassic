@@ -194,6 +194,16 @@ describe('DrawerService', () => {
       expect(closed).toHaveBeenCalled();
     });
 
+    it('fades its backdrop out with the panel rather than after it', async () => {
+      const drawerRef = service.open(DrawerContentComponent);
+      await settle();
+      const backdrop = document.querySelector<HTMLElement>('.tls-drawer-backdrop');
+
+      drawerRef.close();
+
+      expect(backdrop?.style.opacity).toBe('0');
+    });
+
     it('leaves Escape inert when escape dismissal is off', async () => {
       const drawerRef = service.open(DrawerContentComponent, { escapeClose: false });
       const closed = vi.fn();

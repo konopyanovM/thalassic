@@ -1,3 +1,4 @@
+import { InputModalityDetector } from '@angular/cdk/a11y';
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Button } from '../button';
@@ -156,6 +157,18 @@ describe('TooltipDirective', () => {
       new PointerEvent('pointerdown', { bubbles: true, pointerType: 'mouse' }),
     );
     focus(element);
+    await fixture.whenStable();
+
+    expect(queryTooltip()).toBeNull();
+  });
+
+  it('stays down for focus a script hands back while a pointer is in use', async () => {
+    // Stands in for a dialog closed by a tap on its backdrop, returning focus to its opener.
+    vi.spyOn(TestBed.inject(InputModalityDetector), 'mostRecentModality', 'get').mockReturnValue(
+      'touch',
+    );
+
+    focus(queryElement('.plain'));
     await fixture.whenStable();
 
     expect(queryTooltip()).toBeNull();

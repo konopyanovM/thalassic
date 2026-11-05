@@ -110,11 +110,7 @@ export class TooltipDelegateDirective extends TooltipTrigger {
     const item = this._resolveItem(event.target);
     if (!item) return;
 
-    // The focus trigger serves readers who reach the item without a pointer;
-    // focus handed over by a tap or a click is not that reader — a tap's
-    // tooltip was already told not to claim the activation, and a click's
-    // would outlive the hover that click just retired.
-    if (this._followsPointer()) return;
+    if (!this._isKeyboardFocus()) return;
 
     // No cursor to anchor to; a focus-triggered tooltip always anchors to the item. An item that
     // is a composite holds the control focus actually landed on, and that is what it describes.

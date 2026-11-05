@@ -1,7 +1,7 @@
 import { CdkDialogContainer, DialogRef as CdkDialogRef } from '@angular/cdk/dialog';
 import { CdkPortalOutlet } from '@angular/cdk/portal';
-import { Component, computed, inject, signal } from '@angular/core';
-import { afterLeaveAnimation } from '../../abstract/overlay';
+import { Component, computed, inject, Renderer2, signal } from '@angular/core';
+import { afterLeaveAnimation, fadeOutBackdrop } from '../../abstract/overlay';
 import { Button } from '../button';
 import { Icon } from '../icon';
 import { DialogConfig } from './dialog.config';
@@ -17,6 +17,8 @@ export class Dialog extends CdkDialogContainer {
   // Injections
   private readonly _tlsConfig = inject(DIALOG_CONFIG);
   private readonly _dialogRef = inject(CdkDialogRef);
+  /** Named apart from the CDK container's own `_renderer`, which is private to it. */
+  private readonly _renderer2 = inject(Renderer2);
 
   // State
   private readonly _state = signal<'enter' | 'leave'>('enter');
@@ -45,6 +47,7 @@ export class Dialog extends CdkDialogContainer {
     this._closing = true;
 
     this._state.set('leave');
+    fadeOutBackdrop(this._dialogRef.overlayRef.backdropElement, this._renderer2);
     afterLeaveAnimation(this._elementRef.nativeElement, () =>
       this._dialogRef.close(result),
     );
