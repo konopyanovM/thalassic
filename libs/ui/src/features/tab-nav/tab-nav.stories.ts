@@ -70,3 +70,15 @@ type Story = StoryObj<TabNavDirective>;
 export const TabNav: Story = {
   args: {},
 };
+
+/**
+ * An inset-grouped list: full-bleed rows on one rounded surface, separated by
+ * lines drawn inside the rows.
+ */
+export const Grouped: Story = {
+  args: {
+    variant: 'grouped',
+    orientation: 'vertical',
+    divider: true,
+  },
+};

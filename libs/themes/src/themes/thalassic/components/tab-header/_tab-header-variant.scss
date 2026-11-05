@@ -148,4 +148,59 @@
       }
     }
   }
+
+  // Grouped — an inset-grouped list (Apple HIG): one rounded surface whose
+  // items are full-bleed rows meeting edge to edge, so a row's fill, hover and
+  // ink reach the surface's edges. The outer rows take the surface's corners
+  // (see the orientation partial), which the ink and focus ring inherit, and a
+  // divided strip draws its separators inside the rows (see the divider
+  // partial) rather than in a gap between them.
+  &.tls-tab-header--grouped {
+    --tls-tab-header-border-radius: var(--radius-lg);
+    // The surface, the selected row and the hover fill each yield to an
+    // inherited `--tls-tab-header-grouped-*` hook, so a consumer can recolour
+    // them from any ancestor: these declarations sit on the header element
+    // itself, where a value set by an ancestor would otherwise lose to them.
+    --tls-tab-header-background-color: var(
+      --tls-tab-header-grouped-track,
+      var(--color-surface-container)
+    );
+    --tls-tab-header-active-background-color: var(
+      --tls-tab-header-grouped-active,
+      var(--color-surface-container-highest)
+    );
+    --tls-tab-header-hover-background-color: var(
+      --tls-tab-header-grouped-hover,
+      var(--color-surface-container-high)
+    );
+    // Rows of a list read at full contrast whether or not they are selected;
+    // the fill alone marks the selection.
+    --tls-tab-header-label-color: var(--color-on-surface);
+    --tls-tab-header-active-label-color: var(--color-on-surface);
+
+    border-radius: var(--tls-tab-header-border-radius);
+
+    background-color: var(--tls-tab-header-background-color);
+
+    .tls-tab-header__item {
+      border: none;
+
+      @include core.hover-capable {
+        &:hover:not(.tls-tab-header__item--active) {
+          background-color: var(--tls-tab-header-hover-background-color);
+        }
+      }
+
+      &.tls-tab-header__item--active {
+        background-color: var(--tls-tab-header-active-background-color);
+      }
+
+      // Both shapes of the interactive element: a child control (the
+      // button inside `tls-tabs`) or the item itself (the nav anchor).
+      &.tls-tab-header__item-control,
+      .tls-tab-header__item-control {
+        padding: var(--spacing-3) var(--spacing-4);
+      }
+    }
+  }
 }

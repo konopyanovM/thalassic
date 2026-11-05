@@ -5,6 +5,19 @@
   &.tls-tab-header--horizontal {
     overflow-x: auto;
     overflow-y: hidden;
+
+    // Grouped — the outer rows take the surface's corners on their outer side.
+    &.tls-tab-header--grouped .tls-tab-header__item {
+      &:first-child {
+        border-start-start-radius: var(--tls-tab-header-border-radius);
+        border-end-start-radius: var(--tls-tab-header-border-radius);
+      }
+
+      &:last-child {
+        border-start-end-radius: var(--tls-tab-header-border-radius);
+        border-end-end-radius: var(--tls-tab-header-border-radius);
+      }
+    }
   }
 
   // Vertical
@@ -58,6 +71,19 @@
           border-inline-start-width: 0;
           border-block-start-width: 0;
         }
+      }
+    }
+
+    // Grouped — the outer rows take the surface's corners on their outer side.
+    &.tls-tab-header--grouped .tls-tab-header__item {
+      &:first-child {
+        border-start-start-radius: var(--tls-tab-header-border-radius);
+        border-start-end-radius: var(--tls-tab-header-border-radius);
+      }
+
+      &:last-child {
+        border-end-start-radius: var(--tls-tab-header-border-radius);
+        border-end-end-radius: var(--tls-tab-header-border-radius);
       }
     }
   }

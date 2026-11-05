@@ -11,7 +11,10 @@
 // opacity would fade the line, so the boundary is drawn on the preceding
 // item's trailing `::after` — an element that is not faded — keeping it at full
 // strength. Each boundary is therefore drawn exactly once.
-.tls-tab-header--divided {
+//
+// A grouped strip is the exception (see the block below): its rows meet edge
+// to edge, so there is no gap to draw into.
+.tls-tab-header--divided:not(.tls-tab-header--grouped) {
   .tls-tab-header__item {
     position: relative;
   }
@@ -80,6 +83,98 @@
       .tls-tab-header__item:has(+ .tls-tab-header__item--disabled)::after {
         inset-block-end: calc(var(--tls-tab-header-padding) / -2);
       }
+    }
+  }
+}
+
+// Separators of a grouped strip. Its rows meet edge to edge, and each row's
+// pseudo-elements carry its ink and its touch target, so a separator is a
+// one-pixel background line painted along the row's own edge — beneath the
+// ink, over the row's fill. Each row has two such layers, one per edge, each
+// switched on by a 0/1 factor on its length; the same boundary rule as above
+// decides which: a boundary is normally drawn along the leading edge of the
+// row after it, and along the trailing edge of the row before it when the row
+// after it is disabled and would fade it.
+//
+// A selected row is a filled block of its own, so the lines along its edges
+// are left out rather than cut into its fill.
+//
+// In a vertical strip `--tls-tab-header-divider-inset` holds the line back from
+// the start edge — by the row's own start padding unless set, so the line
+// begins where the row's content does, or further to begin under a label
+// rather than its leading icon — while it runs on to the end edge.
+.tls-tab-header--divided.tls-tab-header--grouped {
+  .tls-tab-header__item {
+    --tls-tab-header-divider-leading: 0;
+    --tls-tab-header-divider-trailing: 0;
+
+    background-image: linear-gradient(
+        var(--tls-tab-header-border-color),
+        var(--tls-tab-header-border-color)
+      ),
+      linear-gradient(
+        var(--tls-tab-header-border-color),
+        var(--tls-tab-header-border-color)
+      );
+    background-repeat: no-repeat;
+  }
+
+  .tls-tab-header__item:not(
+      :first-child,
+      .tls-tab-header__item--disabled,
+      .tls-tab-header__item--active,
+      .tls-tab-header__item--active + .tls-tab-header__item
+    ) {
+    --tls-tab-header-divider-leading: 1;
+  }
+
+  .tls-tab-header__item:not(.tls-tab-header__item--active):has(
+      + .tls-tab-header__item--disabled:not(.tls-tab-header__item--active)
+    ) {
+    --tls-tab-header-divider-trailing: 1;
+  }
+
+  // The lines are anchored to the inline-end edge, which background positions
+  // can only name physically, so the anchor flips with the layout direction.
+  &.tls-tab-header--vertical .tls-tab-header__item {
+    --tls-tab-header-divider-length: calc(
+      100% - var(--tls-tab-header-divider-inset, var(--spacing-4))
+    );
+
+    background-position: 100% 0, 100% 100%;
+    background-size: calc(
+          var(--tls-tab-header-divider-length) *
+            var(--tls-tab-header-divider-leading)
+        )
+        var(--tls-tab-header-border-width),
+      calc(
+          var(--tls-tab-header-divider-length) *
+            var(--tls-tab-header-divider-trailing)
+        )
+        var(--tls-tab-header-border-width);
+
+    :root[dir='rtl'] & {
+      background-position: 0 0, 0 100%;
+    }
+  }
+
+  &.tls-tab-header--horizontal .tls-tab-header__item {
+    --tls-tab-header-divider-length: calc(100% - 2 * var(--spacing-2));
+
+    background-position: 0 50%, 100% 50%;
+    background-size: var(--tls-tab-header-border-width)
+        calc(
+          var(--tls-tab-header-divider-length) *
+            var(--tls-tab-header-divider-leading)
+        ),
+      var(--tls-tab-header-border-width)
+        calc(
+          var(--tls-tab-header-divider-length) *
+            var(--tls-tab-header-divider-trailing)
+        );
+
+    :root[dir='rtl'] & {
+      background-position: 100% 50%, 0 50%;
     }
   }
 }

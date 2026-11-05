@@ -61,7 +61,7 @@ export const STORY_TOGGLE_GROUP_VARIANT_OPTIONS: toggleGroupVariant[] = [
   'tonal',
 ] as const;
 
-export const STORY_TABS_VARIANT_OPTIONS: tabsVariant[] = ['flat', 'outlined', 'segmented'] as const;
+export const STORY_TABS_VARIANT_OPTIONS: tabsVariant[] = ['flat', 'outlined', 'segmented', 'grouped'] as const;
 
 export const STORY_TABS_HEADER_ALIGN_OPTIONS: tabsHeaderAlign[] = [
   'stretch',

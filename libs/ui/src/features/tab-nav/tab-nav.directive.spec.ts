@@ -38,6 +38,17 @@ class DividedTestHost {}
 })
 class AlignedTestHost {}
 
+@Component({
+  imports: [TabNavDirective, TabLinkDirective, RouterLink, RouterLinkActive],
+  template: `
+    <nav tlsTabNav variant="grouped" orientation="vertical" divider aria-label="Grouped sections">
+      <a tlsTabLink routerLink="/first" routerLinkActive>First</a>
+      <a tlsTabLink routerLink="/second" routerLinkActive>Second</a>
+    </nav>
+  `,
+})
+class GroupedTestHost {}
+
 describe('TabNavDirective', () => {
   let fixture: ComponentFixture<TestHost>;
   let navigation: HTMLElement;
@@ -117,5 +128,16 @@ describe('TabNavDirective', () => {
     const dividedNavigation: HTMLElement = dividedFixture.nativeElement.querySelector('nav');
 
     expect(dividedNavigation.classList).toContain('tls-tab-header--divided');
+  });
+
+  it('reflects the grouped variant alongside its orientation and divider', async () => {
+    const groupedFixture = TestBed.createComponent(GroupedTestHost);
+    await groupedFixture.whenStable();
+
+    const groupedNavigation: HTMLElement = groupedFixture.nativeElement.querySelector('nav');
+
+    expect(groupedNavigation.classList).toContain('tls-tab-header--grouped');
+    expect(groupedNavigation.classList).toContain('tls-tab-header--vertical');
+    expect(groupedNavigation.classList).toContain('tls-tab-header--divided');
   });
 });

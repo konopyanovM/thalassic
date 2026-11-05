@@ -107,12 +107,14 @@
       // A control inside its tab slot inks freely. A nav anchor is the slot
       // itself, and a divided strip draws its rule on the slot's `::before` —
       // the layer the ink would take — so an anchor inks only in a strip
-      // without rules.
+      // without rules, or in a grouped one, whose rules are painted as the
+      // row's background instead.
       &:not(.tls-tab-header__item) {
         @include mixins.ripple;
       }
 
-      .tls-tab-header:not(.tls-tab-header--divided) &.tls-tab-header__item {
+      .tls-tab-header:is(:not(.tls-tab-header--divided), .tls-tab-header--grouped)
+        &.tls-tab-header__item {
         @include mixins.ripple;
       }
 
