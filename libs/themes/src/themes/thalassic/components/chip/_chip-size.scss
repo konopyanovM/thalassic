@@ -11,10 +11,13 @@
     width: var(--tls-chip-height);
     padding-inline: 0;
     aspect-ratio: 1 / 1;
+  }
 
-    &.tls-chip--rounded {
-      --tls-chip-border-radius: 50%;
-    }
+  // A pill at whatever height the chip renders — the size step's own, or the
+  // touch step a pressable chip takes — so the arc always spans the whole end.
+  // A square icon chip becomes a circle by the same rule.
+  &.tls-chip--rounded {
+    --tls-chip-border-radius: calc(var(--tls-chip-height) / 2);
   }
 
   &.tls-chip--xs {
@@ -25,10 +28,6 @@
     --tls-chip-font-weight: var(--font-label-small-weight);
     --tls-chip-line-height: 1rem;
     --tls-chip-letter-spacing: var(--letter-spacing-wider);
-
-    &.tls-chip--rounded {
-      --tls-chip-border-radius: var(--radius-lg);
-    }
   }
 
   &.tls-chip--sm {
@@ -39,10 +38,6 @@
     --tls-chip-font-weight: var(--font-label-small-weight);
     --tls-chip-line-height: var(--font-label-small-line-height);
     --tls-chip-letter-spacing: var(--font-label-small-letter-spacing);
-
-    &.tls-chip--rounded {
-      --tls-chip-border-radius: var(--radius-xl);
-    }
   }
 
   &.tls-chip--md {
@@ -53,10 +48,6 @@
     --tls-chip-font-weight: var(--font-label-medium-weight);
     --tls-chip-line-height: var(--font-label-medium-line-height);
     --tls-chip-letter-spacing: var(--font-label-medium-letter-spacing);
-
-    &.tls-chip--rounded {
-      --tls-chip-border-radius: var(--radius-2xl);
-    }
   }
 
   &.tls-chip--lg {
@@ -67,10 +58,6 @@
     --tls-chip-font-weight: var(--font-label-large-weight);
     --tls-chip-line-height: var(--font-label-large-line-height);
     --tls-chip-letter-spacing: var(--font-label-large-letter-spacing);
-
-    &.tls-chip--rounded {
-      --tls-chip-border-radius: var(--radius-3xl);
-    }
   }
 
   // A chip that can be pressed is a control and takes the scale controls are
