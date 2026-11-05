@@ -1,0 +1,7 @@
+# Run the tests and the build for every project the pushed work affects
+# relative to master, so a push that would break the next release fails here
+# first. Commits are not gated: intermediate checkpoints of a multi-step change
+# must stay committable. Nx's local cache keeps targets whose inputs have not
+# changed from running twice.
+# NX_TUI=false disables Nx's interactive terminal UI, which is disruptive inside a git hook.
+NX_TUI=false pnpm nx affected -t test build --base=origin/master
