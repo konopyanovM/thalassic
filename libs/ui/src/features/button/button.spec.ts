@@ -1,6 +1,8 @@
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Button } from './button';
+import { DEFAULT_BUTTON_CONFIG } from './button.config';
+import { BUTTON_CONFIG } from './button.token';
 
 @Component({
   imports: [Button],
@@ -107,5 +109,53 @@ describe('Button', () => {
     await settle();
 
     expect(host.clicks).toBe(1);
+  });
+});
+
+@Component({
+  imports: [Button],
+  template: `
+    <tls-button icon ariaLabel="More" />
+    <tls-button icon ariaLabel="Close" [rounded]="false" />
+    <tls-button icon rounded ariaLabel="Add" />
+    <tls-button>Save</tls-button>
+  `,
+})
+class ShapeHostComponent {}
+
+describe('Button shape', () => {
+  async function render(iconRounded: boolean): Promise<HTMLElement[]> {
+    await TestBed.configureTestingModule({
+      imports: [ShapeHostComponent],
+      providers: [{ provide: BUTTON_CONFIG, useValue: { ...DEFAULT_BUTTON_CONFIG, iconRounded } }],
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(ShapeHostComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    return Array.from(fixture.nativeElement.querySelectorAll('button'));
+  }
+
+  function isRounded(control: HTMLElement): boolean {
+    return control.classList.contains('tls-button--rounded');
+  }
+
+  it('rounds an unset icon-only button when the config asks, and nothing else', async () => {
+    const [more, close, add, save] = await render(true);
+
+    expect(isRounded(more)).toBe(true);
+    expect(isRounded(close)).toBe(false);
+    expect(isRounded(add)).toBe(true);
+    expect(isRounded(save)).toBe(false);
+  });
+
+  it('keeps corners on an unset button when the config does not ask', async () => {
+    const [more, close, add, save] = await render(false);
+
+    expect(isRounded(more)).toBe(false);
+    expect(isRounded(close)).toBe(false);
+    expect(isRounded(add)).toBe(true);
+    expect(isRounded(save)).toBe(false);
   });
 });

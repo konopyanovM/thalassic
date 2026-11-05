@@ -130,7 +130,7 @@ export class ConfirmPanel {
       variant: source.variant ?? slotDefault.variant ?? this._buttonConfig.variant,
       size: source.size ?? slotDefault.size ?? this._buttonConfig.size,
       icon: source.icon ?? slotDefault.icon ?? false,
-      rounded: source.rounded ?? slotDefault.rounded ?? false,
+      rounded: source.rounded ?? slotDefault.rounded,
       fluid: source.fluid ?? slotDefault.fluid ?? false,
       disabled: source.disabled ?? slotDefault.disabled ?? false,
     };

@@ -7,6 +7,7 @@ import {
   InputSignal,
   InputSignalWithTransform,
 } from '@angular/core';
+import { optionalBooleanAttribute } from '../../utils';
 import { BUTTON_CONFIG } from './button.token';
 import { controlSize } from '../../types';
 import { buttonColor, buttonVariant } from './button.types';
@@ -68,10 +69,15 @@ export abstract class ButtonBase {
   public readonly color: InputSignal<buttonColor> = input<buttonColor>(this._config.color);
   public readonly variant: InputSignal<buttonVariant> = input<buttonVariant>(this._config.variant);
   public readonly size: InputSignal<controlSize> = input<controlSize>(this._config.size);
-  public readonly rounded: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
-    false,
-    { transform: booleanAttribute },
-  );
+  /**
+   * Rounds the button's ends fully: a pill for a labelled button, a circle for an icon-only
+   * one. Left unset, an icon-only button takes the configured `iconRounded` and any other
+   * keeps its corners; an explicit `[rounded]="false"` keeps them on an icon-only button too.
+   */
+  public readonly rounded: InputSignalWithTransform<boolean | undefined, unknown> = input<
+    boolean | undefined,
+    unknown
+  >(undefined, { transform: optionalBooleanAttribute });
 
   /** Whether the button stretches to fill its container's width. */
   public readonly fluid: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
@@ -97,6 +103,11 @@ export abstract class ButtonBase {
 
   protected ariaDisabled = computed(() => (this.unavailable() ? 'true' : null));
 
+  /** The shape in force: the input where written, otherwise the configured default. */
+  protected readonly isRounded = computed(
+    () => this.rounded() ?? (this.icon() && this._config.iconRounded),
+  );
+
   protected classes = computed(() => {
     const className = 'tls-button';
 
@@ -111,7 +122,7 @@ export abstract class ButtonBase {
     if (this.fab()) array.push(`${className}--fab`);
     if (this.fluid()) array.push(`${className}--fluid`);
     if (this.stretch()) array.push(`${className}--stretch`);
-    if (this.rounded()) array.push(`${className}--rounded`);
+    if (this.isRounded()) array.push(`${className}--rounded`);
 
     return array;
   });

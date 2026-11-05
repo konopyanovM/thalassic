@@ -5,6 +5,7 @@ export * from './create-day-signal';
 export * from './create-now-signal';
 export * from './decimal-places';
 export * from './escape-regular-expression';
+export * from './optional-boolean-attribute';
 export * from './remove-described-by';
 export * from './resolve-overlay-arrow-position';
 export * from './resolve-track-by';

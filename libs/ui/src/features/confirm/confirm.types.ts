@@ -19,8 +19,13 @@ export type confirmButton = {
   disabled?: boolean;
 };
 
-/** A {@link confirmButton} with every appearance field resolved to a concrete value. */
-export type resolvedConfirmButton = Required<confirmButton>;
+/**
+ * A {@link confirmButton} with every appearance field resolved to a concrete value, except
+ * `rounded`: left unset, it lets the button apply its own shape default.
+ */
+export type resolvedConfirmButton = Required<Omit<confirmButton, 'rounded'>> & {
+  rounded: boolean | undefined;
+};
 
 /**
  * Width step of a confirm dialog, mapped onto its max-width. `md` is the

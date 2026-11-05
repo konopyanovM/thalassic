@@ -7,6 +7,11 @@ export interface ButtonConfig {
   size: controlSize;
   type: buttonType;
   fluid: boolean;
+  /**
+   * Draws an icon-only button as a circle wherever its own `rounded` input is left unset,
+   * the shape platform icon buttons take. A labelled button keeps its corners either way.
+   */
+  iconRounded: boolean;
 }
 
 export const DEFAULT_BUTTON_CONFIG: ButtonConfig = {
@@ -15,4 +20,5 @@ export const DEFAULT_BUTTON_CONFIG: ButtonConfig = {
   size: 'md',
   type: 'button',
   fluid: false,
+  iconRounded: false,
 };
