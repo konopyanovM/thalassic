@@ -50,6 +50,13 @@
       height: 100%;
     }
   }
+
+  // A free-flowing row stands at least as tall as a medium control, so an option
+  // is as easy to hit as the field that opened it — on the touch scale too.
+  // Windowed rows are excluded: they occupy exactly the configured item size.
+  &:not(.tls-multi-select__panel--virtual) .tls-multi-select__option-button {
+    min-height: var(--control-height-md);
+  }
 }
 
 @include mixins.option-group('tls-multi-select');

@@ -31,7 +31,7 @@
   --tls-alert-icon-size: 20px;
   --tls-alert-label-font-weight: var(--font-weight-bold);
   --tls-alert-body-gap: var(--spacing-2);
-  --tls-alert-close-size: 28px;
+  --tls-alert-close-size: var(--control-height-sm);
   --tls-alert-close-inset: var(--spacing-2);
 
   // Anchors the corner-pinned close button.

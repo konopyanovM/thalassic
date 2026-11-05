@@ -32,7 +32,7 @@
   }
 
   &.tls-chip--sm {
-    --tls-chip-height: var(--control-height-sm);
+    --tls-chip-height: var(--control-base-height-sm);
     --tls-chip-padding-inline: var(--spacing-3);
 
     --tls-chip-font-size: var(--font-label-small-size);
@@ -46,7 +46,7 @@
   }
 
   &.tls-chip--md {
-    --tls-chip-height: var(--control-height-md);
+    --tls-chip-height: var(--control-base-height-md);
     --tls-chip-padding-inline: var(--spacing-4);
 
     --tls-chip-font-size: var(--font-label-medium-size);
@@ -60,7 +60,7 @@
   }
 
   &.tls-chip--lg {
-    --tls-chip-height: var(--control-height-lg);
+    --tls-chip-height: var(--control-base-height-lg);
     --tls-chip-padding-inline: var(--spacing-5);
 
     --tls-chip-font-size: var(--font-label-large-size);
@@ -70,6 +70,15 @@
 
     &.tls-chip--rounded {
       --tls-chip-border-radius: var(--radius-3xl);
+    }
+  }
+
+  // A chip that can be pressed is a control and takes the scale controls are
+  // drawn at, touch step included; a label-only chip keeps the base scale, as
+  // there is nothing on it for a finger to hit.
+  @each $size in (sm, md, lg) {
+    &.tls-chip--control.tls-chip--#{$size} {
+      --tls-chip-height: var(--control-height-#{$size});
     }
   }
 }

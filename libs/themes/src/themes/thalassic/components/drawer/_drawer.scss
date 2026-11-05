@@ -56,7 +56,7 @@
   }
   --tls-drawer-shadow: var(--shadow-lg);
   --tls-drawer-padding: var(--spacing-6);
-  --tls-drawer-close-size: 32px;
+  --tls-drawer-close-size: var(--control-height-sm);
   --tls-drawer-close-icon-size: 16px;
   --tls-drawer-close-padding: var(--spacing-4);
   --tls-drawer-grabber-length: var(--grabber-length);

@@ -1,7 +1,15 @@
 :root {
-  --control-height-sm: 28px;
-  --control-height-md: 36px;
-  --control-height-lg: 44px;
+  // The scale whatever the pointer. Read directly by anything drawn at a
+  // control's size that cannot be pressed — a label-only chip — so the touch
+  // scale below grows what a finger can hit and nothing else.
+  --control-base-height-sm: 28px;
+  --control-base-height-md: 36px;
+  --control-base-height-lg: 44px;
+
+  // The scale an interactive control is drawn at.
+  --control-height-sm: var(--control-base-height-sm);
+  --control-height-md: var(--control-base-height-md);
+  --control-height-lg: var(--control-base-height-lg);
 
   // Minimum comfortable tap target on touch devices (Apple HIG; WCAG 2.5.5 Enhanced).
   --control-touch-target: 44px;
