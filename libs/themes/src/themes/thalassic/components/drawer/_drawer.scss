@@ -62,6 +62,11 @@
   --tls-drawer-grabber-length: var(--grabber-length);
   --tls-drawer-grabber-thickness: var(--grabber-thickness);
   --tls-drawer-grabber-inset: var(--grabber-inset);
+  // The slide's pace each way. The keyframes below read it, and so does the
+  // component for the slides and settles it runs itself, so a panel keeps one
+  // pace however it moves.
+  --tls-drawer-enter-duration: var(--motion-default);
+  --tls-drawer-leave-duration: var(--motion-default);
 
   position: relative;
 
@@ -92,11 +97,11 @@
     // (`--scripted`: sliding out of its origin, or opening under a drag) takes
     // neither keyframe.
     &--enter:not(.tls-drawer--dragging):not(.tls-drawer--settling):not(.tls-drawer--scripted) {
-      animation: tls-drawer-slide-in var(--motion-default) var(--motion-ease-out) both;
+      animation: tls-drawer-slide-in var(--tls-drawer-enter-duration) var(--motion-ease-out) both;
     }
 
     &--leave:not(.tls-drawer--scripted) {
-      animation: tls-drawer-slide-out var(--motion-default) var(--motion-ease-in) both;
+      animation: tls-drawer-slide-out var(--tls-drawer-leave-duration) var(--motion-ease-in) both;
     }
 
     // Only the settle animates. The drag itself is direct manipulation, not

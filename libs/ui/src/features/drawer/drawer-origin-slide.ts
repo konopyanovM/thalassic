@@ -1,8 +1,9 @@
 import {
   DRAWER_ORIGIN_TOLERANCE,
   DRAWER_SHARED_ATTRIBUTE,
-  DRAWER_SLIDE_DURATION_TOKEN,
+  DRAWER_SLIDE_ENTER_DURATION_TOKEN,
   DRAWER_SLIDE_ENTER_EASING_TOKEN,
+  DRAWER_SLIDE_LEAVE_DURATION_TOKEN,
   DRAWER_SLIDE_LEAVE_EASING_TOKEN,
 } from './drawer.constants';
 import { DrawerOffset, DrawerSharedPair, drawerSide, DrawerSlideTiming } from './drawer.types';
@@ -67,12 +68,15 @@ export function offscreenOffset(panel: HTMLElement, side: drawerSide, isRtl: boo
 }
 
 /**
- * The slide's timing in one direction, from the theme's motion tokens as the
- * panel resolves them: easing out on the way in, in on the way out.
+ * The slide's timing in one direction, from the panel's slide tokens as it
+ * resolves them — its side may set a pace of its own: easing out on the way
+ * in, in on the way out.
  */
 export function readSlideTiming(panel: HTMLElement, direction: 'enter' | 'leave'): DrawerSlideTiming {
   const style = getComputedStyle(panel);
-  const duration = style.getPropertyValue(DRAWER_SLIDE_DURATION_TOKEN).trim();
+  const durationToken =
+    direction === 'enter' ? DRAWER_SLIDE_ENTER_DURATION_TOKEN : DRAWER_SLIDE_LEAVE_DURATION_TOKEN;
+  const duration = style.getPropertyValue(durationToken).trim();
   const easingToken =
     direction === 'enter' ? DRAWER_SLIDE_ENTER_EASING_TOKEN : DRAWER_SLIDE_LEAVE_EASING_TOKEN;
   const easing = style.getPropertyValue(easingToken).trim();

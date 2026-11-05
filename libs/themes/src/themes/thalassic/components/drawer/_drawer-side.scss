@@ -133,6 +133,10 @@
   &--bottom {
     --tls-drawer-offset: translateY(100%);
     --tls-drawer-drag-transform: translateY(var(--tls-drawer-drag));
+    // A sheet crosses most of the screen's height, so it arrives at the slower
+    // pace the platforms give a large surface. It leaves at the brisk one: an
+    // exit gets out of the way faster than an entrance arrives.
+    --tls-drawer-enter-duration: var(--motion-slow);
 
     padding-block-end: env(safe-area-inset-bottom);
 

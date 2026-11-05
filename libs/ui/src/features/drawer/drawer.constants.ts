@@ -7,10 +7,12 @@ export const DRAWER_NAMED_SIZES: readonly drawerSize[] = ['sm', 'md', 'lg', 'ful
 
 
 /**
- * Theme tokens the slide from an origin is timed by — the same the plain slide
- * uses, so a drawer moves alike whichever way it opened.
+ * Tokens the slide from an origin is timed by — the same the plain slide uses,
+ * so a drawer moves alike whichever way it opened. The durations are the
+ * drawer's own, since a side may set a pace of its own.
  */
-export const DRAWER_SLIDE_DURATION_TOKEN = '--motion-default';
+export const DRAWER_SLIDE_ENTER_DURATION_TOKEN = '--tls-drawer-enter-duration';
+export const DRAWER_SLIDE_LEAVE_DURATION_TOKEN = '--tls-drawer-leave-duration';
 export const DRAWER_SLIDE_ENTER_EASING_TOKEN = '--motion-ease-out';
 export const DRAWER_SLIDE_LEAVE_EASING_TOKEN = '--motion-ease-in';
 
