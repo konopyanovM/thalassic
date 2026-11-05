@@ -5,6 +5,8 @@
  * - `loading` — a page is in flight and the watch is suspended;
  * - `manual` — the automatic allowance is spent (or never granted), so the next page waits
  *   on the button;
+ * - `failed` — the last page asked for failed to arrive, so the failure notice and a button
+ *   to try again are rendered and nothing is watched;
  * - `complete` — the collection is exhausted after paging, so the end notice is rendered;
  * - `settled` — the collection was exhausted before a page was ever requested; an end the
  *   reader never had to find gets no notice, so nothing is rendered;
@@ -14,6 +16,7 @@ export type infiniteScrollState =
   | 'idle'
   | 'loading'
   | 'manual'
+  | 'failed'
   | 'complete'
   | 'settled'
   | 'disabled';

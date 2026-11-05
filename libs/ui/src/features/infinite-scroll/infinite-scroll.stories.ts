@@ -61,12 +61,14 @@ const meta: Meta<InfiniteScrollComponent> = {
     rootMargin: DEFAULT_INFINITE_SCROLL_CONFIG.rootMargin,
     autoLoadLimit: DEFAULT_INFINITE_SCROLL_CONFIG.autoLoadLimit,
     manual: false,
+    failed: false,
     disabled: false,
   },
   argTypes: {
     rootMargin: { control: { type: 'number' } },
     autoLoadLimit: { control: { type: 'number' } },
     manual: { control: { type: 'boolean' } },
+    failed: { control: { type: 'boolean' } },
     disabled: { control: { type: 'boolean' } },
   },
   render: args => ({
@@ -101,4 +103,9 @@ export const InfiniteScroll: Story = {};
 /** Every page waits on the button, whatever the scroll position. */
 export const Manual: Story = {
   args: { manual: true },
+};
+
+/** The last page failed to arrive: a notice and a button to ask for it again. */
+export const Failed: Story = {
+  args: { failed: true },
 };

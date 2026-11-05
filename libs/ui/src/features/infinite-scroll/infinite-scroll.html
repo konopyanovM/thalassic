@@ -20,6 +20,16 @@
       </ng-content>
     </div>
   }
+  @case ('failed') {
+    <!-- Hidden from assistive technology like the end notice: the live region above
+         announces the failure, and the button stays reachable on its own. -->
+    <div class="state state--failed">
+      <ng-content select="[tlsInfiniteScrollFailed]">
+        <span class="notice" aria-hidden="true">{{ labels.failed }}</span>
+        <tls-button variant="tonal" [label]="labels.retry" (click)="load()" />
+      </ng-content>
+    </div>
+  }
   @case ('manual') {
     <div class="state">
       <ng-content select="[tlsInfiniteScrollTrigger]">

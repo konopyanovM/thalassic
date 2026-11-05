@@ -72,6 +72,7 @@ class FakeIntersectionObserver {
       [complete]="complete()"
       [disabled]="disabled()"
       [manual]="manual()"
+      [failed]="failed()"
       [autoLoadLimit]="autoLoadLimit()"
       (loadMore)="loads.set(loads() + 1)"
     />
@@ -83,6 +84,7 @@ class TestHost {
   public readonly complete = signal(false);
   public readonly disabled = signal(false);
   public readonly manual = signal(false);
+  public readonly failed = signal(false);
   public readonly autoLoadLimit = signal(DEFAULT_INFINITE_SCROLL_CONFIG.autoLoadLimit);
   public readonly loads = signal(0);
 }
@@ -223,6 +225,35 @@ describe('InfiniteScroll', () => {
 
     expect(FakeIntersectionObserver.active).toHaveLength(0);
     expect(text('.state')).toBe(DEFAULT_INFINITE_SCROLL_CONFIG.labels.loadMore);
+  });
+
+  it('stops watching and announces a page that failed to arrive', async () => {
+    FakeIntersectionObserver.latest.emit(true);
+    host.loading.set(true);
+    await fixture.whenStable();
+
+    host.loading.set(false);
+    host.failed.set(true);
+    await fixture.whenStable();
+
+    // The sentinel is still in view, yet nothing is asked for again on its own.
+    expect(host.loads()).toBe(1);
+    expect(FakeIntersectionObserver.active).toHaveLength(0);
+    expect(text('.announcement')).toBe(DEFAULT_INFINITE_SCROLL_CONFIG.labels.failed);
+    expect(text('.notice')).toBe(DEFAULT_INFINITE_SCROLL_CONFIG.labels.failed);
+  });
+
+  it('asks again for a failed page when the button is pressed, and resumes after it', async () => {
+    host.failed.set(true);
+    await fixture.whenStable();
+
+    fixture.debugElement.query(By.css('button')).nativeElement.click();
+    await fixture.whenStable();
+    expect(host.loads()).toBe(1);
+
+    host.failed.set(false);
+    await settlePage();
+    expect(FakeIntersectionObserver.active).toHaveLength(1);
   });
 
   it('stops at an exhausted collection and announces the end it paged to', async () => {

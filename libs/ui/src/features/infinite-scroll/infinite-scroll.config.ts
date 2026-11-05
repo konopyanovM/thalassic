@@ -6,6 +6,10 @@ export interface InfiniteScrollLabels {
   complete: string;
   /** Label of the button that loads the next page. */
   loadMore: string;
+  /** Rendered and announced when a page fails to arrive. */
+  failed: string;
+  /** Label of the button that asks again for a page that failed to arrive. */
+  retry: string;
 }
 
 export interface InfiniteScrollConfig {
@@ -32,5 +36,7 @@ export const DEFAULT_INFINITE_SCROLL_CONFIG: InfiniteScrollConfig = {
     loading: 'Loading more items',
     complete: 'No more items',
     loadMore: 'Load more',
+    failed: "Couldn't load more items",
+    retry: 'Try again',
   },
 };

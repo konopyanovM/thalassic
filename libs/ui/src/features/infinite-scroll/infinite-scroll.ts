@@ -53,10 +53,12 @@ import { infiniteScrollState } from './infinite-scroll.types';
  *
  * Content that grows without end leaves anything below it unreachable, so the automatic
  * loads are rationed: after `autoLoadLimit` of them in a row the component stops watching
- * and renders a button, and the allowance is renewed each time that button is used. The
- * three states each accept replacement content —
- * `[tlsInfiniteScrollLoading]`, `[tlsInfiniteScrollComplete]`, `[tlsInfiniteScrollTrigger]`
- * — projected in place of the loader, the end notice and the button:
+ * and renders a button, and the allowance is renewed each time that button is used. A page
+ * that fails to arrive is reported through `failed`, which renders a notice and a button to
+ * try again in place of loading on approach. The four states each accept replacement
+ * content — `[tlsInfiniteScrollLoading]`, `[tlsInfiniteScrollComplete]`,
+ * `[tlsInfiniteScrollTrigger]`, `[tlsInfiniteScrollFailed]` — projected in place of the
+ * loader, the end notice, the button and the failure notice with its button:
  *
  * ```html
  * <tls-infinite-scroll [loading]="loading()" (loadMore)="loadNextPage()">
@@ -70,8 +72,9 @@ import { infiniteScrollState } from './infinite-scroll.types';
  * Left unset inside a panel, the next page is therefore requested only as the sentinel
  * reaches the panel's edge; pass that panel as `root` to get the margin back.
  *
- * The end notice is announced from `labels.complete`, whatever stands in the slot, so
- * replacement content belongs with a label that says the same thing.
+ * The end and failure notices are announced from `labels.complete` and `labels.failed`,
+ * whatever stands in their slots, so replacement content belongs with a label that says the
+ * same thing.
  */
 @Component({
   selector: 'tls-infinite-scroll',
@@ -107,6 +110,17 @@ export class InfiniteScroll {
    * everything ends silently.
    */
   public readonly complete: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
+    false,
+    { transform: booleanAttribute },
+  );
+
+  /**
+   * Whether the last page asked for failed to arrive. Stops loading on approach — retrying a
+   * failure every time the sentinel comes into view would hammer whatever is failing — and
+   * renders the failure notice with a button that asks for the page again. Lowering it, as
+   * the next attempt starts, resumes the cycle.
+   */
+  public readonly failed: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(
     false,
     { transform: booleanAttribute },
   );
@@ -191,6 +205,7 @@ export class InfiniteScroll {
     if (this.disabled()) return 'disabled';
     if (this.complete()) return this._hasRequested() ? 'complete' : 'settled';
     if (this.loading()) return 'loading';
+    if (this.failed()) return 'failed';
 
     const limit = this.autoLoadLimit();
     if (this.manual() || (limit > 0 && this._automaticLoads() >= limit)) return 'manual';
@@ -203,6 +218,7 @@ export class InfiniteScroll {
     const state = this.state();
     if (state === 'loading') return this.labels.loading;
     if (state === 'complete') return this.labels.complete;
+    if (state === 'failed') return this.labels.failed;
 
     return '';
   });
@@ -265,12 +281,13 @@ export class InfiniteScroll {
 
   // Public methods
   /**
-   * Requests the next page as the button does, renewing the automatic allowance. Ignored
-   * while a page is in flight, once the collection is exhausted and while suspended.
+   * Requests the next page as the button does, renewing the automatic allowance — after a
+   * failure, the page that failed. Ignored while a page is in flight, once the collection is
+   * exhausted and while suspended.
    */
   public load(): void {
     const state = this.state();
-    if (state !== 'idle' && state !== 'manual') return;
+    if (state !== 'idle' && state !== 'manual' && state !== 'failed') return;
 
     this._automaticLoads.set(0);
     this._emit();

@@ -19,6 +19,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
+
+    // The notice says what happened and the button sits beneath it, both centred.
+    &--failed {
+      flex-direction: column;
+      gap: var(--spacing-2);
+    }
   }
 
   .notice {
