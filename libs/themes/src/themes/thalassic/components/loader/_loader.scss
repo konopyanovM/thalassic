@@ -1,5 +1,10 @@
+// `--tls-loader-color` is a hook for the spinner's ink, set on the loader or on
+// any ancestor — a busy button passes its label's colour down through it. The
+// default is a fallback where the hook is read rather than a declaration on the
+// loader, which would win over a value inherited from an ancestor.
+$-color: var(--tls-loader-color, var(--color-primary));
+
 .tls-loader {
-  --tls-loader-color: var(--color-primary);
   --tls-loader-rotate-delay: 1000ms;
 
   display: inline-block;
@@ -10,9 +15,9 @@
   border-radius: 50%;
 
   background:
-    radial-gradient(farthest-side, var(--tls-loader-color) 95%, #0000) top/var(--tls-loader-width)
+    radial-gradient(farthest-side, #{$-color} 95%, #0000) top/var(--tls-loader-width)
       var(--tls-loader-width) no-repeat,
-    conic-gradient(#0000 30%, var(--tls-loader-color));
+    conic-gradient(#0000 30%, #{$-color});
   mask: radial-gradient(farthest-side, #0000 calc(100% - var(--tls-loader-width)), black 0);
 
   animation: loader-rotate var(--tls-loader-rotate-delay) infinite linear;
