@@ -1,3 +1,27 @@
+## 22.25.0 (2026-11-06)
+
+### 🚀 Features
+
+- **core:** tap a provided haptics hook as pulls and swipes arm and read typed numbers as text so either decimal separator works ([c9e4bcc](https://github.com/konopyanovM/thalassic/commit/c9e4bcc))
+- **core:** measure a container against the breakpoints from code ([735789a](https://github.com/konopyanovM/thalassic/commit/735789a))
+- **themes:** keep label-only chips off the touch scale and size options and close buttons from it ([a720da6](https://github.com/konopyanovM/thalassic/commit/a720da6))
+- **themes:** slide bottom sheets in at the slower pace of a large surface ([10b7494](https://github.com/konopyanovM/thalassic/commit/10b7494))
+- **ui:** make touch-target expansion opt-in and add enlarge touch controls option ([b833359](https://github.com/konopyanovM/thalassic/commit/b833359))
+- **ui:** let the button config draw icon-only buttons as circles ([6cee724](https://github.com/konopyanovM/thalassic/commit/6cee724))
+- **ui:** add a grouped tab-header variant whose rows ink edge to edge ([e8d8e87](https://github.com/konopyanovM/thalassic/commit/e8d8e87))
+- **ui:** set a badge inline as a standalone count ([507224b](https://github.com/konopyanovM/thalassic/commit/507224b))
+- **ui:** report a page that failed to arrive in the infinite scroll ([1699943](https://github.com/konopyanovM/thalassic/commit/1699943))
+
+### 🩹 Fixes
+
+- **themes:** keep rounded chips a pill at any rendered height ([cdcd572](https://github.com/konopyanovM/thalassic/commit/cdcd572))
+- **themes:** centre a spread form item's control against its label and hint ([97d88b0](https://github.com/konopyanovM/thalassic/commit/97d88b0))
+- **ui:** fade a modal's backdrop out with it and show tooltips only for keyboard focus ([2dab22d](https://github.com/konopyanovM/thalassic/commit/2dab22d))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.24.0 (2026-11-04)
 
 ### 🚀 Features
