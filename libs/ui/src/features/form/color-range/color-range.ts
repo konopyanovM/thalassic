@@ -41,6 +41,9 @@ export class ColorRange extends ValueFormControl<number> {
 
   override readonly supportsLabelFor = true;
 
+  /** A colour range always rests on some value along its scale, so the control is never left unanswered. */
+  override readonly alwaysAnswered = true;
+
   // Inputs
   public readonly value: ModelSignal<number> = model<number>(0);
   public readonly channel: InputSignal<colorRangeChannel> = input<colorRangeChannel>('hue');

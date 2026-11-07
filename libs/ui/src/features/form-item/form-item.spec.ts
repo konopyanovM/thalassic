@@ -1,7 +1,10 @@
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { form, FormField, required } from '@angular/forms/signals';
+import { Checkbox } from '../form/checkbox/checkbox';
 import { Input } from '../form/input/input';
 import { FormItem } from './form-item';
+import { provideFormItemConfig } from './form-item.provider';
 
 @Component({
   imports: [FormItem],
@@ -50,6 +53,62 @@ class CounterHostComponent {
 class HintHostComponent {
   invalid = signal(false);
   errors = [{ kind: 'minLength', message: 'Too short' }];
+}
+
+@Component({
+  imports: [FormItem, Input, Checkbox, FormField],
+  template: `
+    <tls-form-item label="Nickname" optionalText="(optional)">
+      <tls-input [formField]="profile.nickname" />
+    </tls-form-item>
+    <tls-form-item label="Email" optionalText="(optional)">
+      <tls-input [formField]="profile.email" />
+    </tls-form-item>
+    <tls-form-item label="Newsletter" optionalText="(optional)">
+      <tls-checkbox [formField]="profile.newsletter" />
+    </tls-form-item>
+    <tls-form-item label="Theme" optionalText="(optional)">
+      <tls-input [(value)]="theme" />
+    </tls-form-item>
+    <tls-form-item label="Search" optionalText="(optional)">
+      <tls-input [(value)]="theme" />
+      <tls-input [formField]="profile.nickname" />
+    </tls-form-item>
+  `,
+})
+class OptionalMarkerHostComponent {
+  theme = signal('');
+  profile = form(signal({ nickname: '', email: '', newsletter: false }), (path) => {
+    required(path.email);
+  });
+}
+
+@Component({
+  selector: 'tls-unmarked-scope',
+  imports: [FormItem, Input, FormField],
+  providers: [provideFormItemConfig({ optionalText: undefined })],
+  template: `
+    <tls-form-item label="Nickname">
+      <tls-input [formField]="profile.nickname" />
+    </tls-form-item>
+  `,
+})
+class UnmarkedScopeComponent {
+  profile = form(signal({ nickname: '' }));
+}
+
+@Component({
+  imports: [FormItem, Input, FormField, UnmarkedScopeComponent],
+  providers: [provideFormItemConfig({ optionalText: '(optional)', reserveErrorSpace: false })],
+  template: `
+    <tls-form-item label="Email">
+      <tls-input [formField]="profile.email" />
+    </tls-form-item>
+    <tls-unmarked-scope />
+  `,
+})
+class ScopedConfigHostComponent {
+  profile = form(signal({ email: '' }));
 }
 
 describe('FormItem', () => {
@@ -140,6 +199,38 @@ describe('FormItem', () => {
       expect(hintFixture.nativeElement.querySelector('.form-item-hint')).toBeNull();
       expect(error.textContent?.trim()).toBe('Too short');
       expect(inputElement.getAttribute('aria-describedby')).toBe(error.id);
+    });
+  });
+
+  describe('optional marker', () => {
+    it('should mark only form fields that may be skipped, never a required field, a toggle or a plain value', async () => {
+      const markerFixture = TestBed.createComponent(OptionalMarkerHostComponent);
+      markerFixture.detectChanges();
+      await markerFixture.whenStable();
+
+      const element: HTMLElement = markerFixture.nativeElement;
+      const marked = Array.from(element.querySelectorAll('.form-item-label'))
+        .filter((label) => label.querySelector('.form-item-label__optional'))
+        .map((label) => label.querySelector('.form-item-label__text')?.textContent?.trim());
+
+      expect(marked).toEqual(['Nickname']);
+    });
+  });
+
+  describe('scoped config', () => {
+    it('should layer each override on the config of the scope around it', async () => {
+      const scopedFixture = TestBed.createComponent(ScopedConfigHostComponent);
+      scopedFixture.detectChanges();
+      await scopedFixture.whenStable();
+
+      const element: HTMLElement = scopedFixture.nativeElement;
+      const marked = Array.from(element.querySelectorAll('.form-item-label'))
+        .filter((label) => label.querySelector('.form-item-label__optional'))
+        .map((label) => label.querySelector('.form-item-label__text')?.textContent?.trim());
+
+      expect(marked).toEqual(['Email']);
+      // The inner scope leaves the reserved error space alone, so it keeps the outer value.
+      expect(element.querySelector('.form-item-footer')).toBeNull();
     });
   });
 

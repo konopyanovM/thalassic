@@ -35,6 +35,12 @@ export class RadioButton extends ValueFormControl<unknown> {
 
   override readonly supportsLabelFor = true;
 
+  /**
+   * A radio button is one option of a question rather than the question, so its own label never
+   * says whether the question may be skipped; that belongs to the label of the group.
+   */
+  override readonly alwaysAnswered = true;
+
   public readonly radioValue: InputSignal<unknown> = input.required<unknown>();
   public readonly value: ModelSignal<unknown> = model<unknown>('');
   public readonly tabindex: InputSignal<string | number> = input<string | number>(0);

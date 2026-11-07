@@ -11,8 +11,12 @@ export interface FormItemConfig {
   displayErrors: boolean;
   /** Whether required fields are marked with a `*`. */
   showRequiredMarker: boolean;
-  /** Text appended to non-required fields (e.g. `(optional)`). Not shown when omitted. */
-  optionalText?: string;
+  /**
+   * Text beside the label of a question that may be skipped (e.g. `(optional)`): a control bound to
+   * a form field that is not required and is not a toggle. Not shown when omitted or `undefined`,
+   * which a scoped override sets to drop the marker from part of the app.
+   */
+  optionalText?: string | undefined;
   errorMessages: ErrorMessageMap;
   /** Fallback for an error kind absent from `errorMessages` that carries no `message` of its own. */
   unknownErrorMessage: ErrorMessageFn;

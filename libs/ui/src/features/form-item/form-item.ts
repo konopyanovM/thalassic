@@ -4,13 +4,14 @@ import {
   Component,
   computed,
   contentChild,
+  contentChildren,
   effect,
   inject,
   input,
   Signal,
   TemplateRef,
 } from '@angular/core';
-import { ValidationError, WithOptionalFieldTree } from '@angular/forms/signals';
+import { FORM_FIELD, ValidationError, WithOptionalFieldTree } from '@angular/forms/signals';
 import { FORM_CONTROL, FormControl, ValueFormControl } from '../../abstract/form';
 import { FORM_ITEM_CONFIG } from './form-item.token';
 import { FormItemLabelContext, labelPosition } from './form-item.types';
@@ -27,6 +28,13 @@ export class FormItem {
   private _config = inject(FORM_ITEM_CONFIG);
 
   protected control: Signal<FormControl | undefined> = contentChild(FORM_CONTROL);
+
+  /**
+   * The signal-forms bindings among the projected content. A group can seat bound and unbound
+   * controls side by side, so these are matched to the control by element rather than taken as
+   * the control's own.
+   */
+  private readonly _formFields = contentChildren(FORM_FIELD, { descendants: true });
 
   /**
    * Content of the label, rendered inside the item's own `<label>` element so the `for` /
@@ -62,6 +70,7 @@ export class FormItem {
   public reserveLabelSpace = input<boolean>(this._config.reserveLabelSpace);
   public displayErrors = input<boolean>(this._config.displayErrors);
   public showRequiredMarker = input<boolean>(this._config.showRequiredMarker);
+  /** Text beside the label of a question that may be skipped; see `FormItemConfig.optionalText`. */
   public optionalText = input<string | undefined>(this._config.optionalText);
   /**
    * Character budget of the control's value. When set, a `current/max` counter is rendered on the
@@ -94,12 +103,18 @@ export class FormItem {
     return this.showRequiredMarker() && control.required();
   });
 
+  /**
+   * Whether the label carries the optional marker: only for a control that edits a form's field,
+   * can be left unanswered, and is not required — a setting or a toggle has nothing to skip.
+   */
   protected showOptional = computed(() => {
     const control = this.control();
-    if (!control) return false;
-    if (!this.optionalText()) return false;
+    if (!control || !this.optionalText() || control.alwaysAnswered) return false;
 
-    return !control.required();
+    // A control bound to a plain value is a setting, not a question to answer.
+    const element = control.elementRef.nativeElement;
+    const isFormField = this._formFields().some((formField) => formField.element === element);
+    return isFormField && !control.required();
   });
 
   /** Whether a label is rendered, from either the `label` input or a custom label template. */

@@ -37,6 +37,9 @@ export class Slider extends ValueFormControl<number> {
 
   override readonly supportsLabelFor = true;
 
+  /** A slider always rests on some value within its range, so the control is never left unanswered. */
+  override readonly alwaysAnswered = true;
+
   // Inputs
   public readonly value: ModelSignal<number> = model<number>(this._config.min);
   public readonly min: InputSignalWithTransform<number, unknown> = input<number, unknown>(

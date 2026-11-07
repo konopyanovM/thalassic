@@ -6,6 +6,9 @@ import { FormControl } from './form-control';
 export abstract class CheckboxFormControl extends FormControl<boolean> implements FormCheckboxControl {
   public abstract readonly checked: ModelSignal<boolean>;
 
+  /** Unchecked is as much an answer as checked, so the control is never left unanswered. */
+  override readonly alwaysAnswered = true;
+
   protected override controlClasses = computed(() => {
     const classes = this.baseControlClasses();
 

@@ -90,6 +90,12 @@ export abstract class FormControl<TValue = unknown> implements FormUiControl<TVa
   /** Whether this control has a single native labelable element that a `<label for>` can target. */
   readonly supportsLabelFor: boolean = false;
 
+  /**
+   * Whether every state of the control is itself an answer — on or off, chosen or not — so it can
+   * never be left unanswered, and an enclosing form item marks it neither optional nor otherwise.
+   */
+  readonly alwaysAnswered: boolean = false;
+
   /** Combined `aria-describedby` value (consumer description + form-item hint and error), or null when empty. */
   protected readonly describedBy: Signal<string | null> = computed<string | null>(() => {
     const ids: string[] = [];

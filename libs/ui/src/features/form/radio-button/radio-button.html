@@ -1,3 +1,5 @@
+<!-- No aria-required here: a radio is one option, and whether the question must be answered is
+     stated on its radiogroup, the only one of the two roles that supports it. -->
 <input
   type="radio"
   class="tls-radio-button-input"
@@ -6,7 +8,6 @@
   [attr.aria-label]="ariaLabel() ?? null"
   [attr.aria-labelledby]="labelledBy()"
   [attr.aria-invalid]="invalid() ? 'true' : null"
-  [attr.aria-required]="required() ? 'true' : null"
   [attr.aria-describedby]="describedBy()"
   [tabindex]="tabindex()"
   [disabled]="disabled()"
