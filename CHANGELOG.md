@@ -1,3 +1,19 @@
+## 22.26.0 (2026-11-08)
+
+### 🚀 Features
+
+- **form-item:** mark only skippable form fields optional and add provideFormItemConfig ([6a0b552](https://github.com/konopyanovM/thalassic/commit/6a0b552))
+- **themes:** lower the dark surface ladder to a near-black page ([0620a5b](https://github.com/konopyanovM/thalassic/commit/0620a5b))
+
+### 🩹 Fixes
+
+- **themes:** let a loader take its ink from an ancestor ([5736baa](https://github.com/konopyanovM/thalassic/commit/5736baa))
+- **themes/dialog:** keep a full dialog's content clear of the safe-area insets ([7702b5f](https://github.com/konopyanovM/thalassic/commit/7702b5f))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.25.0 (2026-11-06)
 
 ### 🚀 Features
