@@ -20,10 +20,26 @@
     --tls-dialog-width: calc(100svw - var(--spacing-12));
   }
 
+  // Covers the whole screen, beneath a notch, status bar and home indicator as
+  // well when the page extends under them (`viewport-fit=cover`), so its
+  // content is held clear of the safe-area insets. The close button is placed
+  // against the padding box, which the insets do not move, so it adds them
+  // itself; the larger side inset serves either reading direction.
   &.tls-dialog--full {
     --tls-dialog-width: 100svw;
     --tls-dialog-border-radius: 0;
     height: 100dvh;
     max-height: 100dvh;
+
+    padding: env(safe-area-inset-top) env(safe-area-inset-right)
+      env(safe-area-inset-bottom) env(safe-area-inset-left);
+
+    .tls-dialog__close {
+      top: calc(var(--tls-dialog-close-padding) + env(safe-area-inset-top));
+      inset-inline-end: calc(
+        var(--tls-dialog-close-padding) +
+          max(env(safe-area-inset-left), env(safe-area-inset-right))
+      );
+    }
   }
 }
