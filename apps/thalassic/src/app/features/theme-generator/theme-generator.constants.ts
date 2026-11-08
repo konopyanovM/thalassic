@@ -22,12 +22,12 @@ export const PALETTE_NAMES: paletteName[] = [
 
 /**
  * Tones written into every exported palette map. Beyond the standard steps it
- * carries the in-between tones the surface roles read (4, 6, 12, 17, 22, 85,
- * 92, 94, 96), so one key set serves every palette.
+ * carries the in-between tones the surface roles read (2, 4, 6, 8, 12, 17, 22,
+ * 85, 92, 94, 96), so one key set serves every palette.
  */
 export const PALETTE_TONES: number[] = [
-  0, 4, 5, 6, 10, 12, 15, 17, 20, 22, 25, 30, 35, 40, 50, 60, 70, 80, 85, 90, 92, 94, 95, 96, 98,
-  99, 100,
+  0, 2, 4, 5, 6, 8, 10, 12, 15, 17, 20, 22, 25, 30, 35, 40, 50, 60, 70, 80, 85, 90, 92, 94, 95,
+  96, 98, 99, 100,
 ];
 
 /** Palette every color role reads its tone from. Mirrors the theme's `_roles.scss`. */
@@ -101,15 +101,15 @@ export const DEFAULT_ROLE_TONES: Record<themeType, RoleTones> = {
     'on-tertiary': 20,
     'tertiary-container': 30,
     'on-tertiary-container': 90,
-    surface: 6,
+    surface: 2,
     'on-surface': 90,
     'surface-variant': 30,
     'on-surface-variant': 80,
-    'surface-container-lowest': 4,
-    'surface-container-low': 10,
-    'surface-container': 12,
-    'surface-container-high': 17,
-    'surface-container-highest': 22,
+    'surface-container-lowest': 0,
+    'surface-container-low': 6,
+    'surface-container': 8,
+    'surface-container-high': 12,
+    'surface-container-highest': 17,
     outline: 60,
     'outline-variant': 20,
   },

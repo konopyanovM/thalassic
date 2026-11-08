@@ -41,7 +41,11 @@ $-role-palettes: (
 );
 
 // Tone every color role reads from its palette, per mode: the Material 3
-// baseline mapping.
+// baseline mapping, except dark mode's surface ladder. Material's dark page is
+// charcoal (tone 6); this one sits four tones under it, near-black, so the
+// interface around the content recedes further. The containers move down with
+// it, keeping their order and close to the baseline's spacing, so a container
+// still lifts off the page and a field off its container.
 $-default-tones: (
   'light': (
     'primary': 40,
@@ -81,15 +85,15 @@ $-default-tones: (
     'on-tertiary': 20,
     'tertiary-container': 30,
     'on-tertiary-container': 90,
-    'surface': 6,
+    'surface': 2,
     'on-surface': 90,
     'surface-variant': 30,
     'on-surface-variant': 80,
-    'surface-container-lowest': 4,
-    'surface-container-low': 10,
-    'surface-container': 12,
-    'surface-container-high': 17,
-    'surface-container-highest': 22,
+    'surface-container-lowest': 0,
+    'surface-container-low': 6,
+    'surface-container': 8,
+    'surface-container-high': 12,
+    'surface-container-highest': 17,
     'outline': 60,
     'outline-variant': 20,
   ),

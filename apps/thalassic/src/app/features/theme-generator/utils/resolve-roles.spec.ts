@@ -21,8 +21,10 @@ describe('resolveRoles', () => {
     const roles = resolveRoles(palettes, resolveRoleTones({}, 'dark'));
 
     expect(roles['on-surface']).toBe('#dfe3e7');
-    expect(roles['surface-container-lowest']).toBe('#0a0f12');
-    expect(roles['surface-container-highest']).toBe('#313539');
+    expect(roles.surface).toBe('#04080b');
+    expect(roles['surface-container']).toBe('#14181b');
+    expect(roles['surface-container-lowest']).toBe('#000000');
+    expect(roles['surface-container-highest']).toBe('#262a2e');
   });
 
   it('reads an overridden role at its override and leaves the rest at their defaults', () => {
