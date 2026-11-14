@@ -4,23 +4,32 @@
 // outlined / text / elevated), shared across controls (tls-button,
 // tls-toggle-button). Maps the treatment onto the block's color token pair
 // (see color-variants) and emits the hover / focus-visible / active feedback
-// states, gated off the block's `--disabled` modifier.
+// states, gated off the block's `--disabled` and `--busy` modifiers.
 //
 // Emits declarations only — include it under the selector that scopes the
 // treatment (a variant class, a pressed-state layer, …). The tonal treatment
 // reads the container pair directly rather than relying on tonal-swap, so it
 // is safe for blocks with a second variant layer.
 
+// The states in which a control acts on nothing, so answers no pointer and no
+// press: unavailable, or busy with the action it was already given. Feedback on
+// either would promise a response the control will not make. One `:not()` with
+// both, rather than one each, so the gate weighs a single class however many
+// states it names and the feedback rules keep their place in the cascade.
+@function _inert($block) {
+  @return ':not(.#{$block}--disabled, .#{$block}--busy)';
+}
+
 // Hover answers a pointer that can rest over the control, so it is gated on a
 // hover-capable device; keyboard focus shows the same state everywhere.
 @mixin _hover-focus-state($block) {
   @include core.hover-capable {
-    &:not(.#{$block}--disabled):hover {
+    &#{_inert($block)}:hover {
       @content;
     }
   }
 
-  &:not(.#{$block}--disabled):focus-visible {
+  &#{_inert($block)}:focus-visible {
     @content;
   }
 }
@@ -58,7 +67,7 @@ $-filled-active-step: 0.09;
 }
 
 @mixin _active-state($block) {
-  &:not(.#{$block}--disabled):active {
+  &#{_inert($block)}:active {
     @content;
   }
 }
