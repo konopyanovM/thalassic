@@ -1,3 +1,5 @@
+@use '../mixins' as mixins;
+
 .tls-form-item {
   display: flex;
   flex-direction: column;
@@ -102,6 +104,41 @@
     .tls-form-control-group--fluid
   ) {
     width: 100%;
+  }
+
+  // The control's value is still being read: its slot is drawn as a
+  // placeholder exactly the size of the control, which keeps its place unseen
+  // and so can be neither focused nor read out. The label and the hint say
+  // nothing that has to be waited for, so they stay as they are.
+  &.tls-form-item--loading {
+    // A control's own corner at the default size, which is what the slot
+    // almost always holds.
+    @include mixins.radius-vars('md', 'tls-form-item-placeholder');
+
+    .form-item-control {
+      border-radius: var(--tls-form-item-placeholder-radius-round);
+
+      @include mixins.skeleton-sweep;
+
+      @include mixins.squircle {
+        border-radius: var(--tls-form-item-placeholder-radius-squircle);
+
+        corner-shape: var(--corner-shape-squircle);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        @include mixins.skeleton-still;
+      }
+
+      > * {
+        visibility: hidden;
+      }
+    }
+
+    // Counts a value that is not there yet.
+    .form-item-counter {
+      visibility: hidden;
+    }
   }
 
   .form-item-main {

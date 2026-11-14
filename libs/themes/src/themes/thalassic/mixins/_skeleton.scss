@@ -1,0 +1,25 @@
+// How long one sweep takes where nothing sets `--tls-skeleton-duration`.
+$default-duration: 2500ms;
+
+// The fill a placeholder is drawn in and the sweep across it, for whichever
+// box draws one. The colours and the pace are read from the skeleton's custom
+// properties where an ancestor or the box itself sets them, and fall back to
+// the skeleton's own defaults where none does.
+@mixin skeleton-sweep {
+  background: linear-gradient(
+    110deg,
+    var(--tls-skeleton-color, var(--color-surface-variant)) 25%,
+    var(--tls-skeleton-shimmer-color, var(--color-surface)) 50%,
+    var(--tls-skeleton-color, var(--color-surface-variant)) 75%
+  );
+  background-size: 200% 100%;
+
+  animation: skeleton-shimmer var(--tls-skeleton-duration, $default-duration) linear infinite;
+}
+
+// The fill at rest.
+@mixin skeleton-still {
+  background: var(--tls-skeleton-color, var(--color-surface-variant));
+
+  animation: none;
+}

@@ -96,6 +96,19 @@ describe('Skeleton', () => {
     expect(fixture.nativeElement.style.getPropertyValue('--tls-skeleton-width')).toBe('100%');
   });
 
+  it('should be hidden from assistive technology while loading', () => {
+    fixture.detectChanges();
+    expect(fixture.nativeElement.getAttribute('aria-hidden')).toBe('true');
+    expect(fixture.nativeElement.classList).not.toContain('tls-skeleton--idle');
+  });
+
+  it('should step aside, and stop hiding what it wraps, once loading is turned off', () => {
+    fixture.componentRef.setInput('loading', false);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.classList).toContain('tls-skeleton--idle');
+    expect(fixture.nativeElement.hasAttribute('aria-hidden')).toBe(false);
+  });
+
   it('should apply no-animate class when animate is false', () => {
     fixture.componentRef.setInput('animate', false);
     fixture.detectChanges();

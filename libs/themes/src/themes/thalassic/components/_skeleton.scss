@@ -1,33 +1,11 @@
 @use 'sass:math';
+@use '../mixins' as mixins;
 
 // The height of a text skeleton's bar: the band a line's glyphs fill, which is
 // shorter than the line box around them.
 $text-bar-height: 0.75em;
 
-// The fill and the sweep across it, for whichever box draws the placeholder.
-@mixin sweep {
-  background: linear-gradient(
-    110deg,
-    var(--tls-skeleton-color) 25%,
-    var(--tls-skeleton-shimmer-color) 50%,
-    var(--tls-skeleton-color) 75%
-  );
-  background-size: 200% 100%;
-
-  animation: skeleton-shimmer var(--tls-skeleton-duration) linear infinite;
-}
-
-// The fill at rest.
-@mixin still {
-  background: var(--tls-skeleton-color);
-
-  animation: none;
-}
-
 .tls-skeleton {
-  --tls-skeleton-color: var(--color-surface-variant);
-  --tls-skeleton-shimmer-color: var(--color-surface);
-
   width: var(--tls-skeleton-width);
   height: var(--tls-skeleton-height);
 
@@ -35,14 +13,37 @@ $text-bar-height: 0.75em;
 
   border-radius: var(--tls-skeleton-radius);
 
-  @include sweep;
+  @include mixins.skeleton-sweep;
 
   &.tls-skeleton--no-animate {
-    @include still;
+    @include mixins.skeleton-still;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    @include still;
+    @include mixins.skeleton-still;
+  }
+
+  // Wrapped around content, the skeleton stands as tall as that content, which
+  // keeps its place unseen: the placeholder is then exactly the size of what it
+  // stands in for, whatever that size depends on. Hidden content can be
+  // neither focused nor read out.
+  &:not(:empty):not(.tls-skeleton--text):not(.tls-skeleton--idle) {
+    height: auto;
+
+    > * {
+      visibility: hidden;
+    }
+  }
+
+  // Nothing to wait for: the skeleton steps out of layout and painting
+  // altogether, leaving the content it wraps exactly as it would stand alone.
+  &.tls-skeleton--idle {
+    display: contents;
+
+    &::before,
+    &::after {
+      content: none;
+    }
   }
 
   // One line of text. The host is the line box of the font it inherits, so
@@ -80,16 +81,16 @@ $text-bar-height: 0.75em;
       // A quarter of the bar's height, the proportion every control rounds by.
       border-radius: math.div($text-bar-height, 4);
 
-      @include sweep;
+      @include mixins.skeleton-sweep;
     }
 
     &.tls-skeleton--no-animate::after {
-      @include still;
+      @include mixins.skeleton-still;
     }
 
     @media (prefers-reduced-motion: reduce) {
       &::after {
-        @include still;
+        @include mixins.skeleton-still;
       }
     }
   }

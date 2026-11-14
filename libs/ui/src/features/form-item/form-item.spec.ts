@@ -129,6 +129,15 @@ describe('FormItem', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should mark the item while its control is still being read', () => {
+    expect(fixture.nativeElement.classList).not.toContain('tls-form-item--loading');
+
+    fixture.componentRef.setInput('loading', true);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.classList).toContain('tls-form-item--loading');
+  });
+
   describe('character counter', () => {
     it('should render the current length against the budget', async () => {
       const counterFixture = TestBed.createComponent(CounterHostComponent);

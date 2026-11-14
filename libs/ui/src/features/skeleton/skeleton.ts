@@ -15,16 +15,17 @@ import { SKELETON_CONFIG } from './skeleton.token';
 /**
  * A placeholder drawn where content is still on its way. By default it is a
  * box of the given size; as `text` it is one line of the text it stands in
- * for.
+ * for; wrapped around content it is exactly the size of that content, which
+ * keeps its place unseen until `loading` is turned off.
  */
 @Component({
   selector: 'tls-skeleton',
   imports: [],
-  template: '',
+  template: '<ng-content />',
   host: {
     '[class]': 'hostClasses()',
     '[style]': 'hostStyles()',
-    'aria-hidden': 'true',
+    '[attr.aria-hidden]': 'loading() ? true : null',
   },
 })
 export class Skeleton {
@@ -45,6 +46,15 @@ export class Skeleton {
     this._config.animate,
     { transform: booleanAttribute },
   );
+  /**
+   * Whether there is still something to wait for. Turned off, the skeleton
+   * draws nothing and takes no part in layout, so content wrapped in it stands
+   * exactly as it would alone: the wrapper can stay in the template and be
+   * switched, rather than the content being written out a second time.
+   */
+  public readonly loading: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(true, {
+    transform: booleanAttribute,
+  });
   /**
    * Stands in for one line of text: the skeleton takes the line height of the
    * font it inherits and draws a bar the height of that font's glyphs, so the
@@ -69,6 +79,10 @@ export class Skeleton {
 
     if (this.text()) {
       array.push(`${className}--text`);
+    }
+
+    if (!this.loading()) {
+      array.push(`${className}--idle`);
     }
 
     return array;
