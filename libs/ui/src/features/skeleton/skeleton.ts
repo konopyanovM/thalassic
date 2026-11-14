@@ -12,6 +12,11 @@ import { radiusValue } from '../../types';
 import { SkeletonConfig } from './skeleton.config';
 import { SKELETON_CONFIG } from './skeleton.token';
 
+/**
+ * A placeholder drawn where content is still on its way. By default it is a
+ * box of the given size; as `text` it is one line of the text it stands in
+ * for.
+ */
 @Component({
   selector: 'tls-skeleton',
   imports: [],
@@ -40,6 +45,18 @@ export class Skeleton {
     this._config.animate,
     { transform: booleanAttribute },
   );
+  /**
+   * Stands in for one line of text: the skeleton takes the line height of the
+   * font it inherits and draws a bar the height of that font's glyphs, so the
+   * text replacing it lands in the same line box. Placed inside the element
+   * that will hold the text, or given that element's class, it follows the
+   * typography with no size of its own to keep in step. `width` sets the
+   * line's length, in any unit (`12ch`, `60%`); `height`, `size`, `radius` and
+   * `rounded` do not apply, since the bar is proportioned from the font.
+   */
+  public readonly text: InputSignalWithTransform<boolean, unknown> = input<boolean, unknown>(false, {
+    transform: booleanAttribute,
+  });
 
   // Computed
   protected readonly hostClasses = computed(() => {
@@ -50,10 +67,24 @@ export class Skeleton {
       array.push(`${className}--no-animate`);
     }
 
+    if (this.text()) {
+      array.push(`${className}--text`);
+    }
+
     return array;
   });
 
   protected readonly hostStyles = computed(() => {
+    const duration = `${this.duration()}ms`;
+
+    // A line of text is sized by its font, so only its length is passed on.
+    if (this.text()) {
+      return {
+        '--tls-skeleton-width': this._resolveDimension(this.width()),
+        '--tls-skeleton-duration': duration,
+      };
+    }
+
     const size = this.size();
     const width = this.width() ?? size;
     const height = this.height() ?? size;
@@ -62,7 +93,7 @@ export class Skeleton {
       '--tls-skeleton-width': this._resolveDimension(width),
       '--tls-skeleton-height': this._resolveDimension(height),
       '--tls-skeleton-radius': this.rounded() ? '50%' : this._resolveRadius(this.radius()),
-      '--tls-skeleton-duration': `${this.duration()}ms`,
+      '--tls-skeleton-duration': duration,
     };
   });
 

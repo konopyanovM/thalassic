@@ -71,6 +71,31 @@ describe('Skeleton', () => {
     expect(fixture.nativeElement.style.getPropertyValue('--tls-skeleton-radius')).toBe('2rem');
   });
 
+  it('should apply the text class when text is set', () => {
+    fixture.componentRef.setInput('text', true);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.classList).toContain('tls-skeleton--text');
+  });
+
+  it('should pass on only the length of a text skeleton, leaving its height and radius to the font', () => {
+    fixture.componentRef.setInput('text', true);
+    fixture.componentRef.setInput('width', '12ch');
+    fixture.componentRef.setInput('height', 48);
+    fixture.componentRef.setInput('radius', 'lg');
+    fixture.detectChanges();
+    const style = fixture.nativeElement.style;
+    expect(style.getPropertyValue('--tls-skeleton-width')).toBe('12ch');
+    expect(style.getPropertyValue('--tls-skeleton-height')).toBe('');
+    expect(style.getPropertyValue('--tls-skeleton-radius')).toBe('');
+  });
+
+  it('should span the full line when a text skeleton is given no width', () => {
+    fixture.componentRef.setInput('text', true);
+    fixture.componentRef.setInput('size', 48);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.style.getPropertyValue('--tls-skeleton-width')).toBe('100%');
+  });
+
   it('should apply no-animate class when animate is false', () => {
     fixture.componentRef.setInput('animate', false);
     fixture.detectChanges();
