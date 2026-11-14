@@ -1,5 +1,6 @@
 export * from './tabs';
 export * from './tabs.config';
+export * from './tabs.constants';
 export * from './tabs.token';
 export * from './tabs.types';
 export * from './tabs-query-sync.config';

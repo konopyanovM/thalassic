@@ -2,6 +2,7 @@ import {
   booleanAttribute,
   computed,
   Directive,
+  ElementRef,
   inject,
   input,
   InputSignalWithTransform,
@@ -36,6 +37,9 @@ import { RippleDirective } from '../ripple';
 })
 export class TabLinkDirective {
   // Injections
+  /** The anchor itself, which the strip measures to place the mark of the active link. */
+  public readonly elementRef: ElementRef<HTMLAnchorElement> = inject(ElementRef);
+
   private readonly _routerLinkActive: RouterLinkActive | null = inject(RouterLinkActive, {
     optional: true,
     self: true,
@@ -59,7 +63,8 @@ export class TabLinkDirective {
     : signal(false);
 
   // Computed
-  protected isActive: Signal<boolean> = computed(
+  /** Whether this is the link to where the user is — by its route, or because it was told so. */
+  public readonly isActive: Signal<boolean> = computed(
     () => this.active() || this._routerLinkIsActive(),
   );
 

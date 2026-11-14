@@ -49,6 +49,17 @@ class AlignedTestHost {}
 })
 class GroupedTestHost {}
 
+@Component({
+  imports: [TabNavDirective, TabLinkDirective, RouterLink, RouterLinkActive],
+  template: `
+    <nav tlsTabNav variant="segmented" aria-label="Segmented sections">
+      <a tlsTabLink routerLink="/first" routerLinkActive>First</a>
+      <a tlsTabLink routerLink="/second" routerLinkActive>Second</a>
+    </nav>
+  `,
+})
+class SegmentedTestHost {}
+
 describe('TabNavDirective', () => {
   let fixture: ComponentFixture<TestHost>;
   let navigation: HTMLElement;
@@ -139,5 +150,48 @@ describe('TabNavDirective', () => {
     expect(groupedNavigation.classList).toContain('tls-tab-header--grouped');
     expect(groupedNavigation.classList).toContain('tls-tab-header--vertical');
     expect(groupedNavigation.classList).toContain('tls-tab-header--divided');
+  });
+
+  // The mark of the active link is kept on the strip, which is where the theme
+  // draws it from, so that it can travel to a link newly active.
+  describe('active link mark', () => {
+    const markState = (host: ComponentFixture<unknown>): string | null => {
+      const strip = (host.nativeElement as HTMLElement).querySelector('nav');
+      if (!strip) throw new Error('No strip rendered');
+      return strip.getAttribute('data-sliding-indicator');
+    };
+
+    it('keeps a mark on the active link of a segmented strip and sends it travelling to the next', async () => {
+      const segmented = TestBed.createComponent(SegmentedTestHost);
+      await TestBed.inject(Router).navigateByUrl('/first');
+      await segmented.whenStable();
+      expect(markState(segmented)).toBe('placed');
+
+      await TestBed.inject(Router).navigateByUrl('/second');
+      await segmented.whenStable();
+      expect(markState(segmented)).toBe('travelling');
+    });
+
+    it('keeps no mark while no link is active', async () => {
+      const segmented = TestBed.createComponent(SegmentedTestHost);
+      await segmented.whenStable();
+
+      expect(markState(segmented)).toBeNull();
+    });
+
+    it('keeps no mark on a strip that marks a link by its edges', async () => {
+      await TestBed.inject(Router).navigateByUrl('/first');
+      await fixture.whenStable();
+
+      expect(markState(fixture)).toBeNull();
+    });
+
+    it('keeps no mark on a column of links', async () => {
+      const grouped = TestBed.createComponent(GroupedTestHost);
+      await TestBed.inject(Router).navigateByUrl('/first');
+      await grouped.whenStable();
+
+      expect(markState(grouped)).toBeNull();
+    });
   });
 });

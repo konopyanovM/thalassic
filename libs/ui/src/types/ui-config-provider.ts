@@ -50,6 +50,7 @@ import {
   RatingConfig,
   RatingLabels,
   RippleConfig,
+  SlidingIndicatorConfig,
   SelectConfig,
   SkeletonConfig,
   SliderConfig,
@@ -81,6 +82,8 @@ export interface tlsUiConfigProvider {
   locale?: Partial<LocaleConfig>;
   /** Cross-cutting press-ink policy applied wherever a ripple is applied (not tied to a single component). */
   ripple?: Partial<RippleConfig>;
+  /** Cross-cutting choice of the axes along which a chosen item's mark travels to the next (not tied to a single component). */
+  slidingIndicator?: Partial<SlidingIndicatorConfig>;
   /** Cross-cutting defaults inherited by every form control (not tied to a single component). */
   formControl?: Partial<FormControlConfig>;
   components?: {

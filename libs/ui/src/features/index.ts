@@ -56,6 +56,7 @@ export * from './pagination';
 export * from './popover';
 export * from './progress';
 export * from './ripple';
+export * from './sliding-indicator';
 export * from './sheet';
 export * from './skeleton';
 export * from './splitter';

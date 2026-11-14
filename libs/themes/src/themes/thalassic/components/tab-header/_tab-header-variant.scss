@@ -1,4 +1,5 @@
 @use '@thalassic/core/styles' as core;
+@use '../../mixins' as mixins;
 
 .tls-tab-header {
   // Flat
@@ -138,6 +139,23 @@
         padding: var(--spacing-2) var(--spacing-5);
       }
     }
+
+    // The pill is drawn once, on the track, so it can travel to a tab newly
+    // selected; the selected tab gives up its own fill to it.
+    @include mixins.sliding-indicator {
+      border-radius: var(--tls-tab-header-pill-radius);
+
+      background-color: var(--tls-tab-header-pill-background-color);
+      box-shadow: var(--segmented-pill-shadow);
+    }
+
+    &[data-sliding-indicator] .tls-tab-header__item.tls-tab-header__item--active {
+      background-color: transparent;
+      box-shadow: none;
+
+      // The fill it was pressed under lets go as the pill arrives, not before.
+      transition-duration: var(--tls-sliding-indicator-duration);
+    }
   }
 
   // Grouped — an inset-grouped list (Apple HIG): one rounded surface whose
@@ -211,6 +229,22 @@
         // out from, and the fill already marks the selection.
         font-weight: var(--font-weight-regular);
       }
+    }
+
+    // The selected row's fill is drawn once, on the surface, so it can travel
+    // to a row newly selected; the row gives up its own fill to it. It has no
+    // corners of its own: the surface clips it to its own where it reaches an
+    // outer row.
+    @include mixins.sliding-indicator {
+      background-color: var(--tls-tab-header-active-background-color);
+    }
+
+    &[data-sliding-indicator] .tls-tab-header__item.tls-tab-header__item--active {
+      background-color: transparent;
+
+      // The fill it was pressed under lets go as the row's fill arrives, not
+      // before.
+      transition-duration: var(--tls-sliding-indicator-duration);
     }
   }
 }

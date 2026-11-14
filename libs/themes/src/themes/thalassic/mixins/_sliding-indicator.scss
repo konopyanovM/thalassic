@@ -1,0 +1,72 @@
+@use '@thalassic/core/styles' as core;
+
+// The mark of the chosen item in a set — the pill of a segmented control, the
+// fill of a list's selected row — drawn once on the container rather than by
+// each item, so it can travel from the item it leaves to the one chosen next
+// instead of vanishing from one and appearing on the other.
+//
+// Include it on the container the items are laid out in, passing the mark's
+// look — its fill, its corners, its shadow — as the content block. The kit
+// measures the chosen item and writes its box and a `data-sliding-indicator`
+// attribute onto the container (see `slidingIndicator`); until it has, and
+// wherever it is told not to, nothing is drawn here and each item goes on
+// marking itself. A treatment that includes this therefore also drops the
+// item's own mark under `&[data-sliding-indicator]`, where this one stands in.
+//
+// The mark is the container's `::before`, which must be free, and is laid
+// beneath the items: it takes a place in the stacking order that an item's
+// positioned content — its label, its ink — is painted over.
+//
+// Placed by physical offsets, unlike the logical properties around it: they
+// are what the measurement reports, whichever way the items run.
+//
+// Only the move to an item newly chosen is animated, which the attribute's
+// `travelling` value marks, and never the mark keeping to its item while the
+// layout around it changes, where it would trail behind. Travel across a
+// control is expressive rather than functional — the choice reads without it —
+// so it plays at the `full` tier alone, and the mark is simply on its new item
+// otherwise.
+//
+// The time the move takes is published on the container as
+// `--tls-sliding-indicator-duration`. An item that gives up a fill of its own
+// as it is chosen — the hover it was pressed under — fades that fill across
+// the same time, so the one hands over to the other: let go any sooner, the
+// item would stand bare until the mark reached it.
+@mixin sliding-indicator($duration: var(--motion-default)) {
+  --tls-sliding-indicator-duration: #{$duration};
+
+  position: relative;
+
+  &::before {
+    content: '';
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+
+    width: var(--tls-sliding-indicator-width);
+    height: var(--tls-sliding-indicator-height);
+
+    display: none;
+
+    // The items above it take every press.
+    pointer-events: none;
+    translate: var(--tls-sliding-indicator-x) var(--tls-sliding-indicator-y);
+
+    @content;
+  }
+
+  &[data-sliding-indicator]::before {
+    display: block;
+  }
+
+  &[data-sliding-indicator='travelling']::before {
+    @include core.motion(full) {
+      transition:
+        translate var(--tls-sliding-indicator-duration) var(--motion-ease-in-out),
+        width var(--tls-sliding-indicator-duration) var(--motion-ease-in-out),
+        height var(--tls-sliding-indicator-duration) var(--motion-ease-in-out);
+    }
+  }
+}

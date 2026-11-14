@@ -1,4 +1,5 @@
 <ul
+  #tabList
   ngTabList
   [class]="headerClasses()"
   [orientation]="orientation()"
@@ -9,6 +10,7 @@
 >
   @for (tab of tabs(); track tab) {
     <li
+      #tabItem
       role="presentation"
       class="tls-tab-header__item"
       [class.tls-tab-header__item--active]="ariaTab.selected()"

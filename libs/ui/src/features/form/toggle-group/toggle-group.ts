@@ -4,6 +4,7 @@ import {
   Component,
   computed,
   contentChild,
+  ElementRef,
   forwardRef,
   inject,
   input,
@@ -11,6 +12,7 @@ import {
   InputSignalWithTransform,
   Signal,
   TemplateRef,
+  viewChildren,
 } from '@angular/core';
 import {
   FORM_CONTROL,
@@ -19,6 +21,7 @@ import {
 } from '../../../abstract/form';
 import { color, controlSize, orientation } from '../../../types';
 import { RippleDirective } from '../../ripple';
+import { slidingIndicator } from '../../sliding-indicator';
 import { TOGGLE_GROUP_CONFIG } from './toggle-group.token';
 import { toggleGroupVariant } from './toggle-group.types';
 
@@ -75,6 +78,25 @@ export class ToggleGroup<T, V = unknown> extends SelectionGroup<T, V> {
   protected readonly optionTemplate =
     contentChild<TemplateRef<selectionGroupTemplateContext<T, V>>>('option');
 
+  private readonly _optionButtons: Signal<readonly ElementRef<HTMLButtonElement>[]> =
+    viewChildren<ElementRef<HTMLButtonElement>>('optionButton');
+
+  /**
+   * The option a single travelling pill marks: the one chosen, in a segmented
+   * group that takes one choice. Nothing in a joined treatment, in a group of
+   * several choices — each keeps a pill of its own — or with nothing chosen.
+   */
+  private readonly _markedOption: Signal<HTMLButtonElement | null> = computed(() => {
+    if (this.variant() !== 'segmented' || this.multiple()) return null;
+
+    const chosen = this.value();
+    if (chosen.length !== 1) return null;
+
+    const index = this.normalizedOptions().findIndex(option => option.value === chosen[0]);
+    const button = this._optionButtons()[index];
+    return button ? button.nativeElement : null;
+  });
+
   protected readonly classes: Signal<string[]> = computed(() => {
     const className = this.CLASS_NAME;
     const array = [
@@ -87,4 +109,14 @@ export class ToggleGroup<T, V = unknown> extends SelectionGroup<T, V> {
     if (this.fluid()) array.push(`${className}--fluid`);
     return array.concat(this.controlClasses());
   });
+
+  constructor() {
+    super();
+
+    slidingIndicator({
+      container: () => this.elementRef.nativeElement,
+      target: this._markedOption,
+      orientation: this.orientation,
+    });
+  }
 }

@@ -133,6 +133,8 @@ import {
   TEXTAREA_CONFIG,
   RIPPLE_CONFIG,
   DEFAULT_RIPPLE_CONFIG,
+  SLIDING_INDICATOR_CONFIG,
+  DEFAULT_SLIDING_INDICATOR_CONFIG,
   TOAST_CONFIG,
   ToastConfig,
   TOGGLE_GROUP_CONFIG,
@@ -168,6 +170,11 @@ export const provideThalassicUIConfig = (
     {
       provide: RIPPLE_CONFIG,
       useValue: deepMerge(DEFAULT_RIPPLE_CONFIG, config.ripple),
+    },
+    // Cross-cutting choice of the axes a chosen item's mark travels along
+    {
+      provide: SLIDING_INDICATOR_CONFIG,
+      useValue: deepMerge(DEFAULT_SLIDING_INDICATOR_CONFIG, config.slidingIndicator),
     },
     // Reflect the touch-target opt-in onto the document root, where the expansion reads
     // it. The overflow is transparent, so a late (browser-only) reflection causes no

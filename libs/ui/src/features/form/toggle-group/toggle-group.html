@@ -1,6 +1,7 @@
 @for (option of normalizedOptions(); track option.value; let index = $index) {
   <button
     type="button"
+    #optionButton
     class="tls-toggle-group__option"
     tlsRipple
     [class.tls-toggle-group__option--selected]="isSelected(option.value)"

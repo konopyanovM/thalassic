@@ -30,8 +30,23 @@
     --tls-toggle-group-segmented-hover,
     var(--segmented-hover-background)
   );
+  --tls-toggle-group-segmented-pill-background: var(
+    --tls-toggle-group-segmented-pill,
+    var(--segmented-pill-background)
+  );
+  --tls-toggle-group-segmented-pill-elevation: var(
+    --tls-toggle-group-segmented-pill-shadow,
+    var(--segmented-pill-shadow)
+  );
+  // Concentric with the track: a corner set inside another keeps an even band
+  // between the two only when its radius is the outer one less the room
+  // between them.
+  --tls-toggle-group-segmented-pill-radius: calc(
+    var(--tls-toggle-group-border-radius) - var(--tls-toggle-group-segmented-reach)
+  );
 
   padding: var(--tls-toggle-group-segmented-inset);
+
   gap: var(--tls-toggle-group-segmented-inset);
 
   background-color: var(--tls-toggle-group-segmented-track, var(--segmented-track-background));
@@ -50,12 +65,9 @@
 
     // Each option is a shape of its own, so no rule runs between two of them.
     border: none;
-    // Concentric with the track: a corner set inside another keeps an even
-    // band between the two only when its radius is the outer one less the room
-    // between them. Its shape follows the track's.
-    border-radius: calc(
-      var(--tls-toggle-group-border-radius) - var(--tls-toggle-group-segmented-reach)
-    );
+    // The pill's corner, in the track's own corner shape: the hover fill and
+    // the ink are drawn to it on every option, chosen or not.
+    border-radius: var(--tls-toggle-group-segmented-pill-radius);
     corner-shape: inherit;
 
     // An option not chosen steps back a tone, still well above body-text
@@ -107,10 +119,10 @@
     &,
     &:not(.tls-toggle-group__option--disabled):not(:disabled):hover,
     &:not(.tls-toggle-group__option--disabled):not(:disabled):active {
-      background-color: var(--tls-toggle-group-segmented-pill, var(--segmented-pill-background));
+      background-color: var(--tls-toggle-group-segmented-pill-background);
     }
 
-    box-shadow: var(--tls-toggle-group-segmented-pill-shadow, var(--segmented-pill-shadow));
+    box-shadow: var(--tls-toggle-group-segmented-pill-elevation);
 
     color: var(--color-on-surface);
   }
@@ -133,6 +145,40 @@
 
     &:last-child::after {
       inset-block-end: calc(-1 * var(--tls-toggle-group-segmented-reach));
+    }
+  }
+
+  // The pill of a group that takes one choice is drawn once, on the track, so
+  // it can travel to an option newly chosen. Until it is placed, and in a
+  // group of several choices, each chosen option draws its own fill as above.
+  @include mixins.sliding-indicator {
+    border-radius: var(--tls-toggle-group-segmented-pill-radius);
+    corner-shape: inherit;
+
+    background-color: var(--tls-toggle-group-segmented-pill-background);
+    box-shadow: var(--tls-toggle-group-segmented-pill-elevation);
+  }
+
+  &[data-sliding-indicator] {
+    // The chosen option gives its fill up to the pill beneath it.
+    .tls-toggle-group__option--selected {
+      &,
+      &:not(.tls-toggle-group__option--disabled):not(:disabled):hover,
+      &:not(.tls-toggle-group__option--disabled):not(:disabled):active {
+        background-color: transparent;
+      }
+
+      box-shadow: none;
+
+      // The fill it was pressed under lets go as the pill arrives, not before.
+      transition-duration: var(--tls-sliding-indicator-duration);
+    }
+
+    // An option that cannot be pressed is dimmed, and so is the pill under it.
+    &:has(
+        .tls-toggle-group__option--selected:is(:disabled, .tls-toggle-group__option--disabled)
+      )::before {
+      opacity: 0.5;
     }
   }
 }

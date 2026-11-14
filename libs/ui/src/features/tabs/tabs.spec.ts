@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Tab } from './tab/tab';
 import { Tabs } from './tabs';
-import { tabsHeaderAlign, tabsItemsAlign } from './tabs.types';
+import { tabsHeaderAlign, tabsItemsAlign, tabsOrientation, tabsVariant } from './tabs.types';
 
 @Component({
   imports: [Tabs, Tab],
@@ -126,5 +126,71 @@ describe('Tabs focusTab', () => {
     fixture.componentInstance.tabs().focusTab('missing');
 
     expect(document.activeElement).toBe(before);
+  });
+});
+
+@Component({
+  imports: [Tabs, Tab],
+  template: `
+    <tls-tabs [variant]="variant()" [orientation]="orientation()" [(selected)]="selected">
+      <tls-tab value="mine" label="Mine">Mine</tls-tab>
+      <tls-tab value="shared" label="Shared">Shared</tls-tab>
+      <tls-tab value="discover" label="Discover">Discover</tls-tab>
+    </tls-tabs>
+  `,
+})
+class MarkedTestHostComponent {
+  readonly variant = signal<tabsVariant>('segmented');
+  readonly orientation = signal<tabsOrientation>('horizontal');
+  readonly selected = signal<string>('mine');
+}
+
+// The mark of the selected tab is kept on the strip, which is where the theme
+// draws it from, so that it can travel to a tab newly selected.
+describe('Tabs selection mark', () => {
+  let fixture: ComponentFixture<MarkedTestHostComponent>;
+
+  const strip = (): HTMLElement => fixture.nativeElement.querySelector('.tls-tab-header');
+  const markState = (): string | null => strip().getAttribute('data-sliding-indicator');
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [MarkedTestHostComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(MarkedTestHostComponent);
+    await fixture.whenStable();
+  });
+
+  it('should keep a mark on the selected tab of a segmented strip', () => {
+    expect(markState()).toBe('placed');
+  });
+
+  it('should send the mark travelling to a tab newly selected', async () => {
+    fixture.componentInstance.selected.set('discover');
+    await fixture.whenStable();
+
+    expect(markState()).toBe('travelling');
+  });
+
+  it('should keep a mark on the selected row of a grouped strip', async () => {
+    fixture.componentInstance.variant.set('grouped');
+    await fixture.whenStable();
+
+    expect(markState()).toBe('placed');
+  });
+
+  it('should keep no mark on a strip that marks a tab by its edges', async () => {
+    fixture.componentInstance.variant.set('flat');
+    await fixture.whenStable();
+
+    expect(markState()).toBeNull();
+  });
+
+  it('should keep no mark on a column of tabs', async () => {
+    fixture.componentInstance.orientation.set('vertical');
+    await fixture.whenStable();
+
+    expect(markState()).toBeNull();
   });
 });

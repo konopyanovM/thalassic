@@ -18,6 +18,7 @@ import {
   model,
   ModelSignal,
   Signal,
+  viewChild,
   viewChildren,
 } from '@angular/core';
 import { Tab } from './tab';
@@ -32,6 +33,8 @@ import {
   tabValue,
 } from './tabs.types';
 import { RippleDirective } from '../ripple';
+import { slidingIndicator } from '../sliding-indicator';
+import { SLIDING_TABS_VARIANTS } from './tabs.constants';
 
 @Component({
   selector: 'tls-tabs',
@@ -75,6 +78,12 @@ export class Tabs {
   /** Each tab's header control, in the order of the projected tabs. */
   private readonly _tabControls = viewChildren<ElementRef<HTMLButtonElement>>('tabControl');
 
+  /** The strip the header items are laid out in. */
+  private readonly _tabList = viewChild<ElementRef<HTMLElement>>('tabList');
+
+  /** Each tab's header item, in the order of the projected tabs. */
+  private readonly _tabItems = viewChildren<ElementRef<HTMLElement>>('tabItem');
+
   // Computed
   protected hostClasses = computed(() => {
     const className = 'tls-tabs';
@@ -106,8 +115,30 @@ export class Tabs {
     return array;
   });
 
+  /**
+   * The header item a travelling mark sits on: the selected tab's, in a
+   * treatment that marks the selection with a fill of its own shape.
+   */
+  private readonly _markedItem: Signal<HTMLElement | null> = computed(() => {
+    if (!SLIDING_TABS_VARIANTS.has(this.variant())) return null;
+
+    const selected = this.selected();
+    const index = this.tabs().findIndex(tab => tab.value() === selected);
+    const item = this._tabItems()[index];
+    return item ? item.nativeElement : null;
+  });
+
   // Constructor
   constructor() {
+    slidingIndicator({
+      container: () => {
+        const tabList = this._tabList();
+        return tabList ? tabList.nativeElement : null;
+      },
+      target: this._markedItem,
+      orientation: this.orientation,
+    });
+
     effect(() => {
       if (this.selected() !== undefined) return;
 

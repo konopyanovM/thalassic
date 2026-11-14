@@ -1,14 +1,18 @@
 import {
   booleanAttribute,
   computed,
+  contentChildren,
   Directive,
+  ElementRef,
   inject,
   input,
   InputSignal,
   InputSignalWithTransform,
   Signal,
 } from '@angular/core';
-import { tabsItemsAlign, tabsOrientation, tabsVariant } from '../tabs';
+import { slidingIndicator } from '../sliding-indicator';
+import { SLIDING_TABS_VARIANTS, tabsItemsAlign, tabsOrientation, tabsVariant } from '../tabs';
+import { TabLinkDirective } from './tab-link.directive';
 import { TabNavConfig } from './tab-nav.config';
 import { TAB_NAV_CONFIG } from './tab-nav.token';
 
@@ -42,6 +46,7 @@ import { TAB_NAV_CONFIG } from './tab-nav.token';
 export class TabNavDirective {
   // Injections
   private readonly _config: TabNavConfig = inject(TAB_NAV_CONFIG);
+  private readonly _elementRef: ElementRef<HTMLElement> = inject(ElementRef);
 
   // Inputs
   public readonly variant: InputSignal<tabsVariant> = input<tabsVariant>(this._config.variant);
@@ -56,7 +61,24 @@ export class TabNavDirective {
     { transform: booleanAttribute },
   );
 
+  // Queries
+  /** The strip's links, wherever in it they sit. */
+  private readonly _links: Signal<readonly TabLinkDirective[]> = contentChildren(TabLinkDirective, {
+    descendants: true,
+  });
+
   // Computed
+  /**
+   * The link a travelling mark sits on: the active one, in a treatment that
+   * marks it with a fill of its own shape.
+   */
+  private readonly _markedLink: Signal<HTMLElement | null> = computed(() => {
+    if (!SLIDING_TABS_VARIANTS.has(this.variant())) return null;
+
+    const active = this._links().find(link => link.isActive());
+    return active ? active.elementRef.nativeElement : null;
+  });
+
   protected hostClasses: Signal<string[]> = computed(() => {
     const className = 'tls-tab-header';
 
@@ -70,4 +92,13 @@ export class TabNavDirective {
 
     return array;
   });
+
+  // Constructor
+  constructor() {
+    slidingIndicator({
+      container: () => this._elementRef.nativeElement,
+      target: this._markedLink,
+      orientation: this.orientation,
+    });
+  }
 }
