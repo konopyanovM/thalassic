@@ -8,15 +8,12 @@
 // controls, so a button and a field of one size always carry one radius.
 $-scales: (
   'sm': (
-    'padding': '3',
     'font': 'small',
   ),
   'md': (
-    'padding': '4',
     'font': 'medium',
   ),
   'lg': (
-    'padding': '5',
     'font': 'large',
   ),
 );
@@ -25,7 +22,10 @@ $-scales: (
   $scale: map.get($-scales, $size);
 
   --tls-button-height: var(--control-height-#{$size});
-  --tls-button-padding-inline: var(--spacing-#{map.get($scale, 'padding')});
+  // Half the height on each side of the label, the room that makes a filled box
+  // read as a control rather than a tag. A share of the height rather than a
+  // spacing step, so the taller button of the touch scale gains room in step.
+  --tls-button-padding-inline: calc(var(--tls-button-height) / 2);
 
   @include control-radius.radius-vars($size, 'tls-button');
 

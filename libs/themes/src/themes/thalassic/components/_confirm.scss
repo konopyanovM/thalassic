@@ -31,7 +31,7 @@
   color: var(--tls-confirm-color);
 
   // The continuous curve needs a larger radius than the circular fallback to
-  // read with the same visual weight — two steps up, per the control-radius rule.
+  // read with the same visual weight, so the pair sits two steps apart on the scale.
   @include mixins.squircle {
     --tls-confirm-border-radius: var(--radius-2xl);
 

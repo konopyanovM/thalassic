@@ -3,8 +3,8 @@
 
 // A FAB is a freestanding floating surface, not an inline row control, so its size
 // scale replaces the shared control heights with the FAB's own larger geometry.
-// Radii pair a circular value with a squircle two steps up the scale, matching
-// the weight rule of the shared control-radius scale.
+// Radii pair a circular value with a squircle two steps up the scale: the
+// continuous curve needs the larger radius to read with the same weight.
 $-scales: (
   'sm': (
     'height': 40px,

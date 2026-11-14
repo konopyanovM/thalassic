@@ -1,33 +1,22 @@
-@use 'sass:map';
-
 // The corner radius of a control's size step, shared by every button-shaped or
 // field-shaped control (tls-button, tls-form-control, tls-form-control-group)
-// so controls of one size always carry one radius, whatever their kind. Each
-// step pairs a circular radius with a squircle two steps up the scale: the
-// continuous curve hugs the corner and keeps the edges flat, while a circle of
-// the same radius starts curving much earlier along the edge — so equal visual
-// weight puts the circular fallback well below the squircle's value.
-$-scales: (
-  'sm': (
-    'round': 'sm',
-    'squircle': 'lg',
-  ),
-  'md': (
-    'round': 'md',
-    'squircle': 'xl',
-  ),
-  'lg': (
-    'round': 'lg',
-    'squircle': '2xl',
-  ),
-);
+// so controls of one size always carry one radius, whatever their kind.
+//
+// The radius is a share of the step's height rather than a step of the radius
+// scale, so a corner keeps its proportion wherever the height changes — the
+// touch scale draws every step taller, and a radius fixed in pixels would leave
+// the taller control looking squarer. Each step pairs a circular radius, a
+// quarter of the height, with a squircle at half of it: the continuous curve
+// hugs the corner and keeps the edges flat, while a circle of the same radius
+// starts curving much earlier along the edge — so equal visual weight puts the
+// circular fallback well below the squircle's value. The height read is the
+// step's own, not the control's: a control that grows past it — a textarea, a
+// wrapped label — keeps the corner of its size.
 
 // Emits the step's radius pair as `--<prefix>-radius-round` /
 // `--<prefix>-radius-squircle`, for the block's base rule to pick between
 // depending on `corner-shape` support.
 @mixin radius-vars($size, $prefix) {
-  $scale: map.get($-scales, $size);
-
-  --#{$prefix}-radius-round: var(--radius-#{map.get($scale, 'round')});
-  --#{$prefix}-radius-squircle: var(--radius-#{map.get($scale, 'squircle')});
+  --#{$prefix}-radius-round: calc(var(--control-height-#{$size}) / 4);
+  --#{$prefix}-radius-squircle: calc(var(--control-height-#{$size}) / 2);
 }

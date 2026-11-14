@@ -1,10 +1,14 @@
 @use '../../mixins/control-radius' as control-radius;
 
 .tls-toggle-button {
+  // Half the height on each side of the label, as a button of the same size
+  // takes. A share of the height rather than a spacing step, so the taller
+  // control of the touch scale gains room in step.
+  --tls-toggle-button-padding-inline: calc(var(--tls-toggle-button-height) / 2);
+
   &--sm {
     --tls-toggle-button-height: var(--control-height-sm);
     @include control-radius.radius-vars('sm', 'tls-toggle-button');
-    --tls-toggle-button-padding-inline: var(--spacing-3);
 
     font-size: var(--font-label-small-size);
     font-weight: var(--font-label-small-weight);
@@ -15,7 +19,6 @@
   &--md {
     --tls-toggle-button-height: var(--control-height-md);
     @include control-radius.radius-vars('md', 'tls-toggle-button');
-    --tls-toggle-button-padding-inline: var(--spacing-4);
 
     font-size: var(--font-label-medium-size);
     font-weight: var(--font-label-medium-weight);
@@ -26,7 +29,6 @@
   &--lg {
     --tls-toggle-button-height: var(--control-height-lg);
     @include control-radius.radius-vars('lg', 'tls-toggle-button');
-    --tls-toggle-button-padding-inline: var(--spacing-5);
 
     font-size: var(--font-label-large-size);
     font-weight: var(--font-label-large-weight);
