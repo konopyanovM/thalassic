@@ -14,6 +14,7 @@ import {
 import { FORM_FIELD, ValidationError, WithOptionalFieldTree } from '@angular/forms/signals';
 import { FORM_CONTROL, FormControl, ValueFormControl } from '../../abstract/form';
 import { FORM_ITEM_CONFIG } from './form-item.token';
+import { injectFormSkeleton } from './inject-form-skeleton';
 import { FormItemLabelContext, labelPosition } from './form-item.types';
 
 @Component({
@@ -24,6 +25,8 @@ import { FormItemLabelContext, labelPosition } from './form-item.types';
 })
 export class FormItem {
   // Injections
+  /** Whether a `tlsFormSkeleton` above the item says its form is still being read. */
+  private readonly _isFormSkeleton = injectFormSkeleton();
   private static _counter = 0;
   private _config = inject(FORM_ITEM_CONFIG);
 
@@ -70,6 +73,7 @@ export class FormItem {
    * Draws the control as a skeleton, for a value that is still being read. The control's slot
    * becomes a placeholder exactly the size of the control, which stays in place unseen, so the
    * item stands as it will once the value arrives; the label and the hint are shown as they are.
+   * An item beneath a `tlsFormSkeleton` is drawn so whenever that says to, with nothing set here.
    */
   public skeleton = input<boolean, unknown>(false, { transform: booleanAttribute });
   public reserveErrorSpace = input<boolean>(this._config.reserveErrorSpace);
@@ -152,7 +156,7 @@ export class FormItem {
     // Set by whether a hint is configured, never by what the footer shows now: an
     // error taking the hint's place must not change the row's layout.
     if (this.hint()) array.push(`${className}--has-hint`);
-    if (this.skeleton()) array.push(`${className}--skeleton`);
+    if (this.skeleton() || this._isFormSkeleton()) array.push(`${className}--skeleton`);
     if (this.reserveErrorSpace()) array.push(`${className}--error-space-reserved`);
     if (this.reserveLabelSpace()) array.push(`${className}--label-space-reserved`);
 

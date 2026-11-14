@@ -4,6 +4,7 @@ import { form, FormField, required } from '@angular/forms/signals';
 import { Checkbox } from '../form/checkbox/checkbox';
 import { Input } from '../form/input/input';
 import { FormItem } from './form-item';
+import { FormSkeleton } from './form-skeleton.directive';
 import { provideFormItemConfig } from './form-item.provider';
 
 @Component({
@@ -111,6 +112,20 @@ class ScopedConfigHostComponent {
   profile = form(signal({ email: '' }));
 }
 
+@Component({
+  imports: [FormItem, FormSkeleton],
+  template: `
+    <div class="form" [tlsFormSkeleton]="pending()">
+      <section>
+        <tls-form-item label="Name"></tls-form-item>
+      </section>
+    </div>
+  `,
+})
+class FormSkeletonHostComponent {
+  readonly pending = signal(true);
+}
+
 describe('FormItem', () => {
   let component: FormItem;
   let fixture: ComponentFixture<FormItem>;
@@ -127,6 +142,22 @@ describe('FormItem', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should draw the items beneath a form skeleton as skeletons, and make the form inert, until it is turned off', () => {
+    const hostFixture = TestBed.createComponent(FormSkeletonHostComponent);
+    hostFixture.detectChanges();
+    const form: HTMLElement = hostFixture.nativeElement.querySelector('.form');
+    const item: HTMLElement = hostFixture.nativeElement.querySelector('tls-form-item');
+
+    expect(item.classList).toContain('tls-form-item--skeleton');
+    expect(form.hasAttribute('inert')).toBe(true);
+
+    hostFixture.componentInstance.pending.set(false);
+    hostFixture.detectChanges();
+
+    expect(item.classList).not.toContain('tls-form-item--skeleton');
+    expect(form.hasAttribute('inert')).toBe(false);
   });
 
   it('should mark the item whose control is drawn as a skeleton', () => {

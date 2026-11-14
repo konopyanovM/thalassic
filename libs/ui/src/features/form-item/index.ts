@@ -3,3 +3,5 @@ export * from './form-item';
 export * from './form-item.provider';
 export * from './form-item.token';
 export * from './form-item.types';
+export * from './form-skeleton.directive';
+export * from './inject-form-skeleton';
