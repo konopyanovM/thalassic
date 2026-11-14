@@ -63,7 +63,15 @@ $text-bar-height: 0.75em;
 
     animation: none;
 
+    // An empty line of the inherited font, ahead of the bar. A flex container
+    // takes its baseline from its first item, so this gives the host that
+    // font's own baseline: set on a baseline beside text, or beside a line of
+    // another size, the skeleton sits exactly where its text will.
     &::before {
+      content: '\200b';
+    }
+
+    &::after {
       content: '';
 
       width: 100%;
@@ -75,12 +83,12 @@ $text-bar-height: 0.75em;
       @include sweep;
     }
 
-    &.tls-skeleton--no-animate::before {
+    &.tls-skeleton--no-animate::after {
       @include still;
     }
 
     @media (prefers-reduced-motion: reduce) {
-      &::before {
+      &::after {
         @include still;
       }
     }
