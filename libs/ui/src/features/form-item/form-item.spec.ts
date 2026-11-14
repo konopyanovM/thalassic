@@ -129,13 +129,13 @@ describe('FormItem', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should mark the item while its control is still being read', () => {
-    expect(fixture.nativeElement.classList).not.toContain('tls-form-item--loading');
+  it('should mark the item whose control is drawn as a skeleton', () => {
+    expect(fixture.nativeElement.classList).not.toContain('tls-form-item--skeleton');
 
-    fixture.componentRef.setInput('loading', true);
+    fixture.componentRef.setInput('skeleton', true);
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.classList).toContain('tls-form-item--loading');
+    expect(fixture.nativeElement.classList).toContain('tls-form-item--skeleton');
   });
 
   describe('character counter', () => {

@@ -67,11 +67,11 @@ export class FormItem {
    */
   public spread = input<boolean, unknown>(false, { transform: booleanAttribute });
   /**
-   * The control's value is still being read. The control's slot is drawn as a placeholder
-   * exactly the size of the control, which stays in place unseen, so the item stands as it
-   * will once the value arrives; the label and the hint are shown as they are.
+   * Draws the control as a skeleton, for a value that is still being read. The control's slot
+   * becomes a placeholder exactly the size of the control, which stays in place unseen, so the
+   * item stands as it will once the value arrives; the label and the hint are shown as they are.
    */
-  public loading = input<boolean, unknown>(false, { transform: booleanAttribute });
+  public skeleton = input<boolean, unknown>(false, { transform: booleanAttribute });
   public reserveErrorSpace = input<boolean>(this._config.reserveErrorSpace);
   public reserveLabelSpace = input<boolean>(this._config.reserveLabelSpace);
   public displayErrors = input<boolean>(this._config.displayErrors);
@@ -152,7 +152,7 @@ export class FormItem {
     // Set by whether a hint is configured, never by what the footer shows now: an
     // error taking the hint's place must not change the row's layout.
     if (this.hint()) array.push(`${className}--has-hint`);
-    if (this.loading()) array.push(`${className}--loading`);
+    if (this.skeleton()) array.push(`${className}--skeleton`);
     if (this.reserveErrorSpace()) array.push(`${className}--error-space-reserved`);
     if (this.reserveLabelSpace()) array.push(`${className}--label-space-reserved`);
 

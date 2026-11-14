@@ -110,7 +110,7 @@
   // placeholder exactly the size of the control, which keeps its place unseen
   // and so can be neither focused nor read out. The label and the hint say
   // nothing that has to be waited for, so they stay as they are.
-  &.tls-form-item--loading {
+  &.tls-form-item--skeleton {
     // A control's own corner at the default size, which is what the slot
     // almost always holds.
     @include mixins.radius-vars('md', 'tls-form-item-placeholder');
