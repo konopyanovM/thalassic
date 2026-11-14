@@ -1,0 +1,138 @@
+@use '../../mixins' as mixins;
+
+// Segmented — the options sit on a track, apart from one another, and the
+// chosen one is lifted off it as a pill: the look a segmented tab strip takes,
+// drawn from the same `--segmented-*` tokens, so a choice of one among a few
+// reads alike whether it switches a view or sets a value. Where the joined
+// treatments fill the chosen option with the group's color — a solid block as
+// heavy as a screen's main action — this one marks it by a raised tone alone.
+//
+// The treatment is neutral: it reads none of the group's `color`, as the strip
+// it mirrors reads none.
+//
+// The track, the pill and the hover fill each yield to an inherited
+// `--tls-toggle-group-segmented-*` hook, so a consumer can recolour every such
+// group beneath an ancestor: these declarations sit on the group itself, where
+// a value set by an ancestor would otherwise lose to them. The edge is one of
+// them, transparent unless set: a track the same tone as the surface it sits
+// on needs a line to be told apart from it.
+.tls-toggle-group.tls-toggle-group--segmented {
+  // The room between the track's edge and a pill, and between one pill and the
+  // next. Narrow, so the track stays the height of the control it stands
+  // beside rather than growing around its options.
+  --tls-toggle-group-segmented-inset: 3px;
+  // From a pill's edge out to the track's outer one: the inset and the edge.
+  --tls-toggle-group-segmented-reach: calc(
+    var(--tls-toggle-group-segmented-inset) + var(--tls-toggle-group-border-width)
+  );
+  --tls-toggle-group-border-color: var(--tls-toggle-group-segmented-border, transparent);
+  --tls-toggle-group-segmented-hover-background: var(
+    --tls-toggle-group-segmented-hover,
+    var(--segmented-hover-background)
+  );
+
+  padding: var(--tls-toggle-group-segmented-inset);
+  gap: var(--tls-toggle-group-segmented-inset);
+
+  background-color: var(--tls-toggle-group-segmented-track, var(--segmented-track-background));
+
+  // The joined treatments clip their square options to the group's corners. A
+  // pill has corners of its own and stands clear of the edge, and clipping
+  // here would cut the focus ring drawn around it.
+  overflow: visible;
+
+  .tls-toggle-group__option {
+    // The track is as tall as a control of the group's size, edge and inset
+    // included, so the pill is that much shorter than one.
+    height: calc(
+      var(--tls-toggle-group-option-height) - 2 * var(--tls-toggle-group-segmented-reach)
+    );
+
+    // Each option is a shape of its own, so no rule runs between two of them.
+    border: none;
+    // Concentric with the track: a corner set inside another keeps an even
+    // band between the two only when its radius is the outer one less the room
+    // between them. Its shape follows the track's.
+    border-radius: calc(
+      var(--tls-toggle-group-border-radius) - var(--tls-toggle-group-segmented-reach)
+    );
+    corner-shape: inherit;
+
+    // An option not chosen steps back a tone, still well above body-text
+    // contrast: it is a value to be read, not a label to be passed over.
+    color: var(--color-on-surface-variant);
+
+    // The pill is drawn inside the track, but the whole track answers a press:
+    // each option's target reaches the track's outer edge and half way across
+    // the gap to its neighbour, so it is as tall as a control of the group's
+    // size — the height a finger is promised — and no strip of the track is
+    // dead, between two options or past the outermost.
+    &::after {
+      content: '';
+
+      position: absolute;
+      inset-block: calc(-1 * var(--tls-toggle-group-segmented-reach));
+      inset-inline: calc(var(--tls-toggle-group-segmented-inset) / -2);
+    }
+
+    &:first-child::after {
+      inset-inline-start: calc(-1 * var(--tls-toggle-group-segmented-reach));
+    }
+
+    &:last-child::after {
+      inset-inline-end: calc(-1 * var(--tls-toggle-group-segmented-reach));
+    }
+
+    @include mixins.hover-capable {
+      &:not(.tls-toggle-group__option--disabled):not(:disabled):hover {
+        background-color: var(--tls-toggle-group-segmented-hover-background);
+      }
+    }
+
+    // One step past the hover fill, mixed from the option's own text color so
+    // it deepens on any track.
+    &:not(.tls-toggle-group__option--disabled):not(:disabled):active {
+      background-color: color-mix(
+        in srgb,
+        currentColor 6%,
+        var(--tls-toggle-group-segmented-hover-background)
+      );
+    }
+  }
+
+  // The pill holds its fill under a pointer and a press: it is the surface
+  // lifted off the track, with no further state to step to. The selectors
+  // repeat the feedback rules' own conditions so they outweigh them.
+  .tls-toggle-group__option--selected {
+    &,
+    &:not(.tls-toggle-group__option--disabled):not(:disabled):hover,
+    &:not(.tls-toggle-group__option--disabled):not(:disabled):active {
+      background-color: var(--tls-toggle-group-segmented-pill, var(--segmented-pill-background));
+    }
+
+    box-shadow: var(--tls-toggle-group-segmented-pill-shadow, var(--segmented-pill-shadow));
+
+    color: var(--color-on-surface);
+  }
+
+  // A column of options is a list, each a full control tall, so a row keeps
+  // the target a control of its size has.
+  &.tls-toggle-group--vertical .tls-toggle-group__option {
+    height: var(--tls-toggle-group-option-height);
+
+    // The gap to a neighbour runs along the block axis here, the track's edge
+    // along the inline one.
+    &::after {
+      inset-block: calc(var(--tls-toggle-group-segmented-inset) / -2);
+      inset-inline: calc(-1 * var(--tls-toggle-group-segmented-reach));
+    }
+
+    &:first-child::after {
+      inset-block-start: calc(-1 * var(--tls-toggle-group-segmented-reach));
+    }
+
+    &:last-child::after {
+      inset-block-end: calc(-1 * var(--tls-toggle-group-segmented-reach));
+    }
+  }
+}

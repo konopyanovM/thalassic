@@ -55,6 +55,11 @@ export class ToggleGroup<T, V = unknown> extends SelectionGroup<T, V> {
   >(this._config.unselectable, { transform: booleanAttribute });
   public readonly size: InputSignal<controlSize> = input<controlSize>(this._config.size);
   public readonly color: InputSignal<color> = input<color>(this._config.color);
+  /**
+   * How the options are drawn: joined into one strip and filled with `color`
+   * where chosen (`filled`, `tonal`), or set apart on a track with the chosen
+   * one lifted off it as a pill (`segmented`), which ignores `color`.
+   */
   public readonly variant: InputSignal<toggleGroupVariant> = input<toggleGroupVariant>(
     this._config.variant,
   );

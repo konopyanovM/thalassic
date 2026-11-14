@@ -1,0 +1,27 @@
+// A segmented control: a track holding one segment per option, with the chosen
+// one lifted off it as a pill. Every control drawn this way — a tab strip, a
+// toggle group — reads these, so a choice of one among a few looks alike
+// whichever control offers it, and a theme recolours them all in one place.
+//
+// The pill is lighter than its track in both modes, as a raised surface is. In
+// light mode the page's own surface does that over a container track. In dark
+// mode the surface sits *below* every container, and the pill's shadow is
+// invisible besides, so the highest container stands in: elevation there reads
+// through a lighter fill.
+//
+// Declared on any dark scope as well as the root, so a region themed dark on
+// its own resolves each against its own colors rather than the root's.
+:root,
+.tls-dark {
+  --segmented-track-background: var(--color-surface-container);
+  --segmented-hover-background: var(--color-surface-container-high);
+  --segmented-pill-shadow: var(--shadow-xs);
+}
+
+:root {
+  --segmented-pill-background: var(--color-surface);
+}
+
+.tls-dark {
+  --segmented-pill-background: var(--color-surface-container-highest);
+}

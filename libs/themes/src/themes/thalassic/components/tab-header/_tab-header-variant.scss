@@ -88,35 +88,26 @@
   &.tls-tab-header--segmented {
     --tls-tab-header-border-radius: var(--radius-lg);
     --tls-tab-header-pill-radius: var(--radius-md);
-    // The track, the selected pill and the hover fill each yield to an
-    // inherited `--tls-tab-header-segmented-*` hook, so a consumer can recolour
-    // them from any ancestor: these declarations sit on the header element
-    // itself, where a value set by an ancestor would otherwise lose to them.
+    // The track, the selected pill and the hover fill are the ones every
+    // segmented control shares (see the `--segmented-*` tokens). Each yields to
+    // an inherited `--tls-tab-header-segmented-*` hook, so a consumer can
+    // recolour this strip alone from any ancestor: these declarations sit on
+    // the header element itself, where a value set by an ancestor would
+    // otherwise lose to them.
     --tls-tab-header-background-color: var(
       --tls-tab-header-segmented-track,
-      var(--color-surface-container)
+      var(--segmented-track-background)
     );
     --tls-tab-header-pill-background-color: var(
       --tls-tab-header-segmented-pill,
-      var(--color-surface)
+      var(--segmented-pill-background)
     );
     --tls-tab-header-hover-background-color: var(
       --tls-tab-header-segmented-hover,
-      var(--color-surface-container-high)
+      var(--segmented-hover-background)
     );
     --tls-tab-header-padding: var(--spacing-2);
     --tls-tab-header-active-label-color: var(--color-on-surface);
-
-    // On dark surfaces elevation reads through a lighter fill, not shadow: the
-    // pill's shadow is invisible there and `--color-surface` sits *below* the
-    // track's container color, so raise the pill above the track (and above the
-    // inactive hover's container-high) instead.
-    .tls-dark & {
-      --tls-tab-header-pill-background-color: var(
-        --tls-tab-header-segmented-pill,
-        var(--color-surface-container-highest)
-      );
-    }
 
     padding: var(--tls-tab-header-padding);
     gap: var(--tls-tab-header-padding);
@@ -137,7 +128,7 @@
 
       &.tls-tab-header__item--active {
         background-color: var(--tls-tab-header-pill-background-color);
-        box-shadow: var(--shadow-xs);
+        box-shadow: var(--segmented-pill-shadow);
       }
 
       // Both shapes of the interactive element: a child control (the

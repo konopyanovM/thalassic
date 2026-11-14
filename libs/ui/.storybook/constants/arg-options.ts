@@ -59,6 +59,7 @@ export const STORY_TOGGLE_BUTTON_VARIANT_OPTIONS: toggleButtonVariant[] = [
 export const STORY_TOGGLE_GROUP_VARIANT_OPTIONS: toggleGroupVariant[] = [
   'filled',
   'tonal',
+  'segmented',
 ] as const;
 
 export const STORY_TABS_VARIANT_OPTIONS: tabsVariant[] = ['flat', 'outlined', 'segmented', 'grouped'] as const;

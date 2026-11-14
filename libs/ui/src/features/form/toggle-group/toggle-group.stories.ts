@@ -59,6 +59,29 @@ export const Single: Story = {
   },
 };
 
+export const Segmented: Story = {
+  name: 'Segmented (track and pill)',
+  args: {
+    options: ['Day', 'Week', 'Month', 'Year'],
+    value: ['Week'],
+    multiple: false,
+    variant: 'segmented',
+  },
+};
+
+export const SegmentedVertical: Story = {
+  name: 'Segmented, vertical and fluid',
+  args: {
+    options: ['English', 'Русский', 'Қазақша'],
+    value: ['English'],
+    multiple: false,
+    variant: 'segmented',
+    orientation: 'vertical',
+    fluid: true,
+    size: 'lg',
+  },
+};
+
 export const Multiple: Story = {
   name: 'Multiple (plain strings)',
   args: {
