@@ -191,6 +191,19 @@
         }
       }
 
+      // A held press, on every device: a row under a finger has no hover to
+      // answer with, and where the ink is not played — reduced motion — this
+      // fill is the only sign the press landed. One step past the hover fill,
+      // mixed from the row's own text colour so it deepens on any surface. The
+      // selected row holds its fill: pressing it goes nowhere.
+      &:active:not(.tls-tab-header__item--active, .tls-tab-header__item--disabled) {
+        background-color: color-mix(
+          in srgb,
+          currentColor 6%,
+          var(--tls-tab-header-hover-background-color)
+        );
+      }
+
       &.tls-tab-header__item--active {
         background-color: var(--tls-tab-header-active-background-color);
       }
@@ -199,7 +212,13 @@
       // button inside `tls-tabs`) or the item itself (the nav anchor).
       &.tls-tab-header__item-control,
       .tls-tab-header__item-control {
-        padding: var(--spacing-3) var(--spacing-4);
+        padding: var(--control-row-padding-block) var(--spacing-4);
+
+        // A row of a list reads at body weight, as the platforms' own lists
+        // set theirs: every row here is a label, so the heavier weight a tab
+        // label takes to stand out from its surroundings has nothing to stand
+        // out from, and the fill already marks the selection.
+        font-weight: var(--font-weight-regular);
       }
     }
   }

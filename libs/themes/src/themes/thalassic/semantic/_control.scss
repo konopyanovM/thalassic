@@ -11,6 +11,11 @@
   --control-height-md: var(--control-base-height-md);
   --control-height-lg: var(--control-base-height-lg);
 
+  // The room above and below the content of a row in a list that is pressed as
+  // a whole — a navigation rail, a settings list. With a line of label text it
+  // makes the row as tall as the large control step, in both scales.
+  --control-row-padding-block: var(--spacing-3);
+
   // Minimum comfortable tap target on touch devices (Apple HIG; WCAG 2.5.5 Enhanced).
   --control-touch-target: 44px;
 
@@ -30,6 +35,11 @@
     --control-height-sm: 36px;
     --control-height-md: 44px;
     --control-height-lg: 52px;
+
+    // A row is pressed by a thumb moving down a list, so the bare minimum target
+    // leaves neighbours too easy to hit; the platforms' own lists draw their rows
+    // taller than that minimum.
+    --control-row-padding-block: var(--spacing-4);
   }
 }
 
