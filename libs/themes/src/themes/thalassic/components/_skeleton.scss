@@ -30,6 +30,12 @@ $text-bar-height: 0.75em;
   &:not(:empty):not(.tls-skeleton--text):not(.tls-skeleton--idle) {
     height: auto;
 
+    // A column rather than a block, so what is wrapped is taken out of inline
+    // formatting: an inline-level control would otherwise sit in a line box,
+    // and the skeleton would stand as tall as the line instead of the control.
+    display: flex;
+    flex-direction: column;
+
     > * {
       visibility: hidden;
     }
