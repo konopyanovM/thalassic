@@ -6,11 +6,31 @@
   // track's proportions are set against its fixed width, and the touch scale
   // would stretch it past the platforms' own switches (31–32px tall).
   --tls-switch-height: 28px;
-  --tls-switch-handle-gap: 4px;
+  // One inset and one size in both states, as the platforms' own switches keep
+  // theirs: the state is told by where the handle rests and by the track's
+  // colour, and a handle sized differently in each would have to change size
+  // on the way across as well.
+  --tls-switch-handle-gap: 2px;
   --tls-switch-handle-size: calc(
     var(--tls-switch-height) - (var(--tls-switch-handle-gap) * 2) -
       (var(--tls-switch-border-width) * 2)
   );
+  // How far the handle moves between its two rests.
+  --tls-switch-handle-travel: calc(
+    var(--tls-switch-width) - var(--tls-switch-handle-size) -
+      (var(--tls-switch-handle-gap) * 2) - (var(--tls-switch-border-width) * 2)
+  );
+  // How much wider the handle is drawn while the switch is held down, and how
+  // much of that applies at the moment: none, away from a press.
+  --tls-switch-handle-press-stretch: 4px;
+  --tls-switch-handle-stretch: 0px;
+
+  // The handle's move and the track's change of colour run over the same time,
+  // so the two arrive together. Eased at both ends, the landing the longer of
+  // the two: the handle gathers speed rather than jumping off its rest, and
+  // settles into the other.
+  --tls-switch-motion-duration: var(--motion-default);
+  --tls-switch-motion-easing: var(--motion-ease-in-out);
 
   --tls-switch-border-width: 1px;
   --tls-switch-border-radius: var(--radius-full);
@@ -33,15 +53,39 @@
 
   cursor: pointer;
 
-  transition:
-    background-color var(--motion-fast) var(--motion-ease-in-out),
-    border-color var(--motion-fast) var(--motion-ease-in-out),
-    box-shadow var(--motion-fast) var(--motion-ease-in-out),
-    filter var(--motion-fast) var(--motion-ease-in-out);
+  // The change of state is functional motion: it shows which way the switch
+  // went, so it survives reduced motion.
+  @include mixins.motion(essential) {
+    transition:
+      background-color var(--tls-switch-motion-duration)
+        var(--tls-switch-motion-easing),
+      border-color var(--tls-switch-motion-duration)
+        var(--tls-switch-motion-easing),
+      box-shadow var(--motion-fast) var(--motion-ease-in-out),
+      filter var(--motion-fast) var(--motion-ease-in-out);
+  }
 
   // The invisible native input carries focus; the ring renders on the track.
   &:has(.tls-switch-input:focus-visible) {
     @include mixins.focus-ring;
+  }
+
+  // Pressed
+  // The handle widens toward the side it would move to for as long as the
+  // switch is held, which is how a touch switch acknowledges a press before it
+  // commits: the finger covers the control, so the handle reaching out from
+  // under it is what shows the press landed. Communicating state, it belongs to
+  // the `essential` tier. A switch that will not answer the press stays still.
+  @include mixins.motion(essential) {
+    &:active:not(.tls-switch--disabled):not(.tls-switch--readonly) {
+      --tls-switch-handle-stretch: var(--tls-switch-handle-press-stretch);
+
+      // Reaching out tracks the finger; the release takes the slower settle of
+      // the move itself.
+      .tls-switch-handle {
+        transition-duration: var(--motion-fast);
+      }
+    }
   }
 
   @include mixins.touch-target(var(--tls-switch-height));
@@ -65,12 +109,19 @@
   }
 
   .tls-switch-handle {
-    width: var(--tls-switch-handle-size);
+    width: calc(
+      var(--tls-switch-handle-size) + var(--tls-switch-handle-stretch)
+    );
     height: var(--tls-switch-handle-size);
 
-    margin: calc(var(--tls-switch-handle-gap));
+    margin: var(--tls-switch-handle-gap);
 
-    border-radius: 50%;
+    // Its own size whatever room the track has left beside it.
+    flex: none;
+
+    // The track's rounding rather than a circle's: the handle is wider than it
+    // is tall while pressed, and stays a pill there.
+    border-radius: var(--tls-switch-border-radius);
 
     background-color: var(--tls-switch-handle-color);
 
@@ -79,24 +130,30 @@
     // Clicks fall through to the stretched native input underneath.
     pointer-events: none;
 
-    transition: transform var(--motion-fast) var(--motion-ease-in-out);
+    @include mixins.motion(essential) {
+      transition:
+        transform var(--tls-switch-motion-duration)
+          var(--tls-switch-motion-easing),
+        width var(--tls-switch-motion-duration)
+          var(--tls-switch-motion-easing);
+    }
   }
 
   // Checked
+  // The handle rests at the trailing edge. Widened, it grows back from that
+  // edge, so the offset gives up exactly what the width gains.
   &.tls-switch--checked {
-    --tls-switch-handle-gap: 3px;
-    --tls-switch-translate: calc(
-      var(--tls-switch-width) - var(--tls-switch-handle-size) -
-        (var(--tls-switch-handle-gap) * 2) - (var(--tls-switch-border-width) * 2)
+    --tls-switch-handle-offset: calc(
+      var(--tls-switch-handle-travel) - var(--tls-switch-handle-stretch)
     );
 
     .tls-switch-handle {
-      transform: translateX(var(--tls-switch-translate));
+      transform: translateX(var(--tls-switch-handle-offset));
     }
 
     // The handle travels toward the trailing edge; mirror it in RTL.
     :root[dir='rtl'] & .tls-switch-handle {
-      transform: translateX(calc(-1 * var(--tls-switch-translate)));
+      transform: translateX(calc(-1 * var(--tls-switch-handle-offset)));
     }
   }
 
