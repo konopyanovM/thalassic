@@ -25,13 +25,27 @@
   --field-border-color-focus: color-mix(in srgb, var(--color-outline), var(--color-primary));
 }
 
-// A disabled field recedes on every part at once, with the fill and ink every
+// A disabled field recedes on every part at once, with the ink every
 // unavailable control takes. Its placeholder is quieted by the same step from its
 // own color, so an empty disabled field still reads as empty. Redeclared on a dark
 // scope so each value resolves against that scope's colors rather than the root's.
 :root,
 .tls-dark {
-  --field-background-disabled: var(--control-background-disabled);
   --field-color-disabled: var(--control-color-disabled);
   --field-placeholder-color-disabled: color-mix(in srgb, var(--color-outline) 55%, transparent);
+}
+
+// Its fill recedes towards the surface the field sits on, so it is told from a
+// field that can be typed into by more than its ink. In light mode the fill of
+// every unavailable control does that: a faint wash, darker than a field's own
+// bright fill. In dark mode that same wash, laid over a raised surface, comes
+// out at the very tone an enabled field is filled with — so there the fill is
+// the field's own, thinned: over any surface it lands between that surface and
+// an enabled field, whichever of the two is the lighter.
+:root {
+  --field-background-disabled: var(--control-background-disabled);
+}
+
+.tls-dark {
+  --field-background-disabled: color-mix(in srgb, var(--field-background) 45%, transparent);
 }
