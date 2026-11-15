@@ -6,11 +6,13 @@ import {
 import { NgTemplateOutlet } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import {
+  afterNextRender,
   booleanAttribute,
   Component,
   computed,
   contentChild,
   contentChildren,
+  DOCUMENT,
   effect,
   inject,
   Injector,
@@ -22,6 +24,7 @@ import {
   signal,
   TemplateRef,
   viewChild,
+  viewChildren,
 } from '@angular/core';
 import {
   DEFAULT_PAN_CONFIG,
@@ -32,7 +35,7 @@ import {
   Point,
   ViewportService,
 } from '@thalassic/core';
-import { createOverlayManager } from '../../abstract/overlay';
+import { createOverlayManager, overlayCloseCause } from '../../abstract/overlay';
 import { decideCommit, SheetMotion } from '../../abstract/sheet-motion';
 import { overlayPosition } from '../../types';
 import { buildOverlayPositions } from '../../utils';
@@ -82,9 +85,14 @@ export class Menu {
     optional: true,
   });
   private readonly _injector = inject(Injector);
+  private readonly _document = inject(DOCUMENT);
   private readonly _renderer = inject(Renderer2);
 
   private readonly _panelRef = viewChild.required<TemplateRef<unknown>>('panel');
+  /** The rendered items, in the order the panel draws them. */
+  private readonly _items = viewChildren(AriaMenuItem);
+  /** Where focus was when the menu opened — its trigger — and where it goes back on close. */
+  private _returnFocusTo: HTMLElement | null = null;
 
   protected readonly _customItems = contentChildren(MenuItemComponent);
   protected readonly customTemplates = computed(() => {
@@ -224,7 +232,9 @@ export class Menu {
       positions: this._positions(),
       panelClass: this.panelClass(),
       ...(sheet && { presentation: 'sheet' as const }),
+      onClose: (cause) => this._returnFocus(cause),
     });
+    this._focusEntryItemOnceShown();
   }
 
   public openAtPoint(x: number, y: number): void {
@@ -245,7 +255,9 @@ export class Menu {
         ? { presentation: 'sheet' as const }
         : { scrollStrategy: 'close' as const, hasBackdrop: false }),
       ignoreTrailingAuxClick: true,
+      onClose: (cause) => this._returnFocus(cause),
     });
+    this._focusEntryItemOnceShown();
   }
 
   public close(): void {
@@ -344,7 +356,48 @@ export class Menu {
    * from the template on every open, so only the component-held state carries
    * over.
    */
+  /**
+   * Moves focus into the menu once its panel is drawn, as the menu-button pattern has it: to the
+   * checked item of a choice, so the current answer is where the person starts, otherwise to the
+   * first item that can be chosen. Focus inside, the arrow keys, Home and End, and type-ahead
+   * reach the items; focus left on the trigger would leave a keyboard with no way in.
+   */
+  private _focusEntryItemOnceShown(): void {
+    afterNextRender(
+      () => {
+        const items = this._items().filter((item) => !item.disabled());
+        const checked = items.find((item) => item.element.getAttribute('aria-checked') === 'true');
+        const entry = checked ?? items[0];
+        if (!entry) return;
+
+        entry.element.focus();
+      },
+      { injector: this._injector },
+    );
+  }
+
+  /**
+   * Hands focus back to where it was when the menu opened, as closing a menu does: after Escape,
+   * a choice, or the owner closing it. Not after a press outside, where focus already belongs to
+   * whatever was pressed; nor once focus has left the menu for somewhere else — a dialog an item
+   * opened — which keeps it.
+   */
+  private _returnFocus(cause: overlayCloseCause): void {
+    const target = this._returnFocusTo;
+    this._returnFocusTo = null;
+    if (cause === 'outside-pointer' || !target) return;
+
+    const focused = this._document.activeElement;
+    const panel = this._document.getElementById(this.id);
+    const focusInMenu = panel !== null && panel.contains(focused);
+    if (!focusInMenu && focused !== this._document.body) return;
+
+    target.focus();
+  }
+
   private _prepareOpen(sheet: boolean): void {
+    const focused = this._document.activeElement;
+    this._returnFocusTo = focused instanceof HTMLElement ? focused : null;
     this.sheet.set(sheet);
     this.sheetMotion.rest();
     this._sheetClosing = false;
