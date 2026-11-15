@@ -20,6 +20,14 @@ export interface SheetMotionOptions {
   injector: Injector;
 }
 
+/** A settle's timing, for a CSS transition to play. */
+export interface SettleCurve {
+  /** Length of the settle in ms; 0 when there is nowhere to travel. */
+  duration: number;
+  /** A `linear()` easing tracing the travel, or `linear` when there is none. */
+  easing: string;
+}
+
 /**
  * The elements one gesture moves, given per gesture: a surface stamped fresh on
  * every open cannot be fixed at construction.

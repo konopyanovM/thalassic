@@ -12,8 +12,13 @@ export const SHEET_COLLAPSED_SIZE_PROPERTY = '--tls-sheet-collapsed-size';
 export const SHEET_PANE_CLASS = 'tls-sheet-pane';
 
 /**
- * A pull below the smallest detent gives this share of the overshoot, capped,
- * so the end of the travel reads as a stretch rather than a wall.
+ * The room the theme keeps clear above the sheet's tallest height, as a CSS
+ * length; the component measures it to cap every detent.
  */
-export const SHEET_OVERSHOOT_DIVISOR = 3;
-export const SHEET_OVERSHOOT_MAX = 32;
+export const SHEET_TOP_CLEARANCE_PROPERTY = '--tls-sheet-top-clearance';
+
+/**
+ * The px a pull past the smallest or largest detent approaches but never
+ * reaches (see `rubberBand`).
+ */
+export const SHEET_STRETCH_LIMIT = 48;

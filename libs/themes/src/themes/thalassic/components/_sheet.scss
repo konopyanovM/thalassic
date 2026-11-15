@@ -25,7 +25,13 @@
   --tls-sheet-surface: var(--surface-overlay);
   --tls-sheet-color: var(--color-on-surface);
   --tls-sheet-shadow: var(--overlay-shadow);
-  --tls-sheet-radius: var(--radius-xl);
+  --tls-sheet-radius: var(--sheet-radius);
+
+  // The squircle hugs its corner, so it takes a larger radius to read as the
+  // same rounding — the treatment every other overlay surface opts into.
+  @include mixins.squircle {
+    --tls-sheet-radius: var(--sheet-radius-squircle);
+  }
   --tls-sheet-backdrop: rgb(0 0 0 / 0.4);
   --tls-sheet-grabber-length: var(--grabber-length);
   --tls-sheet-grabber-thickness: var(--grabber-thickness);
@@ -34,6 +40,11 @@
   --tls-sheet-header-min-size: 44px;
   // The sheet's own gutter, shared by the header and the body content.
   --tls-sheet-padding: var(--spacing-4);
+  // Room kept free above the sheet at its tallest, which caps every detent:
+  // the status bar or notch, then a strip of the page, so the sheet reads as a
+  // layer over the page and its top corners stay in view — where an iOS sheet
+  // stops at its large detent.
+  --tls-sheet-top-clearance: calc(env(safe-area-inset-top) + var(--spacing-8));
   // Height of the largest detent, written by the component. `0px`, not `0` —
   // it is a length.
   --tls-sheet-height: 0px;
@@ -82,6 +93,27 @@
     // Only the settle animates: the drag is direct manipulation, not motion.
     @include mixins.motion(essential) {
       transition: translate var(--motion-default) var(--motion-ease-out);
+    }
+
+    @include mixins.squircle {
+      corner-shape: var(--corner-shape-squircle);
+    }
+
+    // A skirt of the surface hanging below the panel, which a stretch above
+    // the largest detent lifts into view instead of the page behind. The
+    // stretch stays under `SHEET_STRETCH_LIMIT` (48px), and the panel —
+    // grabber, a header of at least 44px and its padding — is always taller
+    // than that, so its own height is skirt enough.
+    &::after {
+      position: absolute;
+      inset-block-start: 100%;
+      inset-inline: 0;
+
+      block-size: 100%;
+
+      background-color: inherit;
+
+      content: '';
     }
   }
 
@@ -207,6 +239,22 @@
       .tls-sheet__panel,
       .tls-sheet__backdrop {
         transition: none;
+      }
+    }
+  }
+
+  // A settle plays the spring the component writes for it, which carries a
+  // released finger's speed on; the scrim keeps to the same curve so the two
+  // arrive together. Keyed to the settle alone, so no other change of the
+  // offset replays a curve written for an earlier one.
+  &--settling {
+    @include mixins.motion(essential) {
+      .tls-sheet__panel {
+        transition: translate var(--tls-settle-duration) var(--tls-settle-easing);
+      }
+
+      .tls-sheet__backdrop {
+        transition: opacity var(--tls-settle-duration) var(--tls-settle-easing);
       }
     }
   }

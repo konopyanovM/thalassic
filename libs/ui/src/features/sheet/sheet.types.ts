@@ -2,8 +2,9 @@ import { TemplateRef } from '@angular/core';
 
 /**
  * How tall a detent is: the header slot's height (`'header'`), the header plus
- * the body's natural height capped at the viewport (`'content'`), a share of
- * the viewport (`'50%'`), or any CSS length (`'20rem'`).
+ * the body's natural height (`'content'`), a share of the viewport (`'50%'`),
+ * or any CSS length (`'20rem'`). Every size but the header's is capped at the
+ * tallest the sheet may grow, which keeps the theme's top clearance free.
  */
 export type sheetDetentSize = 'header' | 'content' | `${number}%` | string;
 
@@ -19,8 +20,10 @@ export interface SheetMeasures {
   header: number;
   /** Header plus the body's natural (unclipped) height. */
   content: number;
-  /** Height of the area the sheet may occupy. */
+  /** Height of the viewport, the base a percentage resolves against. */
   viewport: number;
+  /** The tallest the sheet may grow: the viewport less the top clearance. */
+  maximum: number;
   /** Resolves a CSS length against the sheet's own font and viewport. */
   length: (css: string) => number;
 }

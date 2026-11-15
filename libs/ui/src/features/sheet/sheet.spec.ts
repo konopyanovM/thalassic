@@ -297,6 +297,23 @@ describe('Sheet', () => {
     expect(root.classList.contains('tls-sheet--lip')).toBe(true);
   });
 
+  it('caps every detent below the theme’s top clearance', () => {
+    // The probe answers 600px for the clearance and 320px for any other length.
+    const probe = query('.tls-sheet__probe');
+    Object.defineProperty(probe, 'offsetHeight', {
+      get: () =>
+        probe.style.getPropertyValue('block-size').includes('--tls-sheet-top-clearance')
+          ? 600
+          : 320,
+      configurable: true,
+    });
+    sheet.remeasure();
+
+    // 800px viewport less 600px clearance: half (240) and full (320) both stop at 200.
+    expect(query('.tls-sheet__panel').style.getPropertyValue('--tls-sheet-height')).toBe('200px');
+    expect(panelOffset()).toBe('120px');
+  });
+
   it('removes the published height and the pane on destroy', async () => {
     fixture.destroy();
 
@@ -423,18 +440,67 @@ describe('Sheet', () => {
       expect(panelOffset()).toBe('240px');
     });
 
-    it('rubber-bands below the smallest detent and holds at the largest', () => {
+    it('rubber-bands past either end of the travel, short of the stretch limit', () => {
+      const offset = (): number => Number.parseFloat(panelOffset());
       const drag = touch();
       drag.move(10);
       drag.move(60);
-      // 60px below the lip: a third of the overshoot on top of the full travel.
-      expect(panelOffset()).toBe('260px');
+      // 60px below the lip: rubberBand(60, 48) on top of the full 240px travel.
+      expect(offset()).toBeCloseTo(259.56, 2);
 
       drag.move(600);
-      expect(panelOffset()).toBe('272px');
+      expect(offset()).toBeGreaterThan(280);
+      expect(offset()).toBeLessThan(240 + 48);
 
+      // 980px tall asked of a 320px largest detent: lifted, never by the limit.
       drag.move(-900);
-      expect(panelOffset()).toBe('0px');
+      expect(offset()).toBeLessThan(-40);
+      expect(offset()).toBeGreaterThan(-48);
+    });
+
+    it('picks the panel up where it is drawn when caught mid-settle', () => {
+      sheet.snapTo('half');
+      // The settle is under way, drawn 150px tall on its way from 80 to 240.
+      vi.spyOn(query('.tls-sheet'), 'getBoundingClientRect').mockReturnValue(
+        DOMRect.fromRect({ x: 0, y: 0, width: 400, height: 800 }),
+      );
+      vi.spyOn(query('.tls-sheet__panel'), 'getBoundingClientRect').mockReturnValue(
+        DOMRect.fromRect({ x: 0, y: 650, width: 400, height: 320 }),
+      );
+
+      const drag = touch();
+      drag.move(-10);
+      // 150 drawn + 10 up = 160 tall: offset = 320 − 160, not the 70px that
+      // the settle's target, 240, would put it at.
+      expect(panelOffset()).toBe('160px');
+
+      drag.move(-30);
+      expect(panelOffset()).toBe('140px');
+    });
+
+    it('settles a flick on a spring launched at the finger’s speed', async () => {
+      const easing = (): string =>
+        query('.tls-sheet__panel').style.getPropertyValue('--tls-settle-easing');
+      const firstStep = (): number => Number.parseFloat(easing().split(', ')[1]);
+
+      sheet.snapTo('half');
+      await settle();
+      expect(easing()).toMatch(/^linear\(0, /);
+      const fromRest = firstStep();
+
+      sheet.snapTo('lip');
+      await settle();
+      const drag = touch();
+      drag.move(-10, 5);
+      drag.move(-24, 7);
+      drag.release();
+      await settle();
+
+      expect(host.detent()).toBe('half');
+      expect(firstStep()).toBeGreaterThan(fromRest);
+      expect(query('.tls-sheet__panel').style.getPropertyValue('--tls-settle-duration')).toMatch(
+        /^\d+ms$/,
+      );
     });
 
     it('leaves a pan inside a scrolled body to the body at the top detent', async () => {

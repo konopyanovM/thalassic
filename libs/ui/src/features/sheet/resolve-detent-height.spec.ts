@@ -6,6 +6,7 @@ const measures: SheetMeasures = {
   header: 72,
   content: 500,
   viewport: 800,
+  maximum: 760,
   length: css => (css === '20rem' ? 320 : 0),
 };
 
@@ -14,18 +15,19 @@ describe('resolveDetentHeight', () => {
     expect(resolveDetentHeight('header', measures)).toBe(72);
   });
 
-  it('resolves content to the natural height, capped at the viewport', () => {
+  it('resolves content to the natural height, capped at the maximum', () => {
     expect(resolveDetentHeight('content', measures)).toBe(500);
-    expect(resolveDetentHeight('content', { ...measures, content: 1200 })).toBe(800);
+    expect(resolveDetentHeight('content', { ...measures, content: 1200 })).toBe(760);
   });
 
-  it('resolves a percentage against the viewport', () => {
+  it('resolves a percentage against the viewport, capped at the maximum', () => {
     expect(resolveDetentHeight('50%', measures)).toBe(400);
     expect(resolveDetentHeight('12.5%', measures)).toBe(100);
+    expect(resolveDetentHeight('100%', measures)).toBe(760);
   });
 
-  it('resolves any other string as a CSS length, capped at the viewport', () => {
+  it('resolves any other string as a CSS length, capped at the maximum', () => {
     expect(resolveDetentHeight('20rem', measures)).toBe(320);
-    expect(resolveDetentHeight('20rem', { ...measures, viewport: 300 })).toBe(300);
+    expect(resolveDetentHeight('20rem', { ...measures, maximum: 300 })).toBe(300);
   });
 });

@@ -1,6 +1,7 @@
 import { ApplicationRef, Injector, Renderer2, RendererStyleFlags2 } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { settleCurve } from './settle-curve';
 import { SheetMotion } from './sheet-motion';
 
 function fakeRenderer(): Renderer2 {
@@ -50,9 +51,10 @@ describe('SheetMotion', () => {
     expect(motion.state()).toBe('dragging');
   });
 
-  it('stops the backdrop transitioning while the finger holds the surface', () => {
+  it('stops the surface and the backdrop transitioning while the finger holds them', () => {
     motion.begin({ panel, backdrop, extent: 200 });
 
+    expect(wroteStyle(panel, 'transition', 'none')).toBe(true);
     expect(wroteStyle(backdrop, 'transition', 'none')).toBe(true);
   });
 
@@ -95,20 +97,36 @@ describe('SheetMotion', () => {
     TestBed.inject(ApplicationRef).tick();
     await vi.waitFor(() => expect(done).toHaveBeenCalledTimes(1));
 
-    expect(renderer.setStyle).not.toHaveBeenCalledWith(
-      expect.anything(),
-      'transition',
-      expect.anything(),
-    );
-    expect(renderer.setStyle).not.toHaveBeenCalledWith(
-      expect.anything(),
-      'opacity',
-      expect.anything(),
-    );
-    expect(renderer.removeStyle).not.toHaveBeenCalled();
+    const touched = [
+      ...vi.mocked(renderer.setStyle).mock.calls,
+      ...vi.mocked(renderer.removeStyle).mock.calls,
+    ].map(call => call[0]);
+    expect(touched.every(element => element === panel)).toBe(true);
+    expect(wroteStyle(panel, 'opacity')).toBe(false);
   });
 
-  it('settles by handing the backdrop its transition back and writing the target after render', async () => {
+  it('times the settle with a spring from the offset last written, on the surface and the backdrop', async () => {
+    const done = vi.fn();
+    motion.begin({ panel, backdrop, extent: 200 });
+    // The fake renderer writes nothing, so the offset a drag left is set by hand.
+    panel.style.setProperty('--tls-test-drag', '50px');
+
+    motion.settle(200, done, 1);
+    TestBed.inject(ApplicationRef).tick();
+    await vi.waitFor(() => expect(done).toHaveBeenCalledTimes(1));
+
+    const { duration, easing } = settleCurve(150, 1);
+    for (const element of [panel, backdrop]) {
+      expect(
+        wroteStyle(element, '--tls-settle-duration', `${duration}ms`, RendererStyleFlags2.DashCase),
+      ).toBe(true);
+      expect(wroteStyle(element, '--tls-settle-easing', easing, RendererStyleFlags2.DashCase)).toBe(
+        true,
+      );
+    }
+  });
+
+  it('settles by handing back the transitions and writing the target after render', async () => {
     const done = vi.fn();
     motion.begin({ panel, backdrop, extent: 200 });
     motion.follow(50);
@@ -117,6 +135,7 @@ describe('SheetMotion', () => {
 
     // Synchronous side effects
     expect(motion.state()).toBe('settling');
+    expect(removedStyle(panel, 'transition')).toBe(true);
     expect(removedStyle(backdrop, 'transition')).toBe(true);
     // Deferred until afterNextRender
     expect(wroteStyle(panel, '--tls-test-drag', '200px', RendererStyleFlags2.DashCase)).toBe(false);

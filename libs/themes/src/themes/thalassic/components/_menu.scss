@@ -204,6 +204,7 @@
     --tls-menu-grabber-thickness: var(--grabber-thickness);
     --tls-menu-grabber-inset: var(--grabber-inset);
     --tls-menu-item-padding-block: var(--spacing-3);
+    --tls-menu-border-radius: var(--sheet-radius);
 
     position: relative;
 
@@ -223,6 +224,10 @@
     border-radius: var(--tls-menu-border-radius) var(--tls-menu-border-radius) 0 0;
 
     overflow-y: auto;
+
+    @include mixins.squircle {
+      --tls-menu-border-radius: var(--sheet-radius-squircle);
+    }
 
     @include mixins.motion(essential) {
       // The enter keyframe holds `transform` for the pane's whole lifetime

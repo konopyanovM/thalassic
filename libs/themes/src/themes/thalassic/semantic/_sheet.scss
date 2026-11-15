@@ -1,0 +1,12 @@
+:root {
+  // The corners a sheet rounds: any surface pinned to the top or bottom edge
+  // across the full width. Rounder than a floating overlay's, because a sheet
+  // meets the screen's own rounded corners and reads as a layer of the device
+  // rather than a card on the page — iOS rounds a sheet to the display's
+  // corners, Material 3 a bottom sheet to 28dp against 16dp for a side sheet.
+  // Component namespaces alias these, so every sheet keeps one rounding.
+  --sheet-radius: var(--radius-3xl);
+  // Paired with the circular value under the squircle treatment, which needs
+  // a larger radius to read as the same rounding.
+  --sheet-radius-squircle: var(--radius-4xl);
+}

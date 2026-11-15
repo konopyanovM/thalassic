@@ -1,3 +1,5 @@
+@use '../../mixins' as mixins;
+
 .tls-drawer {
   // Named size presets. A custom length string is applied inline as
   // `--tls-drawer-size` by the component (`.tls-drawer--custom`), so it needs no rule.
@@ -20,11 +22,19 @@
     max-width: 100dvw;
   }
 
+  // Pinned across the full width of an edge, a top or bottom drawer is a sheet,
+  // and rounds its inner corners as one.
   &--top,
   &--bottom {
+    --tls-drawer-border-radius: var(--sheet-radius);
+
     width: 100dvw;
     height: var(--tls-drawer-size);
     max-height: 100dvh;
+
+    @include mixins.squircle {
+      --tls-drawer-border-radius: var(--sheet-radius-squircle);
+    }
   }
 
   // Sized by content along the main axis, capped so a short panel hugs its content

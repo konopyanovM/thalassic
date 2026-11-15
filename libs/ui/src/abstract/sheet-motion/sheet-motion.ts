@@ -1,5 +1,7 @@
 import { RendererStyleFlags2, signal } from '@angular/core';
 import { settleAfterRender } from '../overlay';
+import { settleCurve } from './settle-curve';
+import { SETTLE_DURATION_PROPERTY, SETTLE_EASING_PROPERTY } from './sheet-motion.constants';
 import { SheetMotionOptions, SheetMotionSurface, sheetMotionState } from './sheet-motion.types';
 
 /**
@@ -36,8 +38,12 @@ export class SheetMotion {
     this._gesture += 1;
     this._surface = surface;
     this._state.set('dragging');
-    // The backdrop tracks the finger for the drag's duration, so its own
-    // transition — which exists to animate the settle — must not lag it.
+    // Both track the finger for the drag's duration, so their transitions —
+    // which exist to animate the settle — must not lag it. Set inline rather
+    // than left to the `--dragging` class, which renders a frame later: the
+    // first offset the drag writes would otherwise start a transition of its
+    // own, from wherever a settle caught mid-flight had got to.
+    this._options.renderer.setStyle(surface.panel, 'transition', 'none');
     if (surface.backdrop !== null) {
       this._options.renderer.setStyle(surface.backdrop, 'transition', 'none');
     }
@@ -59,15 +65,23 @@ export class SheetMotion {
    * called: a settle that ends in a dispose keeps its class on until the
    * overlay is gone, so the keyframe the class stands down cannot replay.
    *
+   * `velocity` is the surface's speed at the start, in px/ms along the offset
+   * (positive as the offset grows) — a released finger's. The settle's timing
+   * goes onto the surface and its scrim as `--tls-settle-duration` and
+   * `--tls-settle-easing` (see `settleCurve`), for a settle transition to
+   * read, so the stylesheet keeps the motion's gating while the curve carries
+   * the hand's momentum on.
+   *
    * A `begin` or `rest` that arrives before the settle finishes supersedes it:
    * a superseded settle neither moves the surface nor reports `done`.
    */
-  public settle(target: number, done: () => void): void {
+  public settle(target: number, done: () => void, velocity = 0): void {
     const surface = this._surface;
     const gesture = this._gesture;
     if (surface === null) return;
 
     this._state.set('settling');
+    this._options.renderer.removeStyle(surface.panel, 'transition');
     if (surface.backdrop !== null)
       this._options.renderer.removeStyle(surface.backdrop, 'transition');
 
@@ -77,7 +91,11 @@ export class SheetMotion {
       this._options.injector,
       surface.panel,
       () => {
-        if (this._gesture === gesture) this._write(surface, target);
+        if (this._gesture !== gesture) return;
+        // The curve goes on in the same style change as the target, so the
+        // transition the target starts is timed by it.
+        this._writeCurve(surface, target, velocity);
+        this._write(surface, target);
       },
       () => {
         if (this._gesture === gesture) done();
@@ -103,6 +121,31 @@ export class SheetMotion {
   }
 
   // Private methods
+  /**
+   * Writes the timing of a settle to `target` onto the surface and its scrim.
+   * The travel starts from the offset last written inline, which is where a
+   * released drag left the surface; a settle that supersedes another starts
+   * from the other's target, and the browser's own retargeting of the running
+   * transition covers the difference.
+   */
+  private _writeCurve(surface: SheetMotionSurface, target: number, velocity: number): void {
+    const { property, renderer } = this._options;
+    const written = Number.parseFloat(surface.panel.style.getPropertyValue(property));
+    const from = Number.isNaN(written) ? target : written;
+    const { duration, easing } = settleCurve(target - from, velocity);
+
+    for (const element of [surface.panel, surface.backdrop]) {
+      if (element === null) continue;
+      renderer.setStyle(
+        element,
+        SETTLE_DURATION_PROPERTY,
+        `${duration}ms`,
+        RendererStyleFlags2.DashCase,
+      );
+      renderer.setStyle(element, SETTLE_EASING_PROPERTY, easing, RendererStyleFlags2.DashCase);
+    }
+  }
+
   /**
    * Only the backdrop's progress is clamped to the extent; the offset itself
    * is written unclamped.

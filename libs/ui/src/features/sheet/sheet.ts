@@ -30,16 +30,21 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DRAG_DISMISS_POINTER_TYPES, PanDirective, PanEvent } from '@thalassic/core';
 import { whenAnimationsFinish } from '../../abstract/overlay';
-import { resolveDetent, SheetMotion, SheetMotionSurface } from '../../abstract/sheet-motion';
+import {
+  resolveDetent,
+  rubberBand,
+  SheetMotion,
+  SheetMotionSurface,
+} from '../../abstract/sheet-motion';
 import { resolveDetentHeight } from './resolve-detent-height';
 import { SheetHeaderDirective } from './sheet-header.directive';
 import {
   SHEET_COLLAPSED_SIZE_PROPERTY,
   SHEET_HEIGHT_PROPERTY,
   SHEET_OFFSET_PROPERTY,
-  SHEET_OVERSHOOT_DIVISOR,
-  SHEET_OVERSHOOT_MAX,
   SHEET_PANE_CLASS,
+  SHEET_STRETCH_LIMIT,
+  SHEET_TOP_CLEARANCE_PROPERTY,
 } from './sheet.constants';
 import { SheetDetent, sheetFocusRestoreTarget } from './sheet.types';
 
@@ -157,6 +162,12 @@ export class Sheet implements OnDestroy {
   private readonly _targetIndex = signal(0);
   /** The detent a drag began at, for the release decision. */
   private _dragStartIndex = 0;
+  /**
+   * How far in px above that detent the panel was drawn when the drag began:
+   * 0 from rest, the settle's remaining travel when caught mid-flight, so the
+   * panel is picked up where it is seen rather than where it was heading.
+   */
+  private _dragStartLead = 0;
   /**
    * A pan the body's own scrolling owns; its moves and end are not the sheet's.
    */
@@ -331,36 +342,46 @@ export class Sheet implements OnDestroy {
     if (this._declined) return;
 
     // At rest the target is the current detent; mid-settle it is where the
-    // sheet was heading, so a grab during a move neither jumps back nor
-    // resolves a flick from the detent being left.
+    // sheet was heading, so a grab during a move resolves no flick from the
+    // detent being left. The panel itself is held where it is drawn: the drag
+    // stops the settle's transition, which would otherwise leave it at the
+    // settle's end.
     this._dragStartIndex = this._targetIndex();
+    this._dragStartLead =
+      this._motion.state() === 'settling'
+        ? this._drawnHeight() - this._heights()[this._dragStartIndex]
+        : 0;
     this._motion.begin(this._surface());
+    this._motion.follow(this._offsetFor(this._dragHeight(event)));
   }
 
   /**
    * Fired outside the Angular zone (see `PanDirective.panMove`), so it writes
-   * to the DOM through the engine and writes no signal. The start height is
-   * read live, so a remeasure mid-drag applies at once.
+   * to the DOM through the engine and writes no signal.
    */
   protected onPanMove(event: PanEvent): void {
     if (this._declined || this._motion.state() !== 'dragging') return;
-    const startHeight = this._heights()[this._dragStartIndex];
-    this._motion.follow(this._offsetFor(startHeight - event.deltaY));
+    this._motion.follow(this._offsetFor(this._dragHeight(event)));
   }
 
   protected onPanEnd(event: PanEvent): void {
     if (this._declined || this._motion.state() !== 'dragging') return;
 
-    const startHeight = this._heights()[this._dragStartIndex];
-    const release = startHeight - event.deltaY;
     // Velocity is signed toward a larger height: upward travel is negative deltaY.
-    const index = resolveDetent(this._heights(), this._dragStartIndex, release, -event.velocityY);
-    this._settleFromDrag(index);
+    const index = resolveDetent(
+      this._heights(),
+      this._dragStartIndex,
+      this._dragHeight(event),
+      -event.velocityY,
+    );
+    // The offset grows downward, as deltaY does, so the finger's velocity is
+    // already signed along it.
+    this._settleFromDrag(index, event.velocityY);
   }
 
   protected onPanCancel(): void {
     if (this._declined || this._motion.state() !== 'dragging') return;
-    this._settleFromDrag(this._dragStartIndex);
+    this._settleFromDrag(this._dragStartIndex, 0);
   }
 
   /**
@@ -442,6 +463,7 @@ export class Sheet implements OnDestroy {
       header: header.offsetHeight,
       content: header.offsetHeight + content.offsetHeight,
       viewport,
+      maximum: viewport - length(`var(${SHEET_TOP_CLEARANCE_PROPERTY})`),
       length,
     };
     const heights = this.detents().map(candidate => resolveDetentHeight(candidate.size, measures));
@@ -528,29 +550,54 @@ export class Sheet implements OnDestroy {
   }
 
   /**
-   * Offset for a height the finger asks for. Above the largest detent the
-   * panel holds (a lifted panel would show a gap beneath it); below the
-   * smallest it follows a third of the overshoot, capped, so the end of the
-   * travel reads as a stretch rather than a wall.
+   * Height the finger asks for: the height the drag picked the panel up at,
+   * grown by the upward travel since. Read against the live heights, so a
+   * remeasure mid-drag applies at once.
+   */
+  private _dragHeight(event: PanEvent): number {
+    return this._heights()[this._dragStartIndex] + this._dragStartLead - event.deltaY;
+  }
+
+  /**
+   * Height of the panel as drawn this frame. Mid-settle the running
+   * transition, not the offset property, says where that is, so it is read
+   * from layout: the panel hangs from the bottom of the root, which covers the
+   * viewport.
+   */
+  private _drawnHeight(): number {
+    const root = this._root().nativeElement.getBoundingClientRect();
+    return root.bottom - this._panel().nativeElement.getBoundingClientRect().top;
+  }
+
+  /**
+   * Offset for a height the finger asks for. Past either end of the travel
+   * the panel follows a rubber band, so the end reads as a stretch rather than
+   * a wall; above the largest detent it lifts off the bottom edge, which the
+   * theme's skirt below the panel keeps covered.
    */
   private _offsetFor(height: number): number {
     const heights = this._heights();
     const smallest = heights[0];
     const largest = heights[heights.length - 1];
-    if (height >= largest) return 0;
+    if (height > largest) return -rubberBand(height - largest, SHEET_STRETCH_LIMIT);
     if (height >= smallest) return largest - height;
-
-    const overshoot = Math.min(SHEET_OVERSHOOT_MAX, (smallest - height) / SHEET_OVERSHOOT_DIVISOR);
-    return largest - smallest + overshoot;
+    return largest - smallest + rubberBand(smallest - height, SHEET_STRETCH_LIMIT);
   }
 
-  /** Ends a drag at `index`: the settle continues from the finger's offset. */
-  private _settleFromDrag(index: number): void {
+  /**
+   * Ends a drag at `index`: the settle continues from the finger's offset at
+   * the finger's `velocity`, in px/ms along the offset.
+   */
+  private _settleFromDrag(index: number, velocity: number): void {
     this._targetIndex.set(index);
-    this._motion.settle(this._offsetOf(index), () => {
-      this._motion.rest();
-      this._arrive(index);
-    });
+    this._motion.settle(
+      this._offsetOf(index),
+      () => {
+        this._motion.rest();
+        this._arrive(index);
+      },
+      velocity,
+    );
   }
 
   /**
