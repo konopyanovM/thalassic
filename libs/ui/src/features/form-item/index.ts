@@ -1,3 +1,4 @@
+export * from './form-item-label-action.directive';
 export * from './form-item.config';
 export * from './form-item';
 export * from './form-item.provider';

@@ -13,6 +13,7 @@ import {
 } from '@angular/core';
 import { FORM_FIELD, ValidationError, WithOptionalFieldTree } from '@angular/forms/signals';
 import { FORM_CONTROL, FormControl, ValueFormControl } from '../../abstract/form';
+import { FormItemLabelAction } from './form-item-label-action.directive';
 import { FORM_ITEM_CONFIG } from './form-item.token';
 import { injectFormSkeleton } from './inject-form-skeleton';
 import { FormItemLabelContext, labelPosition } from './form-item.types';
@@ -45,6 +46,9 @@ export class FormItem {
    */
   protected readonly labelTemplate = contentChild<TemplateRef<FormItemLabelContext>>('labelTemplate');
 
+  /** Content drawn at the far end of the label's row; see {@link FormItemLabelAction}. */
+  protected readonly labelAction = contentChild(FormItemLabelAction);
+
   /** Stable id for the label element, linked to the control via `aria-labelledby`. */
   protected readonly labelId = `tls-form-item-label-${FormItem._counter}`;
 
@@ -76,6 +80,13 @@ export class FormItem {
    * An item beneath a `tlsFormSkeleton` is drawn so whenever that says to, with nothing set here.
    */
   public skeleton = input<boolean, unknown>(false, { transform: booleanAttribute });
+  /**
+   * Keeps the footer's line open beneath a control that can display a validation error, so an
+   * error appearing — often as focus leaves the field for a press on something below it — moves
+   * nothing beneath the item, and the press lands where it began. An item whose control can
+   * never display one (a setting bound to a plain value, a toggle that is not required) reserves
+   * nothing, since it holds no line any error would need.
+   */
   public reserveErrorSpace = input<boolean>(this._config.reserveErrorSpace);
   public reserveLabelSpace = input<boolean>(this._config.reserveLabelSpace);
   public displayErrors = input<boolean>(this._config.displayErrors);
@@ -121,10 +132,18 @@ export class FormItem {
     const control = this.control();
     if (!control || !this.optionalText() || control.alwaysAnswered) return false;
 
-    // A control bound to a plain value is a setting, not a question to answer.
-    const element = control.elementRef.nativeElement;
-    const isFormField = this._formFields().some((formField) => formField.element === element);
-    return isFormField && !control.required();
+    return this._isFormField(control) && !control.required();
+  });
+
+  /** Whether the footer holds its line open for an error that has not appeared. */
+  protected reservesErrorLine = computed(() => {
+    const control = this.control();
+    if (!control || !this.reserveErrorSpace() || !this.displayErrors()) return false;
+    // A toggle always holds an answer, so it can only be wrong when one particular answer is
+    // required — an unchecked consent box.
+    if (control.alwaysAnswered && !control.required()) return false;
+
+    return this._isFormField(control);
   });
 
   /** Whether a label is rendered, from either the `label` input or a custom label template. */
@@ -157,7 +176,7 @@ export class FormItem {
     // error taking the hint's place must not change the row's layout.
     if (this.hint()) array.push(`${className}--has-hint`);
     if (this.skeleton() || this._isFormSkeleton()) array.push(`${className}--skeleton`);
-    if (this.reserveErrorSpace()) array.push(`${className}--error-space-reserved`);
+    if (this.reservesErrorLine()) array.push(`${className}--error-space-reserved`);
     if (this.reserveLabelSpace()) array.push(`${className}--label-space-reserved`);
 
     return array;
@@ -215,6 +234,15 @@ export class FormItem {
   }
 
   // Private methods
+  /**
+   * Whether the control edits a form's field. One bound to a plain value is a setting rather than
+   * a question to answer: it is never left unanswered and carries no validation of its own.
+   */
+  private _isFormField(control: FormControl): boolean {
+    const element = control.elementRef.nativeElement;
+    return this._formFields().some((formField) => formField.element === element);
+  }
+
   private _getErrorMessages(errors: readonly WithOptionalFieldTree<ValidationError>[]): string[] {
     const array: string[] = [];
 

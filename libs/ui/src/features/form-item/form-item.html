@@ -1,23 +1,19 @@
 <div class="form-item-main">
   @if (hasLabel() || reserveLabelSpace()) {
-    <label class="form-item-label" [id]="labelId" [attr.for]="labelFor()">
-      @if (labelTemplate(); as template) {
-        <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="labelContext()" />
-      } @else {
-        <span class="form-item-label__text">{{ label() }}</span>
-        @if (showRequired()) {
-          <span class="form-item-label__required">*</span>
-        } @else if (showOptional()) {
-          <span class="form-item-label__optional">{{ optionalText() }}</span>
-        }
-      }
-    </label>
+    @if (labelAction()) {
+      <div class="form-item-label-row">
+        <ng-container [ngTemplateOutlet]="labelElement" />
+        <ng-content select="[tlsFormItemLabelAction]"></ng-content>
+      </div>
+    } @else {
+      <ng-container [ngTemplateOutlet]="labelElement" />
+    }
   }
   <div class="form-item-control">
     <ng-content></ng-content>
   </div>
 </div>
-@if (reserveErrorSpace() || showError() || showHint() || hasCounter()) {
+@if (reservesErrorLine() || showError() || showHint() || hasCounter()) {
   <small class="form-item-footer">
     @if (showError()) {
       <span class="form-item-error">
@@ -36,3 +32,18 @@
     }
   </small>
 }
+
+<ng-template #labelElement>
+  <label class="form-item-label" [id]="labelId" [attr.for]="labelFor()">
+    @if (labelTemplate(); as template) {
+      <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="labelContext()" />
+    } @else {
+      <span class="form-item-label__text">{{ label() }}</span>
+      @if (showRequired()) {
+        <span class="form-item-label__required">*</span>
+      } @else if (showOptional()) {
+        <span class="form-item-label__optional">{{ optionalText() }}</span>
+      }
+    }
+  </label>
+</ng-template>

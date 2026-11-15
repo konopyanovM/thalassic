@@ -4,6 +4,7 @@ import { form, FormField, required } from '@angular/forms/signals';
 import { Checkbox } from '../form/checkbox/checkbox';
 import { Input } from '../form/input/input';
 import { FormItem } from './form-item';
+import { FormItemLabelAction } from './form-item-label-action.directive';
 import { FormSkeleton } from './form-skeleton.directive';
 import { provideFormItemConfig } from './form-item.provider';
 
@@ -82,6 +83,50 @@ class OptionalMarkerHostComponent {
   profile = form(signal({ nickname: '', email: '', newsletter: false }), (path) => {
     required(path.email);
   });
+}
+
+@Component({
+  imports: [FormItem, FormItemLabelAction, Input],
+  template: `
+    <tls-form-item label="Password">
+      <a tlsFormItemLabelAction href="/forgot">Forgot password?</a>
+      <tls-input />
+    </tls-form-item>
+    <tls-form-item label="Username">
+      <tls-input />
+    </tls-form-item>
+  `,
+})
+class LabelActionHostComponent {}
+
+@Component({
+  imports: [FormItem, Input, Checkbox, FormField],
+  template: `
+    <tls-form-item label="Email">
+      <tls-input [formField]="account.email" />
+    </tls-form-item>
+    <tls-form-item label="Theme">
+      <tls-input [(value)]="theme" />
+    </tls-form-item>
+    <tls-form-item label="Newsletter">
+      <tls-checkbox [formField]="account.newsletter" />
+    </tls-form-item>
+    <tls-form-item label="Terms">
+      <tls-checkbox [formField]="account.terms" />
+    </tls-form-item>
+    <tls-form-item label="Nickname" [displayErrors]="false">
+      <tls-input [formField]="account.nickname" />
+    </tls-form-item>
+  `,
+})
+class ReservedErrorLineHostComponent {
+  theme = signal('');
+  account = form(
+    signal({ email: '', newsletter: false, terms: false, nickname: '' }),
+    (path) => {
+      required(path.terms);
+    },
+  );
 }
 
 @Component({
@@ -254,6 +299,46 @@ describe('FormItem', () => {
         .map((label) => label.querySelector('.form-item-label__text')?.textContent?.trim());
 
       expect(marked).toEqual(['Nickname']);
+    });
+  });
+
+  describe('label action', () => {
+    it('should draw the action in the label row, outside the label element', async () => {
+      const actionFixture = TestBed.createComponent(LabelActionHostComponent);
+      actionFixture.detectChanges();
+      await actionFixture.whenStable();
+
+      const [withAction, withoutAction] = Array.from<HTMLElement>(
+        actionFixture.nativeElement.querySelectorAll('tls-form-item'),
+      );
+      const row = withAction.querySelector('.form-item-label-row');
+      const action = withAction.querySelector('[tlsFormItemLabelAction]');
+
+      expect(row?.querySelector('.form-item-label')).not.toBeNull();
+      expect(action?.parentElement).toBe(row);
+      // Kept out of the label, so it is no part of the control's accessible name.
+      expect(action?.closest('label')).toBeNull();
+      expect(withAction.querySelector('.form-item-control [tlsFormItemLabelAction]')).toBeNull();
+      expect(withoutAction.querySelector('.form-item-label-row')).toBeNull();
+      expect(withoutAction.querySelector('.form-item-main > .form-item-label')).not.toBeNull();
+    });
+  });
+
+  describe('reserved error line', () => {
+    it('should hold a line open only beneath a control that can display an error', async () => {
+      const reservedFixture = TestBed.createComponent(ReservedErrorLineHostComponent);
+      reservedFixture.detectChanges();
+      await reservedFixture.whenStable();
+
+      const element: HTMLElement = reservedFixture.nativeElement;
+      const reserved = Array.from(element.querySelectorAll('tls-form-item'))
+        .filter((item) => item.querySelector('.form-item-footer'))
+        .map((item) => item.querySelector('.form-item-label__text')?.textContent?.trim());
+
+      // A plain value is a setting, an optional toggle always holds an answer, and an item
+      // that displays no errors has none to make room for.
+      expect(reserved).toEqual(['Email', 'Terms']);
+      expect(element.querySelectorAll('.tls-form-item--error-space-reserved').length).toBe(2);
     });
   });
 

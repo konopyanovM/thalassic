@@ -153,6 +153,21 @@
     display: flex;
   }
 
+  // A label sharing its row with an action: the row takes the label's place, and
+  // the action sits at the far end, on the label's baseline.
+  .form-item-label-row {
+    margin-bottom: 0.25rem;
+
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--spacing-2);
+
+    .form-item-label {
+      margin-bottom: 0;
+    }
+  }
+
   .form-item-label {
     margin-bottom: 0.25rem;
 
