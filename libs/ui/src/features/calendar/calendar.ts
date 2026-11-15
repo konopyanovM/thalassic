@@ -46,6 +46,7 @@ import {
   DAY_TITLE_FORMAT,
   DAYS_PER_WEEK,
   MONTH_TITLE_FORMAT,
+  NO_PEEK_WEEKS,
   SWIPE_POINTER_TYPES,
 } from './calendar.constants';
 import { CALENDAR_CONFIG } from './calendar.token';
@@ -54,9 +55,11 @@ import {
   CalendarDayContext,
   CalendarEvent,
   CalendarEventContext,
+  CalendarPeekWeeks,
   CalendarRange,
   calendarView,
 } from './calendar.types';
+import { resolvePeekWeeks } from './resolve-peek-weeks';
 
 @Component({
   selector: 'tls-calendar',
@@ -118,15 +121,17 @@ export class Calendar {
    */
   public readonly swipeNavigation: InputSignal<boolean> = input<boolean>(false);
   /**
-   * Week rows the month grid shows beyond the month's own six, above and below alike, fading
-   * out toward the grid's edge so the month reads as a stretch of a continuous run of weeks.
-   * They are days like any other: selectable, and covered by the range `rangeChange` reports.
+   * Week rows the month grid shows beyond the month's own six, fading out toward the grid's
+   * edge so the month reads as a stretch of a continuous run of weeks. A number widens the
+   * grid by that many rows above and below alike; a `{ before, after }` pair counts each edge
+   * on its own, for a grid that wants only one of them — the month's six rows often close on
+   * a week or two of the month that follows, where a further row adds little. They are days
+   * like any other: selectable, and covered by the range `rangeChange` reports.
    */
-  public readonly peekWeeks: InputSignalWithTransform<number, number> = input(0, {
-    // A count of week rows: a fraction would open the grid mid-week and a negative would cut
-    // into the month itself, so either settles on the nearest count that still draws a grid.
-    transform: (value: number) => Math.max(0, Math.trunc(value) || 0),
-  });
+  public readonly peekWeeks: InputSignalWithTransform<
+    CalendarPeekWeeks,
+    number | CalendarPeekWeeks
+  > = input(NO_PEEK_WEEKS, { transform: resolvePeekWeeks });
   /** Accessible name forwarded to the active view's grid. */
   public readonly ariaLabel = input<string | undefined>(undefined);
 

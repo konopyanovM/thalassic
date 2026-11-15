@@ -100,6 +100,14 @@ export const PeekWeeks: Story = {
   args: { peekWeeks: 1 },
 };
 
+/**
+ * A peek on one edge alone: a week above the month and none below it, where the month's own
+ * rows already run on into the next month. Only the edge that has a peek fades.
+ */
+export const PeekWeeksBefore: Story = {
+  args: { peekWeeks: { before: 1, after: 0 } },
+};
+
 /** Week view: a time-grid with overlapping events laid into side-by-side lanes. */
 export const Week: Story = {
   args: { view: 'week', events: TIMED_EVENTS },

@@ -83,6 +83,18 @@ describe('Calendar', () => {
     expect(queryMonthView()?.classList).toContain('tls-calendar-month-view--peek');
   });
 
+  it('renders a peek on one edge alone', async () => {
+    fixture.componentRef.setInput('peekWeeks', { before: 1, after: 0 });
+    await fixture.whenStable();
+
+    const cells = queryDayCells();
+    expect(cells.length).toBe((MONTH_GRID_ROWS + 1) * DAYS_PER_WEEK);
+    // The peek week above opens on Jun 21; the grid closes on the month's own last row, Aug 8.
+    expect((cells[0].textContent ?? '').trim()).toBe('21');
+    expect((cells[cells.length - 1].textContent ?? '').trim()).toBe('8');
+    expect(queryMonthView()?.classList).toContain('tls-calendar-month-view--peek');
+  });
+
   it('settles a peek that is no whole count of weeks on one that is', async () => {
     fixture.componentRef.setInput('peekWeeks', 1.8);
     await fixture.whenStable();

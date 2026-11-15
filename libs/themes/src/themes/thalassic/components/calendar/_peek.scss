@@ -24,23 +24,33 @@ $lean: 0.6;
   @return $leaned * $leaned * (3 - 2 * $leaned);
 }
 
-// The mask that dissolves the peek weeks: clear at both edges of the box, solid across the middle,
-// with `$extent` — the height one side's peek weeks take up — as the run each fade covers.
-@function fade($extent) {
-  $leading: ();
-  $trailing: ();
+// The mask that dissolves the peek weeks: clear at an edge of the box that peek weeks open on,
+// solid across the month's own rows. `$before` and `$after` are the heights the peek weeks take
+// up above and below — the run each fade covers. An edge with no peek weeks has a run of no
+// height, so every stop of its fade lands on the edge itself and the rows there stay solid.
+@function fade($before, $after) {
+  $stops: ();
 
   @for $index from 0 through $segments {
     $position: math.div($index, $segments);
-    $alpha: opacity-at($position);
-    $leading: list.append($leading, rgba(0, 0, 0, $alpha) calc(#{$extent} * #{$position}), comma);
-    // Prepended, so the lower fade runs solid-to-clear as the gradient continues downward.
-    $trailing: list.join(
-      (rgba(0, 0, 0, $alpha) calc(100% - #{$extent} * #{$position})),
-      $trailing,
+    // Each stop is appended as one item, a color with its position: joined element by element
+    // the two would part into a color and a bare position, which no gradient accepts.
+    $stops: list.append(
+      $stops,
+      rgba(0, 0, 0, opacity-at($position)) calc(#{$before} * #{$position}),
       comma
     );
   }
 
-  @return linear-gradient(to bottom, list.join($leading, $trailing, comma));
+  // Counted back down, so the lower fade runs solid-to-clear as the gradient continues downward.
+  @for $index from $segments through 0 {
+    $position: math.div($index, $segments);
+    $stops: list.append(
+      $stops,
+      rgba(0, 0, 0, opacity-at($position)) calc(100% - #{$after} * #{$position}),
+      comma
+    );
+  }
+
+  @return linear-gradient(to bottom, $stops);
 }

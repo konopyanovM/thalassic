@@ -36,9 +36,19 @@ import { assignWeekLanes } from './assign-week-lanes';
 import { buildMonthScrollPlan, MonthScrollPlan } from './build-month-scroll-plan';
 import { buildMonthWindow, MonthWindow } from './build-month-window';
 import { CalendarEventItem } from './calendar-event';
-import { DAY_NUMBER_FORMAT, DAYS_PER_WEEK, MAX_DAY_MARKERS } from './calendar.constants';
+import {
+  DAY_NUMBER_FORMAT,
+  DAYS_PER_WEEK,
+  MAX_DAY_MARKERS,
+  NO_PEEK_WEEKS,
+} from './calendar.constants';
 import { CALENDAR_CONFIG } from './calendar.token';
-import { CalendarDayContext, CalendarEvent, CalendarEventContext } from './calendar.types';
+import {
+  CalendarDayContext,
+  CalendarEvent,
+  CalendarEventContext,
+  CalendarPeekWeeks,
+} from './calendar.types';
 
 /** A dot marking one of a day's events in the dense layout, tinted by that event's color. */
 interface MonthDayMarker {
@@ -83,8 +93,9 @@ interface MonthWeek {
   host: {
     class: 'tls-calendar-month-view',
     '[class.tls-calendar-month-view--square]': 'squareCells()',
-    '[class.tls-calendar-month-view--peek]': 'peekWeeks() > 0',
-    '[style.--tls-calendar-peek-weeks]': 'peekWeeks()',
+    '[class.tls-calendar-month-view--peek]': 'peekWeeks().before + peekWeeks().after > 0',
+    '[style.--tls-calendar-peek-weeks-before]': 'peekWeeks().before',
+    '[style.--tls-calendar-peek-weeks-after]': 'peekWeeks().after',
     '[style.--tls-calendar-week-rows]': 'gridWindow().weekCount',
   },
 })
@@ -104,10 +115,11 @@ export class CalendarMonthView {
   /** Whether day cells are held to a 1:1 ratio instead of sizing to the events they hold. */
   public readonly squareCells: InputSignal<boolean> = input<boolean>(false);
   /**
-   * Week rows rendered beyond the month's own window, above and below it alike, fading out
-   * toward the grid's edge.
+   * Week rows rendered beyond the month's own window, counted for each edge of the grid,
+   * fading out toward that edge.
    */
-  public readonly peekWeeks: InputSignal<number> = input<number>(0);
+  public readonly peekWeeks: InputSignal<CalendarPeekWeeks> =
+    input<CalendarPeekWeeks>(NO_PEEK_WEEKS);
   public readonly eventTemplate = input<TemplateRef<CalendarEventContext> | undefined>(undefined);
   /** Replaces what a day cell renders, leaving the cell's own semantics and chrome in place. */
   public readonly dayTemplate = input<TemplateRef<CalendarDayContext> | undefined>(undefined);

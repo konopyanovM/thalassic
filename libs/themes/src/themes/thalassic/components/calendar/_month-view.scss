@@ -16,13 +16,19 @@
   --tls-calendar-marker-size: 6px;
   --tls-calendar-marker-gap: var(--spacing-1);
 
-  // A day outside the month, set back from the days in it. The middle
-  // container is the day cell's own surface in dark mode, so there an outside
-  // day sinks to the page instead.
+  // A day outside the month, set back from the days in it: its fill a step down
+  // from the day cell's own surface, its number quieter. In dark mode the middle
+  // container is the cell's surface, so the step down is the low container. It
+  // stays above the page: filled with the page's own color a day would lose its
+  // cell wherever the grid draws no outer edge, leaving a number between lines.
+  // The steps of a dark ladder sit close together, so there the number recedes
+  // further to carry the difference the fill no longer can.
   --tls-calendar-outside-background: var(--color-surface-container);
+  --tls-calendar-outside-color: var(--color-on-surface-variant);
 
   .tls-dark & {
-    --tls-calendar-outside-background: var(--color-surface);
+    --tls-calendar-outside-background: var(--color-surface-container-low);
+    --tls-calendar-outside-color: var(--color-outline);
   }
 
   display: flex;
@@ -166,7 +172,7 @@
     &--outside {
       background-color: var(--tls-calendar-outside-background);
 
-      color: var(--color-on-surface-variant);
+      color: var(--tls-calendar-outside-color);
     }
 
     &--today {
@@ -331,13 +337,20 @@
   // a week fades as it crosses the edge instead of carrying an opacity of its own along.
   &--peek {
     .tls-calendar-month-view__viewport {
-      // Share of the viewport's height that one side's peek weeks take up. Every week row is
-      // equally tall, so the row counts alone locate where the month's own weeks begin.
-      --tls-calendar-peek-extent: calc(
-        100% * var(--tls-calendar-peek-weeks) / var(--tls-calendar-week-rows)
+      // Shares of the viewport's height that the peek weeks above and below take up. Every
+      // week row is equally tall, so the row counts alone locate where the month's own weeks
+      // begin and end.
+      --tls-calendar-peek-extent-before: calc(
+        100% * var(--tls-calendar-peek-weeks-before) / var(--tls-calendar-week-rows)
+      );
+      --tls-calendar-peek-extent-after: calc(
+        100% * var(--tls-calendar-peek-weeks-after) / var(--tls-calendar-week-rows)
       );
 
-      mask-image: peek.fade(var(--tls-calendar-peek-extent));
+      mask-image: peek.fade(
+        var(--tls-calendar-peek-extent-before),
+        var(--tls-calendar-peek-extent-after)
+      );
     }
   }
 }

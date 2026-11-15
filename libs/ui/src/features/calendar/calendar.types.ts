@@ -8,6 +8,17 @@ export type calendarView = 'month' | 'week' | 'day' | 'agenda';
  */
 export type calendarCompact = boolean | 'auto';
 
+/**
+ * Week rows a month grid shows beyond the month's own, counted for each edge of the grid on
+ * its own.
+ */
+export interface CalendarPeekWeeks {
+  /** Rows above the week that holds the 1st. */
+  before: number;
+  /** Rows below the last of the month's own rows. */
+  after: number;
+}
+
 /** A single entry rendered on the calendar. `end` defaults to `start` when omitted. */
 export interface CalendarEvent {
   id: string;
@@ -15,7 +26,7 @@ export interface CalendarEvent {
   start: Date;
   end?: Date;
   allDay?: boolean;
-  /** Tints the default event chip with a semantic color token's container/on-container pair. */
+  /** Tints the default event chip with a wash of a semantic color token, inked in the same hue. */
   color?: color;
   /** Consumer payload, surfaced in the template context and selection outputs. */
   data?: unknown;

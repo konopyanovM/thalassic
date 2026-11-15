@@ -6,9 +6,12 @@ import { buildMonthScrollPlan } from './build-month-scroll-plan';
  */
 const MONDAY = 1;
 
+/** The same count of peek weeks on both edges of the grid. */
+const peek = (weeks: number) => ({ before: weeks, after: weeks });
+
 describe('buildMonthScrollPlan', () => {
   it('plans a forward scroll from the outgoing window down to the incoming one', () => {
-    const plan = buildMonthScrollPlan(new Date(2026, 7, 15), new Date(2026, 8, 15), MONDAY, 0);
+    const plan = buildMonthScrollPlan(new Date(2026, 7, 15), new Date(2026, 8, 15), MONDAY, peek(0));
     expect(plan).toEqual({
       unionStart: new Date(2026, 6, 27),
       weekCount: 11,
@@ -18,7 +21,7 @@ describe('buildMonthScrollPlan', () => {
   });
 
   it('plans a backward scroll anchored on the incoming window', () => {
-    const plan = buildMonthScrollPlan(new Date(2026, 8, 15), new Date(2026, 7, 15), MONDAY, 0);
+    const plan = buildMonthScrollPlan(new Date(2026, 8, 15), new Date(2026, 7, 15), MONDAY, peek(0));
     expect(plan).toEqual({
       unionStart: new Date(2026, 6, 27),
       weekCount: 11,
@@ -28,17 +31,17 @@ describe('buildMonthScrollPlan', () => {
   });
 
   it('returns null when both dates render the same window', () => {
-    expect(buildMonthScrollPlan(new Date(2026, 7, 3), new Date(2026, 7, 28), MONDAY, 0)).toBeNull();
+    expect(buildMonthScrollPlan(new Date(2026, 7, 3), new Date(2026, 7, 28), MONDAY, peek(0))).toBeNull();
   });
 
   it('returns null for a jump whose windows no longer touch', () => {
     expect(
-      buildMonthScrollPlan(new Date(2026, 6, 15), new Date(2026, 9, 15), MONDAY, 0),
+      buildMonthScrollPlan(new Date(2026, 6, 15), new Date(2026, 9, 15), MONDAY, peek(0)),
     ).toBeNull();
   });
 
   it('widens the union by the peek weeks without moving the windows apart', () => {
-    const plan = buildMonthScrollPlan(new Date(2026, 7, 15), new Date(2026, 8, 15), MONDAY, 1);
+    const plan = buildMonthScrollPlan(new Date(2026, 7, 15), new Date(2026, 8, 15), MONDAY, peek(1));
     expect(plan).toEqual({
       unionStart: new Date(2026, 6, 20),
       weekCount: 13,
@@ -47,15 +50,29 @@ describe('buildMonthScrollPlan', () => {
     });
   });
 
+  it('widens the union by each edge\'s own peek', () => {
+    // A week above alone: both windows open a week early, and the union grows by that one row.
+    const plan = buildMonthScrollPlan(new Date(2026, 7, 15), new Date(2026, 8, 15), MONDAY, {
+      before: 1,
+      after: 0,
+    });
+    expect(plan).toEqual({
+      unionStart: new Date(2026, 6, 20),
+      weekCount: 12,
+      fromRow: 0,
+      toRow: 5,
+    });
+  });
+
   it('judges a far jump by the months themselves, whatever the peek', () => {
     expect(
-      buildMonthScrollPlan(new Date(2026, 6, 15), new Date(2026, 9, 15), MONDAY, 4),
+      buildMonthScrollPlan(new Date(2026, 6, 15), new Date(2026, 9, 15), MONDAY, peek(4)),
     ).toBeNull();
   });
 
   it('respects the week start when locating the windows', () => {
     // Sunday-start: August 2026's window opens on Sun Jul 26, September's on Sun Aug 30.
-    const plan = buildMonthScrollPlan(new Date(2026, 7, 15), new Date(2026, 8, 15), 0, 0);
+    const plan = buildMonthScrollPlan(new Date(2026, 7, 15), new Date(2026, 8, 15), 0, peek(0));
     expect(plan).toEqual({
       unionStart: new Date(2026, 6, 26),
       weekCount: 11,

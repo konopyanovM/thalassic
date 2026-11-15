@@ -21,49 +21,31 @@
     border: none;
     border-radius: var(--radius-sm);
 
-    background-color: var(--tls-calendar-event-color, var(--color-primary-container));
+    // An event is a tonal mark of its hue — a wash of the hue, inked in the same hue, as a
+    // tonal chip or button is — rather than the theme's container pair, which a dark theme
+    // fills far more densely than anything else tonal beside it. The wash is laid over an
+    // opaque raised surface rather than over the grid: a bar crosses the lines between days
+    // and a timed event may overlap another, and neither should show through it.
+    background-color: var(--surface-raised);
+    // One stop given both of its positions: a gradient of a single color, which is how a
+    // translucent color becomes a layer over the fill beneath.
+    background-image: linear-gradient(
+      var(--tls-calendar-event-color, #{mixins.wash-fill(var(--color-primary))}) 0 0
+    );
 
     font-size: var(--font-label-small-size);
     line-height: var(--font-label-small-line-height);
-    color: var(--tls-calendar-event-on-color, var(--color-on-primary-container));
+    color: var(--tls-calendar-event-on-color, #{mixins.wash-ink(var(--color-primary))});
 
     cursor: pointer;
 
     @include mixins.ripple;
 
-    &--primary {
-      --tls-calendar-event-color: var(--color-primary-container);
-      --tls-calendar-event-on-color: var(--color-on-primary-container);
-    }
-
-    &--secondary {
-      --tls-calendar-event-color: var(--color-secondary-container);
-      --tls-calendar-event-on-color: var(--color-on-secondary-container);
-    }
-
-    &--tertiary {
-      --tls-calendar-event-color: var(--color-tertiary-container);
-      --tls-calendar-event-on-color: var(--color-on-tertiary-container);
-    }
-
-    &--success {
-      --tls-calendar-event-color: var(--color-success-container);
-      --tls-calendar-event-on-color: var(--color-on-success-container);
-    }
-
-    &--info {
-      --tls-calendar-event-color: var(--color-info-container);
-      --tls-calendar-event-on-color: var(--color-on-info-container);
-    }
-
-    &--warning {
-      --tls-calendar-event-color: var(--color-warning-container);
-      --tls-calendar-event-on-color: var(--color-on-warning-container);
-    }
-
-    &--danger {
-      --tls-calendar-event-color: var(--color-danger-container);
-      --tls-calendar-event-on-color: var(--color-on-danger-container);
+    @each $color in mixins.$colors {
+      &--#{$color} {
+        --tls-calendar-event-color: #{mixins.wash-fill(var(--color-#{$color}))};
+        --tls-calendar-event-on-color: #{mixins.wash-ink(var(--color-#{$color}))};
+      }
     }
   }
 

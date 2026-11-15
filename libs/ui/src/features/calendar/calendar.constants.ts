@@ -1,10 +1,13 @@
-import { calendarView } from './calendar.types';
+import { CalendarPeekWeeks, calendarView } from './calendar.types';
 
 /** Days in a calendar week. */
 export const DAYS_PER_WEEK = 7;
 
 /** Week rows a month's own window spans, fixed so the grid's height never reflows between months. */
 export const MONTH_GRID_ROWS = 6;
+
+/** A month grid drawn as its own rows alone, with no week beyond them on either edge. */
+export const NO_PEEK_WEEKS: CalendarPeekWeeks = { before: 0, after: 0 };
 
 /** Default cap on events shown in a month day cell before a "+N more" affordance appears. */
 export const DEFAULT_MAX_EVENTS_PER_DAY = 3;

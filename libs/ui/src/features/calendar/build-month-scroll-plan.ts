@@ -1,6 +1,7 @@
 import { Day, differenceInCalendarDays } from 'date-fns';
 import { buildMonthWindow } from './build-month-window';
 import { DAYS_PER_WEEK, MONTH_GRID_ROWS } from './calendar.constants';
+import { CalendarPeekWeeks } from './calendar.types';
 
 /**
  * Geometry of a month-navigation scroll: the widened week window that holds both the outgoing
@@ -26,7 +27,7 @@ export const buildMonthScrollPlan = (
   from: Date,
   to: Date,
   weekStartsOn: Day,
-  peekWeeks: number,
+  peekWeeks: CalendarPeekWeeks,
 ): MonthScrollPlan | null => {
   const fromWindow = buildMonthWindow(from, weekStartsOn, peekWeeks);
   const toWindow = buildMonthWindow(to, weekStartsOn, peekWeeks);

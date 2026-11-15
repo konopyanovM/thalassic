@@ -1,5 +1,6 @@
 import { Day, startOfMonth, startOfWeek, subWeeks } from 'date-fns';
 import { MONTH_GRID_ROWS } from './calendar.constants';
+import { CalendarPeekWeeks } from './calendar.types';
 
 /** The run of week rows a month grid renders. */
 export interface MonthWindow {
@@ -11,13 +12,13 @@ export interface MonthWindow {
 
 /**
  * Locates the grid window of the month containing `anchor`: the fixed run of weeks opening on
- * the week that holds the 1st, widened by `peekWeeks` further weeks on each side.
+ * the week that holds the 1st, widened by the peek weeks counted for each of its edges.
  */
 export const buildMonthWindow = (
   anchor: Date,
   weekStartsOn: Day,
-  peekWeeks: number,
+  peekWeeks: CalendarPeekWeeks,
 ): MonthWindow => ({
-  start: subWeeks(startOfWeek(startOfMonth(anchor), { weekStartsOn }), peekWeeks),
-  weekCount: MONTH_GRID_ROWS + 2 * peekWeeks,
+  start: subWeeks(startOfWeek(startOfMonth(anchor), { weekStartsOn }), peekWeeks.before),
+  weekCount: MONTH_GRID_ROWS + peekWeeks.before + peekWeeks.after,
 });
