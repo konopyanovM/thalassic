@@ -12,3 +12,11 @@ export interface FileInputFileContext {
   index: number;
   remove: (index: number) => void;
 }
+
+/** What a projected trigger is handed in place of the built-in button. */
+export interface FileInputTriggerContext {
+  /** Opens the file picker; does nothing while the control is not interactive. */
+  $implicit: () => void;
+  /** Whether the control is disabled or read-only, for the trigger to show it. */
+  disabled: boolean;
+}

@@ -8,23 +8,27 @@
   (change)="onFilesSelected($event)"
 />
 @if (variant() === 'button') {
-  <button
-    type="button"
-    tlsButton
-    variant="outlined"
-    [size]="size()"
-    [disabled]="notInteractive()"
-    [attr.disabled]="notInteractive() ? '' : null"
-    [attr.aria-label]="ariaLabel()"
-    [attr.aria-labelledby]="labelledBy()"
-    [attr.aria-invalid]="invalid() ? 'true' : null"
-    [attr.aria-describedby]="describedBy()"
-    (click)="openFilePicker()"
-  >
-    {{ triggerLabel() }}
-  </button>
-  @if (acceptHint()) {
-    <span class="tls-file-input__hint">Allowed: {{ acceptHint() }}</span>
+  @if (triggerTemplate(); as template) {
+    <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="triggerContext()" />
+  } @else {
+    <button
+      type="button"
+      tlsButton
+      variant="outlined"
+      [size]="size()"
+      [disabled]="notInteractive()"
+      [attr.disabled]="notInteractive() ? '' : null"
+      [attr.aria-label]="ariaLabel()"
+      [attr.aria-labelledby]="labelledBy()"
+      [attr.aria-invalid]="invalid() ? 'true' : null"
+      [attr.aria-describedby]="describedBy()"
+      (click)="openFilePicker()"
+    >
+      {{ triggerLabel() }}
+    </button>
+    @if (acceptHint()) {
+      <span class="tls-file-input__hint">Allowed: {{ acceptHint() }}</span>
+    }
   }
 } @else {
   <div

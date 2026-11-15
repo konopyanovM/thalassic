@@ -25,6 +25,12 @@
     width: 100%;
   }
 
+  // The fixed width holds the built-in button and the list of chosen files.
+  // A consumer's own trigger is whatever size it is, and the control with it.
+  &--custom-trigger:not(&--fluid) {
+    width: auto;
+  }
+
   &--button {
     align-items: flex-start;
 

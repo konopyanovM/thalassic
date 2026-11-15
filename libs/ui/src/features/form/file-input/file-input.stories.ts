@@ -76,6 +76,21 @@ export const CustomDropZoneStory: Story = {
   }),
 };
 
+export const CustomTriggerStory: Story = {
+  name: 'Custom trigger',
+  args: { variant: 'button', multiple: true, accept: 'image/*' },
+  render: args => ({
+    props: args,
+    template: `
+      <tls-file-input ${argsToTemplate(args)}>
+        <ng-template #trigger let-open let-disabled="disabled">
+          <button type="button" [disabled]="disabled" (click)="open()">Add images</button>
+        </ng-template>
+      </tls-file-input>
+    `,
+  }),
+};
+
 export const CustomFileRowStory: Story = {
   name: 'Custom file row template',
   args: { multiple: true },

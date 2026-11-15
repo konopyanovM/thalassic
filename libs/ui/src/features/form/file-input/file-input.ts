@@ -29,6 +29,7 @@ import { FILE_INPUT_CONFIG } from './file-input.token';
 import {
   FileInputDropZoneContext,
   FileInputFileContext,
+  FileInputTriggerContext,
   fileInputVariant,
 } from './file-input.types';
 
@@ -74,12 +75,19 @@ export class FileInput extends ValueFormControl<File[]> {
   protected readonly dropZoneTemplate =
     contentChild<TemplateRef<FileInputDropZoneContext>>('dropZone');
   protected readonly fileTemplate = contentChild<TemplateRef<FileInputFileContext>>('file');
+  /**
+   * A consumer's own control for opening the picker, drawn in place of the built-in button and
+   * its accept hint in the `button` variant. It names and describes itself: the control's
+   * `ariaLabel` and described-by wiring belong to the built-in button only.
+   */
+  protected readonly triggerTemplate = contentChild<TemplateRef<FileInputTriggerContext>>('trigger');
 
   // Computed
   protected readonly classes: Signal<string[]> = computed(() => {
     const className = this.CLASS_NAME;
     const array = [className, `${className}--${this.variant()}`, `${className}--${this.size()}`];
     if (this.fluid()) array.push(`${className}--fluid`);
+    if (this.triggerTemplate()) array.push(`${className}--custom-trigger`);
     return array.concat(this.controlClasses());
   });
 
@@ -106,6 +114,11 @@ export class FileInput extends ValueFormControl<File[]> {
 
     return [...new Set(labels)].join(', ');
   });
+
+  protected readonly triggerContext: Signal<FileInputTriggerContext> = computed(() => ({
+    $implicit: () => this.openFilePicker(),
+    disabled: this.notInteractive(),
+  }));
 
   // Protected methods
   protected openFilePicker(): void {
