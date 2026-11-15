@@ -107,7 +107,11 @@
       --tls-tab-header-segmented-hover,
       var(--segmented-hover-background)
     );
-    --tls-tab-header-padding: var(--spacing-2);
+    // The room between the track's edge and a pill, and between two pills. It
+    // is the track's radius less the pill's, so the two corners share a centre
+    // and the band between them keeps one width around the curve; a wider band
+    // needs a tighter pill corner to stay even.
+    --tls-tab-header-padding: var(--spacing-1);
     --tls-tab-header-active-label-color: var(--color-on-surface);
 
     padding: var(--tls-tab-header-padding);
