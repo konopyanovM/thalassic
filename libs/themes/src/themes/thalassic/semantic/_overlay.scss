@@ -1,0 +1,10 @@
+// A layer floating over the page: a menu, a popover, the panel a field opens,
+// a dialog, a drawer, a sheet. How far a shadow spreads says how high above
+// the page its surface hangs, so every overlay casts the one wide, soft shadow
+// of something well clear of the content it covers. A tight shadow is that of
+// a card lying on the page, and under it an open panel reads as one more piece
+// of the content beneath. Each overlay reads this, so they all float at one
+// height and a theme retunes them in one place.
+:root {
+  --overlay-shadow: var(--shadow-lg);
+}
