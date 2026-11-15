@@ -65,8 +65,8 @@
 
     // Each option is a shape of its own, so no rule runs between two of them.
     border: none;
-    // The pill's corner, in the track's own corner shape: the hover fill and
-    // the ink are drawn to it on every option, chosen or not.
+    // The pill's corner, in the track's own corner shape: the hover and press
+    // fills are drawn to it on every option, chosen or not.
     border-radius: var(--tls-toggle-group-segmented-pill-radius);
     corner-shape: inherit;
 

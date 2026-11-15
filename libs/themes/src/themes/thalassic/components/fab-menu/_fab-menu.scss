@@ -56,9 +56,6 @@
   }
 
   &__item {
-    // Positions the touch ink laid over it.
-    position: relative;
-
     height: var(--tls-fab-menu-item-height);
     padding-inline: var(--spacing-4);
 
@@ -80,6 +77,9 @@
 
     cursor: pointer;
 
+    // Each entry is a pill button of its own, so it presses as a button does.
+    @include mixins.press;
+
     @include mixins.hover-capable {
       &:hover:not(:disabled) {
         background-color: var(--color-surface-container-high);
@@ -89,8 +89,6 @@
     &:focus-visible {
       @include mixins.focus-ring;
     }
-
-    @include mixins.ripple;
 
     &:disabled {
       color: var(--color-outline);

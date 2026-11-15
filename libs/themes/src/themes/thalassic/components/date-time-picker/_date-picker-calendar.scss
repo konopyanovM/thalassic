@@ -36,9 +36,6 @@
   }
 
   &__day {
-    // The ink is laid over the control, positioned against it.
-    position: relative;
-
     width: var(--spacing-9);
     height: var(--spacing-9);
 
@@ -60,6 +57,12 @@
       &:hover {
         background-color: var(--control-wash);
       }
+    }
+
+    // A held press, on every device: a finger has no hover to answer with. The
+    // selected day holds its fill, since pressing it chooses nothing new.
+    &:active:not(:disabled):not(&--selected) {
+      background-color: var(--control-wash-strong);
     }
 
     &:focus-visible {
@@ -99,7 +102,5 @@
 
       cursor: not-allowed;
     }
-
-    @include mixins.ripple;
   }
 }

@@ -46,6 +46,15 @@
           border-bottom-color: var(--tls-tab-header-border-color);
         }
       }
+
+      // A held press, on every device: a tab under a finger has no hover to
+      // answer with. One step past the hover fill, mixed from the tab's own
+      // text colour so it deepens on any surface. The selected tab holds its
+      // fill: pressing it goes nowhere.
+      &:active:not(.tls-tab-header__item--active, .tls-tab-header__item--disabled) {
+        background-color: color-mix(in srgb, currentColor 6%, var(--color-surface-container));
+        border-bottom-color: var(--tls-tab-header-border-color);
+      }
     }
   }
 
@@ -73,6 +82,20 @@
         &:hover {
           color: var(--tls-tab-header-active-label-color);
         }
+      }
+
+      // A held press, on every device: a tab under a finger has no hover to
+      // answer with, so the press takes the hover's label colour and tints the
+      // track beneath it. The selected tab holds its fill: pressing it goes
+      // nowhere.
+      &:active:not(.tls-tab-header__item--active, .tls-tab-header__item--disabled) {
+        background-color: color-mix(
+          in srgb,
+          currentColor 6%,
+          var(--tls-tab-header-background-color)
+        );
+
+        color: var(--tls-tab-header-active-label-color);
       }
 
       &:first-child {
@@ -131,6 +154,18 @@
         }
       }
 
+      // A held press, on every device: a segment under a finger has no hover to
+      // answer with. One step past the hover fill, mixed from the segment's own
+      // text colour so it deepens on any track. The selected segment holds its
+      // pill: pressing it goes nowhere.
+      &:active:not(.tls-tab-header__item--active, .tls-tab-header__item--disabled) {
+        background-color: color-mix(
+          in srgb,
+          currentColor 6%,
+          var(--tls-tab-header-hover-background-color)
+        );
+      }
+
       &.tls-tab-header__item--active {
         background-color: var(--tls-tab-header-pill-background-color);
         box-shadow: var(--segmented-pill-shadow);
@@ -164,8 +199,8 @@
 
   // Grouped — an inset-grouped list (Apple HIG): one rounded surface whose
   // items are full-bleed rows meeting edge to edge, so a row's fill, hover and
-  // ink reach the surface's edges. The outer rows take the surface's corners
-  // (see the orientation partial), which the ink and focus ring inherit, and a
+  // press reach the surface's edges. The outer rows take the surface's corners
+  // (see the orientation partial), which the focus ring inherits, and a
   // divided strip draws its separators inside the rows (see the divider
   // partial) rather than in a gap between them.
   &.tls-tab-header--grouped {
@@ -205,10 +240,9 @@
       }
 
       // A held press, on every device: a row under a finger has no hover to
-      // answer with, and where the ink is not played — reduced motion — this
-      // fill is the only sign the press landed. One step past the hover fill,
-      // mixed from the row's own text colour so it deepens on any surface. The
-      // selected row holds its fill: pressing it goes nowhere.
+      // answer with. One step past the hover fill, mixed from the row's own
+      // text colour so it deepens on any surface. The selected row holds its
+      // fill: pressing it goes nowhere.
       &:active:not(.tls-tab-header__item--active, .tls-tab-header__item--disabled) {
         background-color: color-mix(
           in srgb,

@@ -84,6 +84,8 @@
 
     cursor: pointer;
 
+    @include mixins.press;
+
     @include mixins.touch-target(var(--tls-pagination-item-size));
 
     @include mixins.hover-capable {
@@ -96,7 +98,5 @@
       color: var(--tls-pagination-active-color);
       background-color: var(--tls-pagination-active-background);
     }
-
-    @include mixins.ripple;
   }
 }

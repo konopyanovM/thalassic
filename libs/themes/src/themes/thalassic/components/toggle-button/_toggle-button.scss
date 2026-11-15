@@ -37,11 +37,6 @@
       color var(--motion-fast) var(--motion-ease-in-out),
     )
   );
-  // The fill reaches the outer edge of the border while a layer laid out in the
-  // control stops inside it, so ink kept to that layer would leave the border's
-  // width of bare fill around it. Bled by that width, the layer is the border
-  // box itself — which is the box the inherited corners belong to.
-  @include mixins.ripple($bleed: var(--tls-toggle-button-border-width));
 
   @include mixins.touch-target(var(--tls-toggle-button-height));
 
@@ -80,7 +75,6 @@
   // Neither state acts on a press, so neither depresses under one.
   &--disabled {
     --tls-press-scale: 1;
-    --tls-ripple-opacity: 0;
 
     opacity: 0.5;
 
@@ -89,7 +83,6 @@
 
   &--readonly {
     --tls-press-scale: 1;
-    --tls-ripple-opacity: 0;
 
     cursor: default;
   }

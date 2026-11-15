@@ -34,7 +34,6 @@
       } @else {
         <button
           class="tls-pagination__item-button"
-          tlsRipple
           [class.tls-pagination__item-button--active]="value() === item"
           [attr.aria-label]="labels.page(item)"
           [attr.aria-current]="value() === item ? 'page' : null"

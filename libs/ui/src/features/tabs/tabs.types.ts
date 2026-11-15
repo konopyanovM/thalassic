@@ -4,7 +4,7 @@ import { orientation } from '../../types';
  * Visual treatment of the tab strip. `flat` and `outlined` mark the active tab
  * with an edge line; `segmented` sets inset pills in a padded track; `grouped`
  * is an inset-grouped list — one rounded surface of full-bleed rows whose fill,
- * hover and ink reach the surface's edges, the outer rows taking its corners.
+ * hover and press reach the surface's edges, the outer rows taking its corners.
  */
 export type tabsVariant = 'flat' | 'outlined' | 'segmented' | 'grouped';
 

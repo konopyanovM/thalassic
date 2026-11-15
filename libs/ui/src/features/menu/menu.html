@@ -56,7 +56,6 @@
         [value]="actionItem"
         [disabled]="actionItem.disabled ?? false"
         class="tls-menu__item"
-        tlsRipple
         [routerLink]="actionItem.link"
         [class.tls-menu__item--disabled]="actionItem.disabled ?? false"
         [role]="actionItem.role ?? 'menuitem'"
@@ -75,7 +74,6 @@
         [value]="actionItem"
         [disabled]="actionItem.disabled ?? false"
         class="tls-menu__item"
-        tlsRipple
         [attr.disabled]="actionItem.disabled ? '' : null"
         [role]="actionItem.role ?? 'menuitem'"
         [attr.aria-checked]="isCheckable(actionItem) ? (actionItem.checked ?? false) : null"

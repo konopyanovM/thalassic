@@ -33,6 +33,13 @@ import {
  * Spreads ink from the point of contact when the host is touched, and stands its
  * press down for that one interaction so a single tap produces a single effect.
  *
+ * Ink belongs on a control whose press leaves nothing else on screen to show for
+ * it — an action, a row that navigates. A control whose press selects — a tab, a
+ * segment, a toggle, a chip, an option, a menu item, a date — answers with the
+ * selection itself, so ink there would play a second effect over the first and
+ * trail it, since a touch inks only after a moment; such a control takes a
+ * pressed state of its own instead.
+ *
  * A touch and a pen ink by default, a mouse does not. Ink answers the fingertip
  * covering the control it is spreading from — a cursor occludes nothing, and a
  * mouse press is over in a fraction of the ink's duration, leaving most of it

@@ -8,9 +8,6 @@
 }
 
 @mixin cell {
-  // The ink is laid over the control, positioned against it.
-  position: relative;
-
   display: flex;
   justify-content: center;
   align-items: center;
@@ -27,6 +24,12 @@
     &:hover {
       background-color: var(--control-wash);
     }
+  }
+
+  // A held press, on every device: a finger has no hover to answer with. The
+  // selected cell holds its fill, since pressing it chooses nothing new.
+  &:active:not(:disabled):not(&--selected) {
+    background-color: var(--control-wash-strong);
   }
 
   &:focus-visible {
@@ -49,8 +52,6 @@
       }
     }
   }
-
-  @include mixins.ripple;
 }
 
 @mixin header-button {

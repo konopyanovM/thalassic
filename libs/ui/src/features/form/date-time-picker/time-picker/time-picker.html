@@ -21,7 +21,7 @@
 </div>
 
 @if (hour12) {
-  <button type="button" class="tls-time-picker__day-period" tlsRipple (click)="toggleDayPeriod()">
+  <button type="button" class="tls-time-picker__day-period" (click)="toggleDayPeriod()">
     {{ dayPeriodLabel() }}
   </button>
 }

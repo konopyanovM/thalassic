@@ -10,14 +10,12 @@ import {
   signal,
   TemplateRef,
 } from '@angular/core';
-import { RippleDirective } from '../ripple';
 import { CHIP_CONFIG } from './chip.token';
 import { ChipContext, chipColor, chipSize, chipTemplateContext, chipVariant } from './chip.types';
 
 @Component({
   selector: 'tls-chip',
   imports: [NgTemplateOutlet],
-  hostDirectives: [RippleDirective],
   templateUrl: './chip.html',
   host: {
     class: 'tls-chip',

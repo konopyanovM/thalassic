@@ -88,9 +88,9 @@
 }
 
 // Separators of a grouped strip. Its rows meet edge to edge, and each row's
-// pseudo-elements carry its ink and its touch target, so a separator is a
-// one-pixel background line painted along the row's own edge — beneath the
-// ink, over the row's fill. Each row has two such layers, one per edge, each
+// `::after` carries its touch target, so a separator is a one-pixel background
+// line painted along the row's own edge, over the row's fill. Each row has two
+// such layers, one per edge, each
 // switched on by a 0/1 factor on its length; the same boundary rule as above
 // decides which: a boundary is normally drawn along the leading edge of the
 // row after it, and along the trailing edge of the row before it when the row

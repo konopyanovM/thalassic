@@ -20,7 +20,6 @@ import {
   selectionGroupTemplateContext,
 } from '../../../abstract/form';
 import { color, controlSize, orientation } from '../../../types';
-import { RippleDirective } from '../../ripple';
 import { slidingIndicator } from '../../sliding-indicator';
 import { TOGGLE_GROUP_CONFIG } from './toggle-group.token';
 import { toggleGroupVariant } from './toggle-group.types';
@@ -28,7 +27,7 @@ import { toggleGroupVariant } from './toggle-group.types';
 @Component({
   selector: 'tls-toggle-group',
   templateUrl: './toggle-group.html',
-  imports: [NgTemplateOutlet, RippleDirective],
+  imports: [NgTemplateOutlet],
   providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => ToggleGroup) }],
   host: {
     role: 'group',

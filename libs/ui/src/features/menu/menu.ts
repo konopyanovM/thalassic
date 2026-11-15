@@ -41,7 +41,6 @@ import { Kbd } from '../kbd';
 import { MenuItemComponent } from './menu-item';
 import { MENU_CONFIG } from './menu.token';
 import { MenuActionItem, MenuItemDefinition, MenuRenderBlock, MenuRenderGroup } from './menu.types';
-import { RippleDirective } from '../ripple';
 
 @Component({
   selector: 'tls-menu',
@@ -53,7 +52,6 @@ import { RippleDirective } from '../ripple';
     AriaMenu,
     AriaMenuItem,
     PanDirective,
-    RippleDirective,
   ],
   providers: [
     // The sheet's dismissal drag runs down the vertical axis only, from the

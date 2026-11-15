@@ -26,6 +26,7 @@
   --tls-menu-item-color: var(--color-on-surface);
   --tls-menu-item-background: transparent;
   --tls-menu-item-background-hover: var(--control-wash);
+  --tls-menu-item-background-pressed: var(--control-wash-strong);
   --tls-menu-item-padding-block: var(--spacing-2);
   --tls-menu-item-padding-inline: var(--spacing-4);
   --tls-menu-item-icon-size: 14px;
@@ -60,9 +61,6 @@
   @include mixins.panel-open;
 
   &__item {
-    // The ink is laid over the control, positioned against it.
-    position: relative;
-
     width: 100%;
     padding-block: var(--tls-menu-item-padding-block);
     padding-inline: var(--tls-menu-item-padding-inline);
@@ -97,7 +95,11 @@
       background-color: var(--tls-menu-item-background-hover);
     }
 
-    @include mixins.ripple;
+    // A held press, on every device: a finger has no hover to answer with, and
+    // the menu closing on release is the rest of the acknowledgement.
+    &:active:not(:disabled):not(&--disabled) {
+      background-color: var(--tls-menu-item-background-pressed);
+    }
 
     &:disabled,
     &--disabled {

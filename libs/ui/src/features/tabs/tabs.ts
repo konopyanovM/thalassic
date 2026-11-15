@@ -32,13 +32,12 @@ import {
   tabsVariant,
   tabValue,
 } from './tabs.types';
-import { RippleDirective } from '../ripple';
 import { slidingIndicator } from '../sliding-indicator';
 import { SLIDING_TABS_VARIANTS } from './tabs.constants';
 
 @Component({
   selector: 'tls-tabs',
-  imports: [TabList, AriaTab, TabPanel, TabContent, NgTemplateOutlet, RippleDirective],
+  imports: [TabList, AriaTab, TabPanel, TabContent, NgTemplateOutlet],
   templateUrl: './tabs.html',
   hostDirectives: [AriaTabs],
   host: {

@@ -19,12 +19,11 @@ import { Icon } from '../../icon';
 import { Loader } from '../../loader';
 import { VirtualScroll } from '../../virtual-scroll';
 import { SELECT_CONFIG } from './select.token';
-import { RippleDirective } from '../../ripple';
 
 @Component({
   selector: 'tls-select',
   templateUrl: './select.html',
-  imports: [Loader, Icon, NgTemplateOutlet, VirtualScroll, RippleDirective],
+  imports: [Loader, Icon, NgTemplateOutlet, VirtualScroll],
   host: {
     class: 'tls-select tls-form-control',
     '[class]': 'hostClasses()',

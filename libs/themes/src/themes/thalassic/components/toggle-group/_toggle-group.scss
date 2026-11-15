@@ -60,7 +60,7 @@
     user-select: none;
 
     // The selected fill and the hover and press state layers are one background
-    // tinted to different strengths, leaving the pseudo-element to the ink.
+    // tinted to different strengths.
     transition:
       color var(--motion-fast) var(--motion-ease-in-out),
       background-color var(--motion-fast) var(--motion-ease-in-out);
@@ -82,8 +82,6 @@
     &:not(.tls-toggle-group__option--disabled):not(:disabled):active {
       background-color: color-mix(in srgb, var(--tls-toggle-group-color) 15%, transparent);
     }
-
-    @include mixins.ripple;
 
     &--selected {
       background-color: var(--tls-toggle-group-color);

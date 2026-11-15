@@ -50,6 +50,12 @@
 
     cursor: pointer;
 
+    @include mixins.press(
+      $transitions: (
+        background-color var(--motion-fast) var(--motion-ease-in-out),
+      )
+    );
+
     @include mixins.touch-target(var(--spacing-7));
 
     @include mixins.hover-capable {
@@ -61,8 +67,6 @@
     &:focus-visible {
       @include mixins.focus-ring;
     }
-
-    @include mixins.ripple;
   }
 
   &__arrow {

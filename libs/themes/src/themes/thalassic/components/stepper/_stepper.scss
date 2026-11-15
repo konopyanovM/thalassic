@@ -84,9 +84,13 @@
 
         cursor: pointer;
 
-        @include mixins.motion {
-          transition: color var(--motion-fast);
-        }
+        // A step has no surface of its own to tint, so the press depresses its
+        // index and label together.
+        @include mixins.press(
+          $transitions: (
+            color var(--motion-fast),
+          )
+        );
 
         @include mixins.touch-target(var(--tls-stepper-index-size));
 
@@ -148,10 +152,6 @@
         &__state {
           @include core.visually-hidden;
         }
-
-        // The button hugs its index and text with no padding — the index sits exactly where the
-        // connectors meet it — so the ink bleeds past the box rather than ending at the letters.
-        @include mixins.ripple($bleed: var(--spacing-2), $radius: var(--radius-md));
       }
 
       .tls-stepper-header__divider {

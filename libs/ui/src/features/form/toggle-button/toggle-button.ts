@@ -15,7 +15,6 @@ import { CheckboxFormControl, FORM_CONTROL } from '../../../abstract/form';
 import { controlSize } from '../../../types';
 import { TOGGLE_BUTTON_CONFIG } from './toggle-button.token';
 import { toggleButtonColor, toggleButtonVariant } from './toggle-button.types';
-import { RippleDirective } from '../../ripple';
 
 /**
  * A standalone two-state button following the WAI-ARIA toggle-button pattern
@@ -28,7 +27,6 @@ import { RippleDirective } from '../../ripple';
  */
 @Component({
   selector: 'tls-toggle-button',
-  hostDirectives: [RippleDirective],
   templateUrl: './toggle-button.html',
   host: {
     role: 'button',

@@ -52,8 +52,8 @@
     > .tls-tab-header__item-control {
       width: 100%;
 
-      // The slot's own corners — a segmented pill's, say — so the ink and focus
-      // ring drawn on the control follow the shape the slot is painted in.
+      // The slot's own corners — a segmented pill's, say — so the focus ring
+      // drawn on the control follows the shape the slot is painted in.
       border-radius: inherit;
     }
 
@@ -72,7 +72,8 @@
     }
 
     &-control {
-      // The ink is laid over the control, positioned against it.
+      // Positioned, so the label paints over a sliding indicator drawn beneath
+      // the items.
       position: relative;
 
       padding: var(--spacing-3) var(--spacing-6);
@@ -102,20 +103,6 @@
       // is consumer-provided, so no class is available to hook.
       svg {
         pointer-events: none;
-      }
-
-      // A control inside its tab slot inks freely. A nav anchor is the slot
-      // itself, and a divided strip draws its rule on the slot's `::before` —
-      // the layer the ink would take — so an anchor inks only in a strip
-      // without rules, or in a grouped one, whose rules are painted as the
-      // row's background instead.
-      &:not(.tls-tab-header__item) {
-        @include mixins.ripple;
-      }
-
-      .tls-tab-header:is(:not(.tls-tab-header--divided), .tls-tab-header--grouped)
-        &.tls-tab-header__item {
-        @include mixins.ripple;
       }
 
       // Focus is distinct from selection here: the strip is a roving-tabindex
