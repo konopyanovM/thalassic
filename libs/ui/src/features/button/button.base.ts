@@ -71,8 +71,9 @@ export abstract class ButtonBase {
   public readonly size: InputSignal<controlSize> = input<controlSize>(this._config.size);
   /**
    * Rounds the button's ends fully: a pill for a labelled button, a circle for an icon-only
-   * one. Left unset, an icon-only button takes the configured `iconRounded` and any other
-   * keeps its corners; an explicit `[rounded]="false"` keeps them on an icon-only button too.
+   * one. Left unset, the button takes the configured `rounded`, and an icon-only one the
+   * configured `iconRounded` as well; an explicit `[rounded]="false"` keeps the corners
+   * whatever the configuration says.
    */
   public readonly rounded: InputSignalWithTransform<boolean | undefined, unknown> = input<
     boolean | undefined,
@@ -105,7 +106,7 @@ export abstract class ButtonBase {
 
   /** The shape in force: the input where written, otherwise the configured default. */
   protected readonly isRounded = computed(
-    () => this.rounded() ?? (this.icon() && this._config.iconRounded),
+    () => this.rounded() ?? (this._config.rounded || (this.icon() && this._config.iconRounded)),
   );
 
   protected classes = computed(() => {

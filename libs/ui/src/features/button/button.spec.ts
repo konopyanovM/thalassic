@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Button } from './button';
-import { DEFAULT_BUTTON_CONFIG } from './button.config';
+import { ButtonConfig, DEFAULT_BUTTON_CONFIG } from './button.config';
 import { BUTTON_CONFIG } from './button.token';
 
 @Component({
@@ -124,10 +124,10 @@ describe('Button', () => {
 class ShapeHostComponent {}
 
 describe('Button shape', () => {
-  async function render(iconRounded: boolean): Promise<HTMLElement[]> {
+  async function render(shape: Partial<ButtonConfig>): Promise<HTMLElement[]> {
     await TestBed.configureTestingModule({
       imports: [ShapeHostComponent],
-      providers: [{ provide: BUTTON_CONFIG, useValue: { ...DEFAULT_BUTTON_CONFIG, iconRounded } }],
+      providers: [{ provide: BUTTON_CONFIG, useValue: { ...DEFAULT_BUTTON_CONFIG, ...shape } }],
     }).compileComponents();
 
     const fixture = TestBed.createComponent(ShapeHostComponent);
@@ -142,7 +142,7 @@ describe('Button shape', () => {
   }
 
   it('rounds an unset icon-only button when the config asks, and nothing else', async () => {
-    const [more, close, add, save] = await render(true);
+    const [more, close, add, save] = await render({ iconRounded: true });
 
     expect(isRounded(more)).toBe(true);
     expect(isRounded(close)).toBe(false);
@@ -150,8 +150,17 @@ describe('Button shape', () => {
     expect(isRounded(save)).toBe(false);
   });
 
+  it('rounds every unset button when the config asks, labelled ones included', async () => {
+    const [more, close, add, save] = await render({ rounded: true });
+
+    expect(isRounded(more)).toBe(true);
+    expect(isRounded(close)).toBe(false);
+    expect(isRounded(add)).toBe(true);
+    expect(isRounded(save)).toBe(true);
+  });
+
   it('keeps corners on an unset button when the config does not ask', async () => {
-    const [more, close, add, save] = await render(false);
+    const [more, close, add, save] = await render({});
 
     expect(isRounded(more)).toBe(false);
     expect(isRounded(close)).toBe(false);
