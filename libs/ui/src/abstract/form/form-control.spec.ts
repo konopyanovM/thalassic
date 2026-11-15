@@ -8,13 +8,16 @@ import { FORM_CONTROL_CONFIG } from './form-control.config.token';
   imports: [FormRoot, FormField, Input],
   template: `
     <form [formRoot]="account">
-      <tls-input [formField]="account.username" />
+      @if (shown()) {
+        <tls-input [formField]="account.username" />
+      }
       <button type="submit">Save</button>
     </form>
   `,
 })
 class TouchedDirtyHostComponent {
   readonly control = viewChild.required(Input);
+  readonly shown = signal(true);
   readonly model = signal({ username: '' });
   // A submission action, as every real form has: without one, submitting marks nothing touched.
   readonly account = form(
@@ -67,6 +70,16 @@ describe('FormControl', () => {
       await passThrough();
 
       expect(host.account.username().touched()).toBe(true);
+    });
+
+    it('keeps a submission against a control rebuilt for an already touched field', async () => {
+      await submit();
+      host.shown.set(false);
+      await fixture.whenStable();
+      host.shown.set(true);
+      await fixture.whenStable();
+
+      expect(showsError()).toBe(true);
     });
 
     it('forgets the submission when a field the user left is reset', async () => {

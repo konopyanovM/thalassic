@@ -153,18 +153,28 @@
     display: flex;
   }
 
-  // A label sharing its row with an action: the row takes the label's place, and
-  // the action sits at the far end, on the label's baseline.
-  .form-item-label-row {
-    margin-bottom: 0.25rem;
-
-    display: flex;
+  // A label sharing its row with an action. The action follows the control in the
+  // document, so focus reaches the field first; the grid lifts it into the
+  // label's row, at the far end and on the label's baseline.
+  .form-item-main--label-action {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'label action'
+      'control control';
     align-items: baseline;
-    justify-content: space-between;
-    gap: var(--spacing-2);
+    column-gap: var(--spacing-2);
 
     .form-item-label {
-      margin-bottom: 0;
+      grid-area: label;
+    }
+
+    .form-item-control {
+      grid-area: control;
+    }
+
+    .form-item-label-action {
+      grid-area: action;
     }
   }
 

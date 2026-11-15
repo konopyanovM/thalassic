@@ -303,7 +303,7 @@ describe('FormItem', () => {
   });
 
   describe('label action', () => {
-    it('should draw the action in the label row, outside the label element', async () => {
+    it('should draw the action beside the label, outside it and after the control in focus order', async () => {
       const actionFixture = TestBed.createComponent(LabelActionHostComponent);
       actionFixture.detectChanges();
       await actionFixture.whenStable();
@@ -311,16 +311,19 @@ describe('FormItem', () => {
       const [withAction, withoutAction] = Array.from<HTMLElement>(
         actionFixture.nativeElement.querySelectorAll('tls-form-item'),
       );
-      const row = withAction.querySelector('.form-item-label-row');
+      const main = withAction.querySelector('.form-item-main');
       const action = withAction.querySelector('[tlsFormItemLabelAction]');
+      const control = withAction.querySelector('.form-item-control');
 
-      expect(row?.querySelector('.form-item-label')).not.toBeNull();
-      expect(action?.parentElement).toBe(row);
+      expect(main?.classList.contains('form-item-main--label-action')).toBe(true);
+      expect(action?.closest('.form-item-label-action')).not.toBeNull();
       // Kept out of the label, so it is no part of the control's accessible name.
       expect(action?.closest('label')).toBeNull();
-      expect(withAction.querySelector('.form-item-control [tlsFormItemLabelAction]')).toBeNull();
-      expect(withoutAction.querySelector('.form-item-label-row')).toBeNull();
-      expect(withoutAction.querySelector('.form-item-main > .form-item-label')).not.toBeNull();
+      expect(control?.contains(action ?? null)).toBe(false);
+      // Reached by focus only once the field has been.
+      expect(Boolean(control && action && control.compareDocumentPosition(action) & Node.DOCUMENT_POSITION_FOLLOWING)).toBe(true);
+      expect(withoutAction.querySelector('.form-item-main--label-action')).toBeNull();
+      expect(withoutAction.querySelector('.form-item-label-action')).toBeNull();
     });
   });
 

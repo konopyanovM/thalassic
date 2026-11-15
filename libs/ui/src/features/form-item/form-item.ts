@@ -149,6 +149,11 @@ export class FormItem {
   /** Whether a label is rendered, from either the `label` input or a custom label template. */
   protected hasLabel = computed(() => Boolean(this.label()) || Boolean(this.labelTemplate()));
 
+  /** Whether a label above the control shares its row with an action. */
+  protected hasLabelActionRow = computed(
+    () => Boolean(this.labelAction()) && this.labelPosition() === 'top',
+  );
+
   protected labelContext = computed<FormItemLabelContext>(() => ({
     $implicit: this.label(),
     required: this.showRequired(),

@@ -1,17 +1,28 @@
-<div class="form-item-main">
+<div class="form-item-main" [class.form-item-main--label-action]="hasLabelActionRow()">
   @if (hasLabel() || reserveLabelSpace()) {
-    @if (labelAction()) {
-      <div class="form-item-label-row">
-        <ng-container [ngTemplateOutlet]="labelElement" />
-        <ng-content select="[tlsFormItemLabelAction]"></ng-content>
-      </div>
-    } @else {
-      <ng-container [ngTemplateOutlet]="labelElement" />
-    }
+    <label class="form-item-label" [id]="labelId" [attr.for]="labelFor()">
+      @if (labelTemplate(); as template) {
+        <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="labelContext()" />
+      } @else {
+        <span class="form-item-label__text">{{ label() }}</span>
+        @if (showRequired()) {
+          <span class="form-item-label__required">*</span>
+        } @else if (showOptional()) {
+          <span class="form-item-label__optional">{{ optionalText() }}</span>
+        }
+      }
+    </label>
   }
   <div class="form-item-control">
     <ng-content></ng-content>
   </div>
+  <!-- After the control in the document, so focus reaches the field before the action beside
+       its label; the layout lifts it into the label's row. -->
+  @if (labelAction()) {
+    <div class="form-item-label-action">
+      <ng-content select="[tlsFormItemLabelAction]"></ng-content>
+    </div>
+  }
 </div>
 @if (reservesErrorLine() || showError() || showHint() || hasCounter()) {
   <small class="form-item-footer">
@@ -32,18 +43,3 @@
     }
   </small>
 }
-
-<ng-template #labelElement>
-  <label class="form-item-label" [id]="labelId" [attr.for]="labelFor()">
-    @if (labelTemplate(); as template) {
-      <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="labelContext()" />
-    } @else {
-      <span class="form-item-label__text">{{ label() }}</span>
-      @if (showRequired()) {
-        <span class="form-item-label__required">*</span>
-      } @else if (showOptional()) {
-        <span class="form-item-label__optional">{{ optionalText() }}</span>
-      }
-    }
-  </label>
-</ng-template>

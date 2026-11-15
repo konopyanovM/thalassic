@@ -5,7 +5,9 @@ import { DestroyRef, DOCUMENT, inject, Injectable, signal } from '@angular/core'
  * when its form is submitted but keep no record of the submission itself, and a control needs
  * one to tell a field the user has left untouched from one a submission has called to account.
  * One listener on the document serves every form, so a control needs nothing from its template
- * to be told, and a form that leaves the document leaves no count behind.
+ * to be told, and a form that leaves the document leaves no count behind. A form is found from a
+ * control's place in the document, so a field rendered outside its form's element — in an overlay
+ * the form opens — sees no submission, and is judged by the user's changes to it alone.
  */
 @Injectable({ providedIn: 'root' })
 export class FormSubmissions {

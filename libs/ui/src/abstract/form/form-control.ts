@@ -208,13 +208,15 @@ export abstract class FormControl<TValue = unknown> implements FormUiControl<TVa
   /**
    * The form's submission count when the field was last untouched — at creation, or at a reset
    * that cleared it. A submission counts against the field only once it is past this mark, so a
-   * field reset after a successful save stays silent until its form is submitted again.
+   * field reset after a successful save stays silent until its form is submitted again. A control
+   * created for a field that is already touched — rebuilt by a tab or a branch after its form was
+   * submitted — cannot know which touch came first, so every submission of its form counts.
    */
   private readonly _submitCountAtReset = linkedSignal<boolean, number>({
     source: this.touched,
     computation: (touched, previous) => {
-      if (touched && previous) return previous.value;
-      return untracked(this._formSubmitCount);
+      if (!touched) return untracked(this._formSubmitCount);
+      return previous ? previous.value : 0;
     },
   });
 
