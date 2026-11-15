@@ -13,7 +13,7 @@ import { chipColor, chipVariant } from './chip.types';
     '[attr.aria-checked]': 'checked()',
     '[attr.aria-disabled]': 'disabled()',
     '(click)': 'toggle()',
-    '(blur)': 'touched.set(true)',
+    '(blur)': 'markTouched()',
     '(keydown.space)': 'onKeyboardToggle($event)',
     '(keydown.enter)': 'onKeyboardToggle($event)',
   },

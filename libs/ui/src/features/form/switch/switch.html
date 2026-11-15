@@ -13,7 +13,7 @@
   [disabled]="disabled()"
   [readonly]="readonly()"
   [checked]="checked()"
-  (blur)="touched.set(true)"
+  (blur)="markTouched()"
   (keydown.enter)="onKeyboardToggle($event)"
 />
 <div class="tls-switch-handle"></div>

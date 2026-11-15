@@ -15,7 +15,7 @@
     (keydown)="onKeydown($event, cell)"
     (paste)="onPaste($event, cell)"
     (focus)="onFocus($event)"
-    (blur)="touched.set(true)"
+    (blur)="markTouched()"
   />
 }
 

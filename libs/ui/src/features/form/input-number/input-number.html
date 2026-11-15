@@ -23,7 +23,7 @@
   (input)="onInput($event)"
   (change)="onChange()"
   (keydown)="onKeydown($event)"
-  (blur)="touched.set(true)"
+  (blur)="markTouched()"
 />
 @if (pending()) {
   <tls-loader class="tls-form-control__spinner" size="xs" aria-hidden="true" />

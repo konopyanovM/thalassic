@@ -295,7 +295,7 @@ export class RichTextEditor extends ValueFormControl<string> implements OnDestro
       attributes: () => this._contentAttributes(),
       handleDOMEvents: {
         blur: () => {
-          this.touched.set(true);
+          this.markTouched();
           return false;
         },
       },

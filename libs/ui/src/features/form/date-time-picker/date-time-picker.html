@@ -86,7 +86,7 @@
     [attr.aria-expanded]="popoverRef.isOpen()"
     [disabled]="disabled()"
     (click)="onTriggerClick()"
-    (blur)="touched.set(true)"
+    (blur)="markTouched()"
   >
     <span class="tls-date-time-picker__value" [class.tls-form-control__placeholder]="!value()">
       {{ triggerLabel() }}

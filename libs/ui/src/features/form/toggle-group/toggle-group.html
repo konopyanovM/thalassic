@@ -9,7 +9,7 @@
     [attr.aria-pressed]="isSelected(option.value)"
     [disabled]="disabled() || option.disabled"
     (click)="select(option)"
-    (blur)="touched.set(true)"
+    (blur)="markTouched()"
   >
     @if (optionTemplate(); as template) {
       <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="optionContext(option, index)" />

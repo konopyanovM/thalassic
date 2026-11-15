@@ -24,7 +24,7 @@
   [value]="query()"
   (input)="onInput($event)"
   (click)="open()"
-  (blur)="touched.set(true)"
+  (blur)="markTouched()"
   (keydown)="onKeydown($event)"
 />
 @if (clearable() && hasValue() && !notInteractive()) {

@@ -7,22 +7,28 @@ import {
   input,
   InputSignal,
   InputSignalWithTransform,
+  linkedSignal,
   model,
   ModelSignal,
+  output,
+  OutputEmitterRef,
   signal,
   Signal,
+  untracked,
   WritableSignal
 } from '@angular/core';
 import { FormUiControl, ValidationError, WithOptionalFieldTree } from '@angular/forms/signals';
 import { FOCUSABLE_CONTROL_SELECTOR } from './form-control.constants';
 import { FORM_CONTROL_CONFIG } from './form-control.config.token';
 import { FORM_CONTROL_FRAME } from './form-control-frame.token';
+import { FormSubmissions } from './form-submissions';
 import { overlayCloseCause } from '../overlay';
 
 @Directive()
 export abstract class FormControl<TValue = unknown> implements FormUiControl<TValue> {
   // Injections
   private readonly _formControlConfig = inject(FORM_CONTROL_CONFIG);
+  private readonly _formSubmissions = inject(FormSubmissions);
 
   /**
    * The control's host element. Public because a container that arranges controls — a
@@ -167,16 +173,49 @@ export abstract class FormControl<TValue = unknown> implements FormUiControl<TVa
     { transform: booleanAttribute },
   );
 
+  // Outputs
+  /**
+   * Emitted as the user leaves the control. The signal forms `Field` directive listens for it to
+   * mark the bound field touched; the control's own `touched` alone never reaches the field.
+   */
+  public readonly touch: OutputEmitterRef<void> = output<void>();
+
   // Computed
   /**
    * Whether the control's invalid state should be surfaced (red styling and form-item error message).
    * Always requires the field to be invalid and touched; the `touched-dirty` trigger additionally
-   * requires it to be dirty, keeping an untouched, empty field silent until the user has engaged.
+   * requires it to be dirty or its form to have been submitted since the field was last reset,
+   * keeping an untouched, empty field silent until the user has engaged or asked for it to be judged.
    */
   public readonly showError: Signal<boolean> = computed<boolean>(() => {
+    // Read before anything can return early: the mark is a linked signal, settled only when it
+    // is read, so it has to be read while the field is still untouched to hold the count of
+    // that moment rather than the count once a submission has touched it.
+    const submitCountAtReset = this._submitCountAtReset();
+
     if (!this.invalid() || !this.touched()) return false;
-    if (this._formControlConfig.errorTrigger === 'touched-dirty') return this.dirty();
+    if (this._formControlConfig.errorTrigger === 'touched-dirty') {
+      return this.dirty() || this._formSubmitCount() > submitCountAtReset;
+    }
     return true;
+  });
+
+  /** Submissions of the form around the control; see {@link FormSubmissions}. */
+  private readonly _formSubmitCount: Signal<number> = computed<number>(() =>
+    this._formSubmissions.countFor(this.elementRef.nativeElement),
+  );
+
+  /**
+   * The form's submission count when the field was last untouched — at creation, or at a reset
+   * that cleared it. A submission counts against the field only once it is past this mark, so a
+   * field reset after a successful save stays silent until its form is submitted again.
+   */
+  private readonly _submitCountAtReset = linkedSignal<boolean, number>({
+    source: this.touched,
+    computation: (touched, previous) => {
+      if (touched && previous) return previous.value;
+      return untracked(this._formSubmitCount);
+    },
   });
 
   protected CLASS_NAME = 'tls-form-control';
@@ -210,6 +249,16 @@ export abstract class FormControl<TValue = unknown> implements FormUiControl<TVa
   }
 
   // Protected methods
+  /**
+   * Records that the user has left the control: marks it touched and tells the bound field, so
+   * the field's touched state, its blur-timed rules, and a later reset all see the same thing
+   * the control shows.
+   */
+  protected markTouched(): void {
+    this.touched.set(true);
+    this.touch.emit();
+  }
+
   /**
    * The element focus lands on. Defaults to the first focusable element the control
    * renders, which is the right one for a control built around a single native element;

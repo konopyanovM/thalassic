@@ -42,7 +42,7 @@ import { RippleDirective } from '../../ripple';
     '[attr.aria-describedby]': 'describedBy()',
     '[attr.aria-invalid]': "invalid() ? 'true' : null",
     '(click)': 'toggle()',
-    '(blur)': 'touched.set(true)',
+    '(blur)': 'markTouched()',
     '(keydown.space)': 'onKeyboardToggle($event)',
     '(keydown.enter)': 'onKeyboardToggle($event)',
   },

@@ -13,7 +13,7 @@
   [checked]="checked()"
   [indeterminate]="indeterminate()"
   (click)="toggle($event)"
-  (blur)="touched.set(true)"
+  (blur)="markTouched()"
   (keydown.space)="onKeyboardToggle($event)"
   (keydown.enter)="onKeyboardToggle($event)"
 />

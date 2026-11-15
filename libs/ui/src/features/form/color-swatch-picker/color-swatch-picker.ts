@@ -104,7 +104,7 @@ export class ColorSwatchPicker<T = unknown, V = string> extends ValueFormControl
     if (value === undefined) return;
 
     this.value.set(value);
-    this.touched.set(true);
+    this.markTouched();
   }
 
   /** The color the option's swatch paints. */

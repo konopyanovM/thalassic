@@ -41,7 +41,7 @@
         (pointerenter)="onPointerEnter(star - 0.5)"
         (change)="onChange(star - 0.5)"
         (click)="onClick(star - 0.5)"
-        (blur)="touched.set(true)"
+        (blur)="markTouched()"
       />
       <input
         #radio
@@ -56,7 +56,7 @@
         (pointerenter)="onPointerEnter(star)"
         (change)="onChange(star)"
         (click)="onClick(star)"
-        (blur)="touched.set(true)"
+        (blur)="markTouched()"
       />
     } @else {
       <input
@@ -72,7 +72,7 @@
         (pointerenter)="onPointerEnter(star)"
         (change)="onChange(star)"
         (click)="onClick(star)"
-        (blur)="touched.set(true)"
+        (blur)="markTouched()"
       />
     }
   </span>

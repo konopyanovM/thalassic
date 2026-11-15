@@ -278,7 +278,7 @@ export class ColorPicker extends ValueFormControl<string> {
 
   protected onReadoutBlur(event: Event): void {
     this._commitReadout(event.target as HTMLInputElement);
-    this.touched.set(true);
+    this.markTouched();
   }
 
   protected cycleFormat(): void {

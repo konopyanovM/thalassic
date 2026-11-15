@@ -11,7 +11,7 @@
     [attr.aria-disabled]="isDisabled(option)"
     [tabindex]="isDisabled(option) ? -1 : 0"
     (click)="select(option)"
-    (blur)="touched.set(true)"
+    (blur)="markTouched()"
     (keydown.space)="onKeyboardSelect($event, option)"
     (keydown.enter)="onKeyboardSelect($event, option)"
   >

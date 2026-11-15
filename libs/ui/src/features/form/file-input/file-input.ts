@@ -154,7 +154,7 @@ export class FileInput extends ValueFormControl<File[]> {
     const accepted = incoming.filter(file => acceptsFile(file, this.accept()));
     if (!accepted.length) return;
 
-    this.touched.set(true);
+    this.markTouched();
     if (this.multiple()) {
       this.value.update(files => [...files, ...accepted]);
     } else {

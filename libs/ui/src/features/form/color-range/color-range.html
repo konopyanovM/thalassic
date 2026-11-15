@@ -16,5 +16,5 @@
   [disabled]="disabled()"
   [value]="value()"
   (input)="onInput($event)"
-  (blur)="touched.set(true)"
+  (blur)="markTouched()"
 />

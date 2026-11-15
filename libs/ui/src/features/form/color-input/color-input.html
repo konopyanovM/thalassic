@@ -6,7 +6,7 @@
   [attr.aria-expanded]="popoverRef.isOpen()"
   [disabled]="disabled()"
   (click)="onTriggerClick()"
-  (blur)="touched.set(true)"
+  (blur)="markTouched()"
 >
   <tls-color-swatch [value]="swatchColor()" size="xs" aria-hidden="true" />
 </button>

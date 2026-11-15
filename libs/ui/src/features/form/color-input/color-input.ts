@@ -147,7 +147,7 @@ export class ColorInput extends ValueFormControl<string> {
 
   protected onFieldBlur(event: Event): void {
     if (!this.pickerOnly()) this._commitField(event.target as HTMLInputElement);
-    this.touched.set(true);
+    this.markTouched();
   }
 
   // Private methods

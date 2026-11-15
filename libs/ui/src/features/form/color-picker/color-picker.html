@@ -35,7 +35,7 @@
       (valueChange)="onHueChange($event)"
       [disabled]="disabled()"
       [readonly]="readonly()"
-      (touchedChange)="touched.set($event)"
+      (touch)="markTouched()"
     />
     @if (alpha()) {
       <tls-color-range
@@ -47,7 +47,7 @@
         (valueChange)="onAlphaChange($event)"
         [disabled]="disabled()"
         [readonly]="readonly()"
-        (touchedChange)="touched.set($event)"
+        (touch)="markTouched()"
       />
     }
   </div>
@@ -115,7 +115,7 @@
     [disabled]="disabled()"
     [readonly]="readonly()"
     [ariaLabel]="labels.presets"
-    (touchedChange)="touched.set($event)"
+    (touch)="markTouched()"
   />
 }
 
