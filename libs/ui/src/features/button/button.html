@@ -1,6 +1,7 @@
 @if (isLink()) {
   <a
     role="link"
+    class="tls-button"
     [class]="classes()"
     tlsRipple
     [attr.href]="linkHref()"
@@ -20,6 +21,7 @@
 } @else {
   <button
     role="button"
+    class="tls-button"
     [class]="classes()"
     tlsRipple
     [type]="type()"

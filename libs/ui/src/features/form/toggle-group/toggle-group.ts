@@ -32,6 +32,7 @@ import { toggleGroupVariant } from './toggle-group.types';
   providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => ToggleGroup) }],
   host: {
     role: 'group',
+    class: 'tls-toggle-group',
     '[class]': 'classes()',
     '[attr.aria-label]': 'ariaLabel() ?? null',
     '[attr.aria-labelledby]': 'labelledBy()',

@@ -17,6 +17,7 @@ import { tooltipColor } from './tooltip.types';
   `,
   imports: [NgTemplateOutlet],
   host: {
+    class: 'tls-tooltip',
     '[class]': 'hostClasses()',
     'role': 'tooltip',
     '[id]': 'id',

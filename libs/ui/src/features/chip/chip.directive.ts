@@ -8,6 +8,7 @@ import { chipColor, chipVariant } from './chip.types';
   selector: 'tls-chip[tlsChipControl]',
   host: {
     role: 'checkbox',
+    class: 'tls-chip--control',
     '[class]': 'hostClasses()',
     '[tabindex]': 'disabled() ? -1 : 0',
     '[attr.aria-checked]': 'checked()',

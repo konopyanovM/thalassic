@@ -59,6 +59,7 @@ type imagePreviewStatus = 'loading' | 'loaded' | 'error';
     // Focusable programmatically but not by tabbing: the surface receives the
     // initial focus so its keyboard shortcuts work, while Tab still walks its controls.
     tabindex: '-1',
+    class: 'tls-image-preview',
     '[class]': 'hostClasses()',
     '(keydown)': 'onKeydown($event)',
     '(click)': 'onSurfaceClick($event)',

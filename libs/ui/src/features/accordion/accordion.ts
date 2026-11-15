@@ -43,6 +43,7 @@ import { RippleDirective } from '../ripple';
   ],
   templateUrl: './accordion.html',
   host: {
+    class: 'tls-accordion',
     '[class]': 'hostClasses()',
     // The accordion pattern gives the container no implicit role, so an
     // accessible name would go unexposed. `group` is applied only alongside a

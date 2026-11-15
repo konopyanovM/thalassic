@@ -24,6 +24,7 @@ import { stepperColor, stepperValue } from '../stepper.types';
   // "must have an ngTabContent" diagnostic, which is expected and harmless here.
   hostDirectives: [{ directive: TabPanel, inputs: ['value'] }],
   host: {
+    class: 'tls-step',
     '[class]': 'hostClasses()',
   },
 })

@@ -57,6 +57,7 @@ import {
   templateUrl: './color-picker.html',
   host: {
     role: 'group',
+    class: 'tls-color-picker',
     '[class]': 'hostClasses()',
     '[attr.aria-label]': 'ariaLabel() ?? null',
     '[attr.aria-labelledby]': 'labelledBy()',

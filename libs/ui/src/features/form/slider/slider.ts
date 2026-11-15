@@ -25,6 +25,7 @@ import { sliderColor } from './slider.types';
   // The block lives on the host so the value bubble, a sibling of the native
   // input, resolves the same track/thumb custom properties the input does.
   host: {
+    class: 'tls-slider',
     '[class]': 'hostClasses()',
     '[style.--tls-slider-fill]': 'fillRatio()',
   },

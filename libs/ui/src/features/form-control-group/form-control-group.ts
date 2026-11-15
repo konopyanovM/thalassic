@@ -30,6 +30,7 @@ import { ActivatableControl } from './form-control-group.types';
   // frame each of those controls aligns its panel to.
   providers: [{ provide: FORM_CONTROL_FRAME, useFactory: () => inject(ElementRef) }],
   host: {
+    class: 'tls-form-control-group',
     '[class]': 'hostClasses()',
   },
 })

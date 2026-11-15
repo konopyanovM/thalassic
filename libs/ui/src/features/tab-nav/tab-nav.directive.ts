@@ -40,6 +40,7 @@ import { TAB_NAV_CONFIG } from './tab-nav.token';
 @Directive({
   selector: 'nav[tlsTabNav]',
   host: {
+    class: 'tls-tab-nav tls-tab-header',
     '[class]': 'hostClasses()',
   },
 })

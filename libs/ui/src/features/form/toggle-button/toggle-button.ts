@@ -32,6 +32,7 @@ import { RippleDirective } from '../../ripple';
   templateUrl: './toggle-button.html',
   host: {
     role: 'button',
+    class: 'tls-toggle-button',
     '[class]': 'hostClasses()',
     '[tabindex]': 'disabled() ? -1 : tabindex()',
     '[attr.id]': 'effectiveInputId()',

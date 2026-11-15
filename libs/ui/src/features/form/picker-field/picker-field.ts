@@ -22,6 +22,7 @@ import { controlSize } from '../../../types';
   // The focusable control is the inner trigger, which carries a popup trigger's announcement.
   providers: [{ provide: POPUP_TRIGGER_FORWARDED, useValue: true }],
   host: {
+    class: 'tls-picker-field tls-form-control',
     '[class]': 'hostClasses()',
   },
 })

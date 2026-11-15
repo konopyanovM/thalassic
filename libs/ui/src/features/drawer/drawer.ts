@@ -38,6 +38,7 @@ import { DrawerOffset, drawerOpenPhase, drawerSize, DrawerSlideTiming } from './
   // template — so `DrawerService` configures it through the `PAN_CONFIG` token.
   hostDirectives: [PanDirective],
   host: {
+    class: 'tls-drawer',
     '[class]': 'hostClasses()',
     '[style.--tls-drawer-size]': 'customSize',
   },

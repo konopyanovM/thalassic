@@ -23,6 +23,7 @@ import { pinInputType } from './pin-input.types';
   templateUrl: './pin-input.html',
   host: {
     role: 'group',
+    class: 'tls-pin-input',
     '[class]': 'hostClasses()',
     '[attr.aria-label]': 'ariaLabel() ?? null',
     '[attr.aria-labelledby]': 'labelledBy()',

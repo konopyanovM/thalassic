@@ -18,6 +18,7 @@ import { dividerContentPosition, dividerOrientation, dividerVariant } from './di
   host: {
     role: 'separator',
     '[aria-orientation]': 'orientation()',
+    class: 'tls-divider',
     '[class]': 'hostClasses()',
   },
 })

@@ -32,6 +32,7 @@ import { RippleDirective } from '../ripple';
   templateUrl: './stepper.html',
   hostDirectives: [AriaTabs],
   host: {
+    class: 'tls-stepper',
     '[class]': 'hostClasses()',
   },
 })

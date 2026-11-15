@@ -23,6 +23,7 @@ import { SKELETON_CONFIG } from './skeleton.token';
   imports: [],
   template: '<ng-content />',
   host: {
+    class: 'tls-skeleton',
     '[class]': 'hostClasses()',
     '[style]': 'hostStyles()',
     '[attr.aria-hidden]': 'loading() ? true : null',

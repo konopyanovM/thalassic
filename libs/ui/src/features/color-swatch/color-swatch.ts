@@ -12,6 +12,7 @@ import { size } from '../../types';
   styleUrl: './color-swatch.scss',
   host: {
     role: 'img',
+    class: 'tls-color-swatch',
     '[class]': 'hostClasses()',
     '[style.--tls-color-swatch-color]': 'value()',
     '[attr.aria-label]': 'label()',

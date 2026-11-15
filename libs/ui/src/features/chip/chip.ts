@@ -20,6 +20,7 @@ import { ChipContext, chipColor, chipSize, chipTemplateContext, chipVariant } fr
   hostDirectives: [RippleDirective],
   templateUrl: './chip.html',
   host: {
+    class: 'tls-chip',
     '[class]': 'classes()',
   },
 })

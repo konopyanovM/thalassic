@@ -26,6 +26,7 @@ import { RippleDirective } from '../../ripple';
   templateUrl: './multi-select.html',
   imports: [Loader, Icon, NgTemplateOutlet, VirtualScroll, RippleDirective],
   host: {
+    class: 'tls-multi-select tls-form-control',
     '[class]': 'hostClasses()',
   },
   providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => MultiSelect) }],

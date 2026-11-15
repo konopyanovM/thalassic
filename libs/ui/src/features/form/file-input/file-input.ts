@@ -38,7 +38,7 @@ import {
   templateUrl: './file-input.html',
   imports: [NgTemplateOutlet, ButtonDirective, FileDropTargetDirective],
   providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => FileInput) }],
-  host: { '[class]': 'classes()' },
+  host: { class: 'tls-file-input', '[class]': 'classes()' },
 })
 export class FileInput extends ValueFormControl<File[]> {
   // Injections

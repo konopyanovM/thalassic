@@ -16,6 +16,7 @@ import { badgeColor, badgePosition, badgeVariant } from './badge.types';
   imports: [],
   templateUrl: './badge.html',
   host: {
+    class: 'tls-badge',
     '[class]': 'hostClasses()',
   },
 })

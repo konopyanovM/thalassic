@@ -40,6 +40,7 @@ import { ratingColor, RatingStarContext } from './rating.types';
   providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => Rating) }],
   host: {
     role: 'radiogroup',
+    class: 'tls-rating',
     '[class]': 'hostClasses()',
     '[attr.aria-label]': 'ariaLabel() ?? null',
     '[attr.aria-labelledby]': 'labelledBy()',

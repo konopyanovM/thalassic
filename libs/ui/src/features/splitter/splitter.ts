@@ -33,6 +33,7 @@ interface SplitterSeam {
   imports: [],
   templateUrl: './splitter.html',
   host: {
+    class: 'tls-splitter',
     '[class]': 'hostClasses()',
     role: 'group',
     '[attr.aria-label]': 'ariaLabel() ?? null',

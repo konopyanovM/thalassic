@@ -22,7 +22,7 @@ import { FormItemLabelContext, labelPosition } from './form-item.types';
   selector: 'tls-form-item',
   imports: [NgTemplateOutlet],
   templateUrl: './form-item.html',
-  host: { '[class]': 'hostClasses()' },
+  host: { class: 'tls-form-item', '[class]': 'hostClasses()' },
 })
 export class FormItem {
   // Injections

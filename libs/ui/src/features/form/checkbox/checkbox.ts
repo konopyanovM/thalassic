@@ -21,6 +21,7 @@ import { CHECKBOX_CONFIG } from './checkbox.token';
   // carrier; the host stays role-less so assistive technology sees exactly one
   // checkbox.
   host: {
+    class: 'tls-checkbox',
     '[class]': 'hostClasses()',
   },
   providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => Checkbox) }],

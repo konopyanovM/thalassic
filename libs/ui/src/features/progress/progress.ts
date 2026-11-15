@@ -25,6 +25,7 @@ import { progressActiveSegment, progressColor } from './progress.types';
   styleUrl: './progress.scss',
   host: {
     role: 'progressbar',
+    class: 'tls-progress',
     '[class]': 'hostClasses()',
     'aria-valuemin': '0',
     '[attr.aria-valuemax]': 'max()',

@@ -21,6 +21,7 @@ import { BreadcrumbItem, BreadcrumbItemContext, breadcrumbsSize } from './breadc
   templateUrl: './breadcrumbs.html',
   host: {
     role: 'navigation',
+    class: 'tls-breadcrumbs',
     '[class]': 'classes()',
     '[attr.aria-label]': 'ariaLabelledby() ? null : ariaLabel()',
     '[attr.aria-labelledby]': 'ariaLabelledby() ?? null',

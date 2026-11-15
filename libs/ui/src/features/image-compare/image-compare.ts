@@ -22,6 +22,7 @@ import { imageCompareOrientation } from './image-compare.types';
   imports: [],
   templateUrl: './image-compare.html',
   host: {
+    class: 'tls-image-compare',
     '[class]': 'hostClasses()',
     '(pointerdown)': 'onPointerDown($event)',
     '(pointermove)': 'onPointerMove($event)',

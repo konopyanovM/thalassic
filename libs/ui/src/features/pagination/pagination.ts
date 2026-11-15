@@ -12,6 +12,7 @@ import { RippleDirective } from '../ripple';
   templateUrl: './pagination.html',
   host: {
     role: 'navigation',
+    class: 'tls-pagination',
     '[class]': 'classes()',
     '[attr.aria-label]': 'ariaLabelledby() ? null : ariaLabel()',
     '[attr.aria-labelledby]': 'ariaLabelledby() ?? null',

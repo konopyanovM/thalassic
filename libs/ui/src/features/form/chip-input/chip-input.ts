@@ -22,7 +22,7 @@ import { CHIP_INPUT_CONFIG } from './chip-input.token';
   templateUrl: './chip-input.html',
   imports: [Chip],
   providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => ChipInput) }],
-  host: { '[class]': 'classes()' },
+  host: { class: 'tls-form-control', '[class]': 'classes()' },
 })
 export class ChipInput extends ValueFormControl<string[]> {
   private readonly _config = inject(CHIP_INPUT_CONFIG);

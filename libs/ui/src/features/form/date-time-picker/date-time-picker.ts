@@ -51,7 +51,7 @@ type ActiveView = 'calendar' | 'month-picker' | 'year-picker' | 'time-picker' | 
     Loader,
   ],
   templateUrl: './date-time-picker.html',
-  host: { '[class]': 'hostClasses()' },
+  host: { class: 'tls-date-time-picker', '[class]': 'hostClasses()' },
   providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => DateTimePicker) }],
 })
 export class DateTimePicker extends ValueFormControl<Date | null> {

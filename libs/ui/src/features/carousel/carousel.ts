@@ -65,6 +65,7 @@ import { CAROUSEL_CONFIG } from './carousel.token';
   host: {
     role: 'group',
     'aria-roledescription': 'carousel',
+    class: 'tls-carousel',
     '[class]': 'hostClasses()',
     '[style.--tls-carousel-selected]': 'selected()',
     '[attr.aria-label]': 'ariaLabel() ?? null',

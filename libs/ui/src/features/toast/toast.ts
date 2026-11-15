@@ -25,6 +25,7 @@ const ICON_BY_COLOR: Record<toastColor, systemIcon> = {
   imports: [Button, Icon],
   templateUrl: './toast.html',
   host: {
+    class: 'tls-toast',
     '[class]': 'hostClasses()',
     '[attr.role]': 'role()',
     '[attr.aria-label]': 'ariaLabel() ?? null',

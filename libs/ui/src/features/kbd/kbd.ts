@@ -5,6 +5,7 @@ import { KBD_CONFIG } from './kbd.token';
 @Directive({
   selector: 'kbd[tlsKbd]',
   host: {
+    class: 'tls-kbd',
     '[class]': 'hostClasses()',
   },
 })

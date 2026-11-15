@@ -21,6 +21,7 @@ import { switchColor } from './switch.types';
   // assistive technology sees exactly one switch. The host click covers the
   // touch-target overflow around the control.
   host: {
+    class: 'tls-switch',
     '[class]': 'hostClasses()',
     '(click)': 'toggle($event)',
   },

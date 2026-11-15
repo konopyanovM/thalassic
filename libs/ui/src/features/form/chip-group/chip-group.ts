@@ -24,6 +24,7 @@ import { CHIP_GROUP_CONFIG } from './chip-group.token';
   providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => ChipGroup) }],
   host: {
     role: 'group',
+    class: 'tls-chip-group',
     '[class]': 'classes()',
     '[attr.aria-label]': 'ariaLabel() ?? null',
     '[attr.aria-labelledby]': 'labelledBy()',

@@ -18,6 +18,7 @@ let nextPanelId = 0;
   imports: [],
   template: '<ng-content></ng-content>',
   host: {
+    class: 'tls-splitter-panel',
     '[class]': 'hostClasses()',
     '[id]': 'id',
     // Panels are weighted flex items: `size` acts as the grow weight while

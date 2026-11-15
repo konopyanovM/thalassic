@@ -27,6 +27,7 @@ import { colorRangeChannel, colorRangeSize } from './color-range.types';
   templateUrl: './color-range.html',
   styleUrl: './color-range.scss',
   host: {
+    class: 'tls-color-range',
     '[class]': 'hostClasses()',
     '[style.--tls-color-range-color]': 'color()',
     '[style.--tls-color-range-thumb-color]': 'thumbColor()',

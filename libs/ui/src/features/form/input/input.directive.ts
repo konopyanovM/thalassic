@@ -15,6 +15,7 @@ import { inputVariant } from './input.types';
 @Directive({
   selector: '[tlsInput]',
   host: {
+    class: 'tls-form-control',
     '[class]': 'hostClasses()',
   },
 })

@@ -22,6 +22,7 @@ import { ALERT_CONFIG } from './alert.token';
   imports: [Icon],
   templateUrl: './alert.html',
   host: {
+    class: 'tls-alert',
     '[class]': 'hostClasses()',
     '[attr.role]': 'hostRole()',
     '[attr.aria-label]': 'hideLabel() ? displayLabel() : null',

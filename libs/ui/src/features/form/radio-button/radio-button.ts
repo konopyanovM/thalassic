@@ -23,6 +23,7 @@ import { RADIO_BUTTON_CONFIG } from './radio-button.token';
   imports: [],
   templateUrl: './radio-button.html',
   host: {
+    class: 'tls-radio-button',
     '[class]': 'hostClasses()',
     '[tabindex]': '-1',
   },

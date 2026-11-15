@@ -74,6 +74,7 @@ import { resolvePeekWeeks } from './resolve-peek-weeks';
     SwipeDirective,
   ],
   host: {
+    class: 'tls-calendar',
     '[class]': 'hostClasses()',
   },
 })

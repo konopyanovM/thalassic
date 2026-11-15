@@ -23,6 +23,7 @@ import { loaderSize } from './loader.types';
   imports: [],
   template: '',
   host: {
+    class: 'tls-loader',
     '[class]': 'hostClasses()',
     '[style]': 'hostStyles()',
     role: 'status',

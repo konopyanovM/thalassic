@@ -17,6 +17,7 @@ import { INTERACTIVE_ADDON_CONTENT_SELECTOR } from './form-control-addon.constan
   imports: [],
   template: '<ng-content></ng-content>',
   host: {
+    class: 'tls-form-control-addon',
     '[class]': 'hostClasses()',
     '(click)': 'onClick($event)',
   },

@@ -5,6 +5,7 @@ import { MARK_CONFIG } from './mark.token';
 @Directive({
   selector: 'mark[tlsMark]',
   host: {
+    class: 'tls-mark',
     '[class]': 'hostClasses()',
   },
 })

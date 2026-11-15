@@ -11,7 +11,7 @@ import { dialogFooterAlign } from '../dialog.types';
   selector: 'tls-dialog-footer',
   imports: [],
   template: '<ng-content></ng-content>',
-  host: { '[class]': 'hostClasses()' },
+  host: { class: 'tls-dialog__footer', '[class]': 'hostClasses()' },
 })
 export class DialogFooter {
   // Injections

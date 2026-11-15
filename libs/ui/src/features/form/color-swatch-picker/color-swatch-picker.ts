@@ -41,6 +41,7 @@ import { COLOR_SWATCH_PICKER_CONFIG } from './color-swatch-picker.token';
   imports: [ColorSwatch, Listbox, ListboxOption],
   templateUrl: './color-swatch-picker.html',
   host: {
+    class: 'tls-color-swatch-picker',
     '[class]': 'hostClasses()',
   },
   providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => ColorSwatchPicker) }],

@@ -31,6 +31,7 @@ import { RippleDirective } from '../../ripple';
   templateUrl: './autocomplete.html',
   imports: [Loader, Icon, NgTemplateOutlet, VirtualScroll, RippleDirective],
   host: {
+    class: 'tls-autocomplete tls-form-control',
     '[class]': 'hostClasses()',
   },
   providers: [{ provide: FORM_CONTROL, useExisting: forwardRef(() => Autocomplete) }],

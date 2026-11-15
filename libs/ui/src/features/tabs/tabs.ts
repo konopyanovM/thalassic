@@ -42,6 +42,7 @@ import { SLIDING_TABS_VARIANTS } from './tabs.constants';
   templateUrl: './tabs.html',
   hostDirectives: [AriaTabs],
   host: {
+    class: 'tls-tabs',
     '[class]': 'hostClasses()',
   },
 })

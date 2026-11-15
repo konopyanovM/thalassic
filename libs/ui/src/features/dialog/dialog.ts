@@ -11,7 +11,7 @@ import { DIALOG_CONFIG } from './dialog.token';
   selector: 'tls-dialog',
   templateUrl: './dialog.html',
   imports: [CdkPortalOutlet, Button, Icon],
-  host: { '[class]': 'hostClasses()' },
+  host: { class: 'tls-dialog', '[class]': 'hostClasses()' },
 })
 export class Dialog extends CdkDialogContainer {
   // Injections

@@ -61,6 +61,7 @@ import { resolveActivityLevel } from './resolve-activity-level';
   templateUrl: './activity-heatmap.html',
   imports: [Grid, GridRow, GridCell, TooltipDelegateDirective],
   host: {
+    class: 'tls-activity-heatmap',
     '[class]': 'hostClasses()',
   },
 })

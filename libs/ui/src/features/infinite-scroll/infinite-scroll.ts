@@ -82,6 +82,7 @@ import { infiniteScrollState } from './infinite-scroll.types';
   templateUrl: './infinite-scroll.html',
   styleUrl: './infinite-scroll.scss',
   host: {
+    class: 'tls-infinite-scroll',
     '[class]': 'hostClasses()',
   },
 })
