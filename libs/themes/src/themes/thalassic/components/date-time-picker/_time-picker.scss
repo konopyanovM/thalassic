@@ -42,7 +42,7 @@
     border: none;
     border-radius: var(--radius-2xl);
 
-    background-color: var(--color-surface-container-high);
+    background-color: var(--control-wash);
 
     font-size: var(--font-label-large-size);
     font-weight: var(--font-weight-medium);
@@ -54,7 +54,7 @@
 
     @include mixins.hover-capable {
       &:hover {
-        background-color: var(--color-surface-container-highest);
+        background-color: var(--control-wash-strong);
       }
     }
 
@@ -87,7 +87,7 @@
 
     @include mixins.hover-capable {
       &:hover {
-        background-color: var(--color-surface-container-high);
+        background-color: var(--control-wash);
         color: var(--color-on-surface);
       }
     }

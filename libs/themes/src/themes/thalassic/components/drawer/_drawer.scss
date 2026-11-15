@@ -45,7 +45,7 @@
 }
 
 .tls-drawer {
-  --tls-drawer-background: var(--surface-raised);
+  --tls-drawer-background: var(--surface-overlay);
   --tls-drawer-color: var(--color-on-surface);
   --tls-drawer-border-radius: var(--radius-xl);
 
@@ -148,7 +148,7 @@
 
     @include mixins.hover-capable {
       &:hover {
-        background-color: var(--color-surface-container-high);
+        background-color: var(--control-wash);
         color: var(--color-on-surface);
       }
     }

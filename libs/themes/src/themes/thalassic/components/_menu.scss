@@ -20,12 +20,12 @@
   --tls-menu-border-width: 1px;
   --tls-menu-border-color: var(--color-outline-variant);
 
-  --tls-menu-background: var(--surface-raised);
+  --tls-menu-background: var(--surface-overlay);
   --tls-menu-shadow: var(--overlay-shadow);
 
   --tls-menu-item-color: var(--color-on-surface);
   --tls-menu-item-background: transparent;
-  --tls-menu-item-background-hover: var(--color-surface-container-low);
+  --tls-menu-item-background-hover: var(--control-wash);
   --tls-menu-item-padding-block: var(--spacing-2);
   --tls-menu-item-padding-inline: var(--spacing-4);
   --tls-menu-item-icon-size: 14px;

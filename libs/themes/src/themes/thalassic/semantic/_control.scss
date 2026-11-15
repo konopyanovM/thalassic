@@ -58,6 +58,20 @@
   --control-color-disabled: color-mix(in srgb, var(--color-on-surface-variant) 55%, transparent);
 }
 
+// The fill of a control that has none of its own surface: the answer to the
+// pointer of a day in a calendar, a row in a menu or a dismiss button, and the
+// resting fill of a quiet pill, which steps to the stronger one under the
+// pointer. A wash of the content color over whatever the control sits on,
+// rather than a surface role: a fixed surface shows on one surface and
+// vanishes on the one it equals, and these controls lie on a panel in one
+// place and on an overlay in the next. Redeclared on a dark scope so each mix
+// resolves against that scope's colors rather than the root's.
+:root,
+.tls-dark {
+  --control-wash: color-mix(in srgb, var(--color-on-surface) 8%, transparent);
+  --control-wash-strong: color-mix(in srgb, var(--color-on-surface) 12%, transparent);
+}
+
 // Which way a filled control's hover and press step its fill's lightness: away
 // from its label, so feedback deepens the contrast the label reads against. A
 // light theme sets light labels on its fills, so the step darkens (-1); a dark

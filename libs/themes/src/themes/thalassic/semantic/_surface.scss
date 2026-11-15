@@ -1,14 +1,29 @@
-// A surface lifted above the page: a panel on it, or a layer floating over it.
-// Lifted surfaces are lighter than the page in both modes, as though catching
-// more light. The lowest container does that in light mode, where it is the
-// brightest surface; in dark mode it is the darkest and would sink a panel
-// below its page into a hole, so the middle container stands in. Declared on
-// any dark scope rather than only the root, so a region themed dark on its own
-// lifts its surfaces to match.
+// The surfaces above the page, in the order they rise: a panel lying on it,
+// then a layer floating over both. Each is lighter than what it rises from in
+// both modes, as though catching more light. Declared on any dark scope rather
+// than only the root, so a region themed dark on its own lifts its surfaces to
+// match.
+//
+// A panel on the page. The lowest container does that in light mode, where it
+// is the brightest surface; in dark mode it is the darkest and would sink a
+// panel below its page into a hole, so the middle container stands in.
 :root {
   --surface-raised: var(--color-surface-container-lowest);
 }
 
 .tls-dark {
   --surface-raised: var(--color-surface-container);
+}
+
+// A layer floating over the page and its panels: a menu, a popover, the panel
+// a field opens, a dialog, a drawer, a sheet. In light mode its shadow lifts
+// it, so it shares the brightest surface with the panels it covers. In dark
+// mode a shadow has nothing to darken and tells nothing apart, so the layer
+// takes the next container up and reads as nearer by its tone.
+:root {
+  --surface-overlay: var(--color-surface-container-lowest);
+}
+
+.tls-dark {
+  --surface-overlay: var(--color-surface-container-high);
 }

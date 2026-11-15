@@ -58,7 +58,7 @@
 
     @include mixins.hover-capable {
       &:hover {
-        background-color: var(--color-surface-container-high);
+        background-color: var(--control-wash);
       }
     }
 
