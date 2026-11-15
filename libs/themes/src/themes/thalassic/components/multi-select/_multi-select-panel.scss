@@ -66,13 +66,14 @@
   --tls-multi-select-option-background: transparent;
   --tls-multi-select-option-padding-block: var(--spacing-2);
   --tls-multi-select-option-padding-inline: var(--spacing-3);
+  // Selection is marked by the check, never by the label's colour alone: a colour
+  // shift is invisible where the primary role is as dark (or light) as body text.
+  --tls-multi-select-option-check-color: var(--color-primary);
 
+  // A translucent wash rather than a fixed surface step, so the highlight stays one
+  // quiet step above whatever tone the panel takes.
   &.tls-multi-select__option--active {
-    --tls-multi-select-option-background: var(--color-surface-variant);
-  }
-
-  &.tls-multi-select__option--selected {
-    --tls-multi-select-option-color: var(--color-primary);
+    --tls-multi-select-option-background: var(--control-wash);
   }
 
   &.tls-multi-select__option--disabled .tls-multi-select__option-button {
@@ -118,9 +119,13 @@
     }
 
     .tls-multi-select__option-check {
-      width: 0.75rem;
-      height: 0.75rem;
+      // The check's stroke scales with its box: at 1rem it draws about as heavy as the
+      // label's own strokes, where a smaller box thins it to a hairline.
+      width: 1rem;
+      height: 1rem;
       flex-shrink: 0;
+
+      color: var(--tls-multi-select-option-check-color);
     }
 
     @include mixins.ripple;

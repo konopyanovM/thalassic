@@ -67,10 +67,15 @@
       (click)="select(option)"
       (pointerenter)="onOptionHover($event, index, option.disabled)"
     >
-      @if (optionTemplate(); as template) {
-        <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="optionContext(option, index)" />
-      } @else {
-        {{ option.label }}
+      <span class="tls-autocomplete__option-label">
+        @if (optionTemplate(); as template) {
+          <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="optionContext(option, index)" />
+        } @else {
+          {{ option.label }}
+        }
+      </span>
+      @if (option.value === value()) {
+        <tls-icon class="tls-autocomplete__option-check" name="check" aria-hidden="true" />
       }
     </button>
   </ng-template>

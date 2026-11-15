@@ -66,13 +66,14 @@
   --tls-autocomplete-option-background: transparent;
   --tls-autocomplete-option-padding-block: var(--spacing-2);
   --tls-autocomplete-option-padding-inline: var(--spacing-3);
+  // Selection is marked by the check, never by the label's colour alone: a colour
+  // shift is invisible where the primary role is as dark (or light) as body text.
+  --tls-autocomplete-option-check-color: var(--color-primary);
 
+  // A translucent wash rather than a fixed surface step, so the highlight stays one
+  // quiet step above whatever tone the panel takes.
   &.tls-autocomplete__option--active {
-    --tls-autocomplete-option-background: var(--color-surface-variant);
-  }
-
-  &.tls-autocomplete__option--selected {
-    --tls-autocomplete-option-color: var(--color-primary);
+    --tls-autocomplete-option-background: var(--control-wash);
   }
 
   &.tls-autocomplete__option--disabled .tls-autocomplete__option-button {
@@ -90,6 +91,8 @@
 
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-2);
 
     appearance: none;
     cursor: pointer;
@@ -106,6 +109,23 @@
 
     &:focus-visible {
       outline: none;
+    }
+
+    .tls-autocomplete__option-label {
+      // A long label wraps beside the check rather than pushing it out of the row.
+      min-width: 0;
+
+      flex: 1;
+    }
+
+    .tls-autocomplete__option-check {
+      // The check's stroke scales with its box: at 1rem it draws about as heavy as the
+      // label's own strokes, where a smaller box thins it to a hairline.
+      width: 1rem;
+      height: 1rem;
+      flex-shrink: 0;
+
+      color: var(--tls-autocomplete-option-check-color);
     }
 
     @include mixins.ripple;
