@@ -10,6 +10,7 @@ import {
   PRESS_SCALE_PROPERTY,
   RIPPLE_ACTIVE_CLASS,
   RIPPLE_DIAMETER_PROPERTY,
+  RIPPLE_MINIMUM_HOLD_MS,
   RIPPLE_MOVE_SLOP_PX,
   RIPPLE_RELEASED_CLASS,
   RIPPLE_TOUCH_DELAY_MS,
@@ -155,19 +156,28 @@ describe('RippleDirective', () => {
     expect(host.classList.contains(RIPPLE_ACTIVE_CLASS)).toBe(false);
   });
 
-  it('cancels the ink once the press travels far enough to be a scroll', () => {
+  it('keeps struck ink through travel, since the finger is still pressing', () => {
     press({ clientX: 50, clientY: 25 });
-    expect(host.classList.contains(RIPPLE_ACTIVE_CLASS)).toBe(true);
-
     host.dispatchEvent(
       new PointerEvent('pointermove', {
         clientX: 50,
-        clientY: 25 + RIPPLE_MOVE_SLOP_PX + 1,
+        clientY: 25 + RIPPLE_MOVE_SLOP_PX * 4,
         bubbles: true,
       }),
     );
+    vi.advanceTimersByTime(RIPPLE_MINIMUM_HOLD_MS);
 
-    expect(host.classList.contains(RIPPLE_ACTIVE_CLASS)).toBe(false);
+    expect(host.classList.contains(RIPPLE_ACTIVE_CLASS)).toBe(true);
+    expect(host.classList.contains(RIPPLE_RELEASED_CLASS)).toBe(false);
+  });
+
+  it('fades struck ink, rather than dropping it, when the browser takes the contact over', () => {
+    press();
+    vi.advanceTimersByTime(RIPPLE_MINIMUM_HOLD_MS);
+    host.dispatchEvent(new PointerEvent('pointercancel', { bubbles: true }));
+
+    expect(host.classList.contains(RIPPLE_ACTIVE_CLASS)).toBe(true);
+    expect(host.classList.contains(RIPPLE_RELEASED_CLASS)).toBe(true);
   });
 
   it('holds the press suppressed through a cancelled ink, so nothing depresses mid-scroll', () => {
@@ -183,8 +193,9 @@ describe('RippleDirective', () => {
     expect(host.style.getPropertyValue(PRESS_SCALE_PROPERTY)).toBe('1');
   });
 
-  it('keeps the ink through a tremor inside the slop threshold', () => {
-    press({ clientX: 50, clientY: 25 });
+  it('still inks a touch that trembles within the slop during the wait', () => {
+    vi.useFakeTimers();
+    pointerDown({ clientX: 50, clientY: 25 });
     host.dispatchEvent(
       new PointerEvent('pointermove', {
         clientX: 50,
@@ -192,6 +203,7 @@ describe('RippleDirective', () => {
         bubbles: true,
       }),
     );
+    vi.advanceTimersByTime(RIPPLE_TOUCH_DELAY_MS);
 
     expect(host.classList.contains(RIPPLE_ACTIVE_CLASS)).toBe(true);
   });
@@ -229,20 +241,52 @@ describe('RippleDirective', () => {
     expect(host.classList.contains(RIPPLE_ACTIVE_CLASS)).toBe(false);
   });
 
-  it('inks a tap lifted before the wait passes, and lets it go', () => {
+  it('inks a tap lifted before the wait passes, and lets it go once it has shown', () => {
     vi.useFakeTimers();
     pointerDown();
     host.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
 
     expect(host.classList.contains(RIPPLE_ACTIVE_CLASS)).toBe(true);
+    expect(host.classList.contains(RIPPLE_RELEASED_CLASS)).toBe(false);
+
+    vi.advanceTimersByTime(RIPPLE_MINIMUM_HOLD_MS);
     expect(host.classList.contains(RIPPLE_RELEASED_CLASS)).toBe(true);
   });
 
-  it('holds the ink while the contact lasts and lets it go on release', () => {
+  it('holds a quick release until the ink has shown for its minimum hold', () => {
+    // Struck at the end of the wait, released at once: the hold still has its full length to run.
     press();
+    host.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
+
+    vi.advanceTimersByTime(RIPPLE_MINIMUM_HOLD_MS - 1);
+    expect(host.classList.contains(RIPPLE_RELEASED_CLASS)).toBe(false);
+
+    vi.advanceTimersByTime(1);
+    expect(host.classList.contains(RIPPLE_RELEASED_CLASS)).toBe(true);
+  });
+
+  it('holds the ink while the contact lasts and lets it go at once on a later release', () => {
+    press();
+    vi.advanceTimersByTime(RIPPLE_MINIMUM_HOLD_MS * 2);
     expect(host.classList.contains(RIPPLE_RELEASED_CLASS)).toBe(false);
 
     host.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
+    expect(host.classList.contains(RIPPLE_RELEASED_CLASS)).toBe(true);
+  });
+
+  it('lets an earlier ink go as a new touch lands during its hold', () => {
+    press();
+    host.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
+    pointerDown();
+
+    // The new touch is still waiting to ink, possibly into a scroll; the old ink does not
+    // stay held at full strength for it.
+    expect(host.classList.contains(RIPPLE_RELEASED_CLASS)).toBe(true);
+
+    host.dispatchEvent(
+      new PointerEvent('pointermove', { clientX: 50, clientY: 25 + RIPPLE_MOVE_SLOP_PX + 1, bubbles: true }),
+    );
+    vi.advanceTimersByTime(RIPPLE_MINIMUM_HOLD_MS);
     expect(host.classList.contains(RIPPLE_RELEASED_CLASS)).toBe(true);
   });
 
@@ -302,15 +346,19 @@ describe('RippleDirective', () => {
   });
 
   it('releases the ink of a pen lifted after sliding off the host', () => {
+    vi.useFakeTimers();
     pointerDown({ pointerType: 'pen', pointerId: 3 });
     document.body.dispatchEvent(new PointerEvent('pointerup', { pointerId: 3, bubbles: true }));
+    vi.advanceTimersByTime(RIPPLE_MINIMUM_HOLD_MS);
 
     expect(host.classList.contains(RIPPLE_RELEASED_CLASS)).toBe(true);
   });
 
   it('keeps the ink held through the end of another pointer', () => {
+    vi.useFakeTimers();
     pointerDown({ pointerType: 'pen', pointerId: 3 });
     document.body.dispatchEvent(new PointerEvent('pointerup', { pointerId: 4, bubbles: true }));
+    vi.advanceTimersByTime(RIPPLE_MINIMUM_HOLD_MS);
 
     expect(host.classList.contains(RIPPLE_RELEASED_CLASS)).toBe(false);
   });
@@ -356,6 +404,7 @@ describe('RippleDirective surface', () => {
 
   afterEach(() => {
     document.documentElement.removeAttribute(MOTION_ATTRIBUTE);
+    vi.useRealTimers();
   });
 
   beforeEach(async () => {
@@ -404,8 +453,10 @@ describe('RippleDirective surface', () => {
   });
 
   it('lets the surface\'s ink go on release', () => {
+    vi.useFakeTimers();
     pointerDownOn(host, 48, 24);
     document.body.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
+    vi.advanceTimersByTime(RIPPLE_MINIMUM_HOLD_MS);
 
     expect(indicator.classList.contains(RIPPLE_RELEASED_CLASS)).toBe(true);
   });

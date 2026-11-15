@@ -21,6 +21,7 @@ import {
   PRESS_SCALE_PROPERTY,
   RIPPLE_ACTIVE_CLASS,
   RIPPLE_DIAMETER_PROPERTY,
+  RIPPLE_MINIMUM_HOLD_MS,
   RIPPLE_MOVE_SLOP_PX,
   RIPPLE_RELEASED_CLASS,
   RIPPLE_TOUCH_DELAY_MS,
@@ -41,7 +42,10 @@ import {
  * A touch inks a moment after it lands rather than at once, so a flick that
  * merely begins on the host scrolls without flashing it; a tap lifted sooner inks
  * on release. The ink spreads and holds while the contact lasts, so a held press
- * keeps showing, and fades when it ends.
+ * keeps showing, and fades when it ends — whether the finger lifts or the browser
+ * takes the contact over for a scroll — but never before it has shown for a
+ * moment, so a quick tap is seen. A finger shifting on the control once its ink
+ * is struck is still pressing it and leaves the ink in place.
  *
  * The ink is expressive and outlives the contact that spawned it, so it is
  * confined to the `full` motion level; below that the press it suppresses is
@@ -108,19 +112,28 @@ export class RippleDirective {
   );
 
   // State
-  /** Where the press landed, to measure a scroll against. */
+  /** Where a touch waiting to ink landed, to measure a scroll against. */
   private _origin: { x: number; y: number } | null = null;
   /**
-   * Teardown of the listeners that follow a press — its moves and its end — bound
-   * only while one is live. Host listeners would schedule change detection for
-   * every hover movement across every host, although only a press needs them.
+   * Teardown of the listeners that hear a press end, bound only while one is live.
+   * Host listeners would schedule change detection for every hover movement across
+   * every host, although only a press needs them.
    */
   private _stopTrackingContact: (() => void) | null = null;
+  /** Teardown of the listener that watches a touch's travel while it waits to ink. */
+  private _stopWatchingForScroll: (() => void) | null = null;
   /** The ink a touch is waiting to strike, until the wait passes or the contact ends. */
   private _pendingInk: ReturnType<typeof setTimeout> | null = null;
+  /** Runs from the moment ink is struck until it has shown for its minimum hold. */
+  private _minimumHold: ReturnType<typeof setTimeout> | null = null;
+  /** Whether the contact ended while the minimum hold was still running, so the ink fades once it does. */
+  private _releaseAwaitingHold = false;
 
   constructor() {
-    inject(DestroyRef).onDestroy(() => this._stopTracking());
+    inject(DestroyRef).onDestroy(() => {
+      this._stopTracking();
+      this._clearHold();
+    });
   }
 
   // Protected methods
@@ -128,6 +141,9 @@ export class RippleDirective {
     const host = this._elementRef.nativeElement;
     const surface = this._surface();
     this._stopTracking();
+    // Ink an earlier contact left on the surface fades as this one lands, rather than
+    // waiting out its hold while this contact decides whether it is a scroll.
+    this._letGo(surface);
 
     // Anything this directive does not ink is the press's to acknowledge, so the
     // suppression is lifted here rather than on release. `:active` outlives the
@@ -145,8 +161,7 @@ export class RippleDirective {
     const x = event.clientX - bounds.left;
     const y = event.clientY - bounds.top;
 
-    this._origin = { x: event.clientX, y: event.clientY };
-    this._trackContact(host, event.pointerId);
+    this._trackContact(event.pointerId);
 
     surface.style.setProperty(RIPPLE_X_PROPERTY, `${x}px`);
     surface.style.setProperty(RIPPLE_Y_PROPERTY, `${y}px`);
@@ -158,14 +173,11 @@ export class RippleDirective {
     host.style.setProperty(PRESS_SCALE_PROPERTY, '1');
 
     if (event.pointerType !== 'touch') {
-      this._restartInk(surface);
+      this._strike(surface);
       return;
     }
 
-    this._pendingInk = setTimeout(() => {
-      this._pendingInk = null;
-      this._restartInk(surface);
-    }, RIPPLE_TOUCH_DELAY_MS);
+    this._awaitScroll(host, surface, event);
   }
 
   // Private methods
@@ -175,7 +187,7 @@ export class RippleDirective {
 
     if (this._pendingInk) {
       this._clearPendingInk();
-      this._restartInk(surface);
+      this._strike(surface);
     }
 
     this._stopTracking();
@@ -193,6 +205,11 @@ export class RippleDirective {
     if (struck) this._release(this._surface());
   }
 
+  /**
+   * A touch that travels past the slop while it waits has turned out to be a scroll, so it
+   * never inks. The press stays suppressed until the contact ends: restoring it here would
+   * depress the control mid-scroll, which is what the ink was withheld for.
+   */
   private _onPointerMove(event: PointerEvent): void {
     const origin = this._origin;
     if (!origin) return;
@@ -200,12 +217,22 @@ export class RippleDirective {
     const travelled = Math.hypot(event.clientX - origin.x, event.clientY - origin.y);
     if (travelled <= RIPPLE_MOVE_SLOP_PX) return;
 
-    // The press turned out to be a scroll. The ink goes immediately — or is never
-    // struck, if the wait has not passed — but the press stays suppressed until
-    // the contact ends: restoring it here would depress the control mid-scroll,
-    // which is what the ink was cancelled for.
     this._stopTracking();
-    this._surface().classList.remove(RIPPLE_ACTIVE_CLASS, RIPPLE_RELEASED_CLASS);
+  }
+
+  /**
+   * Holds a touch's ink back for the wait, watching how far the touch travels meanwhile. Its
+   * moves are heard on the host, which captures a touch for as long as it lasts.
+   */
+  private _awaitScroll(host: HTMLElement, surface: HTMLElement, startEvent: PointerEvent): void {
+    this._origin = { x: startEvent.clientX, y: startEvent.clientY };
+    this._stopWatchingForScroll = this._renderer.listen(host, 'pointermove', (event: PointerEvent) =>
+      this._onPointerMove(event),
+    );
+    this._pendingInk = setTimeout(() => {
+      this._clearPendingInk();
+      this._strike(surface);
+    }, RIPPLE_TOUCH_DELAY_MS);
   }
 
   /**
@@ -214,7 +241,7 @@ export class RippleDirective {
    * inks — lifted after sliding off the host would otherwise never release the ink it holds.
    * The capture phase hears the end even where a component stops it from bubbling.
    */
-  private _trackContact(host: HTMLElement, pointerId: number): void {
+  private _trackContact(pointerId: number): void {
     const onEnd = (event: PointerEvent): void => {
       if (event.pointerId !== pointerId) return;
 
@@ -224,23 +251,19 @@ export class RippleDirective {
         this._onPointerCancel();
       }
     };
-    const stopMoves = this._renderer.listen(host, 'pointermove', (event: PointerEvent) =>
-      this._onPointerMove(event),
-    );
     const stopRelease = this._renderer.listen(this._document, 'pointerup', onEnd, { capture: true });
     const stopCancel = this._renderer.listen(this._document, 'pointercancel', onEnd, {
       capture: true,
     });
 
     this._stopTrackingContact = () => {
-      stopMoves();
       stopRelease();
       stopCancel();
     };
   }
 
+  /** Stops following the live contact, dropping any ink it is still waiting to strike. */
   private _stopTracking(): void {
-    this._origin = null;
     this._clearPendingInk();
     if (!this._stopTrackingContact) return;
 
@@ -316,33 +339,75 @@ export class RippleDirective {
   }
 
   /**
-   * Retriggers the animation. A class already present does not restart a running
-   * animation, so a second tap arriving before the first has faded would
-   * otherwise be swallowed; reading back a layout property between the removal
-   * and the addition forces the two to land as separate states.
+   * Strikes fresh ink and starts its minimum hold. A class already present does not
+   * restart a running animation, so a second tap arriving before the first has
+   * faded would otherwise be swallowed; reading back a layout property between the
+   * removal and the addition forces the two to land as separate states.
    */
-  private _restartInk(surface: HTMLElement): void {
+  private _strike(surface: HTMLElement): void {
+    this._clearHold();
     surface.classList.remove(RIPPLE_ACTIVE_CLASS, RIPPLE_RELEASED_CLASS);
     void surface.offsetWidth;
     surface.classList.add(RIPPLE_ACTIVE_CLASS);
+
+    this._minimumHold = setTimeout(() => {
+      this._minimumHold = null;
+      if (this._releaseAwaitingHold) this._letGo(surface);
+    }, RIPPLE_MINIMUM_HOLD_MS);
   }
 
   /**
-   * Lets the ink go. Its held strength is read back first: the fade is a transition from
-   * that strength, and an ink struck and released in one go — a quick tap — would otherwise
-   * have no style at full strength to fade from, and vanish without being seen.
+   * Answers the end of the contact: the ink fades now if it has shown for its minimum hold,
+   * and once it has otherwise.
+   *
+   * @example
+   * // A tap lifted 40ms after the ink was struck, with a 225ms hold:
+   * //   0ms  struck
+   * //  40ms  release   → awaits the hold
+   * // 225ms  hold ends → fades
+   * // A press held for 600ms:
+   * // 600ms  release   → fades at once
    */
   private _release(surface: HTMLElement): void {
     if (!surface.classList.contains(RIPPLE_ACTIVE_CLASS)) return;
 
-    void getComputedStyle(surface, '::before').opacity;
+    if (this._minimumHold) {
+      this._releaseAwaitingHold = true;
+      return;
+    }
+
+    this._letGo(surface);
+  }
+
+  /** Fades whatever ink the surface holds, ending any hold still running. */
+  private _letGo(surface: HTMLElement): void {
+    this._clearHold();
+    if (!surface.classList.contains(RIPPLE_ACTIVE_CLASS)) return;
+
     surface.classList.add(RIPPLE_RELEASED_CLASS);
   }
 
+  /** Ends a touch's wait to ink, along with the watch on its travel. */
   private _clearPendingInk(): void {
+    this._origin = null;
+
+    if (this._stopWatchingForScroll) {
+      this._stopWatchingForScroll();
+      this._stopWatchingForScroll = null;
+    }
+
     if (!this._pendingInk) return;
 
     clearTimeout(this._pendingInk);
     this._pendingInk = null;
+  }
+
+  /** Ends the minimum hold, along with any release that was waiting on it. */
+  private _clearHold(): void {
+    this._releaseAwaitingHold = false;
+    if (!this._minimumHold) return;
+
+    clearTimeout(this._minimumHold);
+    this._minimumHold = null;
   }
 }

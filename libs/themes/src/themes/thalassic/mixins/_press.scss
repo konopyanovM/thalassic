@@ -19,11 +19,19 @@
 // through that property with `$scale` as the fallback, and is never declared here:
 // the motion tier wraps these rules in `:root[data-motion='…'] &`, so a declaration
 // would outweigh the plain modifier selector an override is written on.
-@mixin press($scale: 0.97) {
+//
+// The press owns the control's `transition` at this tier, so the control's own
+// transitions — the colours its hover and press states step through — are passed in
+// as `$transitions` and written into the same list. A `transition` the control
+// declared beside this one would be replaced by it outright, the gate's selector
+// being the heavier of the two, and its states would switch without easing. The
+// timing the press gives `:active` covers that whole list: a press lands at once in
+// every property it changes, and the release settles each back at its own pace.
+@mixin press($scale: 0.97, $transitions: null) {
   @include core.motion(essential) {
     // Release is slower than the press: the depress tracks the finger, the return
     // is a settle.
-    transition: scale var(--motion-fast) var(--motion-ease-in-out);
+    transition: $transitions, scale var(--motion-fast) var(--motion-ease-in-out);
 
     &:active {
       scale: var(--tls-press-scale, #{$scale});

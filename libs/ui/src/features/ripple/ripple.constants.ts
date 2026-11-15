@@ -17,6 +17,16 @@ export const RIPPLE_RELEASED_CLASS = 'tls-ripple-released';
  */
 export const RIPPLE_TOUCH_DELAY_MS = 80;
 
+/**
+ * How long struck ink shows at full strength before a release may fade it. A tap is over
+ * in a fraction of the spread, and ink that began fading the moment it appeared would be
+ * gone before it had grown past the fingertip that covers it; holding it this long lets
+ * the spread all but finish first. The value is Material Web's minimum press, and like
+ * Angular Material's ripple — which fades only ink that has finished entering — it defers
+ * the release rather than cutting the spread short.
+ */
+export const RIPPLE_MINIMUM_HOLD_MS = 225;
+
 /** Contact point of the press, relative to the host's own box. */
 export const RIPPLE_X_PROPERTY = '--tls-ripple-x';
 export const RIPPLE_Y_PROPERTY = '--tls-ripple-y';
@@ -28,10 +38,10 @@ export const RIPPLE_DIAMETER_PROPERTY = '--tls-ripple-diameter';
 export const PRESS_SCALE_PROPERTY = '--tls-press-scale';
 
 /**
- * How far a pointer may travel before its press is read as the start of a scroll.
- * A ripple keeps expanding for its full duration, so one spawned by a flick stays
- * on screen well after the surface has moved — worse than a press, which ends
- * with the contact.
+ * How far a touch may travel, while it waits to ink, before it is read as the start of a
+ * scroll and never inks. Ink already struck is not cancelled by travel: a finger shifting
+ * on a control is still pressing it, and a contact the browser takes over for a scroll
+ * ends with `pointercancel`, which fades the ink as a release does.
  */
 export const RIPPLE_MOVE_SLOP_PX = 8;
 

@@ -30,14 +30,13 @@
     corner-shape: var(--corner-shape-squircle);
   }
 
-  @include mixins.motion(essential) {
-    transition:
+  @include mixins.press(
+    $transitions: (
       background-color var(--motion-fast) var(--motion-ease-in-out),
       border-color var(--motion-fast) var(--motion-ease-in-out),
-      color var(--motion-fast) var(--motion-ease-in-out);
-  }
-
-  @include mixins.press;
+      color var(--motion-fast) var(--motion-ease-in-out),
+    )
+  );
   // The fill reaches the outer edge of the border while a layer laid out in the
   // control stops inside it, so ink kept to that layer would leave the border's
   // width of bare fill around it. Bled by that width, the layer is the border

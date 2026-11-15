@@ -6,7 +6,15 @@
 
     cursor: pointer;
 
-    @include mixins.press;
+    // Checking a chip changes its fill, label, and edge together; easing all three
+    // keeps the swap from reading as a flicker.
+    @include mixins.press(
+      $transitions: (
+        background-color var(--motion-fast) var(--motion-ease-in-out),
+        border-color var(--motion-fast) var(--motion-ease-in-out),
+        color var(--motion-fast) var(--motion-ease-in-out),
+      )
+    );
     @include mixins.ripple;
 
     @include mixins.touch-target(var(--tls-chip-height));

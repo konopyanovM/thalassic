@@ -17,8 +17,9 @@
 //
 // The ink spreads across `$duration` and holds at full strength for as long as
 // the contact lasts, so a held control keeps showing that it is pressed; it fades
-// across `$fade` once the contact ends, still spreading if a quick tap released
-// it early.
+// across `$fade` once the contact ends. The directive holds a quick tap's ink a
+// moment before releasing it, so the fade starts once the spread has all but
+// finished rather than as it begins, and the ink finishes spreading as it fades.
 //
 // Belongs to the `full` tier. Unlike a press, the ink keeps expanding after the
 // finger lifts, so it is expressive rather than functional — under reduced motion
