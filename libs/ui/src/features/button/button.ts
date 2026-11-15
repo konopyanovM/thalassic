@@ -10,7 +10,7 @@ import {
   Signal,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { POPUP_TRIGGER, POPUP_TRIGGER_FORWARDED } from '../../abstract/popup-trigger';
+import { injectPopupAnnouncement, POPUP_TRIGGER_FORWARDED } from '../../abstract/popup-trigger';
 import { Loader } from '../loader';
 import { RippleDirective } from '../ripple';
 import { ButtonBase } from './button.base';
@@ -36,7 +36,7 @@ export class Button extends ButtonBase {
    * The popup a trigger directive on this button opens. The host is a wrapper, so the trigger's
    * announcement is placed on the inner control, the element that takes focus.
    */
-  private readonly _popupTrigger = inject(POPUP_TRIGGER, { self: true, optional: true });
+  protected readonly popup = injectPopupAnnouncement();
 
   /**
    * The interactive control is the inner `button`/`a`; the host is a wrapper.
@@ -79,21 +79,6 @@ export class Button extends ButtonBase {
 
   // Computed
   protected isLink = computed<boolean>(() => Boolean(this._routerLink || this.href()));
-
-  /** `aria-haspopup` for the inner control: the kind of popup a trigger on the button opens. */
-  protected readonly popupKind: string | null = this._popupTrigger
-    ? this._popupTrigger.popupKind
-    : null;
-
-  /** `aria-expanded` for the inner control, while a trigger on the button reports one. */
-  protected readonly popupExpanded = computed<boolean | null>(() =>
-    this._popupTrigger ? this._popupTrigger.popupExpanded() : null,
-  );
-
-  /** `aria-controls` for the inner control: the open popup a trigger on the button points at. */
-  protected readonly popupId = computed<string | null>(() =>
-    this._popupTrigger ? this._popupTrigger.popupId() : null,
-  );
 
   /**
    * Resolved URL placed on the inner anchor so the browser treats it as a real link

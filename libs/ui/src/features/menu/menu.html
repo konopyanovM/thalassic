@@ -13,6 +13,8 @@
     [softDisabled]="false"
     (itemSelected)="onItemClick($event)"
     (keydown.escape)="close()"
+    (keydown.tab)="onTabOut()"
+    (keydown.shift.tab)="onTabOut()"
     [attr.aria-label]="ariaLabel() ?? null"
     [tlsPan]="sheet()"
     (panStart)="onSheetPanStart(sheetPane)"

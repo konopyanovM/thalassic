@@ -273,9 +273,23 @@ export class Menu {
   }
 
   // Protected
+  /**
+   * Runs the chosen item's action. A menu that closes on the choice closes first, handing focus
+   * back to its trigger, so whatever the action opens — a dialog — finds focus on the trigger and
+   * returns it there, rather than to an item that leaves with the menu.
+   */
   protected onItemClick(item: MenuActionItem): void {
-    item.action?.();
     if (item.closeOnSelect ?? true) this.close();
+    item.action?.();
+  }
+
+  /**
+   * Closes the menu as Tab leaves it. Focus goes back to the trigger while the key is still being
+   * handled, so the browser's own move carries on from the trigger to the control beside it,
+   * instead of walking off the end of the document from the panel.
+   */
+  protected onTabOut(): void {
+    this.close();
   }
 
   /** Whether the item carries a checked state (`menuitemradio` / `menuitemcheckbox`). */

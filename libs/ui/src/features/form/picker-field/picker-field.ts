@@ -1,4 +1,5 @@
 import { booleanAttribute, Component, computed, input, InputSignal } from '@angular/core';
+import { injectPopupAnnouncement, POPUP_TRIGGER_FORWARDED } from '../../../abstract/popup-trigger';
 import { Icon } from '../../icon';
 import { controlSize } from '../../../types';
 
@@ -18,11 +19,16 @@ import { controlSize } from '../../../types';
   selector: 'tls-picker-field',
   imports: [Icon],
   templateUrl: './picker-field.html',
+  // The focusable control is the inner trigger, which carries a popup trigger's announcement.
+  providers: [{ provide: POPUP_TRIGGER_FORWARDED, useValue: true }],
   host: {
     '[class]': 'hostClasses()',
   },
 })
 export class PickerField {
+  /** The popup a trigger directive on the field opens, announced on its inner trigger. */
+  protected readonly popup = injectPopupAnnouncement();
+
   /** Whether the consumer's panel is open; turns the chevron and keeps the frame active. */
   readonly open = input(false, { transform: booleanAttribute });
   readonly size: InputSignal<controlSize> = input<controlSize>('md');

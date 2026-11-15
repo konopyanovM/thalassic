@@ -2,6 +2,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { Component, signal, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Button } from '../button';
+import { PickerField } from '../form/picker-field/picker-field';
 import { Menu } from './menu';
 import { MenuTriggerDirective } from './menu-trigger.directive';
 import { MenuItemDefinition } from './menu.types';
@@ -31,6 +32,17 @@ class ButtonHostComponent {
     { type: 'item', label: 'Русский', role: 'menuitemradio', checked: true },
   ];
   public readonly menu = viewChild.required(Menu);
+}
+
+@Component({
+  imports: [PickerField, Menu, MenuTriggerDirective],
+  template: `
+    <tls-picker-field [tlsMenuTrigger]="menuRef">Private</tls-picker-field>
+    <tls-menu #menuRef [items]="items" />
+  `,
+})
+class PickerFieldHostComponent {
+  public readonly items: MenuItemDefinition[] = [{ type: 'item', label: 'Private' }];
 }
 
 /**
@@ -105,6 +117,35 @@ describe('MenuTriggerDirective', () => {
     expect(document.activeElement).toBe(trigger);
   });
 
+  it('should hand the trigger to whatever an item opens, not the item it leaves with', async () => {
+    let focusedWhenActionRan: Element | null = null;
+    host.items.set([{ type: 'item', label: 'Delete', action: () => (focusedWhenActionRan = document.activeElement) }]);
+    fixture.detectChanges();
+    trigger.focus();
+    trigger.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    (document.activeElement as HTMLElement).click();
+    fixture.detectChanges();
+
+    expect(focusedWhenActionRan).toBe(trigger);
+  });
+
+  it('should close as Tab leaves the menu, handing focus back to the trigger', async () => {
+    trigger.focus();
+    trigger.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    document.activeElement?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }));
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(host.menu().isOpen()).toBe(false);
+    expect(document.activeElement).toBe(trigger);
+  });
+
   it('should move focus to the first item once the menu is shown', async () => {
     trigger.click();
     fixture.detectChanges();
@@ -166,5 +207,17 @@ describe('MenuTriggerDirective', () => {
 
       expect(document.activeElement?.textContent?.trim()).toBe('Русский');
     });
+  });
+
+  it('should announce the menu on a picker field\'s inner trigger, not on the field', () => {
+    const pickerFixture = TestBed.createComponent(PickerFieldHostComponent);
+    pickerFixture.detectChanges();
+
+    const field: HTMLElement = pickerFixture.nativeElement.querySelector('tls-picker-field');
+    const inner = field.querySelector('button') as HTMLButtonElement;
+
+    expect(inner.getAttribute('aria-haspopup')).toBe('menu');
+    expect(inner.getAttribute('aria-expanded')).toBe('false');
+    expect(field.getAttribute('aria-haspopup')).toBeNull();
   });
 });

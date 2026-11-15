@@ -3,6 +3,9 @@
   class="tls-picker-field__trigger"
   [disabled]="disabled()"
   [attr.aria-label]="ariaLabel() ?? null"
+  [attr.aria-haspopup]="popup.kind"
+  [attr.aria-expanded]="popup.expanded()"
+  [attr.aria-controls]="popup.id()"
 >
   <span class="tls-picker-field__value">
     <ng-content />
