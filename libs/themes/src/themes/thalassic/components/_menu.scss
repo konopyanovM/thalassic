@@ -246,12 +246,6 @@
         animation: tls-menu-sheet-open var(--motion-default) var(--motion-ease-in) reverse both;
       }
 
-      // Only the settle animates. The drag itself is direct manipulation, not
-      // motion, so it tracks the finger at every motion level.
-      &.tls-menu--settling {
-        transition: transform var(--motion-default) var(--motion-ease-out);
-      }
-
       // A pane the drag machinery owns plays no keyframes at all. The sheet's
       // own enter/leave already stand down above, but the anchored panel's
       // base leave animation matches `--leave` too — and a keyframe always
@@ -266,6 +260,13 @@
     &.tls-menu--dragging,
     &.tls-menu--settling {
       transform: translateY(var(--tls-menu-drag));
+    }
+
+    // Only the settle animates, on the spring the component writes for it. The
+    // drag itself is direct manipulation, not motion, so it tracks the finger
+    // at every motion level.
+    &.tls-menu--settling {
+      @include mixins.settle-transition(transform);
     }
   }
 

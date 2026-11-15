@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { MOTION_ATTRIBUTE, PanDirective, PanEvent } from '@thalassic/core';
 import { afterLeaveAnimation, fadeOutBackdrop, whenAnimationsFinish } from '../../abstract/overlay';
-import { decideCommit, SheetMotion } from '../../abstract/sheet-motion';
+import { decideCommit, drawnTranslation, SheetMotion } from '../../abstract/sheet-motion';
 import { Icon } from '../icon';
 import { DrawerPanelConfig } from './drawer.config';
 import { DRAWER_NAMED_SIZES } from './drawer.constants';
@@ -104,6 +104,11 @@ export class Drawer extends CdkDialogContainer {
     renderer: this._dragRenderer,
     injector: this._dragInjector,
   });
+  /**
+   * How far toward the pinned edge the panel was drawn when the drag began: 0
+   * from rest, the settle's position when caught mid-flight.
+   */
+  private _dragLead = 0;
 
   // Computed
   protected readonly hostClasses = computed(() => {
@@ -134,7 +139,7 @@ export class Drawer extends CdkDialogContainer {
     // zone through a direct subscription, which is the point of it.
     const pan = inject(PanDirective);
     const subscriptions = [
-      pan.panStart.subscribe(() => this._onPanStart()),
+      pan.panStart.subscribe(event => this._onPanStart(event)),
       pan.panMove.subscribe(event => this._onPanMove(event)),
       pan.panEnd.subscribe(event => this._onPanEnd(event)),
       pan.panCancel.subscribe(() => this._onPanCancel()),
@@ -225,7 +230,7 @@ export class Drawer extends CdkDialogContainer {
   /** See `DrawerRef.followOpenDrag`. */
   public followOpenDrag(event: PanEvent): void {
     // Travel toward open is travel away from the pinned edge.
-    const travel = -this._dismissTravel(event);
+    const travel = -this._towardEdge(event.deltaX, event.deltaY);
 
     if (this._openPhase === 'pending') {
       this._pendingOpenTravel = travel;
@@ -352,7 +357,7 @@ export class Drawer extends CdkDialogContainer {
    * drag got does — the same rule the drag to dismiss commits by.
    */
   private _opensOnRelease(event: PanEvent, progress: number): boolean {
-    return decideCommit(-this._dismissVelocity(event), progress);
+    return decideCommit(-this._towardEdge(event.velocityX, event.velocityY), progress);
   }
 
   /**
@@ -387,7 +392,7 @@ export class Drawer extends CdkDialogContainer {
     );
   }
 
-  private _onPanStart(): void {
+  private _onPanStart(event: PanEvent): void {
     if (this._closing || this._openPhase !== 'done') return;
 
     // Taking hold of the panel ends its entrance. The slide-in stands down only
@@ -396,6 +401,15 @@ export class Drawer extends CdkDialogContainer {
     this._state.set('open');
 
     const panel = this._elementRef.nativeElement;
+    // Caught mid-settle, the panel is picked up where it is drawn: the drag
+    // stops the settle's transition, which would otherwise leave it at the
+    // settle's end.
+    if (this._motion.state() === 'settling') {
+      const drawn = drawnTranslation(panel);
+      this._dragLead = this._towardEdge(drawn.x, drawn.y);
+    } else {
+      this._dragLead = 0;
+    }
     // The panel may be sized by content or by a custom length, so only the rendered box is authoritative.
     const rect = panel.getBoundingClientRect();
     this._motion.begin({
@@ -403,6 +417,7 @@ export class Drawer extends CdkDialogContainer {
       backdrop: this._dialogRef.overlayRef.backdropElement,
       extent: this._isInlineSide() ? rect.width : rect.height,
     });
+    this._motion.follow(Math.max(0, this._dismissTravel(event)));
   }
 
   /**
@@ -420,52 +435,49 @@ export class Drawer extends CdkDialogContainer {
     if (this._closing || this._motion.state() !== 'dragging') return;
 
     const extent = this._motion.extent;
-    const progress = extent > 0 ? Math.max(0, this._dismissTravel(event)) / extent : 0;
+    const travel = Math.max(0, this._dismissTravel(event));
+    const progress = extent > 0 ? travel / extent : 0;
+    const velocity = this._towardEdge(event.velocityX, event.velocityY);
 
-    if (decideCommit(this._dismissVelocity(event), progress)) {
-      this._dragClose(extent);
+    if (decideCommit(velocity, progress)) {
+      // A finger that carried the panel past the edge has already hidden it:
+      // it leaves from there rather than travelling back to the edge unseen.
+      this._dragClose(Math.max(extent, travel), velocity);
       return;
     }
 
-    this._settleBack();
+    this._settleBack(velocity);
   }
 
   private _onPanCancel(): void {
     if (this._closing || this._motion.state() !== 'dragging') return;
-    this._settleBack();
+    this._settleBack(0);
   }
 
   /**
-   * Travel toward the panel's pinned edge in px. Negative while the finger moves
+   * Travel toward the panel's pinned edge in px: where the drag picked the
+   * panel up, plus the finger's travel since. Negative while the finger moves
    * the other way, which the caller clamps away — the panel does not overshoot open.
    */
   private _dismissTravel(event: PanEvent): number {
-    switch (this._tlsConfig.side) {
-      case 'top':
-        return -event.deltaY;
-      case 'bottom':
-        return event.deltaY;
-      case 'start':
-        return -this._toLogical(event.deltaX);
-      case 'end':
-        return this._toLogical(event.deltaX);
-    }
+    return this._dragLead + this._towardEdge(event.deltaX, event.deltaY);
   }
 
   /**
-   * Release velocity toward the pinned edge in px/ms. Signed independently of
-   * `_dismissTravel`: a drag that reverses into a flick must read as the flick.
+   * The component toward the pinned edge of a physical vector — a travel, a
+   * velocity, a translation. A velocity is read apart from the travel, so a
+   * drag that reverses into a flick reads as the flick.
    */
-  private _dismissVelocity(event: PanEvent): number {
+  private _towardEdge(physicalX: number, physicalY: number): number {
     switch (this._tlsConfig.side) {
       case 'top':
-        return -event.velocityY;
+        return -physicalY;
       case 'bottom':
-        return event.velocityY;
+        return physicalY;
       case 'start':
-        return -this._toLogical(event.velocityX);
+        return -this._toLogical(physicalX);
       case 'end':
-        return this._toLogical(event.velocityX);
+        return this._toLogical(physicalX);
     }
   }
 
@@ -482,20 +494,24 @@ export class Drawer extends CdkDialogContainer {
     return side === 'start' || side === 'end';
   }
 
-  /** Returns the panel to rest after a drag that did not commit. */
-  private _settleBack(): void {
-    this._motion.settle(0, () => this._motion.rest());
+  /**
+   * Returns the panel to rest after a drag that did not commit, launched at
+   * the finger's `velocity` toward the pinned edge.
+   */
+  private _settleBack(velocity: number): void {
+    this._motion.settle(0, () => this._motion.rest(), velocity);
   }
 
   /**
-   * Continues the drag out to the pinned edge and disposes on arrival. A dismissal
-   * that began as a drag cannot route through `animatedClose`: the slide-out
-   * keyframe starts from `transform: none`, so the panel would snap back to fully
-   * open for a frame before leaving.
+   * Continues the drag out to `target` px — the pinned edge, or past it where
+   * the finger already went — at the finger's `velocity`, and disposes on
+   * arrival. A dismissal that began as a drag cannot route through
+   * `animatedClose`: the slide-out keyframe starts from `transform: none`, so
+   * the panel would snap back to fully open for a frame before leaving.
    */
-  private _dragClose(extent: number): void {
+  private _dragClose(target: number, velocity: number): void {
     this._closing = true;
-    this._motion.settle(extent, () => this._dialogRef.close());
+    this._motion.settle(target, () => this._dialogRef.close(), velocity);
   }
 
   private _sizeClass(): drawerSize | 'custom' {

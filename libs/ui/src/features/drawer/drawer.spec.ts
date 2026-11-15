@@ -71,8 +71,15 @@ function finishedAnimation(): Animation {
 
 @Component({
   imports: [DrawerTriggerDirective],
-  template: `<button type="button" tlsDrawerTrigger dragToOpen #trigger="tlsDrawerTrigger"
-    (openRequest)="open(trigger)">Open</button>`,
+  template: `<button
+    type="button"
+    tlsDrawerTrigger
+    dragToOpen
+    #trigger="tlsDrawerTrigger"
+    (openRequest)="open(trigger)"
+  >
+    Open
+  </button>`,
 })
 class DraggableTriggerHostComponent {
   public drawerRef: DrawerRef<unknown, DrawerContentComponent> | null = null;
@@ -354,6 +361,66 @@ describe('DrawerService', () => {
       expect(closed).not.toHaveBeenCalled();
     });
 
+    it('picks the panel up where it is drawn when caught settling back', async () => {
+      service.open(DrawerContentComponent, { side: 'bottom', grabber: true });
+      flush();
+
+      const element = drawerElement();
+      expect(element).not.toBeNull();
+      if (element === null) return;
+
+      stubPanelExtent(element, 'bottom');
+      dragPanel(element, { x: 0, y: PANEL_EXTENT * 0.1 });
+      // Settling back, and drawn 30px short of rest at the moment it is caught.
+      flush();
+      expect(element.classList.contains('tls-drawer--settling')).toBe(true);
+      // jsdom has neither a computed transform nor DOMMatrixReadOnly to read it.
+      vi.spyOn(window, 'getComputedStyle').mockReturnValue({
+        transform: 'matrix(1, 0, 0, 1, 0, 30)',
+      } as CSSStyleDeclaration);
+      vi.stubGlobal(
+        'DOMMatrixReadOnly',
+        class {
+          readonly m41 = 0;
+          readonly m42 = 30;
+        },
+      );
+
+      element.dispatchEvent(createPointerEvent('pointerdown', { x: 0, y: 0, timeStamp: 1000 }));
+      document.dispatchEvent(createPointerEvent('pointermove', { x: 0, y: 20, timeStamp: 1100 }));
+      vi.restoreAllMocks();
+      vi.unstubAllGlobals();
+
+      // 30px drawn + 20px of finger travel, not the 20px a pickup from rest gives.
+      expect(element.style.getPropertyValue('--tls-drawer-drag')).toBe('50px');
+
+      document.dispatchEvent(createPointerEvent('pointerup', { x: 0, y: 20, timeStamp: 1600 }));
+      await settle();
+    });
+
+    it('settles a flick on a spring launched at the finger’s speed', () => {
+      service.open(DrawerContentComponent, { side: 'bottom', grabber: true });
+      flush();
+
+      const element = drawerElement();
+      expect(element).not.toBeNull();
+      if (element === null) return;
+
+      stubPanelExtent(element, 'bottom');
+      // A quick flick upward, back toward rest from 30px out: no dismissal.
+      element.dispatchEvent(createPointerEvent('pointerdown', { x: 0, y: 0, timeStamp: 0 }));
+      document.dispatchEvent(createPointerEvent('pointermove', { x: 0, y: 40, timeStamp: 400 }));
+      document.dispatchEvent(createPointerEvent('pointermove', { x: 0, y: 30, timeStamp: 410 }));
+      document.dispatchEvent(createPointerEvent('pointerup', { x: 0, y: 30, timeStamp: 410 }));
+      flush();
+
+      // A settle from rest takes its first sampled step at 0.0405 of the way;
+      // launched at the finger's speed it covers more of the way at once.
+      const easing = element.style.getPropertyValue('--tls-settle-easing');
+      expect(easing).toMatch(/^linear\(0, /);
+      expect(Number.parseFloat(easing.split(', ')[1])).toBeGreaterThan(0.0405);
+    });
+
     it('mirrors the dismiss direction in RTL', async () => {
       useDirection('rtl');
 
@@ -573,7 +640,9 @@ describe('DrawerService', () => {
           currentTime: 0,
           playState: 'running',
           get finished(): Promise<void> {
-            return this.playState === 'paused' ? new Promise<void>(() => undefined) : Promise.resolve();
+            return this.playState === 'paused'
+              ? new Promise<void>(() => undefined)
+              : Promise.resolve();
           },
           effect: { getComputedTiming: () => ({ endTime: 1 }) },
           pause() {

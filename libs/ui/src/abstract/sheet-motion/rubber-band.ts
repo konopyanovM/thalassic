@@ -14,3 +14,18 @@ import { RUBBER_BAND_RESISTANCE } from './sheet-motion.constants';
 export function rubberBand(overshoot: number, limit: number): number {
   return limit * (1 - 1 / ((overshoot * RUBBER_BAND_RESISTANCE) / limit + 1));
 }
+
+/**
+ * The overshoot `rubberBand` answers with `stretch` — its inverse, for picking
+ * a stretched surface up where it is drawn without pulling it in a second
+ * time. A stretch at or past the limit, which no overshoot reaches, reads as
+ * an unbounded one.
+ *
+ * @example
+ * rubberBandOvershoot(8.9, 48);  // 20 (to rounding)
+ * rubberBandOvershoot(48, 48);   // Infinity
+ */
+export function rubberBandOvershoot(stretch: number, limit: number): number {
+  if (stretch >= limit) return Number.POSITIVE_INFINITY;
+  return (stretch * limit) / (RUBBER_BAND_RESISTANCE * (limit - stretch));
+}

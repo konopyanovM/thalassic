@@ -1,8 +1,5 @@
 import { Menu as AriaMenu, MenuItem as AriaMenuItem } from '@angular/aria/menu';
-import {
-  ConnectedPosition,
-  FlexibleConnectedPositionStrategyOrigin,
-} from '@angular/cdk/overlay';
+import { ConnectedPosition, FlexibleConnectedPositionStrategyOrigin } from '@angular/cdk/overlay';
 import { NgTemplateOutlet } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import {
@@ -36,7 +33,7 @@ import {
   ViewportService,
 } from '@thalassic/core';
 import { createOverlayManager, overlayCloseCause } from '../../abstract/overlay';
-import { decideCommit, SheetMotion } from '../../abstract/sheet-motion';
+import { decideCommit, drawnTranslation, SheetMotion } from '../../abstract/sheet-motion';
 import { overlayPosition } from '../../types';
 import { buildOverlayPositions } from '../../utils';
 import { Icon } from '../icon';
@@ -48,7 +45,16 @@ import { RippleDirective } from '../ripple';
 
 @Component({
   selector: 'tls-menu',
-  imports: [NgTemplateOutlet, Icon, Kbd, RouterLink, AriaMenu, AriaMenuItem, PanDirective, RippleDirective],
+  imports: [
+    NgTemplateOutlet,
+    Icon,
+    Kbd,
+    RouterLink,
+    AriaMenu,
+    AriaMenuItem,
+    PanDirective,
+    RippleDirective,
+  ],
   providers: [
     // The sheet's dismissal drag runs down the vertical axis only, from the
     // pointers that drag panels shut anywhere else; whether the gesture is
@@ -196,6 +202,11 @@ export class Menu {
   });
 
   private _sheetClosing = false;
+  /**
+   * How far below its rest the pane was drawn when the drag began: 0 from
+   * rest, the settle's position when caught mid-flight.
+   */
+  private _sheetDragLead = 0;
 
   constructor() {
     if (isDevMode()) {
@@ -232,7 +243,7 @@ export class Menu {
       positions: this._positions(),
       panelClass: this.panelClass(),
       ...(sheet && { presentation: 'sheet' as const }),
-      onClose: (cause) => this._returnFocus(cause),
+      onClose: cause => this._returnFocus(cause),
     });
     this._focusEntryItemOnceShown();
   }
@@ -255,7 +266,7 @@ export class Menu {
         ? { presentation: 'sheet' as const }
         : { scrollStrategy: 'close' as const, hasBackdrop: false }),
       ignoreTrailingAuxClick: true,
-      onClose: (cause) => this._returnFocus(cause),
+      onClose: cause => this._returnFocus(cause),
     });
     this._focusEntryItemOnceShown();
   }
@@ -316,15 +327,20 @@ export class Menu {
     return this.itemTemplate();
   }
 
-  protected onSheetPanStart(pane: HTMLElement): void {
+  protected onSheetPanStart(pane: HTMLElement, event: PanEvent): void {
     if (this._sheetClosing) return;
 
+    // Caught mid-settle, the pane is picked up where it is drawn: the drag
+    // stops the settle's transition, which would otherwise leave it at the
+    // settle's end.
+    this._sheetDragLead = this.sheetMotion.state() === 'settling' ? drawnTranslation(pane).y : 0;
     // The pane is sized by its content, so only the rendered box is authoritative.
     this.sheetMotion.begin({
       panel: pane,
       backdrop: this._overlay.backdropElement,
       extent: pane.getBoundingClientRect().height,
     });
+    this.sheetMotion.follow(Math.max(0, this._sheetTravel(event)));
   }
 
   /**
@@ -334,21 +350,26 @@ export class Menu {
    */
   protected onSheetPanMove(event: PanEvent): void {
     if (this._sheetClosing) return;
-    this.sheetMotion.follow(Math.max(0, event.deltaY));
+    this.sheetMotion.follow(Math.max(0, this._sheetTravel(event)));
   }
 
   protected onSheetPanEnd(event: PanEvent): void {
     if (this._sheetClosing) return;
 
     const extent = this.sheetMotion.extent;
-    const progress = extent > 0 ? Math.max(0, event.deltaY) / extent : 0;
+    const travel = Math.max(0, this._sheetTravel(event));
+    const progress = extent > 0 ? travel / extent : 0;
 
     if (decideCommit(event.velocityY, progress)) {
-      this._sheetDragClose(extent);
+      // A finger that carried the pane past the edge has already hidden it: it
+      // leaves from there rather than travelling back to the edge unseen.
+      this._sheetDragClose(Math.max(extent, travel), event.velocityY);
       return;
     }
 
-    this.sheetMotion.settle(0, () => this.sheetMotion.rest());
+    // The drag runs down the offset's own axis, so the finger's velocity is
+    // already signed along it.
+    this.sheetMotion.settle(0, () => this.sheetMotion.rest(), event.velocityY);
   }
 
   protected onSheetPanCancel(): void {
@@ -379,8 +400,8 @@ export class Menu {
   private _focusEntryItemOnceShown(): void {
     afterNextRender(
       () => {
-        const items = this._items().filter((item) => !item.disabled());
-        const checked = items.find((item) => item.element.getAttribute('aria-checked') === 'true');
+        const items = this._items().filter(item => !item.disabled());
+        const checked = items.find(item => item.element.getAttribute('aria-checked') === 'true');
         const entry = checked ?? items[0];
         if (!entry) return;
 
@@ -418,14 +439,23 @@ export class Menu {
   }
 
   /**
-   * Continues the drag out past the bottom edge and closes on arrival. A
-   * dismissal that began as a drag must not route through the leave keyframe:
-   * that starts from the fully open position, so the pane would snap back for
-   * a frame before leaving — the stylesheet stands the keyframe down while
-   * the drag state classes are on.
+   * Travel toward the bottom edge in px: where the drag picked the pane up,
+   * plus the finger's travel since.
    */
-  private _sheetDragClose(extent: number): void {
+  private _sheetTravel(event: PanEvent): number {
+    return this._sheetDragLead + event.deltaY;
+  }
+
+  /**
+   * Continues the drag out to `target` px — past the bottom edge, or further
+   * where the finger already went — at the finger's `velocity`, and closes on
+   * arrival. A dismissal that began as a drag must not route through the
+   * leave keyframe: that starts from the fully open position, so the pane
+   * would snap back for a frame before leaving — the stylesheet stands the
+   * keyframe down while the drag state classes are on.
+   */
+  private _sheetDragClose(target: number, velocity: number): void {
     this._sheetClosing = true;
-    this.sheetMotion.settle(extent, () => this._overlay.close());
+    this.sheetMotion.settle(target, () => this._overlay.close(), velocity);
   }
 }

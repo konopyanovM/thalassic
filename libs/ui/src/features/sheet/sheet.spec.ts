@@ -3,6 +3,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { ApplicationRef, Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { rubberBand, rubberBandOvershoot } from '../../abstract/sheet-motion';
 import { Sheet } from './sheet';
 import { SheetHeaderDirective } from './sheet-header.directive';
 import { SheetDetent } from './sheet.types';
@@ -314,6 +315,21 @@ describe('Sheet', () => {
     expect(panelOffset()).toBe('120px');
   });
 
+  it('keeps every detent at least as tall as the header on a viewport too short for the clearance', () => {
+    const probe = query('.tls-sheet__probe');
+    Object.defineProperty(probe, 'offsetHeight', {
+      get: () =>
+        probe.style.getPropertyValue('block-size').includes('--tls-sheet-top-clearance')
+          ? 790
+          : 320,
+      configurable: true,
+    });
+    sheet.remeasure();
+
+    // 800px less 790px leaves 10px; the 80px header is the floor.
+    expect(query('.tls-sheet__panel').style.getPropertyValue('--tls-sheet-height')).toBe('80px');
+  });
+
   it('removes the published height and the pane on destroy', async () => {
     fixture.destroy();
 
@@ -478,15 +494,37 @@ describe('Sheet', () => {
       expect(panelOffset()).toBe('140px');
     });
 
+    it('picks a stretched panel up without pulling it in a second time', () => {
+      sheet.snapTo('full');
+      // Springing back from a stretch: drawn 20px above the 320px largest detent.
+      vi.spyOn(query('.tls-sheet'), 'getBoundingClientRect').mockReturnValue(
+        DOMRect.fromRect({ x: 0, y: 0, width: 400, height: 800 }),
+      );
+      vi.spyOn(query('.tls-sheet__panel'), 'getBoundingClientRect').mockReturnValue(
+        DOMRect.fromRect({ x: 0, y: 460, width: 400, height: 320 }),
+      );
+
+      const drag = touch();
+      drag.move(-10);
+      // Ten more pixels of finger on top of the overshoot that drew it there.
+      const expected = -rubberBand(rubberBandOvershoot(20, 48) + 10, 48);
+      expect(Number.parseFloat(panelOffset())).toBeCloseTo(expected, 6);
+      expect(Number.parseFloat(panelOffset())).toBeLessThan(-20);
+    });
+
     it('settles a flick on a spring launched at the finger’s speed', async () => {
-      const easing = (): string =>
-        query('.tls-sheet__panel').style.getPropertyValue('--tls-settle-easing');
-      const firstStep = (): number => Number.parseFloat(easing().split(', ')[1]);
+      const panel = query('.tls-sheet__panel');
+      // The timing is on the panel while the settle runs and comes off at rest,
+      // so it is read once the render that starts the settle has passed.
+      const firstStep = (): number =>
+        Number.parseFloat(panel.style.getPropertyValue('--tls-settle-easing').split(', ')[1]);
 
       sheet.snapTo('half');
-      await settle();
-      expect(easing()).toMatch(/^linear\(0, /);
+      TestBed.inject(ApplicationRef).tick();
+      expect(panel.style.getPropertyValue('--tls-settle-easing')).toMatch(/^linear\(0, /);
       const fromRest = firstStep();
+      await settle();
+      expect(panel.style.getPropertyValue('--tls-settle-easing')).toBe('');
 
       sheet.snapTo('lip');
       await settle();
@@ -494,13 +532,12 @@ describe('Sheet', () => {
       drag.move(-10, 5);
       drag.move(-24, 7);
       drag.release();
-      await settle();
+      TestBed.inject(ApplicationRef).tick();
 
-      expect(host.detent()).toBe('half');
       expect(firstStep()).toBeGreaterThan(fromRest);
-      expect(query('.tls-sheet__panel').style.getPropertyValue('--tls-settle-duration')).toMatch(
-        /^\d+ms$/,
-      );
+      expect(panel.style.getPropertyValue('--tls-settle-duration')).toMatch(/^\d+ms$/);
+      await settle();
+      expect(host.detent()).toBe('half');
     });
 
     it('leaves a pan inside a scrolled body to the body at the top detent', async () => {

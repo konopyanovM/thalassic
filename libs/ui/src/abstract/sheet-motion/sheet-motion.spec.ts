@@ -126,6 +126,20 @@ describe('SheetMotion', () => {
     }
   });
 
+  it('takes the settle timing off the surface and the backdrop at rest', async () => {
+    const done = vi.fn(() => motion.rest());
+    motion.begin({ panel, backdrop, extent: 200 });
+    motion.settle(200, done);
+    TestBed.inject(ApplicationRef).tick();
+    await vi.waitFor(() => expect(done).toHaveBeenCalledTimes(1));
+
+    for (const element of [panel, backdrop]) {
+      expect(wroteStyle(element, '--tls-settle-easing')).toBe(true);
+      expect(removedStyle(element, '--tls-settle-duration')).toBe(true);
+      expect(removedStyle(element, '--tls-settle-easing')).toBe(true);
+    }
+  });
+
   it('settles by handing back the transitions and writing the target after render', async () => {
     const done = vi.fn();
     motion.begin({ panel, backdrop, extent: 200 });

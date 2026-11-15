@@ -29,10 +29,10 @@
 
   background-color: var(--tls-dialog-backdrop);
 
-  // Fades in with the dialog and out with it on close, at the dialog's own pace.
-  @include mixins.motion(essential) {
-    transition: opacity var(--motion-default) var(--motion-ease-out);
-  }
+  // Fades in with the dialog and out with it on close, at the dialog's own
+  // pace. Under a sheet that is dragged and let go, it settles on the sheet's
+  // spring instead, so the two arrive together.
+  @include mixins.settle-transition(opacity);
 }
 
 .tls-dialog {
@@ -136,10 +136,7 @@
     // header reserves its inset plus its width plus a gutter, keeping a long
     // title clear of it.
     padding: var(--tls-dialog-padding)
-      calc(
-        var(--tls-dialog-close-padding) + var(--tls-dialog-close-button-size) +
-          var(--spacing-2)
-      )
+      calc(var(--tls-dialog-close-padding) + var(--tls-dialog-close-button-size) + var(--spacing-2))
       0 var(--tls-dialog-padding);
 
     display: block;

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { rubberBand } from './rubber-band';
+import { rubberBand, rubberBandOvershoot } from './rubber-band';
 import { RUBBER_BAND_RESISTANCE } from './sheet-motion.constants';
 
 describe('rubberBand', () => {
@@ -18,5 +18,18 @@ describe('rubberBand', () => {
     expect(far).toBeGreaterThan(near);
     expect(far - near).toBeLessThan(near);
     expect(rubberBand(1e9, 48)).toBeLessThan(48);
+  });
+});
+
+describe('rubberBandOvershoot', () => {
+  it('undoes the band: the overshoot that draws a stretch', () => {
+    for (const overshoot of [0, 5, 60, 600]) {
+      expect(rubberBandOvershoot(rubberBand(overshoot, 48), 48)).toBeCloseTo(overshoot, 6);
+    }
+  });
+
+  it('reads a stretch at the limit as unbounded', () => {
+    expect(rubberBandOvershoot(48, 48)).toBe(Number.POSITIVE_INFINITY);
+    expect(rubberBand(rubberBandOvershoot(60, 48), 48)).toBe(48);
   });
 });

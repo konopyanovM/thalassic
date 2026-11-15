@@ -37,11 +37,10 @@
   background-color: var(--tls-drawer-backdrop);
 
   // The backdrop's opacity is driven inline while a panel is dragged, so it
-  // tracks the finger. This transition only smooths the settle at the end of the
-  // gesture; the drag suspends it inline so it never lags the finger.
-  @include mixins.motion(essential) {
-    transition: opacity var(--motion-default) var(--motion-ease-out);
-  }
+  // tracks the finger. This transition fades it with the panel's open and close,
+  // and plays a released drag's settle on the panel's own spring; the drag
+  // suspends it inline so it never lags the finger.
+  @include mixins.settle-transition(opacity);
 }
 
 .tls-drawer {
@@ -103,12 +102,13 @@
     &--leave:not(.tls-drawer--scripted) {
       animation: tls-drawer-slide-out var(--tls-drawer-leave-duration) var(--motion-ease-in) both;
     }
+  }
 
-    // Only the settle animates. The drag itself is direct manipulation, not
-    // motion, so it tracks the finger at every motion level.
-    &--settling {
-      transition: transform var(--motion-default) var(--motion-ease-out);
-    }
+  // Only the settle animates, on the spring the component writes for it. The
+  // drag itself is direct manipulation, not motion, so it tracks the finger at
+  // every motion level.
+  &--settling {
+    @include mixins.settle-transition(transform);
   }
 
   &--dragging,

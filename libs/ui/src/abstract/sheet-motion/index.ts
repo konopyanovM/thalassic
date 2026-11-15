@@ -1,4 +1,5 @@
 export * from './decide-commit';
+export * from './drawn-translation';
 export * from './resolve-detent';
 export * from './rubber-band';
 export * from './settle-curve';

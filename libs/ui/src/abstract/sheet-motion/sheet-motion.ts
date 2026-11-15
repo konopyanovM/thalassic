@@ -113,11 +113,32 @@ export class SheetMotion {
     this.settle(target, done);
   }
 
-  /** Lets go of the surface; the transform is the stylesheet's again. */
+  /**
+   * Lets go of the surface; the transform is the stylesheet's again. The
+   * settle's timing comes off with it, so a transition that outlives the
+   * gesture — a scrim's fade on close — keeps the stylesheet's own pace rather
+   * than the curve of the last settle.
+   */
   public rest(): void {
+    const surface = this._surface;
     this._gesture += 1;
     this._surface = null;
     this._state.set('idle');
+    if (surface === null) return;
+
+    for (const element of [surface.panel, surface.backdrop]) {
+      if (element === null) continue;
+      this._options.renderer.removeStyle(
+        element,
+        SETTLE_DURATION_PROPERTY,
+        RendererStyleFlags2.DashCase,
+      );
+      this._options.renderer.removeStyle(
+        element,
+        SETTLE_EASING_PROPERTY,
+        RendererStyleFlags2.DashCase,
+      );
+    }
   }
 
   // Private methods

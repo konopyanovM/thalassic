@@ -33,6 +33,7 @@ import { whenAnimationsFinish } from '../../abstract/overlay';
 import {
   resolveDetent,
   rubberBand,
+  rubberBandOvershoot,
   SheetMotion,
   SheetMotionSurface,
 } from '../../abstract/sheet-motion';
@@ -349,7 +350,7 @@ export class Sheet implements OnDestroy {
     this._dragStartIndex = this._targetIndex();
     this._dragStartLead =
       this._motion.state() === 'settling'
-        ? this._drawnHeight() - this._heights()[this._dragStartIndex]
+        ? this._askedHeightFor(this._drawnHeight()) - this._heights()[this._dragStartIndex]
         : 0;
     this._motion.begin(this._surface());
     this._motion.follow(this._offsetFor(this._dragHeight(event)));
@@ -463,7 +464,12 @@ export class Sheet implements OnDestroy {
       header: header.offsetHeight,
       content: header.offsetHeight + content.offsetHeight,
       viewport,
-      maximum: viewport - length(`var(${SHEET_TOP_CLEARANCE_PROPERTY})`),
+      // Never below the header: on a viewport too short for the clearance, the
+      // lip still fits and no detent ends up smaller than it.
+      maximum: Math.max(
+        header.offsetHeight,
+        viewport - length(`var(${SHEET_TOP_CLEARANCE_PROPERTY})`),
+      ),
       length,
     };
     const heights = this.detents().map(candidate => resolveDetentHeight(candidate.size, measures));
@@ -567,6 +573,22 @@ export class Sheet implements OnDestroy {
   private _drawnHeight(): number {
     const root = this._root().nativeElement.getBoundingClientRect();
     return root.bottom - this._panel().nativeElement.getBoundingClientRect().top;
+  }
+
+  /**
+   * The height a finger asks for that draws the panel at `drawn` — the inverse
+   * of `_offsetFor`. Past either end of the travel the drawn height is already
+   * rubber-banded, and taking it as asked would band it a second time.
+   */
+  private _askedHeightFor(drawn: number): number {
+    const heights = this._heights();
+    const smallest = heights[0];
+    const largest = heights[heights.length - 1];
+    if (drawn > largest) return largest + rubberBandOvershoot(drawn - largest, SHEET_STRETCH_LIMIT);
+    if (drawn < smallest) {
+      return smallest - rubberBandOvershoot(smallest - drawn, SHEET_STRETCH_LIMIT);
+    }
+    return drawn;
   }
 
   /**

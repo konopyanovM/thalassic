@@ -243,19 +243,13 @@
     }
   }
 
-  // A settle plays the spring the component writes for it, which carries a
-  // released finger's speed on; the scrim keeps to the same curve so the two
-  // arrive together. Keyed to the settle alone, so no other change of the
-  // offset replays a curve written for an earlier one.
-  &--settling {
-    @include mixins.motion(essential) {
-      .tls-sheet__panel {
-        transition: translate var(--tls-settle-duration) var(--tls-settle-easing);
-      }
+  // A settle plays the spring the component writes for it; the scrim keeps to
+  // the same curve so the two arrive together.
+  &--settling &__panel {
+    @include mixins.settle-transition(translate);
+  }
 
-      .tls-sheet__backdrop {
-        transition: opacity var(--tls-settle-duration) var(--tls-settle-easing);
-      }
-    }
+  &--settling &__backdrop {
+    @include mixins.settle-transition(opacity);
   }
 }

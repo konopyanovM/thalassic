@@ -1,0 +1,20 @@
+@use '@thalassic/core/styles' as core;
+
+// Transitions `$properties` the way a dragged surface settles once released:
+// on the spring the component writes as `--tls-settle-duration` and
+// `--tls-settle-easing`, which carries the finger's speed on into the settle.
+// Where neither is set — no settle in flight — or the browser has no
+// `linear()` easing to play the spring with, it is the default overlay motion.
+// Settling says where a surface went, so it is essential motion, gated here.
+@mixin settle-transition($properties...) {
+  @include core.motion(essential) {
+    transition-property: $properties;
+    transition-duration: var(--motion-default);
+    transition-timing-function: var(--motion-ease-out);
+
+    @supports (transition-timing-function: linear(0, 1)) {
+      transition-duration: var(--tls-settle-duration, var(--motion-default));
+      transition-timing-function: var(--tls-settle-easing, var(--motion-ease-out));
+    }
+  }
+}

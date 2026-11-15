@@ -1,5 +1,5 @@
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { Component, signal, viewChild } from '@angular/core';
+import { ApplicationRef, Component, signal, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { ViewportService } from '@thalassic/core';
@@ -52,7 +52,12 @@ class TemplateHostComponent {
   public readonly clicks: string[] = [];
   public readonly items = signal<MenuItemDefinition[]>([
     { type: 'item', label: 'First', action: () => this.clicks.push('First') },
-    { type: 'item', label: 'Special', templateKey: 'special', action: () => this.clicks.push('Special') },
+    {
+      type: 'item',
+      label: 'Special',
+      templateKey: 'special',
+      action: () => this.clicks.push('Special'),
+    },
   ]);
   public readonly menu = viewChild.required(Menu);
 }
@@ -379,7 +384,9 @@ describe('Menu', () => {
       expect(document.getElementById(String(labelId))?.textContent).toContain('Radio');
 
       const descriptionId = radio.getAttribute('aria-describedby');
-      expect(document.getElementById(String(descriptionId))?.textContent).toContain('Secondary text');
+      expect(document.getElementById(String(descriptionId))?.textContent).toContain(
+        'Secondary text',
+      );
     });
   });
 
@@ -512,7 +519,12 @@ describe('Menu', () => {
     beforeEach(() => {
       host.items.set([
         { type: 'item', label: 'First', action: () => host.clicks.push('First') },
-        { type: 'item', label: 'Disabled', disabled: true, action: () => host.clicks.push('Disabled') },
+        {
+          type: 'item',
+          label: 'Disabled',
+          disabled: true,
+          action: () => host.clicks.push('Disabled'),
+        },
         { type: 'item', label: 'Second', action: () => host.clicks.push('Second') },
       ]);
       fixture.detectChanges();
@@ -592,6 +604,55 @@ describe('Menu', () => {
       expect(queryPanel()?.classList.contains('tls-menu--sheet')).toBe(false);
       expect(queryBackdrop()?.classList.contains('cdk-overlay-transparent-backdrop')).toBe(true);
       expect(overlayContainerElement.querySelector('.tls-menu__grabber')).toBeNull();
+    });
+
+    it('should settle a released drag on a spring launched at the finger’s speed', async () => {
+      await configureSheet(true);
+      Element.prototype.setPointerCapture = () => undefined;
+      Element.prototype.releasePointerCapture = () => undefined;
+      Element.prototype.hasPointerCapture = () => true;
+
+      getMenu().open(trigger);
+      fixture.detectChanges();
+      const pane = queryPanel();
+      expect(pane).toBeTruthy();
+      if (!pane) return;
+      vi.spyOn(pane, 'getBoundingClientRect').mockReturnValue(
+        DOMRect.fromRect({ x: 0, y: 400, width: 400, height: 400 }),
+      );
+
+      // Out 40px, then flicked back up: too short and too quick upward to dismiss.
+      const pointer = (type: string, y: number, timeStamp: number): MouseEvent => {
+        const event = new MouseEvent(type, {
+          bubbles: true,
+          cancelable: true,
+          clientY: y,
+          button: 0,
+        });
+        Object.defineProperties(event, {
+          pointerId: { value: 1 },
+          pointerType: { value: 'touch' },
+          isPrimary: { value: true },
+          timeStamp: { value: timeStamp },
+        });
+        return event;
+      };
+      pane.dispatchEvent(pointer('pointerdown', 0, 0));
+      document.dispatchEvent(pointer('pointermove', 40, 400));
+      document.dispatchEvent(pointer('pointermove', 30, 410));
+      document.dispatchEvent(pointer('pointerup', 30, 410));
+      TestBed.inject(ApplicationRef).tick();
+
+      // A settle from rest takes its first sampled step at 0.0405 of the way;
+      // launched at the finger's speed it covers more of the way at once.
+      const easing = pane.style.getPropertyValue('--tls-settle-easing');
+      expect(easing).toMatch(/^linear\(0, /);
+      expect(Number.parseFloat(easing.split(', ')[1])).toBeGreaterThan(0.0405);
+      expect(getMenu().isOpen()).toBe(true);
+
+      Reflect.deleteProperty(Element.prototype, 'setPointerCapture');
+      Reflect.deleteProperty(Element.prototype, 'releasePointerCapture');
+      Reflect.deleteProperty(Element.prototype, 'hasPointerCapture');
     });
 
     it('should still dismiss a sheet on backdrop click', async () => {
