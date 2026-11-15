@@ -1,3 +1,45 @@
+## 22.27.0 (2026-11-15)
+
+### 🚀 Features
+
+- **themes:** size control corners and button padding from the control height ([df85a54](https://github.com/konopyanovM/thalassic/commit/df85a54))
+- **themes:** set grouped list rows at body weight, taller on touch ([bfdd126](https://github.com/konopyanovM/thalassic/commit/bfdd126))
+- **themes:** give the switch one handle size, a settling slide and a press stretch ([d52d14f](https://github.com/konopyanovM/thalassic/commit/d52d14f))
+- **themes:** float every overlay on one shared shadow ([abbd8e1](https://github.com/konopyanovM/thalassic/commit/abbd8e1))
+- **themes:** lift overlays one tone above panels in dark mode ([73efc6b](https://github.com/konopyanovM/thalassic/commit/73efc6b))
+- **toggle-group:** add a segmented variant drawn as a track and pill ([9bf4545](https://github.com/konopyanovM/thalassic/commit/9bf4545))
+- **ui:** share one travelling selection mark across toggle groups and tabs ([3e230f3](https://github.com/konopyanovM/thalassic/commit/3e230f3))
+- **ui:** let a skeleton stand in for a line of text ([6010e70](https://github.com/konopyanovM/thalassic/commit/6010e70))
+- **ui:** draw a form item's control as a placeholder while loading and let a skeleton wrap content ([a87a596](https://github.com/konopyanovM/thalassic/commit/a87a596))
+- **ui:** draw a whole form as a skeleton from one binding ([8e1f314](https://github.com/konopyanovM/thalassic/commit/8e1f314))
+- **ui:** settle the drawer and menu sheets on the velocity spring and fix the drag edge cases it exposed ([9143479](https://github.com/konopyanovM/thalassic/commit/9143479))
+- **ui:** answer selection controls with a pressed state instead of ink ([1748718](https://github.com/konopyanovM/thalassic/commit/1748718))
+- **ui/button:** add a rounded default to the button config ([f8f9261](https://github.com/konopyanovM/thalassic/commit/f8f9261))
+- **ui/file-input:** accept a projected trigger and size the control by it ([0f1f0de](https://github.com/konopyanovM/thalassic/commit/0f1f0de))
+- **ui/form:** flag an untouched field only once its form is submitted, and tell signal forms when a control is left ([633bc21](https://github.com/konopyanovM/thalassic/commit/633bc21))
+- **ui/form-item:** add a label action and reserve the error line only beneath a control that can show an error ([af0dda2](https://github.com/konopyanovM/thalassic/commit/af0dda2))
+- **ui/sheet:** settle on a velocity spring, hold a sheet caught mid-settle, stretch past both ends and clear the top inset ([b80fc5d](https://github.com/konopyanovM/thalassic/commit/b80fc5d))
+
+### 🩹 Fixes
+
+- **themes:** reach the ripple ink to the outer edge of a bordered button ([58eeee3](https://github.com/konopyanovM/thalassic/commit/58eeee3))
+- **themes:** hold a busy control's fill through hover and press ([8bfcb98](https://github.com/konopyanovM/thalassic/commit/8bfcb98))
+- **themes:** tell a disabled field from a live one on a raised dark surface ([76e7596](https://github.com/konopyanovM/thalassic/commit/76e7596))
+- **themes:** give a text skeleton its font's baseline ([c798580](https://github.com/konopyanovM/thalassic/commit/c798580))
+- **themes:** size a skeleton to an inline control it wraps, not to its line ([868ef00](https://github.com/konopyanovM/thalassic/commit/868ef00))
+- **themes:** seat a segmented tab pill 4px inside its track so the corners nest ([47876d2](https://github.com/konopyanovM/thalassic/commit/47876d2))
+- **ui:** mark the selected option with a check and highlight the active one with a wash ([14b5c7d](https://github.com/konopyanovM/thalassic/commit/14b5c7d))
+- **ui:** declare each component's block class statically so a control styled before its bindings has nothing to fade in from ([2ee739a](https://github.com/konopyanovM/thalassic/commit/2ee739a))
+- **ui/calendar:** repair the peek fade, wash event chips and lift dark outside days ([b070ff4](https://github.com/konopyanovM/thalassic/commit/b070ff4))
+- **ui/form:** keep a label action after its control in focus order and a submission against a rebuilt field ([07c9e65](https://github.com/konopyanovM/thalassic/commit/07c9e65))
+- **ui/menu:** move focus into a menu, hand it back on close, and announce it on a button's inner control ([a26f156](https://github.com/konopyanovM/thalassic/commit/a26f156))
+- **ui/menu:** close before an item's action and on tab, and announce a menu on a picker field's inner trigger ([51d6444](https://github.com/konopyanovM/thalassic/commit/51d6444))
+- **ui/ripple:** keep struck ink through travel and hold a quick tap's ink before it fades ([495aa3b](https://github.com/konopyanovM/thalassic/commit/495aa3b))
+
+### ❤️ Thank You
+
+- konopyanov
+
 ## 22.26.0 (2026-11-08)
 
 ### 🚀 Features
